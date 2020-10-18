@@ -1,0 +1,23 @@
+citHeader("To cite lubridate in publications use:
+
+Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
+algorithm to quantify immune cell populations based on scRNA-Seq data.
+Frontiers in Genetics 10, 978. doi: 10.3389/fgene.2019.00978
+")
+
+citEntry(entry = "Article",
+  title        = "{{D}igitaldlsorter: {D}eep-{L}earning on sc{R}{N}{A}-{S}eq to deconvolute gene expression data}",
+  author       = personList(as.person("Carlos Torroja"),
+                   as.person("Fatima Sanchez-Cabo")),
+  journal      = "Front Genet",
+  year         = "2019",
+  volume       = "10",
+  pages        = "978",
+  url          = "https://dx.doi.org/10.3389/fgene.2019.00978",
+
+  textVersion  =
+  paste("Carlos Torroja, Fatima Sanchez-Cabo (2019).",
+        "digitalDLSorter: A Deep Learning algorithm to quantify immune cell populations based on scRNA-Seq data.",
+        "Frontiers in Genetics 10, 978.",
+        "doi: 10.3389/fgene.2019.00978.")
+)

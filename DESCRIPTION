@@ -1,0 +1,61 @@
+Package: digitalDLSorteR
+Type: Package
+Title: Deconvolution of bulk-RNAseq samples based on Deep Neural Network
+Version: 0.1.0
+Author: Author
+Maintainer: <yourself@somewhere.net>
+Description: digitalDLSorteR is an R package that implements a Deep Learning 
+    based method to enumerate and quantify the cell type composition of bulk 
+    RNA-seq samples. Our method makes use of Deep Neural Network (DNN) models 
+    to adjust any cell type composition starting from single-cell RNA-seq 
+    (scRNA-seq) data.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Depends: 
+    R (>= 3.4.0)
+Imports:
+    Matrix,
+    methods,
+    tidyr,
+    SingleCellExperiment,
+    SummarizedExperiment,
+    BiocParallel,
+    splatter,
+    zinbwave,
+    DelayedArray,
+    DelayedMatrixStats,
+    stats,
+    HDF5Array,
+    yardstick,
+    pbapply,
+    S4Vectors,
+    dplyr,
+    tools,
+    reshape2,
+    gtools,
+    edgeR,
+    keras,
+    tensorflow,
+    ggplot2,
+    ggpubr,
+    RColorBrewer
+Suggests:
+    BiocStyle,
+    knitr,
+    rmarkdown,
+    testthat
+RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
+Collate: 
+    'AllClasses.R'
+    'AllGenerics.R'
+    'data.R'
+    'digitalDLSorteR.R'
+    'dnnModel.R'
+    'evalMetrics.R'
+    'loadData.R'
+    'simBulk.R'
+    'simSingleCell.R'
+    'utils.R'
+VignetteBuilder: knitr
