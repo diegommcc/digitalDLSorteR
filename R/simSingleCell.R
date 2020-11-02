@@ -100,7 +100,6 @@ estimateZinbwaveParams <- function(
   # extract data from SCE to list
   list.data <- .extractDataFromSCE(
     SCEobject = single.cell.real(object),
-    filtering = FALSE,
     cell.ID.column = cell.ID.column,
     gene.ID.column = gene.ID.column,
     new.data = FALSE
@@ -114,13 +113,22 @@ estimateZinbwaveParams <- function(
          c(cell.ID.column, cell.type.column, cell.cov.columns),
          c("cell.ID.column", "cell.type.column",
            rep("cell.cov.columns", length(cell.cov.columns))))
-
-  lapply(gene.cov.columns, function(x) {
-    .checkColumn(metadata = list.data[[3]],
-                 ID.column = x,
-                 type.metadata = "genes.metadata",
-                 arg = "gene.cov.columns")
-  })
+  
+  if (!missing(gene.cov.columns)) {
+    lapply(gene.cov.columns, function(x) {
+      .checkColumn(metadata = list.data[[3]],
+                   ID.column = x,
+                   type.metadata = "genes.metadata",
+                   arg = "gene.cov.columns")
+    })  
+    lapply(gene.cov.columns,
+           function(x) {
+             if (length(unique(list.data[[3]][, x])) < 2) {
+               stop(paste(x, "must have 2 or more unique elements"))
+             }
+           })
+  }
+  
   if (set.type != "All") {
     lapply(set.type, function(x) {
       .checkColumn(metadata = list.data[[2]],
@@ -137,12 +145,6 @@ estimateZinbwaveParams <- function(
              stop(paste(x, "must have 2 or more unique elements"))
            }
          })
-  lapply(gene.cov.columns,
-         function(x) {
-           if (length(unique(list.data[[3]][, x])) < 2) {
-             stop(paste(x, "must have 2 or more unique elements"))
-           }
-         })
 
   # set configuration of parallel computations
   if (threads <= 0) {
@@ -152,11 +154,11 @@ estimateZinbwaveParams <- function(
     message(paste("=== Set parallel environment to", threads, "threads\n"))
   }
   snowParam <- BiocParallel::SnowParam(workers = threads, type = "SOCK")
-
+  
   if (set.type == "All") {
-    formula.cell.model <- as.formula(paste("~", paste(c(cell.cov.columns,
-                                                   cell.type.column),
-                                                 collapse = "+")))
+    formula.cell.model <- as.formula(paste("~", paste(c(cell.cov.columns, 
+                                                        cell.type.column), 
+                                                      collapse = "+")))
     if (verbose) {
       message("=== Estimate parameters for the whole experiment\n")
       message(paste("=== Create cell model matrix based on", paste(cell.cov.columns,
@@ -188,7 +190,7 @@ estimateZinbwaveParams <- function(
       sdm.colnames <- seq(1)
   }
   # covariates for genes
-  if (!is.null(gene.cov.columns)) {
+  if (!is.null(gene.cov.columns) || !missing(gene.cov.columns)) {
     formula.gene.model <- as.formula(paste("~", paste(gene.cov.columns, collapse = "+")))
     if (verbose) {
       message(paste("=== Create gene model matrix with", gene.cov.columns, "covariate(s)"))
@@ -199,7 +201,7 @@ estimateZinbwaveParams <- function(
                                                        list.data[[3]][, gene.ID.column]), ])
   } else {
     if (verbose) {
-      message("=== Create gene model matrix without Covariates\n")
+      message("=== Create gene model matrix without gene covariates\n")
     }
     gdm <- model.matrix(~1, data = list.data[[3]][match(rownames(list.data[[1]]),
                                                     list.data[[3]][, gene.ID.column]), ])
@@ -211,45 +213,45 @@ estimateZinbwaveParams <- function(
             paste("(Start time", format(start_time, "%X)"), "\n"))
   }
   zinbParamsObj <- splatter::zinbEstimate(
-    ceiling(as.matrix(list.data[[1]]))
-    , BPPARAM = snowParam
-    , design.samples = sdm
-    , design.genes = gdm
-    , O_mu = matrix(0, nrow = ncol(list.data[[1]]), ncol = nrow(list.data[[1]])
-                    , dimnames = list(rownames = seq(ncol(list.data[[1]]))
-                                      ,colnames = rownames(list.data[[1]])
-                    )
-    )
-    , O_pi = matrix(0, nrow = ncol(list.data[[1]]), ncol = nrow(list.data[[1]])
-                    , dimnames = list(rownames = seq(ncol(list.data[[1]]))
-                                      ,colnames = rownames(list.data[[1]])
-                    )
-    )
-    , beta_mu = matrix(0, nrow = sdm.ncol, ncol = nrow(list.data[[1]])
-                       , dimnames = list(rownames = sdm.colnames
-                                         ,colnames = rownames(list.data[[1]])
-                       )
-    )
-    , beta_pi = matrix(0, nrow = sdm.ncol, ncol = nrow(list.data[[1]])
-                       , dimnames = list(rownames = sdm.colnames
-                                         ,colnames = rownames(list.data[[1]])
-                       )
-    )
-    , alpha_mu = matrix(0, nrow = 0, ncol = nrow(list.data[[1]])
-                        , dimnames = list(rownames = NULL
-                                          ,colnames = rownames(list.data[[1]])
-                        )
-    )
-    , alpha_pi = matrix(0, nrow = 0, ncol = nrow(list.data[[1]])
-                        , dimnames = list(rownames = NULL
-                                          ,colnames = rownames(list.data[[1]])
-                        )
-    )
-    , verbose = verbose
+    counts = ceiling(as.matrix(list.data[[1]])), # why ceiling
+    BPPARAM = snowParam, 
+    design.samples = sdm, 
+    design.genes = gdm, 
+    O_mu = matrix(
+      0, nrow = ncol(list.data[[1]]), ncol = nrow(list.data[[1]]), 
+      dimnames = list(rownames = seq(ncol(list.data[[1]])),
+                      colnames = rownames(list.data[[1]]))
+    ), 
+    O_pi = matrix(
+      0, nrow = ncol(list.data[[1]]), ncol = nrow(list.data[[1]]), 
+      dimnames = list(rownames = seq(ncol(list.data[[1]])),
+                      colnames = rownames(list.data[[1]]))
+    ), 
+    beta_mu = matrix(
+      0, nrow = sdm.ncol, ncol = nrow(list.data[[1]]), 
+      dimnames = list(rownames = sdm.colnames, 
+                      colnames = rownames(list.data[[1]]))
+    ), 
+    beta_pi = matrix(
+      0, nrow = sdm.ncol, ncol = nrow(list.data[[1]]), 
+      dimnames = list(rownames = sdm.colnames,
+                      colnames = rownames(list.data[[1]]))
+    ), 
+    alpha_mu = matrix(
+      0, nrow = 0, ncol = nrow(list.data[[1]]), 
+      dimnames = list(rownames = NULL, 
+                      colnames = rownames(list.data[[1]]))
+    ), 
+    alpha_pi = matrix(
+      0, nrow = 0, ncol = nrow(list.data[[1]]), 
+      dimnames = list(rownames = NULL,
+                      colnames = rownames(list.data[[1]]))
+    ), 
+    verbose = verbose
   )
   # update slots
   zinb.params(object) <- zinbParamsObj
-
+  
   end_time <- Sys.time()
   message("\nDONE\n")
   message(paste("Invested time:", round(end_time - start_time, 2), "mins"))
@@ -270,7 +272,6 @@ estimateZinbwaveParams <- function(
 ################################################################################
 ######################## Simulate single-cell profiles #########################
 ################################################################################
-
 
 #' Simulate new single-cell expression profiles using the estimated ZINB
 #' parameters.
@@ -350,7 +351,6 @@ simSingleCellProfiles <- function(
   list.data <- .extractDataFromSCE(
     SCEobject = single.cell.real(object),
     cell.ID.column = cell.ID.column,
-    filtering = FALSE,
     new.data = FALSE
   )
   zinb.object <- zinb.params(object)

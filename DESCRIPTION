@@ -16,6 +16,7 @@ Depends:
     R (>= 3.4.0)
 Imports:
     Matrix,
+    Matrix.utils,
     methods,
     tidyr,
     SingleCellExperiment,
