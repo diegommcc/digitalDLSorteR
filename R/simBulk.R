@@ -468,6 +468,7 @@ setCount <- function(x, setList, sn, n.cells) {
         sel <- sample(seq(length(x))[-index.ex], 1)
       }
       res <- x[sel] - abs(sum(x) - limit)
+      if (res < 0) res <- x[sel] - sample(x[sel], 1)
       if (res >= 0) break
     }
     x[sel] <- res
@@ -483,7 +484,10 @@ setCount <- function(x, setList, sn, n.cells) {
     }
     x[sel] <- res
   }
-  return(x)
+  if (sum(x) != limit) 
+    return(.setHundredLimit(x = x, index.ex = index.ex, limit = limit))
+  else 
+    return(x)
 }
 
 
