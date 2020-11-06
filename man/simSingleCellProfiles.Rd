@@ -10,6 +10,7 @@ simSingleCellProfiles(
   cell.ID.column,
   cell.type.column,
   n.cells,
+  cell.types = NULL,
   verbose = TRUE
 )
 }

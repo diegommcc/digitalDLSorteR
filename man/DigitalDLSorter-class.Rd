@@ -39,7 +39,7 @@ Network. This step is performed by \code{keras}. See
 \item{\code{zinb.params}}{\code{ZinbParams} object with estimated parameters for the
 simulation of new single-cell expression profiles.}
 
-\item{\code{single.cell.final}}{Final single-cell expression profiles used for
+\item{\code{single.cell.simul}}{Simulated single-cell expression profiles used for
 simulating bulk RNA-seq profiles with known cell composition.}
 
 \item{\code{prob.cell.types}}{\code{ProbMatrixCellTypes} class with the cell

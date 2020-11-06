@@ -5,7 +5,7 @@
 \alias{TCGA.breast.small}
 \title{Breast cancer bulk RNA-Seq samples from TCGA Research Network.}
 \format{
-An object of class \code{matrix} with 44831 rows and 15 columns.
+An object of class \code{matrix} (inherits from \code{array}) with 44831 rows and 15 columns.
 }
 \source{
 \url{https://www.cancer.gov/tcga}

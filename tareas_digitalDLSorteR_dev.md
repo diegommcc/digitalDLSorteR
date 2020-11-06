@@ -23,7 +23,13 @@
 * Argumento para decidir si el número de células de cada tipo va a ser igual o si se van a guardar las proporciones originales. 
     * En cualquier caso, si hay algún tipo celular que no llegue al número deseado, avisar de alguna manera, pero no devolver un error.
 
+## Función `simSCProfiles` (cambiar nombre)
+
+* Falta permitir la posibilidad de utilizar ficheros HDF5 como backend (fácil).
+* Falta la implementación del procesamiento por bloques (complicado). Respecto a esto último, la idea es hacerlo con un bucle for y utilizar el  paquete rhdf5 que, con suerte, permitirá la adición de nuevos elementos en un fichero HDF5 preexistente. Se podría intentar implementar en C++, pero habría que mirar un paquete estadístico que implemente distribuciones binomiales. 
+    * <https://support.bioconductor.org/p/69373/>: explican cómo añadir filas a un dataset en un fichero HDF5.
+    * En el caso de implementarlo en C++ (no merece la pena), hay gente con el mismo problema: <https://stackoverflow.com/questions/15379399/writing-appending-arrays-of-float-to-the-only-dataset-in-hdf5-file-in-c>, <https://forum.hdfgroup.org/t/c-interface-append-data-to-an-existing-file/4474>.
 
 ## Dudas durante el desarrollo
 
-* Qué hacer con el argumento `setType`de la función `estimateZinbParams`: es para establecer un tipo celular a evaluar.
+* Qué hacer con el argumento `setType` de la función `estimateZinbParams`: es para establecer un tipo celular a evaluar. **Implementado**.

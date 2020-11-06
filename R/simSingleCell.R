@@ -158,7 +158,8 @@ estimateZinbwaveParams <- function(
       cell.type.column = cell.type.column, 
       cell.ID.column = cell.ID.column, 
       total.subset = subset.cells,
-      proportional = proportional
+      proportional = proportional,
+      verbose = verbose
     )
     if (any(Matrix::rowSums(sub.list.data[[1]]) == 0)) {
       warning("There are some genes with zero expression in selected cells. ", 
@@ -192,7 +193,7 @@ estimateZinbwaveParams <- function(
                     "and", cell.type.column, "columns:"))
       message("\t", formula.cell.model, "\n")
     }
-    ## check in future: number of cell types
+    ## why one cell type is used as intercept? are there any other way?
     sdm <- model.matrix(
       formula.cell.model,
       data = list.data[[2]][match(colnames(list.data[[1]]),
@@ -376,7 +377,8 @@ estimateZinbwaveParams <- function(
   cell.type.column, 
   cell.ID.column, 
   total.subset,
-  proportional
+  proportional,
+  verbose
 ) {
   if (ncol(counts) <= total.subset) {
     stop("total.subset must be lesser than the total of cells")
@@ -405,6 +407,13 @@ estimateZinbwaveParams <- function(
   )
   if (any(nums.cells == 0))
     stop("Some cell types have zero cells. Please, provide a greater 'total.subset'")
+  
+  if (verbose) {
+    message("=== Number of cells for each cell type:\n",
+            paste(names(nums.cells), nums.cells, sep = ": ", collapse = "\n  - "), 
+            "\n")
+  }
+    
   # random sampling of cells
   pos <- sapply(
     X = names(nums.cells), 
@@ -454,7 +463,7 @@ estimateZinbwaveParams <- function(
 #'   1000 cell profiles will be simulated).
 #' @param verbose Show informative messages during the execution.
 #'
-#' @return A \code{\link{DigitalDLSorter}} object with \code{single.cell.final}
+#' @return A \code{\link{DigitalDLSorter}} object with \code{single.cell.simul}
 #'   slot containing a \code{SingleCellExperiment} object with the simulated
 #'   single-cell profiles.
 #'
@@ -484,19 +493,21 @@ simSingleCellProfiles <- function(
   cell.ID.column,
   cell.type.column,
   n.cells,
+  cell.types = NULL,
   verbose = TRUE
 ) {
   if (is.null(zinb.params(object))) {
     stop(paste("zinb.params slot is empty. To simulate single-cell profiles,",
-               "DigitalDLSorter object  must contain the estimated parameters for the data with",
-               "estimateZinbwaveParams function"))
+               "DigitalDLSorter object  must contain the estimated parameters",
+               "for the data with estimateZinbwaveParams function"))
   }
   if (is.null(single.cell.real(object))) {
-    stop(paste("single.cell.real slot is empty. To simulate single-cell profiles,",
-               "DigitalDLSorter object must contain the original data. See ?CreateDigitalDLSorterObject"))
+    stop(paste("single.cell.real slot is empty. To simulate single-cell", 
+               "profiles, DigitalDLSorter object must contain the original", 
+               "data. See ?CreateDigitalDLSorterObject"))
   }
-  if (!is.null(single.cell.final(object = object))) {
-    warning("single.cell.final slot already has a SingleCellExperiment object. Note that it will be overwritten\n",
+  if (!is.null(single.cell.simul(object = object))) {
+    warning("single.cell.simul slot already has a SingleCellExperiment object. Note that it will be overwritten\n",
             call. = FALSE, immediate. = TRUE)
   }
   # extract data
@@ -506,28 +517,19 @@ simSingleCellProfiles <- function(
     new.data = FALSE
   )
   zinb.object <- zinb.params(object)
-  # check if zinb.params and single.cell.real have the same dimensions:
-  # introduce changes if set != All
 
-  # aquí deberé meter los genes eliminados con expresión = 0 para todas las células
-  # dim.scr <- dim(list.data[[1]])
-  # if (!zinb.params(object)@nGenes == dim.scr[1] |
-  #     !zinb.params(object)@nCells == dim.scr[2]) {
-  #   stop("zinb.params slot and single.cell.real slot are not compatible,",
-  #        "the number of dimensions are not equal")
-  # }
   # check if cell.type.column exists in cells.metadata
   .checkColumn(metadata = list.data[[2]],
                ID.column = cell.type.column,
                type.metadata = "cells.metadata",
                arg = "cell.type.column")
-  if (n.cells < 5) {
-    stop("n.cells must be greater than or equal to 5 cells per cell type")
+  if (n.cells < 0) {
+    stop("n.cells must be greater than 0 cells per cell type")
   }
   # generate metadata for simulated cells
   colnames(list.data[[1]]) <- paste(list.data[[2]][, cell.type.column],
                                     list.data[[2]][, cell.ID.column],
-                                    sep = "_") # why
+                                    sep = "_") 
   list.data[[2]]$simCellName <- paste(list.data[[2]][, cell.type.column],
                                       list.data[[2]][, cell.ID.column],
                                       sep = "_")
@@ -541,12 +543,16 @@ simSingleCellProfiles <- function(
   cell.type.names <- sub(pattern = cell.type.column,
                          replacement = "",
                          x = model.cell.types)
-  names(cell.type.names) <- model.cell.types
-
-  if (verbose) {
-    message(paste0("=== Cell Types in Model (", length(cell.type.names), " cell types):"))
-    message(paste0("  - ", cell.type.names, collapse = "\n"), "\n")
+  if (!is.null(cell.types)) {
+    if (!all(cell.types %in% unique(list.data[[2]][, cell.type.column])))
+      stop("Cell type(s) provided in 'cell.types' not found")
+    
+    cell.sel <- cell.type.names %in% cell.types
+    cell.type.names <- cell.type.names[cell.sel]
+    model.cell.types <- model.cell.types[cell.sel]
   }
+  
+  names(cell.type.names) <- model.cell.types
 
   for (s in model.cell.types) {
     cell.type.name <- cell.type.names[s]
@@ -563,20 +569,41 @@ simSingleCellProfiles <- function(
               seq(from = length(ns) + 1, to = length(ns) + n.cells), sep = ""))
     }
   }
-  inter.cell.type <- setdiff(levels(factor(list.data[[2]][, cell.type.column])),
-                             cell.type.names) # intersect
-  # To get the intercept cell type the rowSum of all FinalCellType columns should be 0
-  cell.index <- rownames(zinb.object@model@X)[rowSums(zinb.object@model@X[,
-                         grep(cell.type.column,
-                         colnames(zinb.object@model@X), value = T)]) == 0]
-  nams <- sample(cell.index, size = n.cells, replace = T)
-  ns <- names(cell.set.names)
-  cell.set.names <- c(cell.set.names, nams)
-  names(cell.set.names) <- c(ns, paste(inter.cell.type, "_S",
-                                       seq(from = length(ns) + 1,
-                                           to = length(ns) + n.cells),
-                                       sep = ""))
-  n.cells <- length(cell.set.names)
+  ##############################################################################
+  # Why use a cell type as intercept
+  ##############################################################################
+  intercept.celltype <- FALSE
+  if (!is.null(cell.types)) {
+    inter.cell.type <- setdiff(cell.types, cell.type.names)
+    if (length(inter.cell.type) != 0) intercept.celltype <- TRUE
+  } else {
+    inter.cell.type <- setdiff(levels(factor(list.data[[2]][, cell.type.column])),
+                               cell.type.names)
+    intercept.celltype <- TRUE
+  }
+  if (intercept.celltype) {
+    # To get the intercept cell type the rowSum of all FinalCellType columns should be 0
+    cell.index <- rownames(zinb.object@model@X)[
+      rowSums(zinb.object@model@X[, grep(cell.type.column, 
+                                         colnames(zinb.object@model@X), 
+                                         value = T)]) == 0]
+    nams <- sample(cell.index, size = n.cells, replace = T)
+    ns <- names(cell.set.names)
+    cell.set.names <- c(cell.set.names, nams)
+    names(cell.set.names) <- c(ns, paste(inter.cell.type, "_S",
+                                         seq(from = length(ns) + 1,
+                                             to = length(ns) + n.cells),
+                                         sep = ""))
+  }
+  
+  if (verbose) {
+    message(paste0("=== Cell Types in Model (", 
+                   length(c(cell.type.names, inter.cell.type)), 
+                   " cell types):"))
+    message(paste0("  - ", c(cell.type.names, inter.cell.type), 
+                   collapse = "\n"), "\n")
+  }
+  
   mu <- zinbwave::getMu(zinb.object@model) # rows are cells
   pi <- zinbwave::getPi(zinb.object@model) # rows are cells
   theta <- zinbwave::getTheta(zinb.object@model) # for genes
@@ -605,13 +632,10 @@ simSingleCellProfiles <- function(
   datanb <- rnbinom(length(i), mu = mu[i], size = theta[ceiling(i/n)])
   data.nb <- matrix(datanb, nrow = n)
 
-  datado <- rbinom(length(i), size=1, prob = pi[i])
+  datado <- rbinom(length(i), size = 1, prob = pi[i])
   data.dropout <- matrix(datado, nrow = n)
 
-  sim.counts <- data.nb * (1 - data.dropout)
-  colnames(sim.counts) <- colnames(mu)
-  sim.counts <- t(sim.counts)
-
+  sim.counts <- t(data.nb * (1 - data.dropout))
   sim.counts <- Matrix::Matrix(sim.counts, dimnames = list(
     rownames = rownames(zinb.object@model@V),
     colnames = names(cell.set.names)))
@@ -621,17 +645,19 @@ simSingleCellProfiles <- function(
   rownames(sim.cells.metadata) <- names(cell.set.names)
   sim.cells.metadata$Simulated <- TRUE
 
-  # new sim cells.metadata
-  sim.cells.metadata <- rbind(list.data[[2]], sim.cells.metadata)
-
-  # join simmulated and real counts
-  sim.counts <- Matrix::Matrix(as.matrix(sim.counts), sparse = T)
-  sim.counts <- cbind(list.data[[1]][rownames(sim.counts), ], sim.counts)
-
-  sim.sce <- CreateSCEObject(counts = sim.counts,
-                             cells.metadata = sim.cells.metadata,
-                             genes.metadata = list.data[[3]])
-  single.cell.final(object) <- sim.sce
+  # implemet the possibility of use HDF5 files as backend and block.processing
+  # note: for block.processing, probably will be needed the rhdf5 package
+  
+  sim.sce <- .createSCEObject(
+    counts = sim.counts,
+    cells.metadata = sim.cells.metadata,
+    genes.metadata = list.data[[3]][rownames(sim.counts), ],
+    file.backend = NULL,
+    compression.level = 6,
+    block.processing = NULL,
+    verbose = verbose
+  )
+  single.cell.simul(object) <- sim.sce
 
   message("DONE")
   return(object)

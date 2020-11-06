@@ -12,6 +12,8 @@ estimateZinbwaveParams(
   cell.type.column,
   cell.cov.columns,
   gene.cov.columns,
+  subset.cells = NULL,
+  proportional = TRUE,
   set.type = "All",
   threads = 1,
   verbose = TRUE
