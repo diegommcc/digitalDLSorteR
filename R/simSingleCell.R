@@ -494,6 +494,10 @@ simSingleCellProfiles <- function(
   cell.type.column,
   n.cells,
   cell.types = NULL,
+  file.backend = NULL,
+  compression.level = 6,
+  block.processing = FALSE,
+  chunk.size = 1000,
   verbose = TRUE
 ) {
   if (is.null(zinb.params(object))) {
@@ -546,7 +550,6 @@ simSingleCellProfiles <- function(
   if (!is.null(cell.types)) {
     if (!all(cell.types %in% unique(list.data[[2]][, cell.type.column])))
       stop("Cell type(s) provided in 'cell.types' not found")
-    
     cell.sel <- cell.type.names %in% cell.types
     cell.type.names <- cell.type.names[cell.sel]
     model.cell.types <- model.cell.types[cell.sel]
@@ -569,9 +572,6 @@ simSingleCellProfiles <- function(
               seq(from = length(ns) + 1, to = length(ns) + n.cells), sep = ""))
     }
   }
-  ##############################################################################
-  # Why use a cell type as intercept
-  ##############################################################################
   intercept.celltype <- FALSE
   if (!is.null(cell.types)) {
     inter.cell.type <- setdiff(cell.types, cell.type.names)
@@ -615,46 +615,114 @@ simSingleCellProfiles <- function(
     message(paste("  - Theta:", length(theta)), "\n")
   }
 
-  mu <- mu[cell.set.names, ]
-  pi <- pi[cell.set.names, ]
-
   n <- length(cell.set.names) # as.numeric(nCells)
   J <- zinbwave::nFeatures(zinb.object@model)
   i <- seq(n * J)
-
   if (verbose) {
     message("=== Simulated Matrix dimensions:")
     message(paste("  - n (cells):", n))
     message(paste("  - J (genes):", J))
     message(paste("  - i (# entries):", length(i)), "\n")
   }
-
-  datanb <- rnbinom(length(i), mu = mu[i], size = theta[ceiling(i/n)])
-  data.nb <- matrix(datanb, nrow = n)
-
-  datado <- rbinom(length(i), size = 1, prob = pi[i])
-  data.dropout <- matrix(datado, nrow = n)
-
-  sim.counts <- t(data.nb * (1 - data.dropout))
-  sim.counts <- Matrix::Matrix(sim.counts, dimnames = list(
-    rownames = rownames(zinb.object@model@V),
-    colnames = names(cell.set.names)))
-
+  
+  
+  if (block.processing && is.null(file.backend)) {
+    stop("'block.processing' is only compatible with the use of HDF5 files ", 
+         "as backend ('file.backend' argument)")
+  } else if (block.processing && !is.null(file.backend)) {
+    if (n <  chunk.size) {
+      stop("The final number of simulated cells is lesser than 'chunk.size'. ", 
+           "Please, introduce a lesser size or set 'block.processing = FALSE'")
+    }
+    rhdf5::h5createFile(file.backend)
+    rhdf5::h5createDataset(
+      file.backend, "counts_sim", 
+      dims = c(J, chunk.size), 
+      maxdims = c(J, n), 
+      storage.mode = "integer"
+    )
+    r.i <- 0
+    r.j <- 0
+    ## iteration over cells 
+    for (iter in seq(ceiling(n / chunk.size))) {
+      if ((chunk.size * iter) - n > 0) { # && dif < chunk.size
+        dif <- (chunk.size * iter) - n
+        chunk.size <- chunk.size - dif
+      } else {
+        dif <- chunk.size
+      }
+      sub.i <- seq(from = r.i + 1, to = r.i + chunk.size)
+      sub.j <- seq(from = r.j + 1, to = r.j + chunk.size * J)
+      r.i <- r.i + chunk.size
+      r.j <- r.j + chunk.size
+      
+      datanb <- rnbinom(length(sub.j), mu = mu[cell.set.names[sub.i], ], 
+                        size = rep(theta[1], length(sub.j))) # ceiling(sub.i/chunk.size)
+      data.nb <- matrix(datanb, nrow = chunk.size)
+      datado <- rbinom(length(sub.j), size = 1, prob = pi[cell.set.names[sub.i], ])
+      data.dropout <- matrix(datado, nrow = chunk.size)
+      
+      sim.counts <- t(data.nb * (1 - data.dropout))
+      if (iter == 1) {
+        rhdf5::h5write(
+          obj = sim.counts, file = file.backend, 
+          name = "counts_sim", level = compression.level
+        )
+      } else {
+        # check number of cells in the next loop
+        rhdf5::h5set_extent(file.backend, "counts_sim", dims = c(J, n))
+        rhdf5::h5write(
+          obj = sim.counts, 
+          file = file.backend, name = "counts_sim", 
+          index = list(seq(J), seq((dif * (iter - 1)) + 1, 
+                                   (dif * (iter - 1)) + ncol(sim.counts))),
+          level = compression.level
+        )
+      }
+      if (verbose) message(paste("   - Block", iter, "written"))
+    }
+    # write cell IDs as attribute in HDF5 file
+    # file.h5 <- rhdf5::H5Fopen(file.backend)
+    # did <- rhdf5::H5Dopen(file.h5, "counts_sim")
+    # rhdf5::h5writeAttribute(
+    #   did, attr = names(cell.set.names), name = "colnames"
+    # )
+    # rhdf5::h5writeAttribute(
+    #   did, attr = rownames(zinb.object@model@V) , name = "rownames"
+    # )
+    rhdf5::H5close()
+    
+    # HDF5Array object for SingleCellExperiment class
+    sim.counts <- HDF5Array::HDF5Array(file = file.backend, name = "counts_sim")
+    dimnames(sim.counts) <- list(rownames(zinb.object@model@V), names(cell.set.names))
+    
+  } else if (!block.processing) {
+    mu <- mu[cell.set.names, ]
+    pi <- pi[cell.set.names, ]
+    datanb <- rnbinom(length(i), mu = mu[i], size = theta[ceiling(i/n)])
+    data.nb <- matrix(datanb, nrow = n)
+    
+    datado <- rbinom(length(i), size = 1, prob = pi[i])
+    data.dropout <- matrix(datado, nrow = n)
+    
+    sim.counts <- t(data.nb * (1 - data.dropout))
+    sim.counts <- Matrix::Matrix(sim.counts, dimnames = list(
+      rownames = rownames(zinb.object@model@V),
+      colnames = names(cell.set.names)))  
+  }
+  
   sim.cells.metadata <- list.data[[2]][cell.set.names, ]
   sim.cells.metadata$simCellName <- names(cell.set.names)
   rownames(sim.cells.metadata) <- names(cell.set.names)
   sim.cells.metadata$Simulated <- TRUE
-
-  # implemet the possibility of use HDF5 files as backend and block.processing
-  # note: for block.processing, probably will be needed the rhdf5 package
   
   sim.sce <- .createSCEObject(
     counts = sim.counts,
     cells.metadata = sim.cells.metadata,
     genes.metadata = list.data[[3]][rownames(sim.counts), ],
-    file.backend = NULL,
+    file.backend = file.backend,
     compression.level = 6,
-    block.processing = NULL,
+    block.processing = block.processing,
     verbose = verbose
   )
   single.cell.simul(object) <- sim.sce

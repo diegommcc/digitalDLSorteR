@@ -30,6 +30,15 @@
     * <https://support.bioconductor.org/p/69373/>: explican cómo añadir filas a un dataset en un fichero HDF5.
     * En el caso de implementarlo en C++ (no merece la pena), hay gente con el mismo problema: <https://stackoverflow.com/questions/15379399/writing-appending-arrays-of-float-to-the-only-dataset-in-hdf5-file-in-c>, <https://forum.hdfgroup.org/t/c-interface-append-data-to-an-existing-file/4474>.
 
+## Función `generateBulkCellMatrix` (cambiar nombre)
+
+Modificaciones: 
+
+* Introducir la posibilidad de establecer la proporción de muestras bulk de train y de test (ahora el argumento `train.freq` solo afecta a las células).
+* Eliminar lo de los tipos celulares exclusivos.
+* Fusionar tablas de metadatos.
+* A la hora de dividir las células en train y test, se hace con el conjunto completo de células. Dado que el número inicial de células puede ser reducido, quizás sea conveniente introducir un argumento rollo `balanced = TRUE` para dividir las células en train y test por clases. Voy a meterlo, pero, en cualquier caso, no puede fallar como lo hace actualmente. 
+
 ## Dudas durante el desarrollo
 
 * Qué hacer con el argumento `setType` de la función `estimateZinbParams`: es para establecer un tipo celular a evaluar. **Implementado**.
