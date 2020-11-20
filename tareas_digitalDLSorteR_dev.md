@@ -39,6 +39,14 @@ Modificaciones:
 * Fusionar tablas de metadatos.
 * A la hora de dividir las células en train y test, se hace con el conjunto completo de células. Dado que el número inicial de células puede ser reducido, quizás sea conveniente introducir un argumento rollo `balanced = TRUE` para dividir las células en train y test por clases. Voy a meterlo, pero, en cualquier caso, no puede fallar como lo hace actualmente. 
 
+## Desarrollo del entrenamiento de la red neuronal 'on the fly'
+
+Cosas a tener en cuenta:
+
+* La idea es que los generadores llamen a las funciones necesarias para simular las muestras _bulk_.
+* Hacer shuffling sobre el nombre de las muestras en lugar de usar la matriz.
+* Permitir modificar la arquitectura de la red: permitir modificar el número de capas y el número de neuronas mediante los argumentos y permitir añadir un modelo compilado con la arquitectura deseada (siempre y cuando sea una red neuronal completamente conectada).
+
 ## Dudas durante el desarrollo
 
 * Qué hacer con el argumento `setType` de la función `estimateZinbParams`: es para establecer un tipo celular a evaluar. **Implementado**.

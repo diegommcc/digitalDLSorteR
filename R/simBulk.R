@@ -144,8 +144,8 @@ generateBulkCellMatrix <- function(
   } else if (sum(abs(proportions.train)) != 100 ||
              sum(abs(proportions.test)) != 100) {
     stop("Proportions provided must add up to 100")
-  } else if (any(proportions.train <= 0) || any(proportions.test <= 0)) {
-    stop("Proportions can not be equal to or lesser than zero")
+  # } else if (any(proportions.train <= 0) || any(proportions.test <= 0)) {
+  #   stop("Proportions can not be equal to or lesser than zero")
   } else if (length(proportions.train) != 6 || length(proportions.train) != 6) {
     stop("Proportions must be a vector of six elements")
   } else if (is.null(num.bulk.samples) || missing(num.bulk.samples)) {
@@ -188,8 +188,6 @@ generateBulkCellMatrix <- function(
   list.metadata[[1]]$Simulated <- FALSE
   cells.metadata <- S4Vectors::rbind(list.metadata[[1]], list.metadata[[2]])
   
-  num.bulk.samples <- 1500
-  
   # check if prob.design is correctly built
   lapply(X = c(cell.type.column, "from", "to"),
          FUN = function(x) {
@@ -221,29 +219,15 @@ generateBulkCellMatrix <- function(
     stop("n.cells must be greater than zero")
   } else if (n.cells < length(unique(cells.metadata[, cell.type.column]))) {
     stop("n.cells must be equal to or greater than the number of cell types in",
-         "experiment. In any case, we recommend using numbers greater than 50")
+         " experiment. In any case, we recommend greater than 100 cells per", 
+         " bulk sample")
   }
-  # # proportions of different set of samples
-  # nums.train <- .setHundredLimit(
-  #   ceiling((10500 * proportions.train) / 100),
-  #   limit = 10500
-  # )
-  # nums.test <- .setHundredLimit(
-  #   ceiling((7150 * proportions.test) / 100),
-  #   limit = 7150
-  # )
-
-  # s.cells <- dim(list.data[[1]])[2]
-  # # this if statement must be removed
-  # if (s.cells > num.bulk.samples) {
-  #   stop(paste0("If num.bulk.samples is provided, it must be greater than or equal to the total of final cells (",
-  #               s.cells, " in this case)"))
-  # }
   
-  # check proportions!!!
+  # check proportions --> avoid num.bulk.samples too low
   total.train <- ceiling(num.bulk.samples * train.freq.bulk)
   total.test <- num.bulk.samples - total.train
-  
+  if (total.test == 0) 
+    stop("'num.bulk.samples' too low in relation with 'train.freq.bulk'")
   nums.train <- .setHundredLimit(
     ceiling((total.train * proportions.train) / 100),
     limit = total.train
@@ -256,15 +240,14 @@ generateBulkCellMatrix <- function(
   message(paste("\n=== The number of bulk samples that will be generated has been fixed to",
                 num.bulk.samples))
   # split data into training and test sets
-  cells <- rownames(cells.metadata)
-  # [, cell.ID.column]
+  cells <- rownames(cells.metadata) # [, cell.ID.column]
   names(cells) <- cells.metadata[, cell.type.column]
 
   # train set
   ## introduce an argument for split data in a balanced way: by cell type
   if (!balanced.cells) {
     train.set <- sample(cells, size = round(nrow(cells.metadata) * train.freq.cells))
-    if (length(unique(names(train.set)) != length(unique(names(cells))))) {
+    if (length(unique(names(train.set))) != length(unique(names(cells)))) {
       train.set <- sapply(
         X = unique(names(cells)), 
         FUN = function(x, cells, train.freq.cells) {
@@ -331,14 +314,6 @@ generateBulkCellMatrix <- function(
   } else {
     index.ex <- NULL
   }
-
-  ## predefined range of cell types
-  # df <- reshape2::melt(prob.list)
-  # colnames(df) <- c("Perc", "CellType")
-  # df$CellType <- factor(df$CellType, levels = names(prob.list))
-  # plot.prob <- .boxPlot(df = df, title = "Predefine Range of cell fractions",
-  #                       y = Perc)
-  s.cells <- nrow(cells.metadata)
   n.cell.types <- length(unique(train.types))
   functions.list <- list(.generateSet1, .generateSet2, .generateSet3,
                          .generateSet4, .generateSet5, .generateSet6)
@@ -348,18 +323,25 @@ generateBulkCellMatrix <- function(
   train.prob.matrix <- matrix(rep(0, n.cell.types), nrow = 1, byrow = T)
   train.plots <- list()
   n <- 1
-  fun <- .generateSet1
+  first <- TRUE
   for (fun in functions.list) {
+    if (nums.train[n] == 0) {
+      n <- n + 1
+      next
+    }
     train.probs <- fun(
       prob.list = prob.list,
       prob.matrix = train.prob.matrix,
       num = nums.train[n],
-      s.cells = s.cells,
+      s.cells = total.train,
       n.cell.types = n.cell.types,
       index.ex = excl.cell.type[n]
     )
     train.prob.matrix <- rbind(train.prob.matrix, train.probs)
-    if (n == 1) train.prob.matrix <- train.prob.matrix[-1, ]
+    if (first) {
+      train.prob.matrix <- train.prob.matrix[-1, , drop = FALSE]
+      first <- FALSE
+    }
     train.plots[[n]] <- .plotsQCSets(
       probs = train.probs,
       prob.matrix = train.prob.matrix,
@@ -368,33 +350,45 @@ generateBulkCellMatrix <- function(
     )
     n <- n + 1
   }
-
+  # check if matrix is correctly built
+  if (is.null(dim(train.prob.matrix))) 
+    train.prob.matrix <- matrix(train.prob.matrix, nrow = 1)
+  if (is.null(colnames(train.prob.matrix)))
+    colnames(train.prob.matrix) <- prob.design[, cell.type.column]
+  
   rownames(train.prob.matrix) <- paste("Bulk", seq(dim(train.prob.matrix)[1]),
                                        sep = "_")
-
+  train.plots <- train.plots[!unlist(lapply(train.plots, is.null))]
+  
   if (verbose) {
     message("=== Probability matrix for training data:")
     message(paste(c("    - Bulk samples:", "    - Cell types:"),
                   dim(train.prob.matrix),
                   collapse = "\n"), "\n")
   }
-
-
   # TEST SETS ------------------------------------------------------------------
   test.prob.matrix <- matrix(rep(0, n.cell.types), nrow = 1, byrow = T)
   test.plots <- list()
   n <- 1
+  first <- TRUE
   for (fun in functions.list) {
+    if (nums.test[n] == 0) {
+      n <- n + 1
+      next
+    }
     test.probs <- fun(
       prob.list = prob.list,
       prob.matrix = test.prob.matrix,
       num = nums.test[n],
-      s.cells = s.cells,
+      s.cells = total.test,
       n.cell.types = n.cell.types,
       index.ex = excl.cell.type[n]
     )
     test.prob.matrix <- rbind(test.prob.matrix, test.probs)
-    if (n == 1) test.prob.matrix <- test.prob.matrix[-1, ]
+    if (first && nums.test[n] != 0) {
+      test.prob.matrix <- test.prob.matrix[-1, ]
+      first <- FALSE
+    }
     test.plots[[n]] <- .plotsQCSets(
       probs = test.probs,
       prob.matrix = test.prob.matrix,
@@ -403,9 +397,16 @@ generateBulkCellMatrix <- function(
     )
     n <- n + 1
   }
+  # check if matrix is correctly built
+  if (is.null(dim(test.prob.matrix))) 
+    test.prob.matrix <- matrix(test.prob.matrix, nrow = 1)
+  if (is.null(colnames(test.prob.matrix)))
+    colnames(test.prob.matrix) <- prob.design[, cell.type.column]
+  
   rownames(test.prob.matrix) <- paste("Bulk", seq(dim(test.prob.matrix)[1]),
                                       sep = "_")
-
+  test.plots <- test.plots[!unlist(lapply(test.plots, is.null))]
+  
   if (verbose) {
     message("=== Probability matrix for test data:")
     message(paste(c("    - Bulk samples:", "    - Cell types:"),
@@ -442,7 +443,6 @@ generateBulkCellMatrix <- function(
     plots = train.plots,
     type.data = "train"
   )
-
   test.prob.matrix.object <- new(
     Class = "ProbMatrixCellTypes",
     prob.matrix = test.prob.matrix,
@@ -453,7 +453,7 @@ generateBulkCellMatrix <- function(
     plots = test.plots,
     type.data = "test"
   )
-  object@prob.cell.types <- list(
+  prob.cell.types(object) <- list(
     train = train.prob.matrix.object,
     test = test.prob.matrix.object
   )
@@ -493,7 +493,7 @@ generateBulkCellMatrix <- function(
   # first three plots
   plot.list <- lapply(plots.functions, function(f) f(df, paste(title, n.samples)))
   # final plots
-  dummy <- t(apply(prob.matrix, 1, sort, decreasing = T))
+  dummy <- t(apply(as.matrix(prob.matrix), 1, sort, decreasing = T))
   df <- reshape2::melt(dummy)
   colnames(df) <- c("Sample", "nMix", "Prob")
   df$nMix <- factor(df$nMix)
@@ -524,7 +524,11 @@ setCount <- function(x, setList, sn, n.cells) {
   return(list(vec, sel))
 }
 
-.setHundredLimit <- function(x, index.ex = NULL, limit = 100) {
+.setHundredLimit <- function(
+  x, 
+  index.ex = NULL, 
+  limit = 100
+) {
   if (sum(x) > limit) {
     while (TRUE) {
       if (is.null(index.ex)) {
@@ -618,9 +622,11 @@ setCount <- function(x, setList, sn, n.cells) {
   while (dim(prob.matrix)[1] <= n) {
     prob.matrix <- rbind(prob.matrix, sampling(prob.list = prob.list))
   }
-  prob.matrix <- prob.matrix[-1, ]
+  prob.matrix <- prob.matrix[-1, , drop = FALSE]
   prob.matrix <- round(prob.matrix * 100 / rowSums(prob.matrix))
-  prob.matrix <- t(apply(X = prob.matrix, MARGIN = 1, FUN = .setHundredLimit, index.ex))
+  prob.matrix <- t(apply(
+    X = prob.matrix, MARGIN = 1, FUN = .setHundredLimit, index.ex
+  ))
   return(prob.matrix)
 }
 
@@ -690,7 +696,8 @@ setCount <- function(x, setList, sn, n.cells) {
   probs <- matrix(unlist(probs), nrow = n, byrow = T)
   colnames(probs) <- colnames(prob.matrix)
   probs <- round(probs * 100 / rowSums(probs))
-  probs <- t(apply(X = probs, MARGIN = 1, FUN = .setHundredLimit, index.ex))
+  if (any(rowSums(probs) != 100))
+    probs <- t(apply(X = probs, MARGIN = 1, FUN = .setHundredLimit, index.ex))
   return(probs)
 }
 
@@ -729,14 +736,17 @@ setCount <- function(x, setList, sn, n.cells) {
   probs <- matrix(unlist(probs), nrow = n, byrow = T)
   colnames(probs) <- colnames(prob.matrix)
   probs <- round(probs * 100 / rowSums(probs))
-  probs <- t(apply(X = probs, MARGIN = 1,
-                   FUN = function(x) {
-                     .adjustHundred(
-                       x = x,
-                       prob.list = prob.list,
-                       index.ex = index.ex
-                     )
-                   }))
+  if (any(rowSums(probs) != 100)) {
+    probs <- t(apply(X = probs, MARGIN = 1,
+                     FUN = function(x) {
+                       .adjustHundred(
+                         x = x,
+                         prob.list = prob.list,
+                         index.ex = index.ex
+                       )
+                     }))  
+  }
+  
   return(probs)
 }
 
@@ -772,14 +782,16 @@ setCount <- function(x, setList, sn, n.cells) {
   probs <- matrix(unlist(probs), nrow = n, byrow = T)
   colnames(probs) <- colnames(prob.matrix)
   probs <- round(probs * 100 / rowSums(probs))
-  probs <- t(apply(X = probs, MARGIN = 1,
-                   FUN = function(x) {
-                     .adjustHundred(
-                       x = x,
-                       prob.list = prob.list,
-                       index.ex = index.ex
-                     )
-                   }))
+  if (any(rowSums(probs) != 100)) {
+    probs <- t(apply(X = probs, MARGIN = 1,
+                     FUN = function(x) {
+                       .adjustHundred(
+                         x = x,
+                         prob.list = prob.list,
+                         index.ex = index.ex
+                       )
+                     }))
+  }
   return(probs)
 }
 
@@ -805,10 +817,12 @@ setCount <- function(x, setList, sn, n.cells) {
     probs <- gtools::rdirichlet(n, rep(1, n.cell.types))
   }
   probs <- round(probs * 100)
-  probs <- t(apply(X = probs, MARGIN = 1,
-                   FUN = function(x) .setHundredLimit(
-                     x = x, index.ex = index.ex
-                   )))
+  if (any(rowSums(probs) != 100)) {
+    probs <- t(apply(X = probs, MARGIN = 1,
+                     FUN = function(x) .setHundredLimit(
+                       x = x, index.ex = index.ex
+                     )))  
+  }
   colnames(probs) <- colnames(prob.matrix)
   return(probs)
 }
