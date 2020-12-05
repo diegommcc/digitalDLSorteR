@@ -148,14 +148,14 @@ setMethod(f = "show",
 #'   training.
 #' @slot training.history List with the evolution of the selected metrics during
 #'   training.
-#' @slot eval.stats.model Performance of the model on test data.
-#' @slot predict.results Deconvolution results matrix of test data. Columns are
+#' @slot test.metrics Performance of the model on test data.
+#' @slot test.pred Deconvolution results matrix of test data. Columns are
 #'   cell types, rows are samples and each entry is the proportion of this cell
 #'   type on this sample.
 #' @slot cell.types Vector with the cell types to deconvolute.
 #' @slot features Vector with features used during training. These features will
 #'   be used for the following predictions.
-#' @slot eval.stats.samples Performance of the model on each sample of test data
+#' @slot test.deconv.metrics Performance of the model on each sample of test data
 #'   in comparison with the known cell proportions.
 #'
 #' @export DigitalDLSorterDNN
@@ -165,11 +165,11 @@ DigitalDLSorterDNN <- setClass(
   slots = c(
     model = "KerasOrList",
     training.history = "keras_training_history",
-    eval.stats.model = "ListOrNULL",
-    predict.results = "MatrixOrNULL",
+    test.metrics = "ListOrNULL",
+    test.pred = "MatrixOrNULL",
     cell.types = "character",
     features = "character",
-    eval.stats.samples = "ListOrNULL"
+    test.deconv.metrics = "ListOrNULL"
   )
 )
 
@@ -179,49 +179,51 @@ setMethod(
     .Object,
     model = NULL,
     training.history = NULL,
-    eval.stats.model = NULL,
-    predict.results = NULL,
+    test.metrics = NULL,
+    test.pred = NULL,
     cell.types = NULL,
     features = NULL,
-    eval.stats.samples = NULL
+    test.deconv.metrics = NULL
   ) {
     .Object@model <- model
     .Object@training.history <- training.history
-    .Object@eval.stats.model <- eval.stats.model
-    .Object@predict.results <- predict.results
+    .Object@test.metrics <- test.metrics
+    .Object@test.pred <- test.pred
     .Object@cell.types <- cell.types
     .Object@features <- features
-    .Object@eval.stats.samples <- eval.stats.samples
+    .Object@test.deconv.metrics <- test.deconv.metrics
     return(.Object)
   }
 )
 
-setMethod(f = "show",
-          signature = "DigitalDLSorterDNN",
-          definition = function(object) {
-            # cat("An object of class", class(object), "\n")
-            if (is.null(object@model)) {
-              cat("DigitalDLSorterDNN object empty")
-            } else {
-              cat(paste("Trained model:", object@training.history$params$epochs,
-                        "epochs\n"))
-              train.metrics <- lapply(object@training.history$metrics,
-                                      function(x) x[length(x)])
-              cat("  Training metrics (last epoch):\n")
-              cat(paste0("    ", names(train.metrics), ": ",
-                         lapply(train.metrics, round, 4),
-                         collapse = "\n"))
-              cat("\n  Evaluation metrics on test data:\n")
-              cat(paste0("    ", names(object@eval.stats.model), ": ",
-                         lapply(object@eval.stats.model, round, 4),
-                         collapse = "\n"))
-              if (!is.null(eval.stats.samples(object)) ||
-                  length(eval.stats.samples(object)) > 0) {
-                cat("\n  Performance evaluation over each sample: ")
-                cat(paste(names(eval.stats.samples(object)[[2]]), collapse = " "))
-              }
-            }
-          })
+setMethod(
+  f = "show",
+  signature = "DigitalDLSorterDNN",
+  definition = function(object) {
+    # cat("An object of class", class(object), "\n")
+    if (is.null(object@model)) {
+      cat("DigitalDLSorterDNN object empty")
+    } else {
+      cat(paste("Trained model:", object@training.history$params$epochs,
+                "epochs\n"))
+      train.metrics <- lapply(object@training.history$metrics,
+                              function(x) x[length(x)])
+      cat("  Training metrics (last epoch):\n")
+      cat(paste0("    ", names(train.metrics), ": ",
+                 lapply(train.metrics, round, 4),
+                 collapse = "\n"))
+      cat("\n  Evaluation metrics on test data:\n")
+      cat(paste0("    ", names(object@test.metrics), ": ",
+                 lapply(object@test.metrics, round, 4),
+                 collapse = "\n"))
+      if (!is.null(test.deconv.metrics(object)) ||
+          length(test.deconv.metrics(object)) > 0) {
+        cat("\n  Performance evaluation over each sample: ")
+        cat(paste(names(test.deconv.metrics(object)[[2]]), collapse = " "))
+      }
+    }
+  }
+)
 
 setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 
@@ -263,17 +265,10 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #'   composition  matrix built for the simulation of bulk RNA-seq profiles. The
 #'   entries determine the proportion of single-cell types that will constitute
 #'   the simulated bulk samples.
-#' @slot bulk.sim A list with two elements: train and test simulated bulk
+#' @slot bulk.simul A list with two elements: train and test simulated bulk
 #'   RNA-seq. This data are stored as a \code{SummarizedExperiment} object. We
 #'   recommend the use of HDF5 file as a back-end due to the large amount of
 #'   memory that they occupy.
-#' @slot final.data The final data that will be used for training and testing
-#'   the Deep Neural Network. As in the previous slot, it is a list with two
-#'   items, train and test. With respect to train counts matrix, it can be the
-#'   train bulk RNA-seq samples, the train scRNA-seq samples or a combination of
-#'   both. In the case of test counts matrix, RNA-seq data from bulk and
-#'   single-cell will be combined. Moreover, data is scaled and shuffled for
-#'   training.
 #' @slot trained.model \code{\link{DigitalDLSorterDNN}} object with the trained
 #'   model, different metrics obtained during the training and evaluation
 #'   metrics from the application of the model on test data. After executing
@@ -306,8 +301,7 @@ DigitalDLSorter <- setClass(
     zinb.params = "ZINBParamsOrNULL",
     single.cell.simul = "SingleCellExperimentOrNULL",
     prob.cell.types = "ListOrNULL",
-    bulk.sim = "ListOrNULL",
-    final.data = "ListOrNULL",
+    bulk.simul = "ListOrNULL",
     trained.model = "DigitalDLSorterDNNOrNULL",
     deconv.data = "ListOrNULL",
     deconv.results = "ListOrNULL",
@@ -325,8 +319,7 @@ setMethod(
     zinb.params = NULL,
     single.cell.simul = NULL,
     prob.cell.types = NULL,
-    bulk.sim = NULL,
-    final.data = NULL,
+    bulk.simul = NULL,
     trained.model = NULL,
     deconv.data = NULL,
     deconv.results = NULL,
@@ -337,8 +330,7 @@ setMethod(
     .Object@zinb.params <- zinb.params
     .Object@single.cell.simul <- single.cell.simul
     .Object@prob.cell.types <- prob.cell.types
-    .Object@bulk.sim <- bulk.sim
-    .Object@final.data <- final.data
+    .Object@bulk.simul <- bulk.simul
     .Object@trained.model <- trained.model
     .Object@deconv.data <- deconv.data
     .Object@deconv.results <- deconv.results
@@ -401,7 +393,7 @@ setMethod(
 .allSlotsNull <- function(object) {
   list.slots <- list(
     "single.cell.real", "zinb.params", "single.cell.simul", "prob.cell.types",
-    "bulk.sim", "final.data", "trained.model", "deconv.data", "deconv.results"
+    "bulk.simul", "trained.model", "deconv.data", "deconv.results"
   )
   res <- all(unlist(lapply(list.slots, function(x) is.null(do.call("@", list(object, x))))))
   if (res) return(TRUE)
@@ -442,21 +434,12 @@ setMethod(f = "show",
                 }
               })
             }
-            if (!is.null(object@bulk.sim)) {
+            if (!is.null(object@bulk.simul)) {
               cat("Simulated bulk samples:\n")
               lapply(X = c("train", "test"), FUN = function(x) {
-                if (x %in% names(object@bulk.sim)) {
+                if (x %in% names(object@bulk.simul)) {
                   cat(paste(" ", x, "bulk samples:\n"))
-                  .bulkShow(object@bulk.sim[[x]])
-                }
-              })
-            }
-            if (!is.null(object@final.data)) {
-              cat("Final data samples:\n")
-              lapply(X = c("train", "test"), FUN = function(x) {
-                if (x %in% names(object@final.data)) {
-                  cat(paste(" ", x, "data samples:\n"))
-                  .finalShow(object@final.data[[x]])
+                  .bulkShow(object@bulk.simul[[x]])
                 }
               })
             }

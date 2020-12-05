@@ -240,58 +240,58 @@ setMethod(f = "training.history<-",
             return(object)
           })
 
-## eval.stats.model
+## test.metrics
 
-#' @title Get and set \code{eval.stats.model} slot in a
+#' @title Get and set \code{test.metrics} slot in a
 #'   \code{DigitalDLSorterDNN} object.
 #'
 #' @param object A \code{DigitalDLSorterDNN} object.
 #'
-#' @rdname eval.stats.model
-#' @export eval.stats.model
+#' @rdname test.metrics
+#' @export test.metrics
 #'
-setGeneric("eval.stats.model", function(object) standardGeneric("eval.stats.model"))
-setMethod(f = "eval.stats.model",
+setGeneric("test.metrics", function(object) standardGeneric("test.metrics"))
+setMethod(f = "test.metrics",
           signature = "DigitalDLSorterDNN",
-          definition = function(object) object@eval.stats.model)
+          definition = function(object) object@test.metrics)
 
 #' @param value A \code{list} object with the resulting metrics after prediction
 #'   on test data with DNN model.
-#' @rdname eval.stats.model
-#' @export eval.stats.model<-
+#' @rdname test.metrics
+#' @export test.metrics<-
 #'
-setGeneric("eval.stats.model<-", function(object, value) standardGeneric("eval.stats.model<-"))
-setMethod(f = "eval.stats.model<-",
+setGeneric("test.metrics<-", function(object, value) standardGeneric("test.metrics<-"))
+setMethod(f = "test.metrics<-",
           signature = "DigitalDLSorterDNN",
           definition = function(object, value) {
-            object@eval.stats.model <- value
+            object@test.metrics <- value
             return(object)
           })
 
-## predict.results
+## test.pred
 
-#' @title Get and set \code{predict.results} slot in a \code{DigitalDLSorterDNN}
+#' @title Get and set \code{test.pred} slot in a \code{DigitalDLSorterDNN}
 #'   object.
 #'
 #' @param object A \code{DigitalDLSorterDNN} object.
 #'
-#' @rdname predict.results
-#' @export predict.results
+#' @rdname test.pred
+#' @export test.pred
 #'
-setGeneric("predict.results", function(object) standardGeneric("predict.results"))
-setMethod(f = "predict.results",
+setGeneric("test.pred", function(object) standardGeneric("test.pred"))
+setMethod(f = "test.pred",
           signature = "DigitalDLSorterDNN",
-          definition = function(object) object@predict.results)
+          definition = function(object) object@test.pred)
 
 #' @param value A \code{matrix} object with prediction results on test data.
-#' @rdname predict.results
-#' @export predict.results<-
+#' @rdname test.pred
+#' @export test.pred<-
 #'
-setGeneric("predict.results<-", function(object, value) standardGeneric("predict.results<-"))
-setMethod(f = "predict.results<-",
+setGeneric("test.pred<-", function(object, value) standardGeneric("test.pred<-"))
+setMethod(f = "test.pred<-",
           signature = "DigitalDLSorterDNN",
           definition = function(object, value) {
-            object@predict.results <- value
+            object@test.pred <- value
             return(object)
           })
 
@@ -349,51 +349,51 @@ setMethod(f = "features<-",
             return(object)
           })
 
-## eval.stats.samples
+## test.deconv.metrics
 
-#' @title Get and set \code{eval.stats.samples} slot in a
+#' @title Get and set \code{test.deconv.metrics} slot in a
 #'   \code{DigitalDLSorterDNN} object.
 #'
 #' @param object A \code{DigitalDLSorterDNN} object.
 #' @param metrics Metrics to show (\code{'All'} by default)
 #'
-#' @rdname eval.stats.samples
-#' @export eval.stats.samples
+#' @rdname test.deconv.metrics
+#' @export test.deconv.metrics
 #'
 setGeneric(
-  name = "eval.stats.samples",
-  def = function(object, metrics = "All") standardGeneric("eval.stats.samples")
+  name = "test.deconv.metrics",
+  def = function(object, metrics = "All") standardGeneric("test.deconv.metrics")
 )
-setMethod(f = "eval.stats.samples",
+setMethod(f = "test.deconv.metrics",
           signature = "DigitalDLSorterDNN",
           definition = function(object, metrics) {
-            if (metrics == "All") object@eval.stats.samples
+            if (metrics == "All") object@test.deconv.metrics
             else {
-              if (!all(metrics %in% names(object@eval.stats.samples)))
+              if (!all(metrics %in% names(object@test.deconv.metrics)))
                 stop("Metric provided is not present in DigitalDLSorterDNN object")
-              return(object@eval.stats.samples[[metrics]])
+              return(object@test.deconv.metrics[[metrics]])
             }
           })
 
 #' @param value A \code{list} with evaluation metrics used for evaluating the
 #' performance of the model over each sample from test data.
-#' @rdname eval.stats.samples
-#' @export eval.stats.samples<-
+#' @rdname test.deconv.metrics
+#' @export test.deconv.metrics<-
 #'
 setGeneric(
-  name = "eval.stats.samples<-",
+  name = "test.deconv.metrics<-",
   def = function(object, value, metrics = "All") {
-    standardGeneric("eval.stats.samples<-")
+    standardGeneric("test.deconv.metrics<-")
   }
 )
-setMethod(f = "eval.stats.samples<-",
+setMethod(f = "test.deconv.metrics<-",
           signature = "DigitalDLSorterDNN",
           definition = function(object, value, metrics) {
-            if (metrics == "All") object@eval.stats.samples <- value
+            if (metrics == "All") object@test.deconv.metrics <- value
             else {
-              if (!all(metrics %in% names(object@eval.stats.samples)))
+              if (!all(metrics %in% names(object@test.deconv.metrics)))
                 stop("Metric provided is not present in DigitalDLSorterDNN object")
-              object@eval.stats.samples[[metrics]] <- value
+              object@test.deconv.metrics[[metrics]] <- value
             }
             return(object)
           })
@@ -525,81 +525,42 @@ setMethod(f = "prob.cell.types<-",
             return(object)
           })
 
-## bulk.sim
+## bulk.simul
 
-#' @title Get and set \code{bulk.sim} slot in a \code{DigitalDLSorter}
+#' @title Get and set \code{bulk.simul} slot in a \code{DigitalDLSorter}
 #' object.
 #'
 #' @param object A \code{DigitalDLSorter} object.
 #' @param type.data Element of the list. Can be 'train', 'test' or 'both' (the
 #' last by default).
 #'
-#' @rdname bulk.sim
-#' @export bulk.sim
+#' @rdname bulk.simul
+#' @export bulk.simul
 #'
-setGeneric("bulk.sim", function(object, type.data = "both") standardGeneric("bulk.sim"))
-setMethod(f = "bulk.sim",
+setGeneric("bulk.simul", function(object, type.data = "both") standardGeneric("bulk.simul"))
+setMethod(f = "bulk.simul",
           signature = "DigitalDLSorter",
           definition = function(object, type.data) {
-            if (type.data == "train") object@bulk.sim[["train"]]
-            else if (type.data == "test") object@bulk.sim[["test"]]
-            else if (type.data == "both") object@bulk.sim
-            else stop(paste("No", type.data, "in bulk.sim slot"))
+            if (type.data == "train") object@bulk.simul[["train"]]
+            else if (type.data == "test") object@bulk.simul[["test"]]
+            else if (type.data == "both") object@bulk.simul
+            else stop(paste("No", type.data, "in bulk.simul slot"))
           })
 
 #' @param value A \code{list} with two elements, train and test, each one being
 #'   a \code{SummarizedExperiment} object with simulated bulk RNA-Seq samples.
 #'
-#' @rdname bulk.sim
-#' @export bulk.sim<-
+#' @rdname bulk.simul
+#' @export bulk.simul<-
 #'
-setGeneric("bulk.sim<-", function(object, value, type.data = "both") standardGeneric("bulk.sim<-"))
-setMethod(f = "bulk.sim<-",
+setGeneric("bulk.simul<-", function(object, value, type.data = "both") standardGeneric("bulk.simul<-"))
+setMethod(f = "bulk.simul<-",
           signature = "DigitalDLSorter",
           definition = function(object, value, type.data) {
-            if (type.data == "train") object@bulk.sim[["train"]] <- value
-            else if (type.data == "test") object@bulk.sim[["test"]] <- value
-            else if (type.data == "both") object@bulk.sim <- value
-            else stop(paste("No", type.data, "in bulk.sim slot"))
-            return(object)
-          })
-
-## final.data
-
-#' @title Get and set \code{final.data} slot in a \code{DigitalDLSorter}
-#' object.
-#'
-#' @param object A \code{DigitalDLSorter} object.
-#' @param type.data Element of the list. Can be 'train', 'test' or 'both' (the
-#' last by default).
-#'
-#' @rdname final.data
-#' @export final.data
-#'
-setGeneric("final.data", function(object, type.data = "both") standardGeneric("final.data"))
-setMethod(f = "final.data",
-          signature = "DigitalDLSorter",
-          definition = function(object, type.data) {
-            if (type.data == "train") object@final.data[["train"]]
-            else if (type.data == "test") object@final.data[["test"]]
-            else if (type.data == "both") object@final.data
-            else stop(paste("No", type.data, "in bulk.sim slot"))
-          })
-
-#' @param value A \code{list} with two elements, train and test, each one being
-#'   a \code{SummarizedExperiment} object with simulated bulk RNA-Seq samples
-#'   prepared for training. This samples have been normalized and shuffled.
-#' @rdname final.data
-#' @export final.data<-
-#'
-setGeneric("final.data<-", function(object, value, type.data = "both") standardGeneric("final.data<-"))
-setMethod(f = "final.data<-",
-          signature = "DigitalDLSorter",
-          definition = function(object, value, type.data) {
-            if (type.data == "train") object@final.data[["train"]] <- value
-            else if (type.data == "test") object@final.data[["test"]] <- value
-            else if (type.data == "both") object@final.data <- value
-            else stop(paste("No", type.data, "in bulk.sim slot"))
+            if (type.data == "train") object@bulk.simul[["train"]] <- value
+            else if (type.data == "test") object@bulk.simul[["test"]] <- value
+            else if (type.data == "both") object@bulk.simul <- value
+            else stop(paste("No", type.data, "in bulk.simul slot"))
             return(object)
           })
 

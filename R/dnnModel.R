@@ -71,20 +71,27 @@ NULL
 #'
 trainDigitalDLSorterModel <- function(
   object,
+  combine = "both",
   batch.size = 128,
   num.epochs = 20,
+  num.hidden.layers = 2,
+  num.units = c(200, 200),
+  fun.activation = "relu",
+  dropout.rate = 0.25,
   val = FALSE,
   freq.val = 0.1,
   loss = "kullback_leibler_divergence",
   metrics = c("accuracy", "mean_absolute_error",
               "categorical_accuracy"),
+  custom.model = NULL,
+  shuffle = FALSE,
+  on.the.fly = TRUE,
   view.metrics.plot = TRUE,
+  threads = threads,
   verbose = TRUE
 ) {
   if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
-  } else if (is.null(final.data(object))) {
-    stop("'final.data' slot is empty")
   } else if (is.null(prob.cell.types(object))) {
     stop("prob.cell.types slot is empty")
   } else if (num.epochs <= 1) {
@@ -98,45 +105,75 @@ trainDigitalDLSorterModel <- function(
             " will be overwritten\n",
             call. = FALSE, immediate. = TRUE)
   }
-  if (view.metrics.plot) {
-    view.plot <- "auto"
-  } else {
-    view.plot <- 0
-  }
-  if (verbose) {
-    verbose.model <- 1
-  } else {
-    verbose.model <- 0
-  }
+  # plots in RStudio during training --> not work in terminal
+  if (view.metrics.plot) view.plot <- "auto"
+  else view.plot <- 0
+  
+  if (verbose) verbose.model <- 1
+  else verbose.model <- 0
+  
   # number of samples
-  n.train <- nrow(object@final.data[["train"]])
-  n.test <- nrow(object@final.data[["test"]])
-
-  # set the model. may be we can provide a interface to set a custom model
-  model <- keras_model_sequential(name = "DigitalDLSorter") %>%
-    layer_dense(units = 200, input_shape = c(ncol(object@final.data$train)),
-                name = "Dense1") %>%
-    layer_batch_normalization(name = "BatchNormalization1") %>%
-    layer_activation(activation = "relu", name = "ActivationReLu1") %>%
-    layer_dropout(rate = 0.25, name = "Dropout1") %>%
-    layer_dense(units = 200, name = "Dense2") %>%
-    layer_batch_normalization(name = "BatchNormalization2") %>%
-    layer_activation(activation = "relu", name = "ActivationReLu2") %>%
-    layer_dropout(rate = 0.25, name = "Dropout2") %>%
-    layer_dense(units = ncol(object@final.data$train@metadata$prob.matrix),
-                name = "Dense3") %>%
-    layer_batch_normalization(name = "BatchNormalization3") %>%
-    layer_activation(activation = "softmax", name = "ActivationSoftmax")
-
-  if (verbose) {
-    summary(model)
+  prob.matrix.train <- .targetForDNN(
+    object = object, combine = combine, 
+    shuffle = TRUE, type.data = "train", 
+    verbose = verbose
+  )
+  prob.matrix.test <- .targetForDNN(
+    object = object, combine = "both", 
+    shuffle = FALSE, type.data = "test", 
+    verbose = verbose
+  )
+  n.train <- nrow(prob.matrix.train)
+  n.test <- nrow(prob.matrix.test)
+  
+  if (is.null(custom.model)) {
+    if (num.hidden.layers != length(num.units)) {
+      stop("The number of hidden layers must be equal to the length of ", 
+           "num.units (number of neurons per layer)")
+    }
+    ## check if any argument not provided
+    model <- keras_model_sequential(name = "DigitalDLSorter")
+    # arbitrary number of hidden layers and neurons
+    for (i in seq(num.hidden.layers)) {
+      if (i == 1) {
+        model <- model %>% layer_dense(
+          units = num.units[i], 
+          input_shape = nrow(single.cell.real(object)),
+          name = paste0("Dense", i)
+        )
+      } else {
+        model <- model %>% layer_dense(
+          units = num.units[i], 
+          name = paste0("Dense", i)
+        )
+      }
+      model <- model %>% 
+        layer_batch_normalization(name = paste0("BatchNormalization", i)) %>%
+        layer_activation(activation = fun.activation, 
+                         name = paste0("ActivationReLu", i)) %>%
+        layer_dropout(rate = dropout.rate, name = paste0("Dropout", i))
+    }
+    # final layer --> compression and proportions
+    model <- model %>% layer_dense(
+      units = ncol(prob.cell.types(object, "train") %>% prob.matrix()),
+      name = paste0("Dense", i + 1)
+    ) %>% layer_batch_normalization(
+      name = paste0("BatchNormalization", i + 1)
+    ) %>% layer_activation(activation = "softmax", name = "ActivationSoftmax")
+  } else {
+    ## code checking if model is correct
   }
+  if (verbose) summary(model)
   # allow set optimizer?
   model %>% compile(
     loss = loss,
     optimizer = optimizer_adam(),
     metrics = metrics
   )
+  # pattern for set simulated and real cells
+  pattern <- paste0(colnames(prob.cell.types(object, "train") %>% 
+                               prob.matrix()), "_S", 
+                    collapse = "|")
   ## training model
   if (val) {
     if (freq.val < 0.1 || freq.val > 0.5) {
@@ -149,61 +186,85 @@ trainDigitalDLSorterModel <- function(
                     "samples and validating with",
                     n.val, "samples:\n"))
     }
-    train.generator <- .trainGenerator(
-      object = object,
+    gen.train <- .trainGeneratorFly(
+      object = object, 
+      prob.matrix = prob.matrix.train,
       type.data = "train",
       batch.size = batch.size,
-      shuffle = TRUE,
+      combine = combine,
+      shuffle = shuffle,
+      pattern = pattern,
       min.index = n.val,
-      max.index = n.train
+      max.index = n.train,
+      threads = threads,
+      verbose = verbose
     )
-    val.generator <- .trainGenerator(
-      object = object,
+    gen.val <- .trainGeneratorFly(
+      object = object, 
+      prob.matrix = prob.matrix.train,
       type.data = "train",
       batch.size = batch.size,
+      combine = combine,
       shuffle = FALSE,
+      pattern = pattern,
       min.index = 0,
-      max.index = n.val
+      max.index = n.val,
+      threads = threads,
+      verbose = verbose
     )
     history <- model %>% fit_generator(
-      generator = train.generator,
+      generator = gen.train,
       steps_per_epoch = ceiling((n.train - n.val) / batch.size),
       epochs = num.epochs,
-      validation_data = val.generator,
+      validation_data = gen.val,
       validation_steps = n.val / batch.size,
       verbose = verbose.model,
       view_metrics = view.plot
     )
   } else {
     # without validation subset
-    if (verbose) {
+    if (verbose) 
       message(paste("\n=== Training DNN with", n.train, "samples:\n"))
-    }
-    train.generator <- .trainGenerator(
-      object = object,
+    gen.train <- .trainGeneratorFly(
+      object = object, 
+      prob.matrix = prob.matrix.train,
       type.data = "train",
       batch.size = batch.size,
-      shuffle = TRUE
+      combine = combine,
+      shuffle = shuffle,
+      pattern = pattern,
+      min.index = NULL,
+      max.index = NULL,
+      threads = threads,
+      verbose = verbose
     )
     history <- model %>% fit_generator(
-      generator = train.generator,
+      generator = gen.train,
       steps_per_epoch = ceiling(n.train / batch.size),
       epochs = num.epochs,
       verbose = verbose.model,
       view_metrics = view.plot
     )
   }
-
+  
   if (verbose) {
     message(paste0("\n=== Evaluating DNN in test data (", n.test, " samples)"))
   }
+  
   ## evaluation of the model: set by default, no options?
-  test.generator <- .trainGenerator(object = object,
-                                    type.data = "test",
-                                    batch.size = batch.size,
-                                    shuffle = FALSE)
+  gen.test <- .predictGeneratorFly(
+    object,
+    target = TRUE,
+    prob.matrix = prob.matrix.test,
+    batch.size = batch.size,
+    pattern = pattern,
+    threads = threads,
+    verbose = verbose
+  )
+  ## necesario? quizás es preferible calcular las métricas a posteriori usando 
+  # las propias funciones de keras
   test.eval <- model %>% evaluate_generator(
-    generator = test.generator,
+    generator = gen.test,
     steps = ceiling(n.test / batch.size)
   )
   ## prediction of test samples
@@ -212,54 +273,62 @@ trainDigitalDLSorterModel <- function(
                    collapse = "\n"))
     message(paste("\n=== Generating prediction results using test data\n"))
   }
-  predict.generator <- .predictTestGenerator(
-    object = object,
-    type.data = "test",
-    batch.size = batch.size
+  gen.predict <- .predictGeneratorFly(
+    object,
+    target = FALSE,
+    prob.matrix = prob.matrix.test,
+    batch.size = batch.size,
+    pattern = pattern,
+    threads = threads,
+    verbose = verbose
   )
   predict.results <- model %>% predict_generator(
-    generator = predict.generator,
+    generator = gen.predict,
     steps = ceiling(n.test / batch.size),
     verbose = verbose.model
   )
-  rownames(predict.results) <- rowData(object@final.data[["test"]])[[1]]
-  colnames(predict.results) <- colnames(object@final.data[["test"]]@metadata[[1]])
-
+  rownames(predict.results) <- rownames(prob.matrix.test)
+  colnames(predict.results) <- colnames(prob.matrix.test)
+  
   network.object <- new(
     Class = "DigitalDLSorterDNN",
     model = model,
     training.history = history,
     eval.stats.model = test.eval,
     predict.results = predict.results,
-    cell.types = colnames(object@final.data[["train"]]@metadata[[1]]),
-    features = colData(object@final.data[["test"]])[[1]]
+    cell.types = rownames(prob.matrix.test),
+    features = rownames(single.cell.real(object))
   )
   object@trained.model <- network.object
-
+  
   message("DONE")
   return(object)
 }
 
 
 
-.trainGenerator <- function(
+## en este itero sobre prob.matrix 
+.trainGeneratorFly <- function(
   object,
+  prob.matrix,
   type.data,
   batch.size,
+  combine,
   shuffle,
-  min.index = NULL,
-  max.index = NULL
+  pattern,
+  min.index,
+  max.index,
+  threads,
+  verbose
 ) {
   if (!is.null(min.index) && !is.null(max.index)) {
-    n.samples <- length(min.index:max.index)
+    n.samples <- length(seq(min.index, max.index))
     nb <- min.index
   } else {
-    n.samples <- nrow(assay(object@final.data[[type.data]]))
+    n.samples <- nrow(prob.matrix)
     min.index <- 1
     nb <- 0
   }
-  n.features <- ncol(object@final.data[[type.data]])
-  n.classes <- ncol(object@final.data[[type.data]]@metadata$prob.matrix)
   function() {
     data.index <- seq(nb + 1, nb + batch.size)
     nb <<- nb + batch.size
@@ -271,29 +340,47 @@ trainDigitalDLSorterModel <- function(
       else nb <<- fill
     }
     if (shuffle) {
-      shuffling <- sample(1:length(data.index))
-      return(list(matrix(assay(object@final.data[[type.data]])[data.index, ],
-                         ncol = n.features, nrow = length(data.index))[shuffling, ],
-                  matrix(object@final.data[[type.data]]@metadata$prob.matrix[data.index, ],
-                         ncol = n.classes, nrow = length(data.index))[shuffling, ]))
+      shuffling <- sample(seq(length(data.index)))
+      sel.data <- prob.matrix[data.index, ]
+      counts <- .dataForDNN(
+        object = object, 
+        sel.data = sel.data, 
+        pattern = pattern,
+        type.data = type.data,
+        threads = threads
+      )
+      return(list( 
+        counts[shuffling, ],
+        sel.data[shuffling, ]
+      ))
     } else {
-      return(list(matrix(assay(object@final.data[[type.data]])[data.index, ],
-                         ncol = n.features, nrow = length(data.index)),
-                  matrix(object@final.data[[type.data]]@metadata$prob.matrix[data.index, ],
-                         ncol = n.classes, nrow = length(data.index))))
+      sel.data <- prob.matrix[data.index, ]
+      counts <- .dataForDNN(
+        object = object, 
+        sel.data = sel.data, 
+        pattern = pattern,
+        type.data = type.data,
+        threads = threads
+      )
+      return(list( 
+        counts,
+        sel.data
+      ))
     }
   }
 }
 
-.predictTestGenerator <- function(
+.predictGeneratorFly <- function(
   object,
-  type.data,
-  batch.size
+  prob.matrix,
+  target,
+  batch.size,
+  pattern,
+  threads,
+  verbose
 ) {
   nb <- 0
-  n.samples <- nrow(assay(object@final.data[[type.data]]))
-  n.features <- ncol(object@final.data[[type.data]])
-  n.classes <- ncol(object@final.data[[type.data]]@metadata$prob.matrix)
+  n.samples <- nrow(prob.matrix)
   function() {
     data.index <- seq(nb + 1, nb + batch.size)
     nb <<- nb + batch.size
@@ -301,9 +388,129 @@ trainDigitalDLSorterModel <- function(
       data.index <- data.index[data.index <= n.samples]
       nb <<- 0
     }
-    return(list(matrix(assay(object@final.data[[type.data]])[data.index, ],
-                       ncol = n.features, nrow = length(data.index))))
+    sel.data <- prob.matrix[data.index, ]
+    counts <- .dataForDNN(
+      object = object, 
+      sel.data = sel.data, 
+      pattern = pattern,
+      type.data = "test",
+      threads = threads
+    )
+    if (target) return(list(counts, sel.data))
+    else return(list(counts))
   }
+}
+
+.dataForDNN <- function(
+  object,
+  sel.data,
+  pattern,
+  type.data,
+  threads
+) {
+  bulk.data <- grepl(pattern = "Bulk_", rownames(sel.data))
+  if (any(bulk.data)) {
+    sel.bulk.cells <- prob.cell.types(object, type.data)@cell.names[rownames(sel.data)[bulk.data], ]
+    bulk.samples <- apply(
+      X = sel.bulk.cells,
+      MARGIN = 1,
+      FUN = .setBulk,
+      object = object,
+      pattern = pattern
+    )
+  } 
+  if (any(!bulk.data))  {
+    sel.cells <- rownames(sel.data)[!bulk.data]
+    sim.cells <- grep(pattern = pattern, sel.cells, value = TRUE)
+    real.cells <- grep(pattern = pattern, sel.cells, value = TRUE, invert = TRUE)
+    cell.samples <- mapply(FUN = function(x, y) {
+      if (!is.null(x) && y == 1) {
+        return(as.matrix(assay(single.cell.simul(object))[, x]))
+      } else if (!is.null(x) && y == 2) {
+        return(as.matrix(assay(single.cell.real(object))[, x]))
+      }
+    }, x = list(sim.cells, real.cells), y = c(1, 2))
+    cell.samples <- .mergeMatrices(x = cell.samples[[2]], y = cell.samples[[1]])
+  }
+  # return final matrix counts
+  if (any(bulk.data) && any(!bulk.data)) 
+    counts <- cbind(bulk.samples, cell.samples)[, rownames(sel.data)]
+  else if (any(bulk.data)) 
+    counts <- bulk.samples[, rownames(sel.data)]
+  else if (any(!bulk.data)) 
+    counts <- cell.samples[, rownames(sel.data)]
+  # normalize data for training and testing
+  counts <- edgeR::cpm.default(y = counts, log = TRUE, prior.count = 1)
+  return(t(scale(counts)))
+}
+
+.targetForDNN <- function(
+  object, 
+  combine,
+  type.data,
+  shuffle,
+  verbose
+) {
+  if (combine == "both") {
+    if (verbose)
+      message("    Combining single-cell profiles and simulated bulk samples\n")
+    # include probabilities of single-cell profiles: 1 for X cell type
+    tpsm <- matrix(
+      unlist(sapply(
+        X = names(prob.cell.types(object, type.data) %>% set.list()),
+        FUN = function (x, l) {
+          v <- rep(0, length(l))
+          names(v) <- names(l)
+          v[x] <- 100
+          return(rep(v, length(l[[x]])))
+        }, 
+        l = prob.cell.types(object, type.data) %>% set.list()
+      )), 
+      ncol = length(prob.cell.types(object, type.data) %>% set.list()), 
+      byrow = T,
+      dimnames = list(unlist(prob.cell.types(object, type.data) %>% set.list()),
+                      names(prob.cell.types(object, type.data) %>% set.list()))
+    )
+    tpsm <- tpsm[, colnames(prob.cell.types(object, type.data) %>% prob.matrix())]
+    probs.matrix <- rbind(
+      tpsm, prob.cell.types(object, type.data) %>% prob.matrix()
+    ) / 100
+    rownames(probs.matrix) <- c(
+      rownames(tpsm), 
+      rownames(prob.cell.types(object, type.data) %>% prob.matrix())
+    )
+  } else if (combine == "bulk") {
+    if (verbose) message("    Using only simulated bulk samples\n")
+    probs.matrix <- prob.cell.types(object, type.data) %>% prob.matrix() / 100
+  } else if (combine == "single-cell") {
+    if (verbose) message("    Using only single-cell samples\n")
+    probs.matrix <- matrix(
+      unlist(sapply(
+        X = names(prob.cell.types(object, type.data) %>% set.list()),
+        FUN = function (x, l) {
+          v <- rep(0, length(l))
+          names(v) <- names(l)
+          v[x] <- 100
+          return(rep(v, length(l[[x]])))
+        }, l = prob.cell.types(object, type.data) %>% set.list()
+      )), ncol = length(prob.cell.types(object, type.data) %>% set.list()), 
+      byrow = T,
+      dimnames = list(unlist(prob.cell.types(object, type.data) %>% set.list()),
+                      names(prob.cell.types(object, type.data) %>% set.list()))
+    )
+    probs.matrix <- probs.matrix[, colnames(prob.cell.types(object, type.data) %>% prob.matrix())]
+  }
+  if (shuffle) 
+    return(probs.matrix[sample(nrow(probs.matrix)), ])
+  else
+    return(probs.matrix)
+}
+
+.mergeMatrices <- function(x, y) {
+  genes.out <- setdiff(rownames(x), rownames(y))
+  zero.genes <- matrix(0, nrow = length(genes.out), ncol = ncol(y), 
+                       dimnames = list(genes.out, NULL))
+  return(cbind(x, rbind(y, zero.genes)[rownames(x), ]))
 }
 
 

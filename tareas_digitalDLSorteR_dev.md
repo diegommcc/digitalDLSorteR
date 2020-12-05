@@ -30,7 +30,7 @@
     * <https://support.bioconductor.org/p/69373/>: explican cómo añadir filas a un dataset en un fichero HDF5.
     * En el caso de implementarlo en C++ (no merece la pena), hay gente con el mismo problema: <https://stackoverflow.com/questions/15379399/writing-appending-arrays-of-float-to-the-only-dataset-in-hdf5-file-in-c>, <https://forum.hdfgroup.org/t/c-interface-append-data-to-an-existing-file/4474>.
 
-## Función `generateBulkCellMatrix` (cambiar nombre)
+## Función `generateBulkCellMatrix` (cambiar nombre) --> simulBulkSamples
 
 Modificaciones: 
 
@@ -46,7 +46,57 @@ Cosas a tener en cuenta:
 * La idea es que los generadores llamen a las funciones necesarias para simular las muestras _bulk_.
 * Hacer shuffling sobre el nombre de las muestras en lugar de usar la matriz.
 * Permitir modificar la arquitectura de la red: permitir modificar el número de capas y el número de neuronas mediante los argumentos y permitir añadir un modelo compilado con la arquitectura deseada (siempre y cuando sea una red neuronal completamente conectada).
+* Probar diferentes versiones para llevar a cabo la operación de rowSums. Algunas ideas usando `dplyr` o `data.table`: <https://stackoverflow.com/questions/15905257/getting-rowsums-in-a-data-table-in-r>, <http://brooksandrew.github.io/simpleblog/articles/advanced-data-table/>.
+
+
+**Novedades**
+
+Está implementado. Las siguientes cosas que hay que implementar son:
+
+* Probar un apply más rápido para acelerar el proceso (o incluso implementarlo en C++, igual es algo que debemos hacer).
+* Hacer una función que permita mantener las muestras bulk en ficheros.
+* Probar otras arquitecturas y probar meter un modelo keras ya hecho.
+* Hay que modificar los slots de la clase para añadir las frecuencias target: dado que lo haces on the fly, necesitas hacerlo en algún momento.
+* Quitar el cálculo de las métricas por tiempo e intentar hacerlo a mano o mirar alguna alternativa que dé Keras teniendo las matrices. Si no, pues nada.
+
+**Importante**
+
+Las métricas de evaluación se pueden calcular a mano para reducir los tiempos de ejecución en vez de hacerlo dos veces. Mirar a ver si renta, porque veo varios inconvenientes respecto a manejar cómo coger la función correcta cuando el usuario mete las métricas de evaluación en el argumento `metrics`.
+
+## Función `simulBulkProfiles`
+
+* Utilizar la misma estructura que a la hora de simular los perfiles single cell: dar la opción de hacerlo en memoria y mantenerlo en memoria, hacerlo en memoria y pasarlo a un fichero HDF5 y hacerlo por bloques en un fichero HDF5. 
+* Basta con utilizar la función `setBulk` según convenga: o por chunks o sin ellos. Dado que voy a hacer el shuffling antes de generar las muestras independientemente de cómo se vayan a construir, el slot `bulk.simul` debería contener el orden de éstos (al menos en el entrenamiento). Cuando se hace _on the fly_ realmente da lo mismo, porque esas muestras no las va a volver a ver, solo se guarda el de test y no hace falta porque no se hace shuffling en el test.
+* Habrá que construir versiones nuevas de los generadores para entrenar a la red neuronal o modificar los ya hechos. Creo que puede rentar modificarlos, únicamente bastaría con una sentencia `if` con un parámetro indicando si construir las muestras correspondientes a los perfiles de la variable `sel.data` o cogerlas del slot correspondiente. El tema de pillar los perfiles single-cell de los slot correspondientes ya está implementado correctamente.
+
+**Importante**
+
+Dado que solo voy a implementar la posibilidad de generar las matrices _bulk_ sin la normalización-transposición antes de entrenar a la red neuronal, sería conveniente que dichos pasos se hagan de forma independiente en los generadores de matrices. De esta forma, al ser tareas independientes y hacerse de forma modular, queda mejor.
+
+**Problema**
+
+* Como me temía, el hecho de tener las células simuladas en disco ralentiza enormemente el proceso hasta el punto de tardar para 500 muestras unos 17 minutos. Voy a utilizar algunos de los parámetros del paquete `rhdf5` para intentar acelerar el proceso, pero no sé hasta qué punto funcionará.
+* Optimizando el argumento `chunk`, para 500 muestras pasamos de 17 minutos a 11. El siguiente paso va a ser ordenar la forma de acceder.
+* Ordenando tampoco mejora. 1000 muestras son 20 minutos. El siguiente paso es cambiar el tamaño de chunk y probar accediendo mediante las funciones del paquete `rhdf5`.
+
+**Solución**
+
+Finalmente 1000 muestras tardan alrededor de 5 minutos ordenando las células y utilizando un chunk = c(27mil, 1). No sé si habrá una combinación más eficiente.
+
+## Función `trainDigitalDLSorterMmodel`
+
+Dos versiones por debajo: una para el entrenamiento _on the fly_ y otra si las muestras bulk están ya generadas.    
 
 ## Dudas durante el desarrollo
 
 * Qué hacer con el argumento `setType` de la función `estimateZinbParams`: es para establecer un tipo celular a evaluar. **Implementado**.
+
+
+## Links de interés
+
+* Explican lo del argumento `chunk`: <https://www.bioconductor.org/packages/devel/bioc/vignettes/rhdf5/inst/doc/practical_tips.html>
+
+
+
+Link para implementar lo de meter filas en la matriz:
+<https://stackoverflow.com/questions/37625471/insert-row-at-a-specific-location-in-matrix-using-r>

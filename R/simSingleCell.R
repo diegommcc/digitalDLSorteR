@@ -495,9 +495,10 @@ simSingleCellProfiles <- function(
   n.cells,
   cell.types = NULL,
   file.backend = NULL,
-  compression.level = 6,
+  compression.level = NULL,
   block.processing = FALSE,
-  chunk.size = 1000,
+  block.size = 1000,
+  chunk.dims = NULL,
   verbose = TRUE
 ) {
   if (is.null(zinb.params(object))) {
@@ -513,6 +514,19 @@ simSingleCellProfiles <- function(
   if (!is.null(single.cell.simul(object = object))) {
     warning("single.cell.simul slot already has a SingleCellExperiment object. Note that it will be overwritten\n",
             call. = FALSE, immediate. = TRUE)
+  }
+  if (!is.null(file.backend)) {
+    if (file.exists(file.backend)) {
+      stop("file.backend already exists. Please provide a correct file path")
+    }
+    if (is.null(compression.level)) {
+      compression.level <- HDF5Array::getHDF5DumpCompressionLevel()
+    } else {
+      if (compression.level < 0 || compression.level > 9) {
+        stop("compression.level must be an integer between 0 (no compression) and 9 (highest and slowest compression). ")
+      }
+    }
+    
   }
   # extract data
   list.data <- .extractDataFromSCE(
@@ -554,7 +568,6 @@ simSingleCellProfiles <- function(
     cell.type.names <- cell.type.names[cell.sel]
     model.cell.types <- model.cell.types[cell.sel]
   }
-  
   names(cell.type.names) <- model.cell.types
 
   for (s in model.cell.types) {
@@ -617,50 +630,52 @@ simSingleCellProfiles <- function(
 
   n <- length(cell.set.names) # as.numeric(nCells)
   J <- zinbwave::nFeatures(zinb.object@model)
-  i <- seq(n * J)
   if (verbose) {
-    message("=== Simulated Matrix dimensions:")
+    message("=== Simulated matrix dimensions:")
     message(paste("  - n (cells):", n))
     message(paste("  - J (genes):", J))
-    message(paste("  - i (# entries):", length(i)), "\n")
+    message(paste("  - i (# entries):", n * J), "\n")
   }
-  
   
   if (block.processing && is.null(file.backend)) {
     stop("'block.processing' is only compatible with the use of HDF5 files ", 
          "as backend ('file.backend' argument)")
   } else if (block.processing && !is.null(file.backend)) {
-    if (n <  chunk.size) {
-      stop("The final number of simulated cells is lesser than 'chunk.size'. ", 
-           "Please, introduce a lesser size or set 'block.processing = FALSE'")
+    if (n < block.size) {
+      block.size <- n
+      warning("The number of simulated cells is lesser than 'block.size'. ",
+              "Only one block will be performed.", 
+              call. = FALSE, immediate. = TRUE)
     }
+    if (is.null(chunk.dims) || length(chunk.dims) != 2) chunk.dims <- c(J, 1)
     rhdf5::h5createFile(file.backend)
     rhdf5::h5createDataset(
       file.backend, "counts_sim", 
-      dims = c(J, chunk.size), 
+      dims = c(J, block.size), 
       maxdims = c(J, n), 
+      chunk = chunk.dims, 
       storage.mode = "integer"
     )
     r.i <- 0
     r.j <- 0
     ## iteration over cells 
-    for (iter in seq(ceiling(n / chunk.size))) {
-      if ((chunk.size * iter) - n > 0) { # && dif < chunk.size
-        dif <- (chunk.size * iter) - n
-        chunk.size <- chunk.size - dif
+    for (iter in seq(ceiling(n / block.size))) {
+      if ((block.size * iter) - n > 0) { # && dif < block.size
+        dif <- (block.size * iter) - n
+        block.size <- block.size - dif
       } else {
-        dif <- chunk.size
+        dif <- block.size
       }
-      sub.i <- seq(from = r.i + 1, to = r.i + chunk.size)
-      sub.j <- seq(from = r.j + 1, to = r.j + chunk.size * J)
-      r.i <- r.i + chunk.size
-      r.j <- r.j + chunk.size
+      sub.i <- seq(from = r.i + 1, to = r.i + block.size)
+      sub.j <- seq(from = r.j + 1, to = r.j + block.size * J)
+      r.i <- r.i + block.size
+      r.j <- r.j + block.size
       
       datanb <- rnbinom(length(sub.j), mu = mu[cell.set.names[sub.i], ], 
-                        size = rep(theta[1], length(sub.j))) # ceiling(sub.i/chunk.size)
-      data.nb <- matrix(datanb, nrow = chunk.size)
+                        size = rep(theta[1], length(sub.j))) # ceiling(sub.i/block.size)
+      data.nb <- matrix(datanb, nrow = block.size)
       datado <- rbinom(length(sub.j), size = 1, prob = pi[cell.set.names[sub.i], ])
-      data.dropout <- matrix(datado, nrow = chunk.size)
+      data.dropout <- matrix(datado, nrow = block.size)
       
       sim.counts <- t(data.nb * (1 - data.dropout))
       if (iter == 1) {
@@ -697,9 +712,10 @@ simSingleCellProfiles <- function(
     dimnames(sim.counts) <- list(rownames(zinb.object@model@V), names(cell.set.names))
     
   } else if (!block.processing) {
+    i <- seq(n * J)
     mu <- mu[cell.set.names, ]
     pi <- pi[cell.set.names, ]
-    datanb <- rnbinom(length(i), mu = mu[i], size = theta[ceiling(i/n)])
+    datanb <- rnbinom(n * J, mu = mu[i], size = theta[ceiling(i/n)])
     data.nb <- matrix(datanb, nrow = n)
     
     datado <- rbinom(length(i), size = 1, prob = pi[i])
@@ -710,7 +726,6 @@ simSingleCellProfiles <- function(
       rownames = rownames(zinb.object@model@V),
       colnames = names(cell.set.names)))  
   }
-  
   sim.cells.metadata <- list.data[[2]][cell.set.names, ]
   sim.cells.metadata$simCellName <- names(cell.set.names)
   rownames(sim.cells.metadata) <- names(cell.set.names)
@@ -721,7 +736,7 @@ simSingleCellProfiles <- function(
     cells.metadata = sim.cells.metadata,
     genes.metadata = list.data[[3]][rownames(sim.counts), ],
     file.backend = file.backend,
-    compression.level = 6,
+    compression.level = compression.level,
     block.processing = block.processing,
     verbose = verbose
   )

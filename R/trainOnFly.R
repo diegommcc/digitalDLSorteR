@@ -42,7 +42,9 @@ NULL
 #'   to see available loss functions.
 #' @param metrics Vector of metrics used to evaluate the performance of the
 #'   model during training and on test data (\code{c("accuracy",
-#'   "mean_absolute_error", "categorical_accuracy")} by default)
+#'   "mean_absolute_error", "categorical_accuracy")} by default). See 
+#'   \url{https://keras.rstudio.com/reference/metric_binary_accuracy.html} for
+#'   more details.
 #' @param view.metrics.plot Boolean indicating if show progression plots of
 #'   loss and metrics during training (\code{TRUE} by default). \code{keras} for
 #'   R allows to see the progression of the model during training if you are
@@ -74,20 +76,27 @@ NULL
 #'
 trainDigitalDLSorter <- function(
   object,
+  on.the.fly = TRUE, ## comming soon
+  combine = "both",
   batch.size = 128,
   num.epochs = 20,
+  num.hidden.layers = 2,
+  num.units = c(200, 200),
+  fun.activation = "relu",
+  dropout.rate = 0.25,
   val = FALSE,
   freq.val = 0.1,
   loss = "kullback_leibler_divergence",
   metrics = c("accuracy", "mean_absolute_error",
               "categorical_accuracy"),
+  preselected.model = NULL,
+  shuffle = FALSE,
   view.metrics.plot = TRUE,
+  threads = threads,
   verbose = TRUE
 ) {
   if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
-  } else if (is.null(final.data(object))) {
-    stop("'final.data' slot is empty")
   } else if (is.null(prob.cell.types(object))) {
     stop("prob.cell.types slot is empty")
   } else if (num.epochs <= 1) {
@@ -109,34 +118,65 @@ trainDigitalDLSorter <- function(
   else verbose.model <- 0
   
   # number of samples
-  n.train <- nrow(prob.cell.types(object, type.data = "train")@prob.matrix)
-  n.test <- nrow(prob.cell.types(object, type.data = "test")@prob.matrix)
+  prob.matrix.train <- .targetForDNN(
+    object = object, combine = combine, 
+    type.data = "train", verbose = verbose
+  )
+  prob.matrix.test <- .targetForDNN(
+    object = object, combine = "both", 
+    type.data = "test", verbose = verbose
+  )
+  n.train <- nrow(prob.matrix.train)
+  n.test <- nrow(prob.matrix.test)
   
-  # set the model. may be we can provide a interface to set a custom model
-  model <- keras_model_sequential(name = "DigitalDLSorter") %>%
-    layer_dense(units = 200, input_shape = c(ncol(object@final.data$train)),
-                name = "Dense1") %>%
-    layer_batch_normalization(name = "BatchNormalization1") %>%
-    layer_activation(activation = "relu", name = "ActivationReLu1") %>%
-    layer_dropout(rate = 0.25, name = "Dropout1") %>%
-    layer_dense(units = 200, name = "Dense2") %>%
-    layer_batch_normalization(name = "BatchNormalization2") %>%
-    layer_activation(activation = "relu", name = "ActivationReLu2") %>%
-    layer_dropout(rate = 0.25, name = "Dropout2") %>%
-    layer_dense(units = ncol(object@final.data$train@metadata$prob.matrix),
-                name = "Dense3") %>%
-    layer_batch_normalization(name = "BatchNormalization3") %>%
-    layer_activation(activation = "softmax", name = "ActivationSoftmax")
-  
+  if (is.null(preselected.model)) {
+    if (num.hidden.layers != length(num.units)) {
+      stop("The number of hidden layers must be equal to the length of ", 
+           "num.units (number of neurons per layer)")
+    }
+    ## check if any argument not provided
+    model <- keras_model_sequential(name = "DigitalDLSorter")
+    # arbitrary number of hidden layers and neurons
+    for (i in seq(num.hidden.layers)) {
+      if (i == 1) {
+        model <- model %>% layer_dense(
+          units = num.units[i], 
+          input_shape = nrow(single.cell.real(object)),
+          name = paste0("Dense", i)
+        )
+      } else {
+        model <- model %>% layer_dense(
+          units = num.units[i], 
+          name = paste0("Dense", i)
+        )
+      }
+      model <- model %>% 
+        layer_batch_normalization(name = paste0("BatchNormalization", i)) %>%
+        layer_activation(activation = fun.activation, 
+                         name = paste0("ActivationReLu", i)) %>%
+        layer_dropout(rate = dropout.rate, name = paste0("Dropout", i))
+    }
+    # final layer --> compression and proportions
+    model <- model %>% layer_dense(
+      units = ncol(prob.cell.types(object, "train") %>% prob.matrix()),
+      name = paste0("Dense", i + 1)
+    ) %>% layer_batch_normalization(
+      name = paste0("BatchNormalization", i + 1)
+    ) %>% layer_activation(activation = "softmax", name = "ActivationSoftmax")
+  } else {
+    ## code checking if model is correct
+  }
   if (verbose) summary(model)
-  
   # allow set optimizer?
   model %>% compile(
     loss = loss,
     optimizer = optimizer_adam(),
     metrics = metrics
   )
-  ## training model
+  # pattern for set simulated and real cells
+  pattern <- paste0(colnames(prob.cell.types(object, "train") %>% prob.matrix()), "_S", 
+                    collapse = "|")
+  # training model
   if (val) {
     if (freq.val < 0.1 || freq.val > 0.5) {
       stop("freq.val must be a float between 0.1 and 0.5")
@@ -148,27 +188,37 @@ trainDigitalDLSorter <- function(
                     "samples and validating with",
                     n.val, "samples:\n"))
     }
-    train.generator <- .trainGenerator(
-      object = object,
+    gen.train <- .trainGeneratorFly(
+      object = object, 
+      prob.matrix = prob.matrix.train,
       type.data = "train",
       batch.size = batch.size,
-      shuffle = TRUE,
+      combine = combine,
+      shuffle = shuffle,
+      pattern = pattern,
       min.index = n.val,
-      max.index = n.train
+      max.index = n.train,
+      threads = threads,
+      verbose = verbose
     )
-    val.generator <- .trainGenerator(
-      object = object,
+    gen.val <- .trainGeneratorFly(
+      object = object, 
+      prob.matrix = prob.matrix.train,
       type.data = "train",
       batch.size = batch.size,
+      combine = combine,
       shuffle = FALSE,
+      pattern = pattern,
       min.index = 0,
-      max.index = n.val
+      max.index = n.val,
+      threads = threads,
+      verbose = verbose
     )
     history <- model %>% fit_generator(
-      generator = train.generator,
+      generator = gen.train,
       steps_per_epoch = ceiling((n.train - n.val) / batch.size),
       epochs = num.epochs,
-      validation_data = val.generator,
+      validation_data = gen.val,
       validation_steps = n.val / batch.size,
       verbose = verbose.model,
       view_metrics = view.plot
@@ -178,14 +228,21 @@ trainDigitalDLSorter <- function(
     if (verbose) {
       message(paste("\n=== Training DNN with", n.train, "samples:\n"))
     }
-    train.generator <- .trainGenerator(
-      object = object,
+    gen.train <- .trainGeneratorFly(
+      object = object, 
+      prob.matrix = prob.matrix.train,
       type.data = "train",
       batch.size = batch.size,
-      shuffle = TRUE
+      combine = combine,
+      shuffle = shuffle,
+      pattern = pattern,
+      min.index = NULL,
+      max.index = NULL,
+      threads = threads,
+      verbose = verbose
     )
     history <- model %>% fit_generator(
-      generator = train.generator,
+      generator = gen.train,
       steps_per_epoch = ceiling(n.train / batch.size),
       epochs = num.epochs,
       verbose = verbose.model,
@@ -196,13 +253,25 @@ trainDigitalDLSorter <- function(
   if (verbose) {
     message(paste0("\n=== Evaluating DNN in test data (", n.test, " samples)"))
   }
+  
   ## evaluation of the model: set by default, no options?
-  test.generator <- .trainGenerator(object = object,
-                                    type.data = "test",
-                                    batch.size = batch.size,
-                                    shuffle = FALSE)
+  gen.test <- .trainGeneratorFly(
+    object = object, 
+    prob.matrix = prob.matrix.test,
+    type.data = "test",
+    batch.size = batch.size,
+    combine = "both",
+    shuffle = FALSE,
+    pattern = pattern,
+    min.index = NULL,
+    max.index = NULL,
+    threads = threads,
+    verbose = verbose
+  )
+  ## necesario? quizás es preferible calcular las métricas a posteriori usando 
+  # las propias funciones de keras --> las funciones de keras no funcionan
   test.eval <- model %>% evaluate_generator(
-    generator = test.generator,
+    generator = gen.test,
     steps = ceiling(n.test / batch.size)
   )
   ## prediction of test samples
@@ -211,27 +280,30 @@ trainDigitalDLSorter <- function(
                    collapse = "\n"))
     message(paste("\n=== Generating prediction results using test data\n"))
   }
-  predict.generator <- .predictTestGenerator(
-    object = object,
-    type.data = "test",
-    batch.size = batch.size
+  gen.predict <- .predictGeneratorFly(
+    object,
+    prob.matrix = prob.matrix.test,
+    batch.size = batch.size,
+    pattern = pattern,
+    threads = threads,
+    verbose = verbose
   )
   predict.results <- model %>% predict_generator(
-    generator = predict.generator,
+    generator = gen.predict,
     steps = ceiling(n.test / batch.size),
     verbose = verbose.model
   )
-  rownames(predict.results) <- rowData(object@final.data[["test"]])[[1]]
-  colnames(predict.results) <- colnames(object@final.data[["test"]]@metadata[[1]])
+  rownames(predict.results) <- rownames(prob.matrix.test)
+  colnames(predict.results) <- colnames(prob.matrix.test)
   
   network.object <- new(
     Class = "DigitalDLSorterDNN",
     model = model,
     training.history = history,
-    eval.stats.model = test.eval,
-    predict.results = predict.results,
-    cell.types = colnames(object@final.data[["train"]]@metadata[[1]]),
-    features = colData(object@final.data[["test"]])[[1]]
+    test.metrics = test.eval,
+    test.pred = predict.results,
+    cell.types = colnames(predict.results),
+    features = rownames(assay(single.cell.real(object)))
   )
   object@trained.model <- network.object
   
@@ -239,6 +311,9 @@ trainDigitalDLSorter <- function(
   return(object)
 }
 
+setBulks <- function(x, c, i) {
+  rowSums(c[, x]) 
+}
 
 
 .trainGenerator <- function(

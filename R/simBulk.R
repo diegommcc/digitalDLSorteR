@@ -128,8 +128,6 @@ generateBulkCellMatrix <- function(
 ) {
   if (class(object) != "DigitalDLSorter") {
     stop("The object provided is not of DigitalDLSorter class")
-  } else if (is.null(single.cell.simul(object))) {
-    stop("'single.cell.simul' slot is empty")
   } else if (is.null(single.cell.real(object))) {
     stop("'single.cell.real' slot is empty")
   } else if (!train.freq.cells <= 0.95 || !train.freq.cells >= 0.05) {
@@ -159,35 +157,37 @@ generateBulkCellMatrix <- function(
                          FUN = function(x) all(x == floor(x)))))) {
     stop("Proportions provided must be composed by integer")
   }
-
-  # extract data from SCE to list
-  list.metadata <- list(
-    single.cell.real(object) %>% 
-      SingleCellExperiment::colData(),
-    single.cell.simul(object) %>% 
+  
+  if (!is.null(single.cell.simul(object))) {
+    # extract data from SCE to list
+    list.metadata <- list(
+      single.cell.real(object) %>% 
+        SingleCellExperiment::colData(),
+      single.cell.simul(object) %>% 
+        SingleCellExperiment::colData()
+    )
+    # check if cell.type.column is correct
+    lapply(
+      X = list(list.metadata[[1]], list.metadata[[2]]),
+      FUN = function(x) {
+        .checkColumn(
+          metadata = x,
+          ID.column = cell.type.column,
+          type.metadata = "cells.metadata",
+          arg = "cell.type.column"
+        )
+      }
+    )
+    list.metadata[[1]]$simCellName <- paste(
+      list.metadata[[1]][, cell.type.column], 
+      list.metadata[[1]][, cell.ID.column], sep = "_"
+    )
+    list.metadata[[1]]$Simulated <- FALSE
+    cells.metadata <- S4Vectors::rbind(list.metadata[[1]], list.metadata[[2]])  
+  } else {
+    cells.metadata <- single.cell.real(object) %>% 
       SingleCellExperiment::colData()
-  )
-  
-  # check if cell.type.column is correct
-  lapply(
-    X = list(list.metadata[[1]], list.metadata[[2]]),
-    FUN = function(x) {
-      .checkColumn(
-        metadata = x,
-        ID.column = cell.type.column,
-        type.metadata = "cells.metadata",
-        arg = "cell.type.column"
-      )
-    }
-  )
-  
-  list.metadata[[1]]$simCellName <- paste(
-    list.metadata[[1]][, cell.type.column], 
-    list.metadata[[1]][, cell.ID.column], sep = "_"
-  )
-  list.metadata[[1]]$Simulated <- FALSE
-  cells.metadata <- S4Vectors::rbind(list.metadata[[1]], list.metadata[[2]])
-  
+  }
   # check if prob.design is correctly built
   lapply(X = c(cell.type.column, "from", "to"),
          FUN = function(x) {
@@ -203,7 +203,7 @@ generateBulkCellMatrix <- function(
     stop(paste("prob.design must not contain duplicated cell types in",
                cell.type.column, "column"))
   } else if (!all(prob.design[, cell.type.column] %in%
-                  unique(list.metadata[[2]][, cell.type.column]))) {
+                  unique(cells.metadata[, cell.type.column]))) {
     stop("There are some cell types in prob.design that does not appear in cells.metadata. Check that the prob.design matrix is correctly built")
   } else if (any(prob.design$from < 0) || any(prob.design$from > 99)) {
     stop("'from' column in prob.design must be greater than or equal to 0 and lesser than or equal to 99")
@@ -222,7 +222,6 @@ generateBulkCellMatrix <- function(
          " experiment. In any case, we recommend greater than 100 cells per", 
          " bulk sample")
   }
-  
   # check proportions --> avoid num.bulk.samples too low
   total.train <- ceiling(num.bulk.samples * train.freq.bulk)
   total.test <- num.bulk.samples - total.train
@@ -236,15 +235,16 @@ generateBulkCellMatrix <- function(
     ceiling((total.test * proportions.test) / 100),
     limit = total.test
   )
-  
-  message(paste("\n=== The number of bulk samples that will be generated has been fixed to",
-                num.bulk.samples))
+  if (verbose) {
+    message(paste("\n=== The number of bulk samples that will be generated has been fixed to",
+                  num.bulk.samples))  
+  }
   # split data into training and test sets
   cells <- rownames(cells.metadata) # [, cell.ID.column]
   names(cells) <- cells.metadata[, cell.type.column]
-
-  # train set
-  ## introduce an argument for split data in a balanced way: by cell type
+  # train set: 
+  # balanced.cells == TRUE --> same number of cells by cell types
+  # balanced.cells == FALSE --> completely random
   if (!balanced.cells) {
     train.set <- sample(cells, size = round(nrow(cells.metadata) * train.freq.cells))
     if (length(unique(names(train.set))) != length(unique(names(cells)))) {
@@ -267,15 +267,37 @@ generateBulkCellMatrix <- function(
   }
   train.types <- names(train.set)
   train.set.list <- list()
-  for (ts in levels(factor(train.types))) {
+  # sort cell types in order to speed up reading times in HDF5 files --> 
+  # same order as are stored simulated cells in HDF5 file
+  if (!is.null(zinb.params(object))) {
+    model.cell.types <- grep(pattern = cell.type.column,
+                             x = colnames(zinb.params(object)@model@X),
+                             value = T)
+    cell.type.names <- sub(pattern = cell.type.column,
+                           replacement = "",
+                           x = model.cell.types)
+    if (any(levels(factor(train.types)) %in% cell.type.names)) {
+      cell.type.names <- c(
+        cell.type.names,
+        setdiff(levels(factor(train.types)), cell.type.names)
+      )
+    }
+  } else {
+    cell.type.names <- levels(factor(train.types))
+  }
+  # print(levels(factor(train.types)))
+  cell.type.train <- cell.type.names[cell.type.names %in% levels(factor(train.types))]
+  print(cell.type.train)
+  for (ts in cell.type.train) {
     train.set.list[[ts]] <- train.set[train.types == ts]
   }
-
   # test set
   test.set <- cells[!cells %in% train.set]
   test.types <- names(test.set)
   test.set.list <- list()
-  for (ts in levels(factor(test.types))) {
+  cell.type.test <- cell.type.names[cell.type.names %in% levels(factor(test.types))]
+  print(cell.type.test)
+  for (ts in cell.type.test) {
     test.set.list[[ts]] <- test.set[test.types == ts]
   }
   
@@ -305,7 +327,7 @@ generateBulkCellMatrix <- function(
       stop("'exclusive.types' must be at least 2 different cell types")
     } else if (any(duplicated(exclusive.types))) {
       stop("'exclusive.types' can not contain duplicated elements")
-    } else if (!all(exclusive.types %in% unique(list.metadata[[2]][, cell.type.column]))) {
+    } else if (!all(exclusive.types %in% unique(cells.metadata[, cell.type.column]))) {
       stop("Cell types present in exclusive.types argument must be present in cells.metadata")
     }
     message("=== Setting the next exclusive cell types in some bulk samples: ",
@@ -872,7 +894,7 @@ setCount <- function(x, setList, sn, n.cells) {
 #'   (highest and slowest compression).
 #' @param verbose Show informative messages during the execution.
 #'
-#' @return A \code{\link{DigitalDLSorter}} object with \code{bulk.sim} slot
+#' @return A \code{\link{DigitalDLSorter}} object with \code{bulk.simul} slot
 #'   containing a list with one or two entries (depending on selected
 #'   \code{type.data} argument): 'train' and 'test'. Each entry contains a
 #'   \code{SummarizedExperiment} object with simulated bulk samples in
@@ -897,7 +919,7 @@ setCount <- function(x, setList, sn, n.cells) {
 #'   DDLSChung,
 #'   threads = 2,
 #'   type.data = "both",
-#'   file.backend = "DDLSChung.bulk.sim.h5"
+#'   file.backend = "DDLSChung.bulk.simul.h5"
 #' )
 #' }
 #'
@@ -908,20 +930,24 @@ setCount <- function(x, setList, sn, n.cells) {
 #' Pagès H (2020). HDF5Array: HDF5 backend for DelayedArray objects. R package
 #' version 1.16.1.
 #'
-generateBulkSamples <- function(
+simBulkSamples <- function(
   object,
   type.data = "both",
   file.backend = NULL,
-  threads = 1,
   compression.level = NULL,
+  block.processing = FALSE,
+  block.size = 1000,
+  chunk.dims = NULL,
+  threads = 1,
   verbose = TRUE
 ) {
   if (class(object) != "DigitalDLSorter") {
     stop("The object provided is not of DigitalDLSorter class")
-  } else if (is.null(single.cell.final(object))) {
-    stop("single.cell.final slot is empty")
+  } else if (is.null(single.cell.simul(object)) && 
+             is.null(single.cell.real(object))) {
+    stop("The are not single-cell profiles in DigitalDLSorter object")
   } else if (is.null(prob.cell.types(object))) {
-    stop("prob.cell.types slot is empty")
+    stop("'prob.cell.types' slot is empty")
   } else if (!any(type.data == c("train", "test", "both"))) {
     stop("type.data argument must be one of the next options: train, test or both")
   }
@@ -933,10 +959,11 @@ generateBulkSamples <- function(
       compression.level <- HDF5Array::getHDF5DumpCompressionLevel()
     } else {
       if (compression.level < 0 || compression.level > 9) {
-        stop("compression.level must be an integer between 0 (no compression) and 9 (highest and slowest compression). ")
+        stop("compression.level must be an integer between 0 (no compression) ",
+             "and 9 (highest and slowest compression). ")
       }
     }
-
+    
   }
   if (threads <= 0) {
     threads <- 1
@@ -944,12 +971,10 @@ generateBulkSamples <- function(
   if (verbose) {
     message(paste("=== Set parallel environment to", threads, "threads"))
   }
-  sim.counts <- assay(single.cell.final(object))
-  sim.counts <- edgeR::cpm.default(sim.counts)
-
+  
   if (type.data == "both") {
-    if (!is.null(object@bulk.sim)) {
-      warning("'bulk.sim' slot will be overwritten\n\n",
+    if (!is.null(object@bulk.simul)) {
+      warning("'bulk.simul' slot will be overwritten\n\n",
               call. = FALSE, immediate. = TRUE)
     }
     bulk.counts <- lapply(
@@ -960,20 +985,23 @@ generateBulkSamples <- function(
         }
         .generateBulkProfiles(
           object = object,
-          sim.counts = sim.counts,
           type.data = x,
           file.backend = file.backend,
-          threads = threads,
           compression.level = compression.level,
+          block.processing = block.processing,
+          block.size = block.size,
+          chunk.dims = chunk.dims,
+          threads = threads,
           verbose = verbose
         )
       }
     )
     names(bulk.counts) <- c("train", "test")
-    object@bulk.sim <- bulk.counts
+    object@bulk.simul <- bulk.counts
   } else {
-    if (!is.null(object@bulk.sim) && type.data %in% names(object@bulk.sim)) {
-      warning(paste(type.data, "data in 'bulk.sim' slot will be overwritten", "\n\n"),
+    if (!is.null(object@bulk.simul) && type.data %in% names(object@bulk.simul)) {
+      warning(paste(type.data, "data in 'bulk.simul' slot will be overwritten", 
+                    "\n\n"),
               call. = FALSE, immediate. = TRUE)
     }
     if (verbose) {
@@ -981,478 +1009,185 @@ generateBulkSamples <- function(
     }
     bulk.counts <- .generateBulkProfiles(
       object = object,
-      sim.counts = sim.counts,
       type.data = type.data,
       file.backend = file.backend,
-      threads = threads,
       compression.level = compression.level,
+      block.processing = block.processing,
+      block.size = block.size,
+      chunk.dims = chunk.dims,
+      threads = threads,
       verbose = verbose
     )
-    if (!is.null(bulk.sim(object))) {
-      if (type.data %in% names(bulk.sim(object))) {
-        bulk.sim(object, type.data) <- NULL
+    if (!is.null(bulk.simul(object))) {
+      if (type.data %in% names(bulk.simul(object))) {
+        bulk.simul(object, type.data) <- NULL
       }
-      bulk.sim(object) <- c(bulk.sim(object), type.data = bulk.counts)
+      bulk.simul(object) <- c(bulk.simul(object), type.data = bulk.counts)
     } else {
-      object@bulk.sim <- list(bulk.counts)
-      names(object@bulk.sim) <- type.data
+      bulk.simul(object) <- list(bulk.counts)
+      names(bulk.simul(object)) <- type.data
     }
   }
-
   message("\nDONE")
   return(object)
-}
-
-setBulks <- function (x, c, i) {
-  return(rowSums(c[, x]))
 }
 
 .generateBulkProfiles <- function(
   object,
-  sim.counts,
   type.data,
   file.backend,
-  threads,
   compression.level,
+  block.processing,
+  block.size,
+  chunk.dims,
+  threads,
   verbose
 ) {
-  prob.matrix.names <- prob.cell.types(object, type.data)@cell.names
-  bulk.counts <- pbapply::pbapply(
-    X = prob.matrix.names,
-    MARGIN = 1,
-    FUN = setBulks,
-    c = sim.counts,
-    cl = threads
-  )
-  colnames.bulk <- paste("Bulk", seq(dim(bulk.counts)[2]), sep = "_")
-  rownames.bulk <- rownames(bulk.counts)
-  if (!is.null(file.backend)) {
-    if (verbose) {
-      message("\nWriting data on disk:\n")
+  sel.bulk.cells <- prob.cell.types(object, type.data) %>% cell.names()
+  sel.bulk.cells <- sel.bulk.cells[sample(nrow(sel.bulk.cells)), ]
+  pattern <- paste0(colnames(prob.cell.types(object, type.data) %>% 
+                               prob.matrix()), "_S", 
+                    collapse = "|")
+  if (block.processing && is.null(file.backend)) {
+    stop("'block.processing' is only compatible with the use of HDF5 files ", 
+         "as back-end ('file.backend' argument)")
+  } else if (block.processing && !is.null(file.backend)) {
+    n <- nrow(sel.bulk.cells)
+    J <- nrow(assay(single.cell.real(object)))
+    if (n < block.size) {
+      block.size <- n
+      warning("The number of simulated samples is lesser than 'block.size'. ",
+              "Only one block will be performed.", 
+              call. = FALSE, immediate. = TRUE)
     }
-    bulk.counts <- DelayedArray::DelayedArray(seed = bulk.counts)
-    bulk.counts <- HDF5Array::writeHDF5Array(
-      bulk.counts,
-      filepath = file.backend,
-      name = type.data,
-      verbose = verbose,
-      chunkdim = HDF5Array::getHDF5DumpChunkDim(dim(bulk.counts)),
-      level = compression.level
+    if (is.null(chunk.dims) || length(chunk.dims) != 2) chunk.dims <- c(J, 128)
+    if (!file.exists(file.backend)) rhdf5::h5createFile(file.backend)
+    rhdf5::h5createDataset(
+      file.backend, type.data, 
+      dims = c(J, block.size), 
+      maxdims = c(J, n), 
+      chunk = chunk.dims,
+      storage.mode = "double"
     )
-    # in R 4.0.0 HDF5Array allows to store dimnames
-  }
-  return(SummarizedExperiment::SummarizedExperiment(
-    assays = list(counts = bulk.counts),
-    rowData = rownames.bulk,
-    colData = colnames.bulk))
-}
-
-################################################################################
-########################## Prepare data for training ###########################
-################################################################################
-
-#' Prepare training and test final data for training and evaluation Deep Neural
-#' Network model.
-#'
-#' Prepare training and test final data for training and evaluating Deep Neural
-#' Network model. Expression matrix is normalized by CPMs (counts per million)
-#' in log2-space and normalized. Samples are shuffled in order to avoid biases
-#' during training. Note that expression matrix is transposed in order to
-#' prepare data for training.
-#'
-#' This function allows you to select which kind of data you want to use for
-#' training: single-cell profiles, bulk profiles or a combination of both. See
-#' \code{combine} argument for details. We recommend the use of the combination
-#' or the bulk profiles, since the results are better. For test data, profiles
-#' are combined in any case, but during the evaluation of results you can filter
-#' single-cell profiles (see \code{\link{calculateEvalMetrics}}).
-#'
-#' \code{digitalDLSorteR} allows the use of HDF5 files as back-end for the
-#' resulting data using \code{DelayedArray} and \code{HDF5Array} packages in
-#' cases of generating too large expression matrix. This functionality allows
-#' you to work without keeping the data loaded in memory, which will be of vital
-#' importance during some computationally heavy steps such as neural network
-#' training. You must provide a valid file path in \code{file.backend} argument
-#' to store the resulting file with '.h5' extension. The data will be accessible
-#' from R without being loaded into memory. This option slightly slows down
-#' execution times, since subsequent transformations of data will be carried out
-#' by chunks instead of using all data. We recommend this option due to the
-#' large size of the simulated matrices.
-#'
-#' @param object \code{\link{DigitalDLSorter}} object with
-#'   \code{single.cell.final} and \code{prob.cell.types} slots.
-#' @param type.data Type of data to generate among 'train', 'test' or 'both'
-#'   (the last by default).
-#' @param combine Character determining if combine training data. Can be 'both',
-#'   'bulk' or 'single-cell' ('both' by default). Note that test data is always
-#'   combined.
-#' @param file.backend A valid file path where to save the HDF5 file used as
-#'   back-end. If it is equal to \code{NULL} (by default), the data are loaded
-#'   in memory.
-#' @param number.rows HDF5 file is saved by row chunks in order to improve the
-#'   execution times during training. This is because
-#'   \code{\link{trainDigitalDLSorterModel}} only access to data by rows
-#'   (samples). You can provided the number of rows that are stored together
-#'   in each chunk. Note that the more columns the more RAM is used, although
-#'   execution times are improved.
-#' @param compression.level The compression level used if file.backend provided
-#'   (6 by default). It is an integer value between 0 (no compression) and 9
-#'   (highest and slowest compression).
-#' @param verbose Show informative messages during the execution.
-#'
-#' @return A \code{\link{DigitalDLSorter}} object with \code{final.data} slot
-#'   containing a list with one or two entries (depending on selected
-#'   \code{type.data} argument): 'train' and 'test'. Each entry contains a
-#'   \code{SummarizedExperiment} object with single-cell and bulk samples
-#'   combined in \code{assay} slot, sample names in \code{rowData} slot and
-#'   feature names in \code{colData} slot.
-#'
-#' @export
-#'
-#' @seealso \code{\link{generateBulkSamples}}
-#'   \code{\link{generateTrainAndTestBulkProbMatrix}}
-#'
-#' @examples
-#' ## loading all data in memory
-#' DDLSSmallCompleted <- prepareDataForTraining(
-#'   object = DDLSSmallCompleted,
-#'   type.data = "both",
-#'   verbose = TRUE
-#' )
-#' \dontrun{
-#' ## using HDF5 as backend
-#' DDLSChungSmall <- prepareDataForTraining(
-#'   object = DDLSChungSmall,
-#'   type.data = "both",
-#'   combine = "both",
-#'   file.backend = "DDLSChung.final.data.combined.h5",
-#'   verbose = TRUE
-#' )
-#' }
-#'
-prepareDataForTraining <- function(
-  object,
-  type.data,
-  combine = "both",
-  file.backend = NULL,
-  number.rows = NULL,
-  compression.level = NULL,
-  verbose = TRUE
-) {
-  if (class(object) != "DigitalDLSorter") {
-    stop("The object provided is not of DigitalDLSorter class")
-  } else if (is.null(single.cell.final(object))) {
-    stop("single.cell.final slot is empty")
-  } else if (is.null(prob.cell.types(object))) {
-    stop("prob.cell.types slot is empty")
-  } else if (is.null(bulk.sim(object))) {
-    stop("bulk.sim slot is empty")
-  } else if (!any(type.data == c("train", "test", "both"))) {
-    stop("'type.data' argument must be one of the next options: train, test or both")
-  } else if (!any(names(bulk.sim(object)) %in% c("train", "test"))) {
-    stop("bulk.sim slot is not correctly built")
-  } else if (!combine %in% c("both", "bulk", "single-cell")) {
-    stop("'combine' argument must be one of the next options: both, bulk or single-cell")
-  }
-  if (type.data == "both") {
-    if (combine == "both" || combine == "bulk") {
-      if (!all(names(bulk.sim(object)) %in% c("train", "test")))
-        stop("If type.data = 'both', bulk.sim slot must contain train and test data")
-    } else if (combine == "single-cell") {
-      if (!"test" %in% names(bulk.sim(object)))
-        stop(paste("Test data is not present in bulk.sim slot"))
-    }
-  } else if (type.data == "train") {
-    if (combine == "both" || combine == "bulk") {
-      if (!type.data %in% names(bulk.sim(object)))
-        stop(paste(type.data, "data is not present in bulk.sim slot"))
-    }
-  } else if (type.data == "test") {
-    if (!type.data %in% names(bulk.sim(object)))
-      stop(paste(type.data, "data is not present in bulk.sim slot"))
-  }
-  if (!is.null(object@final.data)) {
-    warning("'final.data' slot will be overwritten \n\n",
-            call. = FALSE, immediate. = TRUE)
-  }
-  if (is.null(file.backend)) {
-    if (verbose) {
-      message("=== Working in memory")
-    }
-    combineBulkSCProfiles <- .prepareDataMemory
-  } else {
-    if (file.exists(file.backend)){
-      stop("file.backend already exists. Please provide a correct file path")
-    }
-    if (is.null(number.rows)) {
-      number.rows <- 50
-    } else {
-      if (number.rows < 1 || number.rows > 100 || number.rows%%1 != 0) {
-        stop("number.rows must be an integer between 1 and 100")
+    r.i <- 0
+    ## iteration over cells 
+    for (iter in seq(ceiling(n / block.size))) {
+      if ((block.size * iter) - n > 0) {
+        dif <- (block.size * iter) - n
+        block.size <- block.size - dif
+      } else {
+        dif <- block.size
       }
-    }
-    if (verbose) {
-      message("=== Working with HDF5 backend")
-    }
-    if (is.null(compression.level)) {
-      compression.level <- HDF5Array::getHDF5DumpCompressionLevel()
-    } else {
-      if (compression.level < 0 || compression.level > 9 || compression.level%%1 != 0) {
-        stop("compression.level must be an integer between 0 (no compression) ",
-             "and 9 (highest and slowest compression). ")
-      }
-    }
-    combineBulkSCProfiles <- .prepareDataHDF5
-  }
-  if (type.data == "both") {
-    combined.counts <- lapply(
-      X = c("train", "test"),
-      FUN = function(x) {
-        if (verbose) {
-          message(paste("\n=== Preparing", x, "counts"))
-        }
-        combineBulkSCProfiles(
+      sub.i <- seq(from = r.i + 1, to = r.i + block.size)
+      r.i <- r.i + block.size
+      if (threads == 1) {
+        bulk.samples <- apply(
+          X = sel.bulk.cells[sub.i, ],
+          MARGIN = 1,
+          FUN = .setBulk,
           object = object,
-          type.data = x,
-          combine = combine,
-          file.backend = file.backend,
-          number.rows = number.rows,
-          compression.level = compression.level,
-          verbose = verbose
+          pattern = pattern
+        )  
+      } else {
+        bulk.samples <- pbapply::pbapply(
+          X = sel.bulk.cells[sub.i, ],
+          MARGIN = 1,
+          FUN = .setBulk,
+          object = object,
+          pattern = pattern,
+          cl = threads
+        ) 
+      }
+      if (iter == 1) {
+        rhdf5::h5write(
+          obj = bulk.samples, file = file.backend, 
+          name = type.data, level = compression.level
+        )
+      } else {
+        # check number of cells in the next loop
+        rhdf5::h5set_extent(file.backend, type.data, dims = c(J, n))
+        rhdf5::h5write(
+          obj = bulk.samples, 
+          file = file.backend, name = type.data, 
+          index = list(seq(J), seq((dif * (iter - 1)) + 1, 
+                                   (dif * (iter - 1)) + ncol(bulk.samples))),
+          level = compression.level
         )
       }
-    )
-    names(combined.counts) <- c("train", "test")
-    object@final.data <- combined.counts
-  } else {
-    if (verbose) {
-      message(paste("\n=== Preparing", type.data, "counts for training\n"))
+      if (verbose) message(paste("   - Block", iter, "written"))
     }
-    combined.counts <- combineBulkSCProfiles(
+    rhdf5::H5close()
+    # HDF5Array object for SingleCellExperiment class
+    bulk.samples <- HDF5Array::HDF5Array(file = file.backend, name = type.data)
+    dimnames(bulk.samples) <- list(rownames(assay(single.cell.real(object))), 
+                                   rownames(sel.bulk.cells))
+  } else if (!block.processing) {
+    bulk.samples <- pbapply::pbapply(
+      X = sel.bulk.cells,
+      MARGIN = 1,
+      FUN = .setBulk,
       object = object,
-      type.data = type.data,
-      combine = combine,
+      pattern = pattern,
+      cl = threads
+    )
+  }
+  return(
+    .createSEObject(
+      counts = bulk.samples,
+      samples.metadata = prob.cell.types(object, type.data)@prob.matrix[
+        rownames(sel.bulk.cells), ],
+      genes.metadata = rownames(assay(single.cell.real(object))),
       file.backend = file.backend,
-      number.rows = number.rows,
       compression.level = compression.level,
+      block.processing = block.processing,
+      type.data = type.data,
       verbose = verbose
     )
-    if (!is.null(final.data(object))) {
-      if (type.data %in% names(final.data(object))) {
-        final.data(object, type.data) <- NULL
-      }
-      final.data(object) <- c(final.data(object), type.data = combined.counts)
-    } else {
-      final.data(object) <- list(type.data = combined.counts)
-    }
-  }
-
-  message("\nDONE")
-  return(object)
-}
-
-
-# .setConfigHDF5 <- function(file.backend, name) {
-#   setHDF5DumpFile(file.backend)
-#   setHDF5DumpName(name)
-# }
-
-
-.prepareDataHDF5 <- function(
-  object = object,
-  type.data = type.data,
-  combine = combine,
-  file.backend = file.backend,
-  number.rows = number.rows,
-  compression.level = compression.level,
-  verbose = verbose
-) {
-
-  if (type.data == "test") {
-    combine <- "both"
-  }
-  if (combine == "both") {
-    if (verbose)
-      message("    Combining single-cell profiles and simulated bulk samples\n")
-    counts <- assay(bulk.sim(object)[[type.data]])
-    gene.list <- intersect(rowData(bulk.sim(object)[[type.data]])[[1]],
-                           rownames(assay(object@single.cell.final)))
-    counts <- DelayedArray::cbind(
-      DelayedArray::DelayedArray(assay(object@single.cell.final)[,
-                          unlist(object@prob.cell.types[[type.data]]@set.list)]),
-      counts
-    )
-    sample.names <- c(
-      colnames(assay(object@single.cell.final)[,unlist(
-        object@prob.cell.types[[type.data]]@set.list)]
-      ), colData(object@bulk.sim[[type.data]])[[1]]
-    )
-    ## include probabilities of single-cell profiles: 1 for X cell type
-    tpsm <- matrix(unlist(sapply(
-      X = names(object@prob.cell.types[[type.data]]@set.list),
-      FUN = function (x, l) {
-        v <- rep(0,length(l))
-        names(v) <- names(l)
-        v[x] <- 100
-        return(rep(v, length(l[[x]])))
-      }, l = object@prob.cell.types[[type.data]]@set.list
-    )), ncol = length(object@prob.cell.types[[type.data]]@set.list), byrow = T)
-    colnames(tpsm) <- names(object@prob.cell.types[[type.data]]@set.list)
-    tpsm <- tpsm[, colnames(object@prob.cell.types[[type.data]]@prob.matrix)]
-    rownames(tpsm) <- unlist(object@prob.cell.types[[type.data]]@set.list)
-    probs.matrix <- rbind(tpsm, object@prob.cell.types[[type.data]]@prob.matrix)/100
-    rownames(probs.matrix) <- c(rownames(tpsm), colData(object@bulk.sim[[type.data]])[[1]])
-  } else if (combine == "bulk") {
-    if (verbose)
-      message("    Using only simulated bulk samples\n")
-    counts <- assay(bulk.sim(object)[[type.data]])
-    gene.list <- rowData(bulk.sim(object)[[type.data]])[[1]]
-    sample.names <- colData(object@bulk.sim[[type.data]])[[1]]
-    probs.matrix <- object@prob.cell.types[[type.data]]@prob.matrix / 100
-  } else if (combine == "single-cell") {
-    if (verbose)
-      message("    Using only single-cell samples\n")
-    counts <- DelayedArray::DelayedArray(assay(object@single.cell.final)[,unlist(
-      object@prob.cell.types[[type.data]]@set.list
-    )])
-    gene.list <- rownames(assay(object@single.cell.final))
-    sample.names <- colnames(assay(object@single.cell.final)[,unlist(
-      object@prob.cell.types[[type.data]]@set.list)])
-    probs.matrix <- matrix(unlist(sapply(
-      X = names(object@prob.cell.types[[type.data]]@set.list),
-      FUN = function (x, l) {
-        v <- rep(0,length(l))
-        names(v) <- names(l)
-        v[x] <- 100
-        return(rep(v, length(l[[x]])))
-      }, l = object@prob.cell.types[[type.data]]@set.list
-    )), ncol = length(object@prob.cell.types[[type.data]]@set.list), byrow = T)
-    colnames(probs.matrix) <- names(object@prob.cell.types[[type.data]]@set.list)
-    probs.matrix <- probs.matrix[, colnames(object@prob.cell.types[[type.data]]@prob.matrix)]
-    rownames(probs.matrix) <- unlist(object@prob.cell.types[[type.data]]@set.list)
-  }
-  # rownames(assay(DDLSChung.1@bulk.sim$train)) <- gene.list
-  # problem: HDF5Array in R 3.6 does not allow the use of dimnames, so I cannot
-  # subset data. Genes should be in order because the come from generated bulk samples.
-  # However, it is better to resolve this issue
-
-  ## scale counts matrix
-  # cpms
-  lib.sizes <- DelayedArray::colSums(counts)
-  prior.count.scaled <- 1L * length(lib.sizes) * lib.sizes / sum(lib.sizes)
-  counts <- t(log2((t(counts) + prior.count.scaled) /
-                     (lib.sizes +  2 * prior.count.scaled) * 1e+06))
-  # normalize
-  c.means <- DelayedArray::colMeans(counts)
-  c.sd <- DelayedMatrixStats::colSds(counts)
-  counts <- (t(counts) - c.means) / c.sd
-  s <- sample(seq(dim(counts)[1]))
-  counts <- counts[s, ]
-  sample.names <- sample.names[s]
-  probs.matrix <- probs.matrix[s, ]
-
-  if (verbose) {
-    message("    Writing data on disk:\n")
-  }
-  counts <- HDF5Array::writeHDF5Array(
-    x = counts,
-    filepath = file.backend,
-    name = type.data,
-    verbose = verbose,
-    chunkdim = c(number.rows, ncol(counts)),
-    level = compression.level
   )
-
-  return(SummarizedExperiment::SummarizedExperiment(
-    assays = list(sim.counts = counts),
-    rowData = sample.names,
-    colData = gene.list,
-    metadata = list(prob.matrix = probs.matrix)
-  ))
 }
 
-
-.prepareDataMemory <- function(
-  object = object,
-  type.data = type.data,
-  combine = combine,
-  file.backend = NULL,
-  number.rows = number.rows,
-  compression.level = NULL,
-  verbose = verbose
+.createSEObject <- function(
+  counts, 
+  samples.metadata, 
+  genes.metadata,
+  file.backend,
+  compression.level,
+  block.processing,
+  type.data,
+  verbose
 ) {
-  if (class(assay(bulk.sim(object)[[type.data]])) == "HDF5Matrix") {
-    counts <- matrix(assay(bulk.sim(object)[[type.data]]))
+  # could be a check of counts class -> if (is(counts, "HDF5Array"))
+  if (!is.null(file.backend) && !block.processing) {
+    counts <- .useH5backend(
+      counts = counts,
+      file.backend = file.backend,
+      compression.level = compression.level,
+      group = type.data,
+      sparse = FALSE,
+      verbose = verbose
+    )
+  }
+  return(
+    SummarizedExperiment::SummarizedExperiment(
+      assays = list(counts = counts),
+      colData = samples.metadata,
+      rowData = genes.metadata
+    )
+  )
+}
+
+.setBulk <- function(x, object, pattern) {
+  sep.b <- grepl(pattern = pattern, x = x)
+  if (any(sep.b)) {
+    cols <- match(x[sep.b], colnames(single.cell.simul(object))) %>% sort()
+    sim.counts <- as.matrix(counts(single.cell.simul(object))[, cols])
+    real.counts <- as.matrix(counts(single.cell.real(object))[, x[!sep.b]])
+    counts <- .mergeMatrices(x = real.counts, y = sim.counts) # merge matrices
+  } else if (all(sep.b)) {
+    cols <- match(x[sep.b], colnames(single.cell.simul(object))) %>% sort()
+    counts <- as.matrix(counts(single.cell.simul(object))[, cols])
   } else {
-    counts <- assay(bulk.sim(object)[[type.data]])
+    counts <- as.matrix(counts(single.cell.real(object))[, x])
   }
-  if (type.data == "test") {
-    combine <- "both"
-  }
-  if (combine == "both") {
-    counts <- cbind(
-      assay(object@single.cell.final)[, unlist(object@prob.cell.types[[type.data]]@set.list)],
-      counts
-    )
-    gene.list <- intersect(rowData(bulk.sim(object)[[type.data]])[[1]],
-                           rownames(assay(object@single.cell.final)))
-    sample.names <- c(
-      colnames(assay(object@single.cell.final)[,
-                                             unlist(object@prob.cell.types[[type.data]]@set.list)]),
-      colData(object@bulk.sim[[type.data]])[[1]]
-    )
-    tpsm <- matrix(unlist(sapply(
-      X = names(object@prob.cell.types[[type.data]]@set.list),
-      FUN = function (x, l) {
-        v <- rep(0,length(l))
-        names(v) <- names(l)
-        v[x] <- 100
-        return(rep(v, length(l[[x]])))
-      }, l = object@prob.cell.types[[type.data]]@set.list
-    )), ncol = length(object@prob.cell.types[[type.data]]@set.list), byrow = T)
-
-    colnames(tpsm) <- names(object@prob.cell.types[[type.data]]@set.list)
-    tpsm <- tpsm[, colnames(object@prob.cell.types[[type.data]]@prob.matrix)]
-    rownames(tpsm) <- unlist(object@prob.cell.types[[type.data]]@set.list)
-    probs.matrix <- rbind(tpsm, object@prob.cell.types[[type.data]]@prob.matrix)/100
-    rownames(probs.matrix) <- c(rownames(tpsm), colData(object@bulk.sim[[type.data]])[[1]])
-  } else if (combine == "bulk") {
-    gene.list <- rowData(bulk.sim(object)[[type.data]])[[1]]
-    sample.names <- colData(object@bulk.sim[[type.data]])[[1]]
-    probs.matrix <- object@prob.cell.types[[type.data]]@prob.matrix/100
-  } else if (combine == "single-cell") {
-    gene.list <- rownames(assay(object@single.cell.final))
-    colnames(assay(object@single.cell.final)[,unlist(
-      object@prob.cell.types[[type.data]]@set.list
-    )])
-    probs.matrix <- matrix(unlist(sapply(
-      X = names(object@prob.cell.types[[type.data]]@set.list),
-      FUN = function (x, l) {
-        v <- rep(0,length(l))
-        names(v) <- names(l)
-        v[x] <- 100
-        return(rep(v, length(l[[x]])))
-      }, l = object@prob.cell.types[[type.data]]@set.list
-    )), ncol = length(object@prob.cell.types[[type.data]]@set.list), byrow = T)
-    colnames(probs.matrix) <- names(object@prob.cell.types[[type.data]]@set.list)
-    probs.matrix <- probs.matrix[, colnames(object@prob.cell.types[[type.data]]@prob.matrix)]
-    rownames(probs.matrix) <- unlist(object@prob.cell.types[[type.data]]@set.list)
-  }
-  # rownames(assay(DDLSChung.1@bulk.sim$train)) <- gene.list
-  # cpms
-  counts <- edgeR::cpm.default(y = counts, log = TRUE, prior.count = 1)
-  # scaling
-  counts <- scale(counts)
-  # shuffling
-  s <- sample(seq(dim(counts)[2]))
-  counts <- t(counts[, s])
-  sample.names <- sample.names[s]
-  probs.matrix <- probs.matrix[s, ]
-
-  return(SummarizedExperiment::SummarizedExperiment(
-    assays = list(sim.counts = counts),
-    rowData = sample.names,
-    colData = gene.list,
-    metadata = list(prob.matrix = probs.matrix)
-  ))
+  return(rowSums(edgeR::cpm.default(counts)))  
 }

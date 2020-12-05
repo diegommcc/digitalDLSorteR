@@ -43,21 +43,35 @@ NULL
   file.backend,
   compression.level = 6,
   group = "single.cell",
+  sparse = TRUE,
   verbose = TRUE
 ) {
   if (!is.null(file.backend)) {
     if (file.exists(file.backend))
       stop("'file.backend' already exists. It must be a valid file path that does not exist")
     counts <- DelayedArray::DelayedArray(seed = counts)
-    counts <- HDF5Array::writeTENxMatrix(
-      x = counts,
-      filepath = file.backend,
-      group = group,
-      # chunkdim = HDF5Array::getHDF5DumpChunkDim(dim(counts)),
-      level = compression.level,
-      # with.dimnames = TRUE,
-      verbose = verbose
-    )
+    if (sparse) {
+      counts <- HDF5Array::writeTENxMatrix(
+        x = counts,
+        filepath = file.backend,
+        group = group,
+        # chunkdim = HDF5Array::getHDF5DumpChunkDim(dim(counts)),
+        level = compression.level,
+        # with.dimnames = TRUE,
+        verbose = verbose
+      )  
+    } else {
+      counts <- HDF5Array::writeHDF5Array( 
+        x = counts,
+        filepath = file.backend,
+        group = group,
+        chunkdim = HDF5Array::getHDF5DumpChunkDim(dim(counts)),
+        level = compression.level,
+        with.dimnames = TRUE,
+        verbose = verbose
+      )  
+    }
+    
   }
 }
 
