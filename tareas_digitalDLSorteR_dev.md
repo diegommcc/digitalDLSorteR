@@ -90,7 +90,7 @@ Dos versiones por debajo: una para el entrenamiento _on the fly_ y otra si las m
 ## Dudas durante el desarrollo
 
 * Qué hacer con el argumento `setType` de la función `estimateZinbParams`: es para establecer un tipo celular a evaluar. **Implementado**.
-
+* Mirar si el hecho de cargar entero un paquete dentro del paquete produce lentitud. En tal caso, `keras` probablemente sea un paquete relativamente grande, por lo que será mejor llamar a las funciones explícitamente.
 
 ## Links de interés
 
