@@ -22,33 +22,27 @@ NULL
   return(file.obj)
 }
 
-################################################################################
-################################## IMPORTANTE ##################################
-################################################################################
-## En esta función se van a hacer esas cosas, ya que son las tareas relacionadas
-# con la matriz de expresión exclusivamente. Hay que revisar que en los pasos 
-# anteriores no se hagan tareas fuera de lo que admite DalayedArray
-
-# Aquí se va a decidir si llamar a .readTabFiles o a .readLargeFIles
-# Si argumento large (o el tamaño del fichero, no sé qué es mejor) es T --> 
-# .readLargeFIles
-# Si argumento larege == F --> .readTabFiles
-
-# Aquí es donde se va a construir el objeto HDF5 y el fichero:
-# Si argumento file.backend != NULL --> usar HDF5Array.
-# Si argumento file.backend == NULL --> se carga normal.
-
 .useH5backend <- function(
   counts,
   file.backend,
-  compression.level = 6,
+  compression.level = NULL,
   group = "single.cell",
   sparse = TRUE,
   verbose = TRUE
 ) {
   if (!is.null(file.backend)) {
-    if (file.exists(file.backend))
-      stop("'file.backend' already exists. It must be a valid file path that does not exist")
+    if (file.exists(file.backend)) {
+      stop("'file.backend' already exists. It must be a valid file path that ", 
+           "does not exist")
+      if (is.null(compression.level)) {
+        compression.level <- HDF5Array::getHDF5DumpCompressionLevel()
+      } else {
+        if (compression.level < 0 || compression.level > 9) {
+          stop("compression.level must be an integer between 0 (no ", 
+               "compression) and 9 (highest and slowest compression). ")
+        }
+      }
+    }
     counts <- DelayedArray::DelayedArray(seed = counts)
     if (sparse) {
       counts <- HDF5Array::writeTENxMatrix(
@@ -73,11 +67,6 @@ NULL
     }
     
   }
-}
-
-.realizeProcessingH5 <- function() {
-  # code for realizing operations in HDF5 file: create a new slot in file and 
-  # remove the previous slot
 }
 
 .readCountsFile <- function(
@@ -119,7 +108,6 @@ NULL
   return(counts)
 }
 
-
 .createSCEObject <- function(
   counts, 
   cells.metadata, 
@@ -154,11 +142,11 @@ NULL
   tryCatch(expr = ID.column <- as.numeric(ID.column),
            error = function(e) invisible(x = NULL),
            warning = function(e) invisible(x = NULL))
-  if (class(ID.column) == "numeric") {
+  if (is(ID.column, "numeric") || is(ID.column, "integer")) {
     if (!ID.column %in% seq(ncol(metadata))) {
       stop(paste(ID.column, "column number is not present in", type.metadata))
     }
-  } else if (class(ID.column) == "character") {
+  } else if (is(ID.column, "character")) {
     if (!ID.column %in% colnames(metadata)) {
       stop(paste(ID.column, "column is not present in", type.metadata))
     }
@@ -262,7 +250,6 @@ NULL
   return(list(filtered.genes[[1]], cells.metadata, filtered.genes[[2]]))
 }
 
-
 .filterGenesSparse <- function(
   counts,
   genes.metadata,
@@ -315,7 +302,6 @@ NULL
   return(list(counts, genes.metadata))
 }
 
-
 .filterGenesHDF5 <- function(
   counts,
   genes.metadata,
@@ -324,22 +310,22 @@ NULL
   min.cells,
   fun.aggregate
 ) { 
-  # duplicated genes in counts matrix (and genes.metadata) (COMING SOON)
+  ##############################################################################
+  ################################# ATTENTION ##################################
+  # duplicated genes means that there are duplicated rownames and this is not 
+  # allowed by R, so I think that it is not necessary to implement. Check if 
+  # hdf5 files allow duplicated rownames (check with public data)
   dup.genes <- duplicated(rownames(counts))
   if (any(dup.genes)) {
     message("=== Aggregating ", sum(dup.genes), 
             " duplicated genes by ", fun.aggregate)
-    counts <- Matrix.utils::aggregate.Matrix(
-      x = counts, 
-      groupings = factor(rownames(counts)),
-      fun = fun.aggregate
-    )
+    counts.r <- DelayedArray::rowsum(x = counts[, 1:400], group = factor(rownames(counts)))
     genes.metadata <- genes.metadata[match(rownames(counts), 
                                            genes.metadata[, gene.ID.column]), ]
   }
   # removing genes without any expression
   row.zero <- DelayedMatrixStats::rowSums2(counts) > 0
-  if (!all(row.zero)) {
+    if (!all(row.zero)) {
     message(paste("=== Removing", sum(!row.zero),
                   "genes without expression in any cell"))
     counts <- counts[row.zero, ]
@@ -419,22 +405,8 @@ NULL
                  type.metadata = "genes.metadata",
                  arg = "gene.ID.column")
   }
-  # filter genes by min.counts and min.cells only when process data -> why?!
-  # if (filtering) {
-  #   filtered.genes <- .filterGenes(
-  #     counts = counts,
-  #     genes.metadata = genes.metadata,
-  #     gene.ID.column = gene.ID.column,
-  #     min.counts = min.counts,
-  #     min.cells = min.cells
-  #   )
-  #   return(list(filtered.genes[[1]], cells.metadata, filtered.genes[[2]]))
-  # } else {
-  #   return(list(counts, cells.metadata, genes.metadata))
-  # }
   return(list(counts, cells.metadata, genes.metadata))
 }
-
 
 .readHDF5 <- function(
   counts, 
@@ -450,7 +422,6 @@ NULL
     return(rhdf5::h5read(file = counts, name = name.dataset))
   }
 }
-
 
 .loadSingleCellData <- function(
   single.cell, 
@@ -470,6 +441,9 @@ NULL
   } else if (is.null(cell.ID.column) || is.null(gene.ID.column)) {
     stop("cell.ID.column and gene.ID.column are mandatory. Please look ",
          "?loadSCProfiles")
+  } else if (!fun.aggregate %in% c("sum", "mean", "median")) {
+    stop("'fun.aggregate' must be one of the following options: 'sum', 'mean' ", 
+         "or 'median'")
   }
   if (is(single.cell, "SingleCellExperiment")) {
     # extract data (no filtering)
@@ -546,13 +520,13 @@ NULL
 ########################## Load real single-cell data ##########################
 ################################################################################
 
-
-#' Load real scRNA-Seq data into a \code{DigitalDLSorter} object for simulating
-#' new profiles.
+#' Create a \code{DigitalDLSorter} object from single-cell RNA-seq data
 #'
-#' Load scRNA-Seq data into a \code{DigitalDLSorter} from file stored on disk or
-#' from a \code{SingleCellExperiment} object. Provided data must be composed by
-#' three pieces of information:
+#' Create a \code{DigitalDLSorter} object from single-cell RNA-seq data from
+#' files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5) or from a
+#' \code{SingleCellExperiment} object. Data will be store in
+#' \code{single.cell.real} slot. Provided data must be composed by three pieces
+#' of information:
 #'
 #' \itemize{ \item Single-cell counts: genes in rows and cells in columns. \item
 #' Cells metadata: with annotations (columns) for each cell (rows). \item Genes
@@ -564,26 +538,48 @@ NULL
 #' must contains single-cell counts in \code{assay} slot, cells metadata in
 #' \code{colData} slot and genes metadata in \code{rowData}.
 #'
-#' The difference with \code{\link{loadFinalSCProfiles}} is that data loaded
-#' with this functions will be used for estimating ZINB-WaVE parameters and
-#' simulating new single-cell profiles in order to increase the signal of cell
-#' types. On the other side, \code{\link{loadFinalSCProfiles}} loads data on
-#' \code{single.cell.final} slot, so this scRNA-seq profiles will be used
-#' directly for simulating bulk samples. In this case, data must be enough cells
-#' for each cell type and enough cells for simulating bulk profiles.
+#' This data can be used in order to simulate new single-cell profiles using the
+#' ZINB-WaVE framework with \code{\link{estimateZinbParams}} function. By this
+#' way, it is possible to increase the signal of cell types which are
+#' underrepresented in the original data set. If this step is not neccesary,
+#' these profiles will be used for simulating bulk RNA-seq with known
+#' composition.
 #'
-#' @param single.cell.real If data is provided from files,
-#'   \code{single.cell.real} must be a vector with three elements: single-cell
-#'   counts, cells metadata and genes metadata. If data is provided from a
-#'   \code{SingleCellExperiment} object, single-cell counts must be in
-#'   \code{assay} slot, cells metadata in \code{colData} and genes metadata in
-#'   \code{rowData}.
+#' @param single.cell.data If data is provided from files,
+#'   \code{single.cell.real} must be a vector with the file paths for three
+#'   elements: single-cell counts, cells metadata and genes metadata. If data is
+#'   provided from a \code{SingleCellExperiment} object, single-cell counts must
+#'   be in \code{assay} slot, cells metadata in \code{colData} slot and genes
+#'   metadata in \code{rowData} slot.
 #' @param cell.ID.column Name or number of the column in cells metadata
-#'   corresponding with cell names in expression matrix.
+#'   corresponding to cell names in expression matrix.
 #' @param gene.ID.column Name or number of the column in genes metadata
-#'   corresponding with the names used for features/genes.
+#'   corresponding to the names used for features/genes.
 #' @param min.counts Minimum gene counts to filter (0 by default).
 #' @param min.cells Minimum of cells with more than min.counts (0 by default).
+#' @param fun.aggregate In case of duplicated genes, it is possible to set the
+#'   function used for aggregating them. Allowed functions: \code{"sum"},
+#'   \code{"mean"}, \code{"median"}. Note that this functionality only works
+#'   when data are provided from a mtx file (sparse matrices) that allows
+#'   duplicated rownames. Otherwise, R does not allow duplicated rownames.
+#' @param file.backend Valid file path where to store loaded data as HDF5 file.
+#'   If provided, data is stored in HDF5 files as back-end by using
+#'   \code{\link{DelayedArray}} amd \code{\link{HDF5Array}} packages instead of
+#'   loaded in memory. This is suitable for situations where you have large
+#'   amount of data that cannot be allocated in memory. Note that operations on
+#'   this data will be carried out by blocks (i.e subsets of determined size),
+#'   which can lead to longer execution times. \code{NULL} by default.
+#' @param compression.level The compression level used if file.backend provided.
+#'   It is an integer value between 0 (no compression) and 9 (highest and
+#'   slowest compression). See ?\code{\link{getHDF5DumpCompressionLevel}} from
+#'   \code{\link{HDF5Array}} package for more information.
+#' @param block.processing Boolean indicating if data should be treated by
+#'   blocks (only if data are provided as HDF5 file). \code{FALSE} by default.
+#'   Note that using this functionality is suitable for cases where is not
+#'   possible to allocate data in memory and that exexcution times will be
+#'   larger.
+#' @param verbose Show informative messages during the execution. \code{TRUE} by
+#'   default.
 #' @param project Name of the project for \code{DigitalDLSorter} object.
 #'
 #' @export
@@ -592,7 +588,7 @@ NULL
 #'
 #' @examples
 #' sc.chung.breast <- single.cell.real(DDLSChungSmall)
-#' DDLSChungSmall <- loadRealSCProfiles(
+#' DDLSChungSmall <- loadSCProfiles(
 #'   single.cell.real = sc.chung.breast,
 #'   cell.ID.column = "Cell_ID",
 #'   gene.ID.column = "external_gene_name",
@@ -600,7 +596,7 @@ NULL
 #'   min.counts = 0,
 #'   project = "Chung_example"
 #' )
-#'
+#' 
 loadSCProfiles <- function(
   single.cell.data,
   cell.ID.column = 1,

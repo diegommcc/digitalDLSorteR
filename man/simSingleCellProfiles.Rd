@@ -11,6 +11,11 @@ simSingleCellProfiles(
   cell.type.column,
   n.cells,
   cell.types = NULL,
+  file.backend = NULL,
+  compression.level = NULL,
+  block.processing = FALSE,
+  block.size = 1000,
+  chunk.dims = NULL,
   verbose = TRUE
 )
 }
@@ -31,7 +36,7 @@ have 10 different cell types on your dataset, if \code{n.cells = 100}, then
 \item{verbose}{Show informative messages during the execution.}
 }
 \value{
-A \code{\link{DigitalDLSorter}} object with \code{single.cell.final}
+A \code{\link{DigitalDLSorter}} object with \code{single.cell.simul}
 slot containing a \code{SingleCellExperiment} object with the simulated
 single-cell profiles.
 }

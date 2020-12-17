@@ -126,14 +126,16 @@ generateBulkCellMatrix <- function(
   exclusive.types = NULL,
   verbose = TRUE
 ) {
-  if (class(object) != "DigitalDLSorter") {
+  if (!is(object, "DigitalDLSorter")) {
     stop("The object provided is not of DigitalDLSorter class")
   } else if (is.null(single.cell.real(object))) {
     stop("'single.cell.real' slot is empty")
   } else if (!train.freq.cells <= 0.95 || !train.freq.cells >= 0.05) {
-    stop("'train.seq.cells' argument must be less than or equal to 0.95 and greater than or equal to 0.05")
+    stop("'train.seq.cells' argument must be less than or equal to 0.95 and ", 
+         "greater than or equal to 0.05")
   } else if (!train.freq.bulk <= 0.95 || !train.freq.bulk >= 0.05) {
-    stop("'train.seq.bulk' argument must be less than or equal to 0.95 and greater than or equal to 0.05")
+    stop("'train.seq.bulk' argument must be less than or equal to 0.95 and ", 
+         "greater than or equal to 0.05")
   } else if (!is.data.frame(prob.design)) {
     stop(paste("prob.design must be a data.frame with three column names:",
                "cell.type.column: must be equal to cell.type.column in cells.metadata (colData slot of single.cell.final)",
@@ -204,15 +206,19 @@ generateBulkCellMatrix <- function(
                cell.type.column, "column"))
   } else if (!all(prob.design[, cell.type.column] %in%
                   unique(cells.metadata[, cell.type.column]))) {
-    stop("There are some cell types in prob.design that does not appear in cells.metadata. Check that the prob.design matrix is correctly built")
+    stop("There are some cell types in prob.design that does not appear in ", 
+         "cells.metadata. Check that the prob.design matrix is correctly built")
   } else if (any(prob.design$from < 0) || any(prob.design$from > 99)) {
-    stop("'from' column in prob.design must be greater than or equal to 0 and lesser than or equal to 99")
+    stop("'from' column in prob.design must be greater than or equal to 0 and ",
+         "lesser than or equal to 99")
   } else if (any(prob.design$to < 1) || any(prob.design$to > 100)) {
-    stop("'to' column in prob.design must be greater than or equal to 1 and lesser than or equal to 100")
+    stop("'to' column in prob.design must be greater than or equal to 1 and ", 
+         "lesser than or equal to 100")
   } else if (any(prob.design$from > prob.design$to)) {
     stop("'from' entries must be lesser than 'to' entries")
   } else if (any(abs(prob.design$from) + abs(prob.design$to) > 100)) {
-    stop("The sum between the 'from' and 'to' entries must not be greater than 100")
+    stop("The sum between the 'from' and 'to' entries must not be greater than", 
+         " 100")
   }
   ## check if n.cells is invalid
   if (n.cells <= 0) {
@@ -236,8 +242,8 @@ generateBulkCellMatrix <- function(
     limit = total.test
   )
   if (verbose) {
-    message(paste("\n=== The number of bulk samples that will be generated has been fixed to",
-                  num.bulk.samples))  
+    message(paste("\n=== The number of bulk samples that will be generated ", 
+                  "has been fixed to", num.bulk.samples))  
   }
   # split data into training and test sets
   cells <- rownames(cells.metadata) # [, cell.ID.column]
@@ -287,7 +293,7 @@ generateBulkCellMatrix <- function(
   }
   # print(levels(factor(train.types)))
   cell.type.train <- cell.type.names[cell.type.names %in% levels(factor(train.types))]
-  print(cell.type.train)
+  # print(cell.type.train)
   for (ts in cell.type.train) {
     train.set.list[[ts]] <- train.set[train.types == ts]
   }
@@ -296,7 +302,7 @@ generateBulkCellMatrix <- function(
   test.types <- names(test.set)
   test.set.list <- list()
   cell.type.test <- cell.type.names[cell.type.names %in% levels(factor(test.types))]
-  print(cell.type.test)
+  # print(cell.type.test)
   for (ts in cell.type.test) {
     test.set.list[[ts]] <- test.set[test.types == ts]
   }
@@ -941,7 +947,7 @@ simBulkSamples <- function(
   threads = 1,
   verbose = TRUE
 ) {
-  if (class(object) != "DigitalDLSorter") {
+  if (!is(object, "DigitalDLSorter")) {
     stop("The object provided is not of DigitalDLSorter class")
   } else if (is.null(single.cell.simul(object)) && 
              is.null(single.cell.real(object))) {
@@ -1060,7 +1066,7 @@ simBulkSamples <- function(
               "Only one block will be performed.", 
               call. = FALSE, immediate. = TRUE)
     }
-    if (is.null(chunk.dims) || length(chunk.dims) != 2) chunk.dims <- c(J, 128)
+    if (is.null(chunk.dims) || length(chunk.dims) != 2) chunk.dims <- c(J, 1)
     if (!file.exists(file.backend)) rhdf5::h5createFile(file.backend)
     rhdf5::h5createDataset(
       file.backend, type.data, 
@@ -1073,8 +1079,9 @@ simBulkSamples <- function(
     ## iteration over cells 
     for (iter in seq(ceiling(n / block.size))) {
       if ((block.size * iter) - n > 0) {
-        dif <- (block.size * iter) - n
-        block.size <- block.size - dif
+        dif <- block.size
+        dif.2 <- (block.size * iter) - n
+        block.size <- block.size - dif.2
       } else {
         dif <- block.size
       }
@@ -1087,7 +1094,7 @@ simBulkSamples <- function(
           FUN = .setBulk,
           object = object,
           pattern = pattern
-        )  
+        )
       } else {
         bulk.samples <- pbapply::pbapply(
           X = sel.bulk.cells[sub.i, ],
@@ -1106,6 +1113,9 @@ simBulkSamples <- function(
       } else {
         # check number of cells in the next loop
         rhdf5::h5set_extent(file.backend, type.data, dims = c(J, n))
+        # print("dimensions:")
+        # print((dif * (iter - 1)) + 1)
+        # print((dif * (iter - 1)) + ncol(bulk.samples))
         rhdf5::h5write(
           obj = bulk.samples, 
           file = file.backend, name = type.data, 
@@ -1180,14 +1190,14 @@ simBulkSamples <- function(
   sep.b <- grepl(pattern = pattern, x = x)
   if (any(sep.b)) {
     cols <- match(x[sep.b], colnames(single.cell.simul(object))) %>% sort()
-    sim.counts <- as.matrix(counts(single.cell.simul(object))[, cols])
-    real.counts <- as.matrix(counts(single.cell.real(object))[, x[!sep.b]])
+    sim.counts <- as.matrix(assay(single.cell.simul(object))[, cols])
+    real.counts <- as.matrix(assay(single.cell.real(object))[, x[!sep.b]])
     counts <- .mergeMatrices(x = real.counts, y = sim.counts) # merge matrices
   } else if (all(sep.b)) {
     cols <- match(x[sep.b], colnames(single.cell.simul(object))) %>% sort()
-    counts <- as.matrix(counts(single.cell.simul(object))[, cols])
+    counts <- as.matrix(assay(single.cell.simul(object))[, cols])
   } else {
-    counts <- as.matrix(counts(single.cell.real(object))[, x])
+    counts <- as.matrix(assay(single.cell.real(object))[, x])
   }
   return(rowSums(edgeR::cpm.default(counts)))  
 }

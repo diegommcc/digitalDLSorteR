@@ -86,7 +86,7 @@ estimateZinbwaveParams <- function(
   threads = 1,
   verbose = TRUE
 ) {
-  if (class(object) != "DigitalDLSorter") {
+  if (!is(object, "DigitalDLSorter")) {
     stop("The object provided is not of DigitalDLSorter class")
   } else if (is.null(single.cell.real(object))) {
     stop("single.cell.real slot is empty")

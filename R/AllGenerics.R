@@ -764,7 +764,7 @@ setMethod("saveRDS", "DigitalDLSorterDNN", definition = function(
       compress = compress,
       refhook = refhook
     )
-  } else if (class(model(object)) == "list") {
+  } else if (is(model(object), "list")) {
     base::saveRDS(
       object = object,
       file = file,

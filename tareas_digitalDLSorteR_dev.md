@@ -83,7 +83,7 @@ Dado que solo voy a implementar la posibilidad de generar las matrices _bulk_ si
 
 Finalmente 1000 muestras tardan alrededor de 5 minutos ordenando las células y utilizando un chunk = c(27mil, 1). No sé si habrá una combinación más eficiente.
 
-## Función `trainDigitalDLSorterMmodel`
+## Función `trainDigitalDLSorterModel`
 
 Dos versiones por debajo: una para el entrenamiento _on the fly_ y otra si las muestras bulk están ya generadas.    
 
@@ -91,12 +91,17 @@ Dos versiones por debajo: una para el entrenamiento _on the fly_ y otra si las m
 
 * Qué hacer con el argumento `setType` de la función `estimateZinbParams`: es para establecer un tipo celular a evaluar. **Implementado**.
 * Mirar si el hecho de cargar entero un paquete dentro del paquete produce lentitud. En tal caso, `keras` probablemente sea un paquete relativamente grande, por lo que será mejor llamar a las funciones explícitamente.
+* Hay muestras Bulk llenas de ceros. Esto es un problema a la hora de generarlos. Generar todo de nuevo y ver si el problema persiste.
+
 
 ## Links de interés
 
 * Explican lo del argumento `chunk`: <https://www.bioconductor.org/packages/devel/bioc/vignettes/rhdf5/inst/doc/practical_tips.html>
+* Link para implementar lo de meter filas en la matriz: <https://stackoverflow.com/questions/37625471/insert-row-at-a-specific-location-in-matrix-using-r>
 
+## Tareas que quedan
 
-
-Link para implementar lo de meter filas en la matriz:
-<https://stackoverflow.com/questions/37625471/insert-row-at-a-specific-location-in-matrix-using-r>
+* Probar todas las nuevas funcionalidades: implementar el preprocesamiento por chunks (mirar los libros de los ficheros HDF5).
+* Probar diferentes chunk.dim para comprobar cuál es la combinación más rápida en las muestras bulk.
+* Mirar lo de simular los perfiles de expresión con regresión linear.
+* Mirar el cálculo de los saliency.

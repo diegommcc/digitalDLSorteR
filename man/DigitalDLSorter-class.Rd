@@ -47,18 +47,10 @@ composition  matrix built for the simulation of bulk RNA-seq profiles. The
 entries determine the proportion of single-cell types that will constitute
 the simulated bulk samples.}
 
-\item{\code{bulk.sim}}{A list with two elements: train and test simulated bulk
+\item{\code{bulk.simul}}{A list with two elements: train and test simulated bulk
 RNA-seq. This data are stored as a \code{SummarizedExperiment} object. We
 recommend the use of HDF5 file as a back-end due to the large amount of
 memory that they occupy.}
-
-\item{\code{final.data}}{The final data that will be used for training and testing
-the Deep Neural Network. As in the previous slot, it is a list with two
-items, train and test. With respect to train counts matrix, it can be the
-train bulk RNA-seq samples, the train scRNA-seq samples or a combination of
-both. In the case of test counts matrix, RNA-seq data from bulk and
-single-cell will be combined. Moreover, data is scaled and shuffled for
-training.}
 
 \item{\code{trained.model}}{\code{\link{DigitalDLSorterDNN}} object with the trained
 model, different metrics obtained during the training and evaluation

@@ -6,13 +6,22 @@
 \usage{
 trainDigitalDLSorterModel(
   object,
+  combine = "both",
   batch.size = 128,
   num.epochs = 20,
+  num.hidden.layers = 2,
+  num.units = c(200, 200),
+  fun.activation = "relu",
+  dropout.rate = 0.25,
   val = FALSE,
   freq.val = 0.1,
   loss = "kullback_leibler_divergence",
   metrics = c("accuracy", "mean_absolute_error", "categorical_accuracy"),
+  custom.model = NULL,
+  shuffle = FALSE,
+  on.the.fly = TRUE,
   view.metrics.plot = TRUE,
+  threads = 1,
   verbose = TRUE
 )
 }

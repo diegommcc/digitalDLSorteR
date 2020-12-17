@@ -2,8 +2,7 @@
 % Please edit documentation in R/loadData.R
 \name{loadSCProfiles}
 \alias{loadSCProfiles}
-\title{Load real scRNA-Seq data into a \code{DigitalDLSorter} object for simulating
-new profiles.}
+\title{Create a \code{DigitalDLSorter} object from single-cell RNA-seq data}
 \usage{
 loadSCProfiles(
   single.cell.data,
@@ -20,29 +19,59 @@ loadSCProfiles(
 )
 }
 \arguments{
+\item{single.cell.data}{If data is provided from files,
+\code{single.cell.real} must be a vector with the file paths for three
+elements: single-cell counts, cells metadata and genes metadata. If data is
+provided from a \code{SingleCellExperiment} object, single-cell counts must
+be in \code{assay} slot, cells metadata in \code{colData} slot and genes
+metadata in \code{rowData} slot.}
+
 \item{cell.ID.column}{Name or number of the column in cells metadata
-corresponding with cell names in expression matrix.}
+corresponding to cell names in expression matrix.}
 
 \item{gene.ID.column}{Name or number of the column in genes metadata
-corresponding with the names used for features/genes.}
+corresponding to the names used for features/genes.}
 
 \item{min.counts}{Minimum gene counts to filter (0 by default).}
 
 \item{min.cells}{Minimum of cells with more than min.counts (0 by default).}
 
-\item{project}{Name of the project for \code{DigitalDLSorter} object.}
+\item{fun.aggregate}{In case of duplicated genes, it is possible to set the
+function used for aggregating them. Allowed functions: \code{"sum"},
+\code{"mean"}, \code{"median"}. Note that this functionality only works
+when data are provided from a mtx file (sparse matrices) that allows
+duplicated rownames. Otherwise, R does not allow duplicated rownames.}
 
-\item{single.cell.real}{If data is provided from files,
-\code{single.cell.real} must be a vector with three elements: single-cell
-counts, cells metadata and genes metadata. If data is provided from a
-\code{SingleCellExperiment} object, single-cell counts must be in
-\code{assay} slot, cells metadata in \code{colData} and genes metadata in
-\code{rowData}.}
+\item{file.backend}{Valid file path where to store loaded data as HDF5 file.
+If provided, data is stored in HDF5 files as back-end by using
+\code{\link{DelayedArray}} amd \code{\link{HDF5Array}} packages instead of
+loaded in memory. This is suitable for situations where you have large
+amount of data that cannot be allocated in memory. Note that operations on
+this data will be carried out by blocks (i.e subsets of determined size),
+which can lead to longer execution times. \code{NULL} by default.}
+
+\item{compression.level}{The compression level used if file.backend provided.
+It is an integer value between 0 (no compression) and 9 (highest and
+slowest compression). See ?\code{\link{getHDF5DumpCompressionLevel}} from
+\code{\link{HDF5Array}} package for more information.}
+
+\item{block.processing}{Boolean indicating if data should be treated by
+blocks (only if data are provided as HDF5 file). \code{FALSE} by default.
+Note that using this functionality is suitable for cases where is not
+possible to allocate data in memory and that exexcution times will be
+larger.}
+
+\item{verbose}{Show informative messages during the execution. \code{TRUE} by
+default.}
+
+\item{project}{Name of the project for \code{DigitalDLSorter} object.}
 }
 \description{
-Load scRNA-Seq data into a \code{DigitalDLSorter} from file stored on disk or
-from a \code{SingleCellExperiment} object. Provided data must be composed by
-three pieces of information:
+Create a \code{DigitalDLSorter} object from single-cell RNA-seq data from
+files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5) or from a
+\code{SingleCellExperiment} object. Data will be store in
+\code{single.cell.real} slot. Provided data must be composed by three pieces
+of information:
 }
 \details{
 \itemize{ \item Single-cell counts: genes in rows and cells in columns. \item
@@ -55,17 +84,16 @@ other hand, if data is provided as \code{SingleCellExperiment}, the object
 must contains single-cell counts in \code{assay} slot, cells metadata in
 \code{colData} slot and genes metadata in \code{rowData}.
 
-The difference with \code{\link{loadFinalSCProfiles}} is that data loaded
-with this functions will be used for estimating ZINB-WaVE parameters and
-simulating new single-cell profiles in order to increase the signal of cell
-types. On the other side, \code{\link{loadFinalSCProfiles}} loads data on
-\code{single.cell.final} slot, so this scRNA-seq profiles will be used
-directly for simulating bulk samples. In this case, data must be enough cells
-for each cell type and enough cells for simulating bulk profiles.
+This data can be used in order to simulate new single-cell profiles using the
+ZINB-WaVE framework with \code{\link{estimateZinbParams}} function. By this
+way, it is possible to increase the signal of cell types which are
+underrepresented in the original data set. If this step is not neccesary,
+these profiles will be used for simulating bulk RNA-seq with known
+composition.
 }
 \examples{
 sc.chung.breast <- single.cell.real(DDLSChungSmall)
-DDLSChungSmall <- loadRealSCProfiles(
+DDLSChungSmall <- loadSCProfiles(
   single.cell.real = sc.chung.breast,
   cell.ID.column = "Cell_ID",
   gene.ID.column = "external_gene_name",

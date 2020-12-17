@@ -34,9 +34,9 @@ training.}
 \item{\code{training.history}}{List with the evolution of the selected metrics during
 training.}
 
-\item{\code{eval.stats.model}}{Performance of the model on test data.}
+\item{\code{test.metrics}}{Performance of the model on test data.}
 
-\item{\code{predict.results}}{Deconvolution results matrix of test data. Columns are
+\item{\code{test.pred}}{Deconvolution results matrix of test data. Columns are
 cell types, rows are samples and each entry is the proportion of this cell
 type on this sample.}
 
@@ -45,7 +45,7 @@ type on this sample.}
 \item{\code{features}}{Vector with features used during training. These features will
 be used for the following predictions.}
 
-\item{\code{eval.stats.samples}}{Performance of the model on each sample of test data
+\item{\code{test.deconv.metrics}}{Performance of the model on each sample of test data
 in comparison with the known cell proportions.}
 }}
 

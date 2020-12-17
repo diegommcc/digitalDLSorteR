@@ -161,7 +161,22 @@ trainDigitalDLSorterModel <- function(
       name = paste0("BatchNormalization", i + 1)
     ) %>% layer_activation(activation = "softmax", name = "ActivationSoftmax")
   } else {
-    ## code checking if model is correct
+    # consider more situations where the function fails
+    if (!is(custom.model, "keras.engine.sequential.Sequential")) {
+      stop("'custom.model' must be a keras.engine.sequential.Sequential object")
+    } else if (keras::get_input_shape_at(custom.model$layers[[1]], 1)[[2]] != 
+               nrow(single.cell.real(object))) {
+      stop("The number of neurons of the first layer must be equal to the ", 
+           "number of genes considered by DigitalDLSorter object (", 
+           nrow(single.cell.real(object))," in this case)")
+    } else if (keras::get_output_shape_at(custom.model$layers[[length(custom.model$layers)]], 1)[[2]] != 
+               ncol(prob.cell.types(object, "train") %>% prob.matrix())) {
+      stop("The number of neurons of the last layer must be equal to the ", 
+           "number of cell types considered by DigitalDLSorter object (", 
+           ncol(prob.cell.types(object, "train") %>% prob.matrix()), 
+           " in this case)")
+    }
+    model <- custom.model
   }
   if (verbose) summary(model)
   # allow set optimizer?
@@ -175,8 +190,11 @@ trainDigitalDLSorterModel <- function(
                                prob.matrix()), "_S", 
                     collapse = "|")
   ## set if samples will be generated on the fly
-  if (on.the.fly) .dataForDNN <- .dataForDNN.onFly
-  else .dataForDNN <- .dataForDNN.file
+  if (on.the.fly) {
+    .dataForDNN <<- .dataForDNN.onFly
+  } else {
+    .dataForDNN <<- .dataForDNN.file
+  }
   
   ## training model
   if (val) {
@@ -250,11 +268,9 @@ trainDigitalDLSorterModel <- function(
       view_metrics = view.plot
     )
   }
-  
-  if (verbose) {
+  if (verbose)
     message(paste0("\n=== Evaluating DNN in test data (", n.test, " samples)"))
-  }
-  
+
   ## evaluation of the model: set by default, no options?
   gen.test <- .predictGenerator(
     object,
@@ -298,12 +314,12 @@ trainDigitalDLSorterModel <- function(
     Class = "DigitalDLSorterDNN",
     model = model,
     training.history = history,
-    eval.stats.model = test.eval,
-    predict.results = predict.results,
-    cell.types = rownames(prob.matrix.test),
+    test.metrics = test.eval,
+    test.pred = predict.results,
+    cell.types = colnames(prob.matrix.test),
     features = rownames(single.cell.real(object))
   )
-  object@trained.model <- network.object
+  trained.model(object) <- network.object
   
   message("DONE")
   return(object)
@@ -402,7 +418,7 @@ trainDigitalDLSorterModel <- function(
     else return(list(counts))
   }
 }
-
+## file
 .dataForDNN.file <- function(
   object,
   sel.data,
@@ -412,8 +428,7 @@ trainDigitalDLSorterModel <- function(
 ) {
   bulk.data <- grepl(pattern = "Bulk_", rownames(sel.data))
   if (any(bulk.data)) {
-    bulk.samples <-  as.matrix(assay(bulk.simul(object, type.data))
-                               [, rownames(sel.data)[bulk.data]])
+    bulk.samples <-  as.matrix(assay(bulk.simul(object, type.data))[, rownames(sel.data)[bulk.data]])
   } 
   if (any(!bulk.data))  {
     sel.cells <- rownames(sel.data)[!bulk.data]
@@ -421,9 +436,9 @@ trainDigitalDLSorterModel <- function(
     real.cells <- grep(pattern = pattern, sel.cells, value = TRUE, invert = TRUE)
     cell.samples <- mapply(FUN = function(x, y) {
       if (!is.null(x) && y == 1) {
-        return(as.matrix(assay(single.cell.simul(object))[, x]))
+        return(as.matrix(assay(single.cell.simul(object))[, x, drop = FALSE]))
       } else if (!is.null(x) && y == 2) {
-        return(as.matrix(assay(single.cell.real(object))[, x]))
+        return(as.matrix(assay(single.cell.real(object))[, x, drop = FALSE]))
       }
     }, x = list(sim.cells, real.cells), y = c(1, 2))
     cell.samples <- .mergeMatrices(x = cell.samples[[2]], y = cell.samples[[1]])
@@ -449,8 +464,7 @@ trainDigitalDLSorterModel <- function(
 ) {
   bulk.data <- grepl(pattern = "Bulk_", rownames(sel.data))
   if (any(bulk.data)) {
-    sel.bulk.cells <- prob.cell.types(object, type.data)@cell.names[
-      rownames(sel.data)[bulk.data], ]
+    sel.bulk.cells <- prob.cell.types(object, type.data)@cell.names[rownames(sel.data)[bulk.data], ]
     bulk.samples <- apply(
       X = sel.bulk.cells,
       MARGIN = 1,
@@ -607,7 +621,7 @@ saveTrainedModelAsH5 <- function(
   file.path,
   overwrite = FALSE
 ) {
-  if (class(object) != "DigitalDLSorter") {
+  if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
   } else if (is.null(trained.model(object))) {
     stop("'trained.model' slot is empty")
@@ -669,7 +683,7 @@ loadTrainedModelFromH5 <- function(
   file.path,
   reset.slot = FALSE
 ) {
-  if (class(object) != "DigitalDLSorter") {
+  if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
   } else if (!file.exists(file.path)) {
     stop(paste(file.path, "file does not exist. Please provide a valid file path"))
@@ -729,7 +743,7 @@ plotTrainingHistory <- function(
   title = "History of metrics during training",
   metrics = NULL
 ) {
-  if (class(object) != "DigitalDLSorter") {
+  if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
   } else if (is.null(trained.model(object))) {
     stop("'trained.model' slot is empty")
@@ -768,7 +782,7 @@ loadDeconvDataFromFile <- function(
   file.path,
   name.data = NULL
 ) {
-  if (class(object) != "DigitalDLSorter") {
+  if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
   }
   se.object <- SummarizedExperiment::SummarizedExperiment(
@@ -817,9 +831,9 @@ loadDeconvDataFromSummarizedExperiment <- function(
   se.object,
   name.data = NULL
 ) {
-  if (class(object) != "DigitalDLSorter") {
+  if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
-  } else if (class(se.object) != "SummarizedExperiment") {
+  } else if (!is(se.object, "SummarizedExperiment")) {
     stop("The provided object is not of SummarizedExperiment class")
   }
   if (length(assays(se.object)) == 0) {
@@ -1151,7 +1165,7 @@ deconvDigitalDLSorterObj <- function(
   simplify.majority = NULL,
   verbose = TRUE
 ) {
-  if (class(object) != "DigitalDLSorter") {
+  if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
   } else if (is.null(object@trained.model)) {
     stop("There is not trained model in DigitalDLSorter object")
