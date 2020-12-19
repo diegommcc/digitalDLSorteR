@@ -23,7 +23,7 @@ NULL
 #' since stromal and immune cells change significantly their profiles depending
 #' on the tissue and disease context.
 #'
-#' The package can be used in two ways: for deconvolving bulk RNA-seq samples
+#' The package can be used by two ways: for deconvolving bulk RNA-seq samples
 #' using a pre-trained model provided by us or for building your own models
 #' trained from your own scRNA-seq samples. These new models may be published in
 #' order to make them available for other users that work with similar data
