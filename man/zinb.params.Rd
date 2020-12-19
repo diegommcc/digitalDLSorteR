@@ -3,20 +3,20 @@
 \name{zinb.params}
 \alias{zinb.params}
 \alias{zinb.params<-}
-\title{Get and set \code{zinb.params} slot in a \code{DigitalDLSorter}
-object.}
+\title{Get and set \code{zinb.params} slot in a
+\code{\linkS4class{DigitalDLSorter}} object.}
 \usage{
 zinb.params(object)
 
 zinb.params(object) <- value
 }
 \arguments{
-\item{object}{A \code{DigitalDLSorter} object.}
+\item{object}{A \code{\linkS4class{DigitalDLSorter}} object.}
 
 \item{value}{A \code{ZinbParams} object with ZiNB-WaVE parameters estimated
 from real single-cell profiles.}
 }
 \description{
-Get and set \code{zinb.params} slot in a \code{DigitalDLSorter}
-object.
+Get and set \code{zinb.params} slot in a
+\code{\linkS4class{DigitalDLSorter}} object.
 }

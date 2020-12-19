@@ -2,7 +2,7 @@
 % Please edit documentation in R/dnnModel.R
 \name{deconvDigitalDLSorterObj}
 \alias{deconvDigitalDLSorterObj}
-\title{Deconvolute bulk gene expression samples (bulk RNA-Seq).}
+\title{Deconvolute bulk gene expression samples (bulk RNA-Seq)}
 \usage{
 deconvDigitalDLSorterObj(
   object,
@@ -79,7 +79,8 @@ DDLSSmallCompleted <- deconvDigitalDLSorterObj(
 \references{
 Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 Learning algorithm to quantify immune cell populations based on scRNA-Seq
-data. Frontiers in Genetics 10, 978. doi: \url{10.3389/fgene.2019.00978}
+data. Frontiers in Genetics 10, 978. doi:
+\href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
 }
 \seealso{
 \code{\link{trainDigitalDLSorterModel}}

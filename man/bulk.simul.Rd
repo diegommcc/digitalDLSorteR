@@ -3,15 +3,15 @@
 \name{bulk.simul}
 \alias{bulk.simul}
 \alias{bulk.simul<-}
-\title{Get and set \code{bulk.simul} slot in a \code{DigitalDLSorter}
-object.}
+\title{Get and set \code{bulk.simul} slot in a
+\code{\linkS4class{DigitalDLSorter}} object.}
 \usage{
 bulk.simul(object, type.data = "both")
 
 bulk.simul(object, type.data = "both") <- value
 }
 \arguments{
-\item{object}{A \code{DigitalDLSorter} object.}
+\item{object}{A \code{\linkS4class{DigitalDLSorter}} object.}
 
 \item{type.data}{Element of the list. Can be 'train', 'test' or 'both' (the
 last by default).}
@@ -20,6 +20,6 @@ last by default).}
 a \code{SummarizedExperiment} object with simulated bulk RNA-Seq samples.}
 }
 \description{
-Get and set \code{bulk.simul} slot in a \code{DigitalDLSorter}
-object.
+Get and set \code{bulk.simul} slot in a
+\code{\linkS4class{DigitalDLSorter}} object.
 }

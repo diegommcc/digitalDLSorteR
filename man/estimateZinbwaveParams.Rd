@@ -2,8 +2,8 @@
 % Please edit documentation in R/simSingleCell.R
 \name{estimateZinbwaveParams}
 \alias{estimateZinbwaveParams}
-\title{Estimate parameters for ZINB-WaVE model for simulating new single-cell
-expression profiles.}
+\title{Estimate parameters from ZINB-WaVE model for simulating new single-cell
+expression profiles}
 \usage{
 estimateZinbwaveParams(
   object,
@@ -20,39 +20,59 @@ estimateZinbwaveParams(
 )
 }
 \arguments{
-\item{object}{\code{\link{DigitalDLSorter}} object with a
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object with a
 \code{single.cell.real} slot.}
 
 \item{cell.ID.column}{Name or number of the column in cells metadata
-corresponding with cell names in expression matrix.}
+corresponding to cell names in expression matrix.}
 
 \item{gene.ID.column}{Name or number of the column in genes metadata
-corresponding with the notation used for features/genes.}
+corresponding to notation used for features/genes.}
 
 \item{cell.type.column}{Name or number of the column in cells metadata
-corresponding with cell type of each cell.}
+corresponding to cell type of each cell.}
 
 \item{cell.cov.columns}{Name or number of columns in cells metadata that will
-be used as covariates in the model during the estimation.}
+be used as covariates during the fitting of the model.}
 
 \item{gene.cov.columns}{Name or number of columns in genes metadata that will
-be used as covariates in the model during estimation.}
+be used as covariates during the fitting of the model.}
 
-\item{set.type}{Cell type to evaluate. 'All' by default.}
+\item{subset.cells}{Number of cells used for fitting the ZINB-WaVE model. It
+is useful when the original data set is too large for fitting the model.
+Set a value according to the original data set and the available resources
+of your computer. If \code{NULL} (by default), all cells will be used. It
+must be an integer greater than or equal to the number of cell types
+considered and lesser than or equal to the total cells.}
 
-\item{threads}{Number of threads used for the estimation. For setting the
-parallel environment \code{BiocParallel} package is used.}
+\item{proportional}{If \code{TRUE}, the original proportions of cell types in
+the subset of cells set in the argument \code{subset.cells} will be
+respected as far as possible. If \code{FALSE}, all cell types will have the
+same number of cells as far as possible.}
 
-\item{verbose}{Show informative messages during the execution.}
+\item{set.type}{Cell type to evaluate. \code{'All'} by default. We recommend
+fitting the model to all cell types instead of only a subset of them in
+order to capture the total variability of the original experiment although
+only a subset of cell types is to be simulated.}
+
+\item{threads}{Number of threads used for the estimation (1 by default). For
+setting the parallel environment \pkg{BiocParallel} package is used.}
+
+\item{verbose}{Show informative messages during the execution. \code{TRUE} by
+default.}
 }
 \value{
-A \code{DigitalDLSorter} object with \code{zinb.params} slot
-containing a \code{ZinbParams} object. This object contains the estimated
-ZINB parameters from real single-cell data.
+A \code{\linkS4class{DigitalDLSorter}} object with \code{zinb.params}
+slot containing a \code{\linkS4class{ZinbParams}} object. This object
+contains the estimated ZINB parameters from real single-cell data.
 }
 \description{
-Estimate parameters for the ZINB-WaVE model from a real single-cell data set
-using ZINB-WaVE model.
+Estimate parameters from ZINB-WaVE model from a real single-cell data set in
+order to simulate new single-cell profiles and to increase the signal of cell
+types underrepresented, training the Deep Neural Network in a more balanced
+way. \code{\link{simSingleCellProfiles}} function will use the estimated
+parameters for simulating new single-cell profiles. See
+\code{?\link{simSingleCellProfiles}} for more information.
 }
 \details{
 ZINB-WaVE is a flexible model for zero-inflated count data. This function
@@ -61,11 +81,11 @@ count of feature \eqn{j} for sample \eqn{i}) as a random variable following a
 zero-inflated negative binomial (ZINB) distribution. The estimated parameters
 will be used for the simulation of new single-cell expression profiles by
 sampling a negative binomial distribution and introducing dropouts from a
-binomial distribution. To do this, \code{\link{DigitalDLSorter}} uses
-\code{zinbEstimate} function from \code{splatter} package (Zappia et al.,
-2017),  that is a wrapper around \code{zinbFit} function from \code{zinbwave}
-package (Risso et al., 2018). For more details about the model, see Risso et
-al., 2018.
+binomial distribution. To do it, \pkg{digitalDLSorteR} uses
+\code{zinbEstimate} function from \pkg{splatter} package (Zappia et al.,
+2017), a wrapper around \code{zinbFit} function from \pkg{zinbwave} package
+(Risso et al., 2018). For more details about the model, see Risso et al.,
+2018.
 }
 \examples{
 \dontrun{
@@ -84,14 +104,17 @@ DDLSSmallCompleted <- estimateZinbwaveParams(
 \references{
 Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
 and flexible method for signal extraction from single-cell RNA-seq data.
-Nat Commun 9, 284. doi: \url{doi.org/10.1038/s41467-017-02554-5}.
+Nat Commun 9, 284. doi:
+\href{https://doi.org/10.1038/s41467-017-02554-5}{10.1038/s41467-017-02554-5}
 
 Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 algorithm to quantify immune cell populations based on scRNA-Seq data.
-Frontiers in Genetics 10, 978. doi: \url{10.3389/fgene.2019.00978}
+Frontiers in Genetics 10, 978. doi:
+\href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
 
 Zappia, L., Phipson, B. y Oshlack, A. Splatter: simulation of single-cell
-RNA sequencing data. Genome Biol. 2017; 18: 174.
+RNA sequencing data. Genome Biol. 2017; 18: 174. doi:
+\href{https://doi.org/10.1186/s13059-017-1305-0}{10.1186/s13059-017-1305-0}
 }
 \seealso{
 \code{\link{simSingleCellProfiles}}

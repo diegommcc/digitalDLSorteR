@@ -4,19 +4,19 @@
 \alias{test.metrics}
 \alias{test.metrics<-}
 \title{Get and set \code{test.metrics} slot in a
-\code{DigitalDLSorterDNN} object.}
+\code{\linkS4class{DigitalDLSorterDNN}} object.}
 \usage{
 test.metrics(object)
 
 test.metrics(object) <- value
 }
 \arguments{
-\item{object}{A \code{DigitalDLSorterDNN} object.}
+\item{object}{A \code{\linkS4class{DigitalDLSorterDNN}} object.}
 
 \item{value}{A \code{list} object with the resulting metrics after prediction
 on test data with DNN model.}
 }
 \description{
 Get and set \code{test.metrics} slot in a
-\code{DigitalDLSorterDNN} object.
+\code{\linkS4class{DigitalDLSorterDNN}} object.
 }

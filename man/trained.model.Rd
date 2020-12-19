@@ -3,19 +3,19 @@
 \name{trained.model}
 \alias{trained.model}
 \alias{trained.model<-}
-\title{Get and set \code{trained.model} slot in a \code{DigitalDLSorter}
-object.}
+\title{Get and set \code{trained.model} slot in a
+\code{\linkS4class{DigitalDLSorter}} object.}
 \usage{
 trained.model(object)
 
 trained.model(object) <- value
 }
 \arguments{
-\item{object}{A \code{DigitalDLSorter} object.}
+\item{object}{A \code{\linkS4class{DigitalDLSorter}} object.}
 
-\item{value}{A \code{DigitalDLSorterDNN} object.}
+\item{value}{A \code{\code{\linkS4class{DigitalDLSorterDNN}}} object.}
 }
 \description{
-Get and set \code{trained.model} slot in a \code{DigitalDLSorter}
-object.
+Get and set \code{trained.model} slot in a
+\code{\linkS4class{DigitalDLSorter}} object.
 }

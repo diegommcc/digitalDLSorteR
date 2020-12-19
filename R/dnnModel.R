@@ -7,49 +7,94 @@ NULL
 ######################## Train and evaluate DNN model ##########################
 ################################################################################
 
-#' Train \code{DigitalDLSorter} Deep Neural Network model.
+############################################
+# important: implement tryCatch functions for parameters that are passed to keras
+# in order to provided a custom error message
+# explain in documentation the useaga of on the fly training
+
+#' Train Deep Neural Network model
 #'
-#' Train \code{\link{DigitalDLSorter}} Deep Neural Network model with data store
-#' in \code{final.data} slot. Moreover, model is evaluated on test data and
-#' prediction results are produced.
+#' Train Deep Neural Network model with training data from
+#' \code{\linkS4class{DigitalDLSorter}} object. Moreover, model is evaluated on
+#' test data and prediction results are produced in order to determine the
+#' performance of the model (see \code{?\link{calculateEvalMetrics}} for
+#' details).
 #'
-#' All steps related with Deep Neural Network in \code{digitalDLSorteR} package
-#' are performed by using \code{keras} package, an API in R for \code{keras} in
-#' Python available from CRAN. We recommend use the guide of installation
-#' available on \url{https://keras.rstudio.com/} in order to set a custom
-#' configuration (type of back-end used, CPU or GPU, etc.).
+#' All steps related with Deep Learning in \pkg{digitalDLSorteR} package are
+#' performed by using \pkg{keras} package, an API in R for \pkg{keras} in Python
+#' available from CRAN. We recommend use the guide of installation available at
+#' \url{https://keras.rstudio.com/} in order to set a custom configuration (type
+#' of back-end used, CPU or GPU, etc.).
 #'
-#' Although \code{trainDigitalDLSorterModel} allows to select a custom loss
-#' function used during training, we recommend using Kullback-Leibler divergence
-#' because its better results. If you want to know more details about the
-#' architecture of the DNN and its construction, see Torroja and Sanchez-Cabo,
-#' 2019.
+#' By default, \code{trainDigitalDLSorterModel} implements the selected
+#' architecture by Torroja and Sánchez-Cabo, 2019. However, because of it is
+#' possible that the provided architecture does not produce good results, it is
+#' possible to change number of hidden layers, number of neurons for each hidden
+#' layers, dropout rate, activation function and loss function by using the
+#' corresponding arguments (see Arguments). For more customized models, it is
+#' possible to provide a pre-built model in \code{custom.model} (a
+#' \code{keras.engine.sequential.Sequential} object) where it is necessary that
+#' the number of input neurons is equal to the number of considered
+#' features/genes and the number of output neurons is equal to the number of
+#' considered cell types.
 #'
-#' @param object \code{\link{DigitalDLSorter}} object with \code{final.data}
-#'   slot.
+#' @param object \code{\linkS4class{DigitalDLSorter}} object with
+#'   \code{single.cell.real}/\code{single.cell.simul}, \code{prob.cell.matrix}
+#'   and, optionally, \code{bulk.simul} slots.
+#' @param combine Type of profiles (bulk, single-cell or both) that will be used
+#'   for training. It can be \code{'both'}, \code{single-cell} or \code{bulk}.
+#'   For test data, both types of profiles will be used.
 #' @param batch.size Number of samples per gradient update. If unspecified,
-#'   \code{batch.size} will default to 128.
+#'   \code{batch.size} will default to 64.
 #' @param num.epochs Number of epochs to train the model.
+#' @param num.hidden.layers NUmber of hidden layers of neural network. This
+#'   number must be equal to the length of \code{num.units} argument.
+#' @param num.units Vector indicating the number of neurons per hidden layer.
+#'   The length of this vector must be equal to \code{num.hidden.layers}
+#'   argument.
+#' @param activation.fun Activation function to use. Look at
+#'   \href{https://keras.rstudio.com/reference/activation_relu.html}{keras
+#'   documentation} to know available activation functions (\code{'relu'} by
+#'   default).
+#' @param dropout.rate Float between 0 and 1 indicating the fraction of the
+#'   input neurons to drop in layer dropouts (0.25 by default). By default,
+#'   \pkg{digitalDLSorteR} implements dropout layers for each hidden layer.
 #' @param val Boolean that determines if a validation subset is used during
 #'   training (\code{FALSE} by default).
-#' @param freq.val Number between 0.1 and 0.5 that determines the number of
+#' @param freq.val Float between 0.1 and 0.5 that determines the number of
 #'   samples from training data that will be used as validation subset.
 #' @param loss Character indicating loss function selected for training the
-#'   model (Kullback-Leibler divergence by default). Look at keras documentation
-#'   to see available loss functions.
+#'   model (Kullback-Leibler divergence by default). Look at
+#'   \href{https://keras.rstudio.com/reference/loss_mean_squared_error.html}{keras
+#'    documentation} to know available loss functions.
 #' @param metrics Vector of metrics used to evaluate the performance of the
 #'   model during training and on test data (\code{c("accuracy",
-#'   "mean_absolute_error", "categorical_accuracy")} by default)
-#' @param view.metrics.plot Boolean indicating if show progression plots of
-#'   loss and metrics during training (\code{TRUE} by default). \code{keras} for
-#'   R allows to see the progression of the model during training if you are
+#'   "mean_absolute_error", "categorical_accuracy")} by default). Look at
+#'   \href{https://keras.rstudio.com/reference/metric_binary_accuracy.html}{keras
+#'    documentation} to know available performance metrics.
+#' @param custom.model Allows to use a more customized neural network. It must
+#'   be a \code{keras.engine.sequential.Sequential} object (\code{NULL} by
+#'   default). If provided, the arguments related to neural network architecture
+#'   will be ignored.
+#' @param shuffle Boolean indicating if data will be shuffled (\code{TRUE} by
+#'   default). Note that if \code{bulk.simul} is not \code{NULL}, data already
+#'   has been shuffled and \code{shuffle} will be ignored.
+#' @param on.the.fly Boolean indicating if data will be generated on the fly
+#'   during training.
+#' @param view.metrics.plot Boolean indicating if show progression plots of loss
+#'   and metrics during training (\code{TRUE} by default). \pkg{keras} for R
+#'   allows to see the progression of the model during training if you are
 #'   working on RStudio.
+#' @param threads Number of threads used during the generation of bulk samples
+#'   if \code{on.the.fly = TRUE} (1 by default).
 #' @param verbose Boolean indicating if show the progression of the model during
-#'   training. Besides, it is shown information about the architecture of the
-#'   model (\code{TRUE} by default).
-#' @return A \code{\link{DigitalDLSorter}} object with \code{trained.model} slot
-#'   containing a \code{\link{DigitalDLSorterDNN}} object. For more information
-#'   about the structure of this class, see \code{\link{DigitalDLSorterDNN}}.
+#'   training and information about the architecture of the model (\code{TRUE}
+#'   by default).
+#'
+#' @return A \code{\linkS4class{DigitalDLSorter}} object with
+#'   \code{trained.model} slot containing a
+#'   \code{\linkS4class{DigitalDLSorterDNN}} object. For more information about
+#'   the structure of this class, see \code{\linkS4class{DigitalDLSorterDNN}}.
 #'
 #' @export
 #'
@@ -67,16 +112,17 @@ NULL
 #'
 #' @references Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq
-#'   data. Frontiers in Genetics 10, 978. doi: \url{10.3389/fgene.2019.00978}
-#'
+#'   data. Frontiers in Genetics 10, 978. doi:
+#'   \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
+#'   
 trainDigitalDLSorterModel <- function(
   object,
   combine = "both",
-  batch.size = 128,
+  batch.size = 64,
   num.epochs = 20,
   num.hidden.layers = 2,
   num.units = c(200, 200),
-  fun.activation = "relu",
+  activation.fun = "relu",
   dropout.rate = 0.25,
   val = FALSE,
   freq.val = 0.1,
@@ -149,7 +195,7 @@ trainDigitalDLSorterModel <- function(
       }
       model <- model %>% 
         layer_batch_normalization(name = paste0("BatchNormalization", i)) %>%
-        layer_activation(activation = fun.activation, 
+        layer_activation(activation = activation.fun, 
                          name = paste0("ActivationReLu", i)) %>%
         layer_dropout(rate = dropout.rate, name = paste0("Dropout", i))
     }
@@ -325,7 +371,6 @@ trainDigitalDLSorterModel <- function(
   return(object)
 }
 
-## en este itero sobre prob.matrix 
 .trainGenerator <- function(
   object,
   prob.matrix,
@@ -418,7 +463,7 @@ trainDigitalDLSorterModel <- function(
     else return(list(counts))
   }
 }
-## file
+
 .dataForDNN.file <- function(
   object,
   sel.data,
@@ -599,273 +644,6 @@ trainDigitalDLSorterModel <- function(
   return(m.new)
 }
 
-
-#' Save on disk trained DigitalDLSorter DNN model as HDF5 file.
-#'
-#' Save on disk the trained model in HDF5 format. Note that this function does
-#' not save the \code{\link{DigitalDLSorterDNN}} object, but the trained keras
-#' model.
-#'
-#' @param object \code{\link{DigitalDLSorter}} object with \code{trained.model}
-#'   slot.
-#' @param file.path Valid file path where saving the model.
-#' @param overwrite Overwrite file if it already exists.
-#'
-#' @export
-#'
-#' @seealso \code{\link{trainDigitalDLSorterModel}}
-#'   \code{\link{loadTrainedModelFromH5}}
-#'
-saveTrainedModelAsH5 <- function(
-  object,
-  file.path,
-  overwrite = FALSE
-) {
-  if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
-  } else if (is.null(trained.model(object))) {
-    stop("'trained.model' slot is empty")
-  } else if (is.null(trained.model(object)@model)) {
-    stop("There is not model to save on disk. First, train model with ",
-         "trainDigitalDLSorterModel function")
-  }
-  if (file.exists(file.path)) {
-    if (overwrite) {
-      message(paste(file.path, "file exists. Since 'overwrite' argument is",
-                    "TRUE, it will be overwritten"))
-    } else {
-      stop(paste(file.path, "file exists"))
-    }
-  }
-  if (is(trained.model(object)@model, "list")) {
-    warning(paste("Trained model is not a keras object, but a R list with",
-                  "architecture of network and weights. The R object will be",
-                  "compiled and saved as HDF5 file, but the optimizer state",
-                  "will not be saved\n\n"))
-    model <- .loadModelFromJSON(trained.model(object))
-    model <- model(model)
-  } else {
-    model <- trained.model(object)@model
-  }
-  tryCatch({
-    save_model_hdf5(object = model,
-                    filepath = file.path,
-                    overwrite = overwrite,
-                    include_optimizer = TRUE)
-  }, error = function(cond) {
-    message(paste("\nProblem during saving", file.path))
-    stop(cond)
-  })
-}
-
-
-#' Load from HDF5 file a trained DigitalDLSorter DNN model.
-#'
-#' Load from HDF5 file a trained DigitalDLSorter DNN model into a
-#' \code{\link{DigitalDLSorter}} object. Note that HDF5 file must be a keras
-#' valid trained model.
-#'
-#' @param object \code{\link{DigitalDLSorter}} object with \code{trained.model}
-#'   slot.
-#' @param file.path Valid file path where model are stored.
-#' @param reset.slot Remove \code{trained.slot} if it already exists. A new
-#'   \code{\link{DigitalDLSorterDNN}} object will be formed, but it will not
-#'   contain other slots (\code{FALSE} by default).
-#'
-#' @export
-#'
-#' @seealso \code{\link{trainDigitalDLSorterModel}}
-#'   \code{\link{deconvDigitalDLSorterObj}}
-#'   \code{\link{saveTrainedModelAsH5}}
-#'
-loadTrainedModelFromH5 <- function(
-  object,
-  file.path,
-  reset.slot = FALSE
-) {
-  if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
-  } else if (!file.exists(file.path)) {
-    stop(paste(file.path, "file does not exist. Please provide a valid file path"))
-  }
-  if (!is.null(trained.model(object))) {
-    slot.exists <- TRUE
-    message("'trained.model' slot is not empty:")
-    if (reset.slot) {
-      message("  'reset.slot' is TRUE, 'trained.model' slot will be restart")
-    } else {
-      message("  'reset.slot' is FALSE, only 'model' slot of DigitalDLSorterDNN",
-              "object will be overwritten")
-    }
-  } else {
-    slot.exists <- FALSE
-  }
-  tryCatch({
-    loaded.model <- load_model_hdf5(filepath = file.path, compile = TRUE)
-  }, error = function(cond) {
-    message(paste("\n", file.path, "file provided is not a valid Keras model:"))
-    stop(cond)
-  })
-
-  if (!slot.exists) {
-    model <- new(Class = "DigitalDLSorterDNN",
-                 model = loaded.model)
-  } else {
-    if (reset.slot) {
-      model <- new(Class = "DigitalDLSorterDNN",
-                   model = loaded.model)
-    } else {
-      model(object@trained.model) <- loaded.model
-      return(object)
-    }
-  }
-  trained.model(object) <- model
-  return(object)
-}
-
-#' Plot training history of a trained DigitalDLSorter DNN model.
-#'
-#' Plot training history of a trained DigitalDLSorter DNN model.
-#'
-#' @param object \code{DigitalDLSorter} object with \code{trained.model} slot.
-#' @param title Title of plot.
-#' @param metrics Which metrics to plot. If it is equal to \code{NULL} (by
-#'   default), all metrics available on \code{\link{DigitalDNNSorter}} object
-#'   will be plotted.
-#'
-#' @export
-#'
-#' @seealso \code{\link{trainDigitalDLSorterModel}}
-#'   \code{\link{deconvDigitalDLSorterObj}}
-#'
-plotTrainingHistory <- function(
-  object,
-  title = "History of metrics during training",
-  metrics = NULL
-) {
-  if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
-  } else if (is.null(trained.model(object))) {
-    stop("'trained.model' slot is empty")
-  } else if (is.null(trained.model(object)@training.history)) {
-    stop("There is not training history on the provided object")
-  }
-  if (!is.null(metrics)) {
-    if (!all(metrics %in% names(object@trained.model@training.history$metrics))) {
-      stop("Some of the given metrics are not present in the provided object")
-    }
-  }
-  plot(object@trained.model@training.history,
-       metrics = metrics, method = "ggplot2") + ggtitle(title)
-}
-
-
-#' Load data to deconvolute from tabulated text file.
-#'
-#' Load data to deconvolute from text file. Accepted formats are tsv and tsv.gz.
-#' You must specify the correct extension.
-#'
-#' @param object \code{\link{DigitalDLSorter}} object with \code{trained.model}
-#'   slot.
-#' @param file.path File path where data is stored.
-#' @param name.data Name with which the data is stored in
-#'   \code{\link{DigitalDLSorter}} object. If \code{name.data} is not provided,
-#'   base name of file is used.
-#'
-#' @export
-#'
-#' @seealso \code{\link{trainDigitalDLSorterModel}}
-#'   \code{\link{deconvDigitalDLSorterObj}}
-#'
-loadDeconvDataFromFile <- function(
-  object,
-  file.path,
-  name.data = NULL
-) {
-  if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
-  }
-  se.object <- SummarizedExperiment::SummarizedExperiment(
-    assays = list(counts = .readTabFiles(file = file.path))
-  )
-  # generate name for data if is not provided
-  if (is.null(name.data)) {
-    name.data <- tools::file_path_sans_ext(basename(file.path))
-  }
-  # create or not a new list
-  if (is.null(object@deconv.data)) list.data <- list()
-  else list.data <- object@deconv.data
-  # check if name.data exists
-  if (name.data %in% names(list.data)) {
-    stop(paste(name.data, "data already exists in deconv.data slot"))
-  }
-  list.data[[name.data]] <- se.object
-  object@deconv.data <- list.data
-
-  return(object)
-}
-
-
-## check si la matriz tiene colnames y rownames
-## hacer genérica y que funione de forma diferente en función de si es
-## SummarizedExperiment o matrix
-
-
-#' Load data to deconvolute from \code{SummarizedExperiment} object.
-#'
-#' Load data in \code{\link{DigitalDLSorter}} object to deconvolute from
-#' \code{SummarizedExperiment} object.
-#'
-#' @param object \code{DigitalDLSorter} object with \code{trained.model} slot.
-#' @param se.object \code{SummarizedExperiment} object.
-#' @param name.data Name with which the data is stored in \code{DigitalDLSorter}
-#'   object.
-#'
-#' @export
-#'
-#' @seealso \code{\link{trainDigitalDLSorterModel}}
-#'   \code{\link{deconvDigitalDLSorterObj}}
-#'
-loadDeconvDataFromSummarizedExperiment <- function(
-  object,
-  se.object,
-  name.data = NULL
-) {
-  if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
-  } else if (!is(se.object, "SummarizedExperiment")) {
-    stop("The provided object is not of SummarizedExperiment class")
-  }
-  if (length(assays(se.object)) == 0) {
-    stop("assay slot of SummarizedExperiment object is empty")
-  } else if (length(assays(se.object)) > 1) {
-    warning(paste("There are more than one assays in SummarizedExperiment object,",
-                  "only the first assay will be considered. Remember that it is", "
-                  recommended that the provided data be of the same nature as",
-                  "the data with which the model has been trained (e.g. TPMs)"))
-  }
-  # generate name for data if is not provided
-  if (is.null(name.data)) {
-    if (is.null(deconv.data(object))) {
-      name.data <- "deconv_1"
-    } else {
-      name.data <- paste0("decon_", length(deconv.data(object)) + 1)
-    }
-  }
-  # create or not a new list
-  if (is.null(deconv.data(object))) list.data <- list()
-  else list.data <- deconv.data(object)
-  # check if name.data exists
-  if (name.data %in% names(list.data)) {
-    stop(paste(name.data, "data already exists in deconv.data slot"))
-  }
-  list.data[[name.data]] <- se.object
-  deconv.data(object) <- list.data
-
-  return(object)
-}
-
-
 .simplifySet <- function(vec, index, set) {
   summ <- sum(vec[index])
   # vec <- vec[-index]
@@ -950,9 +728,8 @@ loadDeconvDataFromSummarizedExperiment <- function(
 ##################### Deconvolution of new bulk samples ########################
 ################################################################################
 
-
 #' Deconvolute bulk gene expression samples (bulk RNA-Seq) using a pre-trained
-#' DigitalDLSorter model.
+#' DigitalDLSorter model
 #'
 #' Deconvolute bulk gene expression samples (RNA-Seq) quantifying the proportion
 #' of cell types present in a bulk sample. See in Details the available models.
@@ -1034,7 +811,7 @@ loadDeconvDataFromSummarizedExperiment <- function(
 #' @references Chung, W., Eum, H. H., Lee, H. O., Lee, K. M., Lee, H. B., Kim,
 #' K. T., et al. (2017). Single-cell RNA-seq enables comprehensive tumour and
 #' immune cell profiling in primary breast cancer. Nat. Commun. 8 (1), 15081.
-#' doi: \url{10.1038/ncomms15081}.
+#' doi: \href{https://doi.org/10.1038/ncomms15081}{10.1038/ncomms15081}.
 #'
 deconvDigitalDLSorter <- function(
   data,
@@ -1095,7 +872,7 @@ deconvDigitalDLSorter <- function(
 }
 
 
-#' Deconvolute bulk gene expression samples (bulk RNA-Seq).
+#' Deconvolute bulk gene expression samples (bulk RNA-Seq)
 #'
 #' Deconvolute bulk gene expression samples (bulk RNA-Seq) enumerating and
 #' quantifying the proportion of cell types present in a bulk sample. This
@@ -1154,8 +931,9 @@ deconvDigitalDLSorter <- function(
 #' }
 #' @references Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq
-#'   data. Frontiers in Genetics 10, 978. doi: \url{10.3389/fgene.2019.00978}
-#'
+#'   data. Frontiers in Genetics 10, 978. doi:
+#'   \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
+#'   
 deconvDigitalDLSorterObj <- function(
   object,
   name.data,

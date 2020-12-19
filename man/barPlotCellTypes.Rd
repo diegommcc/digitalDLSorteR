@@ -44,15 +44,15 @@ barPlotCellTypes(
 )
 }
 \arguments{
-\item{data}{\code{DigitalDLSorter} object with \code{deconv.results} slot or
-\code{data.frame}/\code{matrix} with cell types as columns and samples as
-rows.}
+\item{data}{\code{\linkS4class{DigitalDLSorter}} object with
+\code{deconv.results} slot or \code{data.frame}/\code{matrix} with cell
+types as columns and samples as rows.}
 
 \item{colors}{Vector with colors that will be used.}
 
 \item{simplify}{Type of simplification performed during deconvolution. It can
 be \code{simpli.set} or \code{simpli.maj} (\code{NULL} by default). It is
-only for \code{\link{DigitalDLSorter}} object.}
+only for \code{\linkS4class{DigitalDLSorter}} object.}
 
 \item{color.line}{Color of border bars.}
 
@@ -79,6 +79,7 @@ proportions of a given bulk RNA-seq sample using ggplot2.
 \examples{
 ## Using a matrix
 \dontrun{barPlotCellTypes(deconvResults)}
+
 ## Using a DigitalDLSorter object
 barPlotCellTypes(DDLSSmallCompleted, name.data = "TCGA.breast")
 

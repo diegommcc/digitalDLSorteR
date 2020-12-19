@@ -3,7 +3,7 @@
 \name{deconvDigitalDLSorter}
 \alias{deconvDigitalDLSorter}
 \title{Deconvolute bulk gene expression samples (bulk RNA-Seq) using a pre-trained
-DigitalDLSorter model.}
+DigitalDLSorter model}
 \usage{
 deconvDigitalDLSorter(
   data,
@@ -103,7 +103,7 @@ results3 <- deconvDigitalDLSorter(
 Chung, W., Eum, H. H., Lee, H. O., Lee, K. M., Lee, H. B., Kim,
 K. T., et al. (2017). Single-cell RNA-seq enables comprehensive tumour and
 immune cell profiling in primary breast cancer. Nat. Commun. 8 (1), 15081.
-doi: \url{10.1038/ncomms15081}.
+doi: \href{https://doi.org/10.1038/ncomms15081}{10.1038/ncomms15081}.
 }
 \seealso{
 \code{\link{deconvDigitalDLSorterObj}}

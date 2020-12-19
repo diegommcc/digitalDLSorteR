@@ -3,20 +3,20 @@
 \name{single.cell.simul}
 \alias{single.cell.simul}
 \alias{single.cell.simul<-}
-\title{Get and set \code{single.cell.simul} slot in a \code{DigitalDLSorter}
-object.}
+\title{Get and set \code{single.cell.simul} slot in a
+\code{\linkS4class{DigitalDLSorter}} object.}
 \usage{
 single.cell.simul(object)
 
 single.cell.simul(object) <- value
 }
 \arguments{
-\item{object}{A \code{DigitalDLSorter} object.}
+\item{object}{A \code{\linkS4class{DigitalDLSorter}} object.}
 
 \item{value}{A \code{SingleCellExperiment} object with real and simulated
 single-cell profiles.}
 }
 \description{
-Get and set \code{single.cell.simul} slot in a \code{DigitalDLSorter}
-object.
+Get and set \code{single.cell.simul} slot in a
+\code{\linkS4class{DigitalDLSorter}} object.
 }

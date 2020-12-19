@@ -3,19 +3,19 @@
 \name{cell.types}
 \alias{cell.types}
 \alias{cell.types<-}
-\title{Get and set \code{cell.types} slot in a \code{DigitalDLSorterDNN}
-object.}
+\title{Get and set \code{cell.types} slot in a
+\code{\linkS4class{DigitalDLSorterDNN}} object.}
 \usage{
 cell.types(object)
 
 cell.types(object) <- value
 }
 \arguments{
-\item{object}{A \code{DigitalDLSorterDNN} object.}
+\item{object}{A \code{\linkS4class{DigitalDLSorterDNN}} object.}
 
 \item{value}{A \code{vector} with cell types considered by DNN model.}
 }
 \description{
-Get and set \code{cell.types} slot in a \code{DigitalDLSorterDNN}
-object.
+Get and set \code{cell.types} slot in a
+\code{\linkS4class{DigitalDLSorterDNN}} object.
 }

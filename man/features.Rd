@@ -3,19 +3,19 @@
 \name{features}
 \alias{features}
 \alias{features<-}
-\title{Get and set \code{features} slot in a \code{DigitalDLSorterDNN}
-object.}
+\title{Get and set \code{features} slot in a
+\code{\linkS4class{DigitalDLSorterDNN}} object.}
 \usage{
 features(object)
 
 features(object) <- value
 }
 \arguments{
-\item{object}{A \code{DigitalDLSorterDNN} object.}
+\item{object}{A \code{\linkS4class{DigitalDLSorterDNN}} object.}
 
 \item{value}{A \code{vector} with features (genes) considered by DNN model.}
 }
 \description{
-Get and set \code{features} slot in a \code{DigitalDLSorterDNN}
-object.
+Get and set \code{features} slot in a
+\code{\linkS4class{DigitalDLSorterDNN}} object.
 }

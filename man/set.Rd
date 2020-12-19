@@ -3,17 +3,19 @@
 \name{set}
 \alias{set}
 \alias{set<-}
-\title{Get and set \code{set} slot in a \code{ProbMatrixCellTypes} object.}
+\title{Get and set \code{set} slot in a
+\code{\linkS4class{ProbMatrixCellTypes}} object.}
 \usage{
 set(object)
 
 set(object) <- value
 }
 \arguments{
-\item{object}{A \code{ProbMatrixCellTypes} object.}
+\item{object}{A \code{\linkS4class{ProbMatrixCellTypes}} object.}
 
 \item{value}{Vector with the names of cells present in the object.}
 }
 \description{
-Get and set \code{set} slot in a \code{ProbMatrixCellTypes} object.
+Get and set \code{set} slot in a
+\code{\linkS4class{ProbMatrixCellTypes}} object.
 }

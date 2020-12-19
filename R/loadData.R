@@ -526,21 +526,20 @@ NULL
 #' files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5) or from a
 #' \code{SingleCellExperiment} object. Data will be store in
 #' \code{single.cell.real} slot. Provided data must be composed by three pieces
-#' of information:
-#'
-#' \itemize{ \item Single-cell counts: genes in rows and cells in columns. \item
-#' Cells metadata: with annotations (columns) for each cell (rows). \item Genes
-#' metadata with annotations (columns) for each gene (rows). } In the case that
-#' data is provided from files, \code{single.cell.real} argument must be a
-#' vector of three elements ordered so that the first file corresponds to
-#' counts, the second to cells metadata and the last to genes metadata. On the
-#' other hand, if data is provided as \code{SingleCellExperiment}, the object
-#' must contains single-cell counts in \code{assay} slot, cells metadata in
-#' \code{colData} slot and genes metadata in \code{rowData}.
+#' of information: \itemize{ \item Single-cell counts: genes in rows and cells
+#' in columns. \item Cells metadata: with annotations (columns) for each cell
+#' (rows). \item Genes metadata with annotations (columns) for each gene (rows).
+#' } In the case that data is provided from files, \code{single.cell.real}
+#' argument must be a vector of three elements ordered so that the first file
+#' corresponds to matrix counts, the second to cells metadata and the last to
+#' genes metadata. On the other hand, if data is provided as
+#' \code{SingleCellExperiment}, the object must contains single-cell counts in
+#' \code{assay} slot, cells metadata in \code{colData} slot and genes metadata
+#' in \code{rowData}.
 #'
 #' This data can be used in order to simulate new single-cell profiles using the
-#' ZINB-WaVE framework with \code{\link{estimateZinbParams}} function. By this
-#' way, it is possible to increase the signal of cell types which are
+#' ZINB-WaVE framework with \code{\link{estimateZinbwaveParams}} function. By
+#' this way, it is possible to increase the signal of cell types which are
 #' underrepresented in the original data set. If this step is not neccesary,
 #' these profiles will be used for simulating bulk RNA-seq with known
 #' composition.
@@ -564,15 +563,15 @@ NULL
 #'   duplicated rownames. Otherwise, R does not allow duplicated rownames.
 #' @param file.backend Valid file path where to store loaded data as HDF5 file.
 #'   If provided, data is stored in HDF5 files as back-end by using
-#'   \code{\link{DelayedArray}} amd \code{\link{HDF5Array}} packages instead of
+#'   \code{\link{DelayedArray}} and \code{\link{HDF5Array}} packages instead of
 #'   loaded in memory. This is suitable for situations where you have large
 #'   amount of data that cannot be allocated in memory. Note that operations on
 #'   this data will be carried out by blocks (i.e subsets of determined size),
 #'   which can lead to longer execution times. \code{NULL} by default.
-#' @param compression.level The compression level used if file.backend provided.
-#'   It is an integer value between 0 (no compression) and 9 (highest and
-#'   slowest compression). See ?\code{\link{getHDF5DumpCompressionLevel}} from
-#'   \code{\link{HDF5Array}} package for more information.
+#' @param compression.level The compression level used if \code{file.backend} is
+#'   provided. It is an integer value between 0 (no compression) and 9 (highest
+#'   and slowest compression). See ?\code{\link{getHDF5DumpCompressionLevel}}
+#'   from \code{\link{HDF5Array}} package for more information.
 #' @param block.processing Boolean indicating if data should be treated by
 #'   blocks (only if data are provided as HDF5 file). \code{FALSE} by default.
 #'   Note that using this functionality is suitable for cases where is not
@@ -584,7 +583,8 @@ NULL
 #'
 #' @export
 #'
-#' @seealso \code{\link{simSingleCellProfiles}}
+#' @seealso \code{\link{estimateZinbwaveParams}}
+#'   \code{\link{generateBulkCellMatrix}}
 #'
 #' @examples
 #' sc.chung.breast <- single.cell.real(DDLSChungSmall)

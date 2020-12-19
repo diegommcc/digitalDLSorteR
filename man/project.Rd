@@ -3,19 +3,19 @@
 \name{project}
 \alias{project}
 \alias{project<-}
-\title{Get and set \code{project} slot in a \code{DigitalDLSorter}
-object.}
+\title{Get and set \code{project} slot in a
+\code{\linkS4class{DigitalDLSorter}} object.}
 \usage{
 project(object)
 
 project(object) <- value
 }
 \arguments{
-\item{object}{A \code{DigitalDLSorter} object.}
+\item{object}{A \code{\linkS4class{DigitalDLSorter}} object.}
 
 \item{value}{A character indicating the name of the project.}
 }
 \description{
-Get and set \code{project} slot in a \code{DigitalDLSorter}
-object.
+Get and set \code{project} slot in a
+\code{\linkS4class{DigitalDLSorter}} object.
 }

@@ -84,7 +84,6 @@ showProbPlot <- function(
   return(object@prob.cell.types[[type.data]]@plots[[set]][[type.plot]])
 }
 
-
 #' Prepare \code{DigitalDLSorter} object for saving as RDA file.
 #'
 #' Prepare a \code{DigitalDLSorter} object that has a \code{DigitalDLSorterDNN}
@@ -132,7 +131,7 @@ preparingToSave <- function(object) {
   }
 }
 
-
+# core for barplots of deconvolution results
 .barPlot <- function(
   data,
   colors,
@@ -170,4 +169,272 @@ preparingToSave <- function(object) {
                    axis.text.x = element_blank())
   }
   return(p)
+}
+
+################################################################################
+####################### Utils functions related to DNN #########################
+################################################################################
+
+#' Save on disk trained DigitalDLSorter DNN model as HDF5 file.
+#'
+#' Save on disk the trained model in HDF5 format. Note that this function does
+#' not save the \code{\link{DigitalDLSorterDNN}} object, but the trained keras
+#' model.
+#'
+#' @param object \code{\link{DigitalDLSorter}} object with \code{trained.model}
+#'   slot.
+#' @param file.path Valid file path where saving the model.
+#' @param overwrite Overwrite file if it already exists.
+#'
+#' @export
+#'
+#' @seealso \code{\link{trainDigitalDLSorterModel}}
+#'   \code{\link{loadTrainedModelFromH5}}
+#'
+saveTrainedModelAsH5 <- function(
+  object,
+  file.path,
+  overwrite = FALSE
+) {
+  if (!is(object, "DigitalDLSorter")) {
+    stop("The provided object is not of DigitalDLSorter class")
+  } else if (is.null(trained.model(object))) {
+    stop("'trained.model' slot is empty")
+  } else if (is.null(trained.model(object)@model)) {
+    stop("There is not model to save on disk. First, train model with ",
+         "trainDigitalDLSorterModel function")
+  }
+  if (file.exists(file.path)) {
+    if (overwrite) {
+      message(paste(file.path, "file exists. Since 'overwrite' argument is",
+                    "TRUE, it will be overwritten"))
+    } else {
+      stop(paste(file.path, "file exists"))
+    }
+  }
+  if (is(trained.model(object)@model, "list")) {
+    warning(paste("Trained model is not a keras object, but a R list with",
+                  "architecture of network and weights. The R object will be",
+                  "compiled and saved as HDF5 file, but the optimizer state",
+                  "will not be saved\n\n"))
+    model <- .loadModelFromJSON(trained.model(object))
+    model <- model(model)
+  } else {
+    model <- trained.model(object)@model
+  }
+  tryCatch({
+    save_model_hdf5(object = model,
+                    filepath = file.path,
+                    overwrite = overwrite,
+                    include_optimizer = TRUE)
+  }, error = function(cond) {
+    message(paste("\nProblem during saving", file.path))
+    stop(cond)
+  })
+}
+
+#' Load from HDF5 file a trained DigitalDLSorter DNN model.
+#'
+#' Load from HDF5 file a trained DigitalDLSorter DNN model into a
+#' \code{\link{DigitalDLSorter}} object. Note that HDF5 file must be a keras
+#' valid trained model.
+#'
+#' @param object \code{\link{DigitalDLSorter}} object with \code{trained.model}
+#'   slot.
+#' @param file.path Valid file path where model are stored.
+#' @param reset.slot Remove \code{trained.slot} if it already exists. A new
+#'   \code{\link{DigitalDLSorterDNN}} object will be formed, but it will not
+#'   contain other slots (\code{FALSE} by default).
+#'
+#' @export
+#'
+#' @seealso \code{\link{trainDigitalDLSorterModel}}
+#'   \code{\link{deconvDigitalDLSorterObj}}
+#'   \code{\link{saveTrainedModelAsH5}}
+#'
+loadTrainedModelFromH5 <- function(
+  object,
+  file.path,
+  reset.slot = FALSE
+) {
+  if (!is(object, "DigitalDLSorter")) {
+    stop("The provided object is not of DigitalDLSorter class")
+  } else if (!file.exists(file.path)) {
+    stop(paste(file.path, "file does not exist. Please provide a valid file path"))
+  }
+  if (!is.null(trained.model(object))) {
+    slot.exists <- TRUE
+    message("'trained.model' slot is not empty:")
+    if (reset.slot) {
+      message("  'reset.slot' is TRUE, 'trained.model' slot will be restart")
+    } else {
+      message("  'reset.slot' is FALSE, only 'model' slot of DigitalDLSorterDNN",
+              "object will be overwritten")
+    }
+  } else {
+    slot.exists <- FALSE
+  }
+  tryCatch({
+    loaded.model <- load_model_hdf5(filepath = file.path, compile = TRUE)
+  }, error = function(cond) {
+    message(paste("\n", file.path, "file provided is not a valid Keras model:"))
+    stop(cond)
+  })
+  
+  if (!slot.exists) {
+    model <- new(Class = "DigitalDLSorterDNN",
+                 model = loaded.model)
+  } else {
+    if (reset.slot) {
+      model <- new(Class = "DigitalDLSorterDNN",
+                   model = loaded.model)
+    } else {
+      model(object@trained.model) <- loaded.model
+      return(object)
+    }
+  }
+  trained.model(object) <- model
+  return(object)
+}
+
+#' Plot training history of a trained DigitalDLSorter DNN model.
+#'
+#' Plot training history of a trained DigitalDLSorter DNN model.
+#'
+#' @param object \code{DigitalDLSorter} object with \code{trained.model} slot.
+#' @param title Title of plot.
+#' @param metrics Which metrics to plot. If it is equal to \code{NULL} (by
+#'   default), all metrics available on \code{\link{DigitalDNNSorter}} object
+#'   will be plotted.
+#'
+#' @export
+#'
+#' @seealso \code{\link{trainDigitalDLSorterModel}}
+#'   \code{\link{deconvDigitalDLSorterObj}}
+#'
+plotTrainingHistory <- function(
+  object,
+  title = "History of metrics during training",
+  metrics = NULL
+) {
+  if (!is(object, "DigitalDLSorter")) {
+    stop("The provided object is not of DigitalDLSorter class")
+  } else if (is.null(trained.model(object))) {
+    stop("'trained.model' slot is empty")
+  } else if (is.null(trained.model(object)@training.history)) {
+    stop("There is not training history on the provided object")
+  }
+  if (!is.null(metrics)) {
+    if (!all(metrics %in% names(object@trained.model@training.history$metrics))) {
+      stop("Some of the given metrics are not present in the provided object")
+    }
+  }
+  plot(object@trained.model@training.history,
+       metrics = metrics, method = "ggplot2") + ggtitle(title)
+}
+
+
+#' Load data to deconvolute from tabulated text file.
+#'
+#' Load data to deconvolute from text file. Accepted formats are tsv and tsv.gz.
+#' You must specify the correct extension.
+#'
+#' @param object \code{\link{DigitalDLSorter}} object with \code{trained.model}
+#'   slot.
+#' @param file.path File path where data is stored.
+#' @param name.data Name with which the data is stored in
+#'   \code{\link{DigitalDLSorter}} object. If \code{name.data} is not provided,
+#'   base name of file is used.
+#'
+#' @export
+#'
+#' @seealso \code{\link{trainDigitalDLSorterModel}}
+#'   \code{\link{deconvDigitalDLSorterObj}}
+#'
+loadDeconvDataFromFile <- function(
+  object,
+  file.path,
+  name.data = NULL
+) {
+  if (!is(object, "DigitalDLSorter")) {
+    stop("The provided object is not of DigitalDLSorter class")
+  }
+  se.object <- SummarizedExperiment::SummarizedExperiment(
+    assays = list(counts = .readTabFiles(file = file.path))
+  )
+  # generate name for data if is not provided
+  if (is.null(name.data)) {
+    name.data <- tools::file_path_sans_ext(basename(file.path))
+  }
+  # create or not a new list
+  if (is.null(object@deconv.data)) list.data <- list()
+  else list.data <- object@deconv.data
+  # check if name.data exists
+  if (name.data %in% names(list.data)) {
+    stop(paste(name.data, "data already exists in deconv.data slot"))
+  }
+  list.data[[name.data]] <- se.object
+  object@deconv.data <- list.data
+  
+  return(object)
+}
+
+
+## check si la matriz tiene colnames y rownames
+## hacer genérica y que funione de forma diferente en función de si es
+## SummarizedExperiment o matrix
+
+
+#' Load data to deconvolute from \code{SummarizedExperiment} object.
+#'
+#' Load data in \code{\link{DigitalDLSorter}} object to deconvolute from
+#' \code{SummarizedExperiment} object.
+#'
+#' @param object \code{DigitalDLSorter} object with \code{trained.model} slot.
+#' @param se.object \code{SummarizedExperiment} object.
+#' @param name.data Name with which the data is stored in \code{DigitalDLSorter}
+#'   object.
+#'
+#' @export
+#'
+#' @seealso \code{\link{trainDigitalDLSorterModel}}
+#'   \code{\link{deconvDigitalDLSorterObj}}
+#'
+loadDeconvDataFromSummarizedExperiment <- function(
+  object,
+  se.object,
+  name.data = NULL
+) {
+  if (!is(object, "DigitalDLSorter")) {
+    stop("The provided object is not of DigitalDLSorter class")
+  } else if (!is(se.object, "SummarizedExperiment")) {
+    stop("The provided object is not of SummarizedExperiment class")
+  }
+  if (length(assays(se.object)) == 0) {
+    stop("assay slot of SummarizedExperiment object is empty")
+  } else if (length(assays(se.object)) > 1) {
+    warning(paste("There are more than one assays in SummarizedExperiment object,",
+                  "only the first assay will be considered. Remember that it is", "
+                  recommended that the provided data be of the same nature as",
+                  "the data with which the model has been trained (e.g. TPMs)"))
+  }
+  # generate name for data if is not provided
+  if (is.null(name.data)) {
+    if (is.null(deconv.data(object))) {
+      name.data <- "deconv_1"
+    } else {
+      name.data <- paste0("decon_", length(deconv.data(object)) + 1)
+    }
+  }
+  # create or not a new list
+  if (is.null(deconv.data(object))) list.data <- list()
+  else list.data <- deconv.data(object)
+  # check if name.data exists
+  if (name.data %in% names(list.data)) {
+    stop(paste(name.data, "data already exists in deconv.data slot"))
+  }
+  list.data[[name.data]] <- se.object
+  deconv.data(object) <- list.data
+  
+  return(object)
 }

@@ -3,19 +3,19 @@
 \name{test.pred}
 \alias{test.pred}
 \alias{test.pred<-}
-\title{Get and set \code{test.pred} slot in a \code{DigitalDLSorterDNN}
-object.}
+\title{Get and set \code{test.pred} slot in a
+\code{\linkS4class{DigitalDLSorterDNN}} object.}
 \usage{
 test.pred(object)
 
 test.pred(object) <- value
 }
 \arguments{
-\item{object}{A \code{DigitalDLSorterDNN} object.}
+\item{object}{A \code{\linkS4class{DigitalDLSorterDNN}} object.}
 
 \item{value}{A \code{matrix} object with prediction results on test data.}
 }
 \description{
-Get and set \code{test.pred} slot in a \code{DigitalDLSorterDNN}
-object.
+Get and set \code{test.pred} slot in a
+\code{\linkS4class{DigitalDLSorterDNN}} object.
 }

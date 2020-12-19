@@ -3,20 +3,20 @@
 \name{prob.matrix}
 \alias{prob.matrix}
 \alias{prob.matrix<-}
-\title{Get and set \code{prob.matrix} slot in a \code{ProbMatrixCellTypes}
-object.}
+\title{Get and set \code{prob.matrix} slot in a
+\code{\linkS4class{ProbMatrixCellTypes}} object.}
 \usage{
 prob.matrix(object)
 
 prob.matrix(object) <- value
 }
 \arguments{
-\item{object}{A \code{ProbMatrixCellTypes} object.}
+\item{object}{A \code{\linkS4class{ProbMatrixCellTypes}} object.}
 
 \item{value}{\code{matrix} object with cell types as columns and samples as
 rows.}
 }
 \description{
-Get and set \code{prob.matrix} slot in a \code{ProbMatrixCellTypes}
-object.
+Get and set \code{prob.matrix} slot in a
+\code{\linkS4class{ProbMatrixCellTypes}} object.
 }

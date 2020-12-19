@@ -6,12 +6,15 @@ NULL
 ######################### Estimate Zinbwave parameters #########################
 ################################################################################
 
-
-#' Estimate parameters for ZINB-WaVE model for simulating new single-cell
-#' expression profiles.
+#' Estimate parameters from ZINB-WaVE model for simulating new single-cell
+#' expression profiles
 #'
-#' Estimate parameters for the ZINB-WaVE model from a real single-cell data set
-#' using ZINB-WaVE model.
+#' Estimate parameters from ZINB-WaVE model from a real single-cell data set in
+#' order to simulate new single-cell profiles and to increase the signal of cell
+#' types underrepresented, training the Deep Neural Network in a more balanced
+#' way. \code{\link{simSingleCellProfiles}} function will use the estimated
+#' parameters for simulating new single-cell profiles. See
+#' \code{?\link{simSingleCellProfiles}} for more information.
 #'
 #' ZINB-WaVE is a flexible model for zero-inflated count data. This function
 #' carries out the model fit to real single-cell data modeling \eqn{Y_{ij}} (the
@@ -19,31 +22,45 @@ NULL
 #' zero-inflated negative binomial (ZINB) distribution. The estimated parameters
 #' will be used for the simulation of new single-cell expression profiles by
 #' sampling a negative binomial distribution and introducing dropouts from a
-#' binomial distribution. To do this, \code{\link{DigitalDLSorter}} uses
-#' \code{zinbEstimate} function from \code{splatter} package (Zappia et al.,
-#' 2017),  that is a wrapper around \code{zinbFit} function from \code{zinbwave}
-#' package (Risso et al., 2018). For more details about the model, see Risso et
-#' al., 2018.
+#' binomial distribution. To do it, \pkg{digitalDLSorteR} uses
+#' \code{zinbEstimate} function from \pkg{splatter} package (Zappia et al.,
+#' 2017), a wrapper around \code{zinbFit} function from \pkg{zinbwave} package
+#' (Risso et al., 2018). For more details about the model, see Risso et al.,
+#' 2018.
 #'
-#' @param object \code{\link{DigitalDLSorter}} object with a
+#' @param object \code{\linkS4class{DigitalDLSorter}} object with a
 #'   \code{single.cell.real} slot.
 #' @param cell.ID.column Name or number of the column in cells metadata
-#'   corresponding with cell names in expression matrix.
+#'   corresponding to cell names in expression matrix.
 #' @param gene.ID.column Name or number of the column in genes metadata
-#'   corresponding with the notation used for features/genes.
+#'   corresponding to notation used for features/genes.
 #' @param cell.type.column Name or number of the column in cells metadata
-#'   corresponding with cell type of each cell.
+#'   corresponding to cell type of each cell.
 #' @param cell.cov.columns Name or number of columns in cells metadata that will
-#'   be used as covariates in the model during the estimation.
+#'   be used as covariates during the fitting of the model.
 #' @param gene.cov.columns Name or number of columns in genes metadata that will
-#'   be used as covariates in the model during estimation.
-#' @param set.type Cell type to evaluate. 'All' by default.
-#' @param threads Number of threads used for the estimation. For setting the
-#'   parallel environment \code{BiocParallel} package is used.
-#' @param verbose Show informative messages during the execution.
-#' @return A \code{DigitalDLSorter} object with \code{zinb.params} slot
-#'   containing a \code{ZinbParams} object. This object contains the estimated
-#'   ZINB parameters from real single-cell data.
+#'   be used as covariates during the fitting of the model.
+#' @param subset.cells Number of cells used for fitting the ZINB-WaVE model. It
+#'   is useful when the original data set is too large for fitting the model.
+#'   Set a value according to the original data set and the available resources
+#'   of your computer. If \code{NULL} (by default), all cells will be used. It
+#'   must be an integer greater than or equal to the number of cell types
+#'   considered and lesser than or equal to the total cells.
+#' @param proportional If \code{TRUE}, the original proportions of cell types in
+#'   the subset of cells set in the argument \code{subset.cells} will be
+#'   respected as far as possible. If \code{FALSE}, all cell types will have the
+#'   same number of cells as far as possible.
+#' @param set.type Cell type to evaluate. \code{'All'} by default. We recommend
+#'   fitting the model to all cell types instead of only a subset of them in
+#'   order to capture the total variability of the original experiment although
+#'   only a subset of cell types is to be simulated.
+#' @param threads Number of threads used for the estimation (1 by default). For
+#'   setting the parallel environment \pkg{BiocParallel} package is used.
+#' @param verbose Show informative messages during the execution. \code{TRUE} by
+#'   default.
+#' @return A \code{\linkS4class{DigitalDLSorter}} object with \code{zinb.params}
+#'   slot containing a \code{\linkS4class{ZinbParams}} object. This object
+#'   contains the estimated ZINB parameters from real single-cell data.
 #'
 #' @export
 #'
@@ -64,15 +81,18 @@ NULL
 #'
 #' @references Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
 #'   and flexible method for signal extraction from single-cell RNA-seq data.
-#'   Nat Commun 9, 284. doi: \url{doi.org/10.1038/s41467-017-02554-5}.
+#'   Nat Commun 9, 284. doi:
+#'   \href{https://doi.org/10.1038/s41467-017-02554-5}{10.1038/s41467-017-02554-5}
 #'
 #'   Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 #'   algorithm to quantify immune cell populations based on scRNA-Seq data.
-#'   Frontiers in Genetics 10, 978. doi: \url{10.3389/fgene.2019.00978}
+#'   Frontiers in Genetics 10, 978. doi:
+#'   \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
 #'
 #'   Zappia, L., Phipson, B. y Oshlack, A. Splatter: simulation of single-cell
-#'   RNA sequencing data. Genome Biol. 2017; 18: 174.
-#'
+#'   RNA sequencing data. Genome Biol. 2017; 18: 174. doi:
+#'   \href{https://doi.org/10.1186/s13059-017-1305-0}{10.1186/s13059-017-1305-0}
+#'   
 estimateZinbwaveParams <- function(
   object,
   cell.ID.column,
@@ -98,7 +118,6 @@ estimateZinbwaveParams <- function(
             "will be overwritten\n",
             call. = FALSE, immediate. = TRUE)
   }
-
   # extract data from SCE to list
   list.data <- .extractDataFromSCE(
     SCEobject = single.cell.real(object),
@@ -203,7 +222,7 @@ estimateZinbwaveParams <- function(
     sdm.colnames <- colnames(sdm)
   } else {
     if (!all(set.type %in% unique(list.data[[2]][, cell.type.column])))
-      stop("Cell type(s) provided in 'set.type' not found")
+      stop("Cell type(s) provided in 'set.type' argument not found")
     
     if (verbose) {
       message("=== Estimate parameters for ", paste(set.type, collapse = ", "), 
@@ -214,11 +233,9 @@ estimateZinbwaveParams <- function(
     cell.IDs <- list.data[[2]][which(list.data[[2]][, cell.type.column] == set.type),
                                cell.ID.column]
     list.data[[1]] <- list.data[[1]][, cell.IDs]
-    
     sdm <- NULL
     sdm.ncol <- 1
     sdm.colnames <- seq(1)
-    
     if (any(Matrix::rowSums(list.data[[1]]) == 0)) {
       warning("There are some genes with zero expression in selected cells. ", 
               "Consider increasing the minimum expression levels when loading ", 
@@ -257,8 +274,8 @@ estimateZinbwaveParams <- function(
                                                     list.data[[3]][, gene.ID.column]), ])
   }
   rownames(gdm) <- rownames(list.data[[1]])
-  start_time <- Sys.time()
   if (verbose) {
+    start_time <- Sys.time()
     message("=== Run estimation process ",
             paste("(Start time", format(start_time, "%X)"), "\n"))
   }
@@ -302,9 +319,11 @@ estimateZinbwaveParams <- function(
   # update slots
   zinb.params(object) <- zinbParamsObj
   
-  end_time <- Sys.time()
   message("\nDONE\n")
-  message(paste("Invested time:", round(end_time - start_time, 2), "mins"))
+  if (verbose) {
+    end_time <- Sys.time()
+    message(paste("Invested time:", round(end_time - start_time, 2), "mins"))
+  }
   return(object)
 }
       
@@ -398,7 +417,7 @@ estimateZinbwaveParams <- function(
     limit = total.subset
   )
   names(nums.cells) <- levels(factor(cells.metadata[, cell.type.column]))
-  # check if numbers are possible regarding the number of cells from each cell type
+  # check if numbers are possible regarding number of cells from each cell type
   nums.cells <- .checkNumCellTypes(
     num.cells = nums.cells, 
     total.subset = total.subset, 
@@ -413,7 +432,6 @@ estimateZinbwaveParams <- function(
             paste(names(nums.cells), nums.cells, sep = ": ", collapse = "\n  - "), 
             "\n")
   }
-    
   # random sampling of cells
   pos <- sapply(
     X = names(nums.cells), 
@@ -434,38 +452,78 @@ estimateZinbwaveParams <- function(
 ######################## Simulate single-cell profiles #########################
 ################################################################################
 
-#' Simulate new single-cell expression profiles using the estimated ZINB
-#' parameters.
+#' Simulate new single-cell expression profiles using ZINB-WaVE model parameters
 #'
 #' Simulate single-cell expression profiles by randomly sampling from a negative
-#' binomial distribution using ZINB parameters estimated by ZINB-WaVE model and
-#' introducing dropouts by sampling from a binomial distribution with ZINB-WaVE
-#' model estimated.
+#' binomial distribution and introducing dropouts by sampling from a binomial
+#' distribution using ZINB -WaVE parameters estimated by
+#' \code{\link{estimateZinbwaveParams}} function.
 #'
-#' Before this step, see \code{\link{estimateZinbwaveParams}}. As described in
+#' Before this step, see \code{?\link{estimateZinbwaveParams}}. As described in
 #' Torroja and Sanchez-Cabo, 2019, this function simulates a determined number
 #' of transcriptional profiles for each cell type provided by randomly sampling
 #' from a negative binomial distribution with \eqn{\mu} and \eqn{\theta}
 #' estimated parameters and introducing dropouts by sampling from a binomial
-#' distribution with pi probability. All paramteres are estimated from
+#' distribution with pi probability. All parameters are estimated from
 #' single-cell real data using \code{\link{estimateZinbwaveParams}} function. It
 #' uses the ZINB-WaVE model (Risso et al., 2018). For more details about the
 #' model, see \code{\link{estimateZinbwaveParams}}.
 #'
-#' @param object \code{\link{DigitalDLSorter}} object with
+#' \code{file.backend} argument allows to create a HDF5 file with simulated
+#' single-cell profiles that will be used as back-end in order to work with data
+#' allocated on disk, allowing a lower usage of RAM memory. If you use
+#' \code{file.backend} argument with \code{block.processing = FALSE}, all
+#' single-cell profiles will be simulated in one step and, therefore, allocated
+#' in RAM memory. Then, data will be written in HDF5 file. In order to avoid
+#' collapsing RAM memory, single-cell profiles will be simulated and written in
+#' HDF5 files by blocks of \code{block.size} size, by setting
+#' \code{block.processing = TRUE}.
+#'
+#' @param object \code{\linkS4class{DigitalDLSorter}} object with
 #'   \code{single.cell.real} and \code{zinb.params} slots.
 #' @param cell.ID.column Name or number of the column in cells metadata
-#'   corresponding with cell names in expression matrix.
+#'   corresponding to cell names in expression matrix.
 #' @param cell.type.column Name or number of the column in cells metadata
-#'   corresponding with the cell type of each cell.
+#'   corresponding to the cell type of each cell.
 #' @param n.cells Number of simulated cells generated by cell type (i.e. if you
-#'   have 10 different cell types on your dataset, if \code{n.cells = 100}, then
+#'   have 10 different cell types in your dataset, if \code{n.cells = 100}, then
 #'   1000 cell profiles will be simulated).
-#' @param verbose Show informative messages during the execution.
+#' @param cell.types Vector indicating which cell types you want to simulate. If
+#'   \code{NULL} (by default), \code{n.cells} single-cell profiles for all cell
+#'   types will be simulated.
+#' @param file.backend Valid file path where to store simulatede single-cell
+#'   expression profiles as HDF5 file (\code{NULL} by default). If provided,
+#'   data is stored in HDF5 files as back-end by using \pkg{DelayedArray},
+#'   \pkg{HDF5Array} and \pkg{rhdf5} packages instead of loaded in memory. This
+#'   is suitable for situations where you have large amount of data that cannot
+#'   be allocated in memory. Note that operations on this data will be carried
+#'   out by blocks (i.e subsets of determined size), which can lead to longer
+#'   execution times.
+#' @param compression.level The compression level used if \code{file.backend} is
+#'   provided. It is an integer value between 0 (no compression) and 9 (highest
+#'   and slowest compression). See
+#'   ?\code{\link[HDF5Array]{getHDF5DumpCompressionLevel}} from \pkg{HDF5Array}
+#'   package for more information.
+#' @param block.processing Boolean indicating if data should be simulated by
+#'   blocks (only if \code{file.backend} is used). \code{FALSE} by default. This
+#'   functionality is suitable for cases where is not possible to allocate data
+#'   in memory and that exexcution times will be larger.
+#' @param block.size Number of single-cell expression profiles that will be
+#'   simulated in each iteration during the process. Larger numbers resulting in
+#'   more memory usage but lesser times executions. Set according to your
+#'   computer resources (1000 by default).
+#' @param chunk.dims Specifies the dimensions that HDF5 chunk will have. If
+#'   \code{NULL}, the default value is a vector of two items: the number of
+#'   genes considered by ZINB-WaVE model during the simulation and only one
+#'   sample in order to increase the read times in the following steps. Greater
+#'   number of columns written in each chunk can lead to larger read times.
+#' @param verbose Show informative messages during the execution (\code{TRUE} by
+#'   default).
 #'
-#' @return A \code{\link{DigitalDLSorter}} object with \code{single.cell.simul}
-#'   slot containing a \code{SingleCellExperiment} object with the simulated
-#'   single-cell profiles.
+#' @return A \code{\linkS4class{DigitalDLSorter}} object with
+#'   \code{single.cell.simul} slot containing a
+#'   \code{\linkS4class{SingleCellExperiment}} object with the simulated
+#'   single-cell expression profiles.
 #'
 #' @export
 #'
@@ -482,12 +540,17 @@ estimateZinbwaveParams <- function(
 #'
 #' @references Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
 #'   and flexible method for signal extraction from single-cell RNA-seq data.
-#'   Nat Commun 9, 284. doi: \url{10.1038/s41467-017-02554-5}.
+#'   Nat Commun 9, 284. doi:
+#'   \href{https://doi.org/10.1038/s41467-017-02554-5}{10.1038/s41467-017-02554-5}
+#'
+#'
+#'
 #'
 #'   Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 #'   algorithm to quantify immune cell populations based on scRNA-Seq data.
-#'   Frontiers in Genetics 10, 978. doi: \url{10.3389/fgene.2019.00978}
-#'
+#'   Frontiers in Genetics 10, 978. doi:
+#'   \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
+#'   
 simSingleCellProfiles <- function(
   object,
   cell.ID.column,

@@ -3,21 +3,21 @@
 \name{cell.names}
 \alias{cell.names}
 \alias{cell.names<-}
-\title{Get and set \code{cell.names} slot in a \code{ProbMatrixCellTypes}
-object.}
+\title{Get and set \code{cell.names} slot in a
+\code{\code{\linkS4class{ProbMatrixCellTypes}}} object.}
 \usage{
 cell.names(object)
 
 cell.names(object) <- value
 }
 \arguments{
-\item{object}{A \code{ProbMatrixCellTypes} object.}
+\item{object}{A \code{\linkS4class{ProbMatrixCellTypes}} object.}
 
 \item{value}{\code{matrix} object with bulk samples as rows and cells that
 will be used for simulating these samples as columns (\code{n.cell}
 argument)}
 }
 \description{
-Get and set \code{cell.names} slot in a \code{ProbMatrixCellTypes}
-object.
+Get and set \code{cell.names} slot in a
+\code{\code{\linkS4class{ProbMatrixCellTypes}}} object.
 }
