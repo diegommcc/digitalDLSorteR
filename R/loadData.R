@@ -7,11 +7,25 @@ NULL
   }
   if (grepl(pattern = ".tsv", x = file)) {
     if (grepl(pattern = ".tsv.gz$", x = file)) {
-      file.obj <- read.delim(file = gzfile(file), sep = "\t",
-                             header = T, stringsAsFactors = F)
+      file.obj <- tryCatch(
+        expr = read.delim(file = gzfile(file), sep = "\t",
+                          header = T, stringsAsFactors = F),
+        error = function(err) {
+          stop("Provided file contains duplicated rownames/colnames. ", 
+                  "Please, provide a correct counts matrix.")
+        },
+        warning = function(err) warning(err)
+      )
     } else {
-      file.obj <- read.delim(file = file, sep = "\t", header = T,
-                             stringsAsFactors = F)
+      file.obj <- tryCatch(
+        expr = read.delim(file = file, sep = "\t", header = T,
+                          stringsAsFactors = F),
+        error = function(err) {
+          stop("Provided file contains duplicated rownames/colnames. ", 
+                  "Please, provide a correct counts matrix.")
+        },
+        warning = function(err) warning(err)
+      )
     }
   } else if (grepl(pattern = ".rds$", x = file)) {
     file.obj <- readRDS(file = file)
@@ -165,7 +179,8 @@ NULL
   min.cells,
   fun.aggregate,
   file.backend,
-  block.processing
+  block.processing,
+  verbose
 ) {
   # check if IDs given exist in metadata
   .checkColumn(metadata = cells.metadata,
@@ -193,9 +208,11 @@ NULL
     warning(paste("There are", diff,
                   "cells that don't match between counts matrix and metadata"))
   } else if (disc != 0) {
-    message("=== Intersection between matrix counts and cells.metadata:")
-    message(paste("   ", disc, "cells have been discarded from cells.metadata"),
-            "\n")
+    if (verbose) {
+      message("=== Intersection between matrix counts and cells.metadata:")
+      message(paste("   ", disc, "cells have been discarded from cells.metadata"),
+              "\n")
+    }
   }
   cells.metadata <- cells.metadata[cells.metadata[, cell.ID.column] %in%
                                      common.cells, , drop = FALSE]
@@ -218,9 +235,11 @@ NULL
     stop(paste("There are", diff,
                   "genes that don't match between counts matrix and metadata"))
   } else if (disc != 0) {
-    message("=== Intersection between matrix counts and genes.metadata:")
-    message(paste("   ", disc, "genes have been discarded from genes.metadata"),
-            "\n")
+    if (verbose) {
+      message("=== Intersection between matrix counts and genes.metadata:")
+      message(paste("   ", disc, "genes have been discarded from genes.metadata"),
+              "\n") 
+    }
   }
   genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
                                      common.genes, , drop = FALSE]
@@ -234,7 +253,8 @@ NULL
       gene.ID.column = gene.ID.column,
       min.counts = min.counts,
       min.cells = min.cells,
-      fun.aggregate = fun.aggregate
+      fun.aggregate = fun.aggregate,
+      verbose = verbose
     )  
   } else {
     filtered.genes <- .filterGenesHDF5(
@@ -243,7 +263,8 @@ NULL
       gene.ID.column = gene.ID.column,
       min.counts = min.counts,
       min.cells = min.cells,
-      fun.aggregate = fun.aggregate
+      fun.aggregate = fun.aggregate,
+      verbose = verbose
     )
   }
   
@@ -256,13 +277,16 @@ NULL
   gene.ID.column,
   min.counts,
   min.cells,
-  fun.aggregate
+  fun.aggregate,
+  verbose
 ) {
   # duplicated genes in counts matrix (and genes.metadata)
   dup.genes <- duplicated(rownames(counts))
   if (any(dup.genes)) {
-    message("=== Aggregating ", sum(dup.genes), " duplicated genes by ", 
-            fun.aggregate)
+    if (verbose) {
+      message("=== Aggregating ", sum(dup.genes), " duplicated genes by ", 
+              fun.aggregate) 
+    }
     counts <- Matrix.utils::aggregate.Matrix(
       x = counts, 
       groupings = factor(rownames(counts)),
@@ -274,8 +298,10 @@ NULL
   # removing genes without any expression
   row.zero <- Matrix::rowSums(counts) > 0
   if (!all(row.zero)) {
-    message(paste("=== Removing", sum(!row.zero),
-                  "genes without expression in any cell\n"))
+    if (verbose) {
+      message(paste("=== Removing", sum(!row.zero),
+                    "genes without expression in any cell\n")) 
+    }
     counts <- counts[row.zero, ]
     genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
                                        rownames(counts), , drop = FALSE]
@@ -293,9 +319,11 @@ NULL
                min.counts, "and min.cells =", min.cells,
                "does not have entries"))
   }
-  message("=== Filtering features by min.counts and min.cells:")
-  message(paste("    - Selected features:",  dim(counts)[1]))
-  message(paste("    - Discarded features:", dim.bef[1] - dim(counts)[1]))
+  if (verbose) {
+    message("=== Filtering features by min.counts and min.cells:")
+    message(paste("    - Selected features:",  dim(counts)[1]))
+    message(paste("    - Discarded features:", dim.bef[1] - dim(counts)[1]))  
+  }
   genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
                                      rownames(counts), , drop = FALSE]
   
@@ -308,7 +336,8 @@ NULL
   gene.ID.column,
   min.counts,
   min.cells,
-  fun.aggregate
+  fun.aggregate,
+  verbose
 ) { 
   ##############################################################################
   ################################# ATTENTION ##################################
@@ -317,17 +346,21 @@ NULL
   # hdf5 files allow duplicated rownames (check with public data)
   dup.genes <- duplicated(rownames(counts))
   if (any(dup.genes)) {
-    message("=== Aggregating ", sum(dup.genes), 
-            " duplicated genes by ", fun.aggregate)
+    if (verbose) {
+      message("=== Aggregating ", sum(dup.genes), 
+              " duplicated genes by ", fun.aggregate) 
+    }
     counts.r <- DelayedArray::rowsum(x = counts[, 1:400], group = factor(rownames(counts)))
     genes.metadata <- genes.metadata[match(rownames(counts), 
                                            genes.metadata[, gene.ID.column]), ]
   }
   # removing genes without any expression
   row.zero <- DelayedMatrixStats::rowSums2(counts) > 0
-    if (!all(row.zero)) {
-    message(paste("=== Removing", sum(!row.zero),
-                  "genes without expression in any cell"))
+  if (!all(row.zero)) {
+    if (verbose) {
+      message(paste("=== Removing", sum(!row.zero),
+                    "genes without expression in any cell"))  
+    }
     counts <- counts[row.zero, ]
     genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
                                        rownames(counts), , drop = FALSE]
@@ -345,9 +378,11 @@ NULL
                min.counts, "and min.cells =", min.cells,
                "does not have entries"))
   }
-  message("=== Filtering features by min.counts and min.cells:")
-  message(paste("    - Selected features:",  dim(counts)[1]))
-  message(paste("    - Discarded features:", dim.bef[1] - dim(counts)[1]))
+  if (verbose) {
+    message("=== Filtering features by min.counts and min.cells:")
+    message(paste("    - Selected features:",  dim(counts)[1]))
+    message(paste("    - Discarded features:", dim.bef[1] - dim(counts)[1])) 
+  }
   genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
                                      rownames(counts), , drop = FALSE]
   
@@ -500,7 +535,8 @@ NULL
     min.counts = min.counts,
     min.cells = min.cells,
     fun.aggregate = fun.aggregate,
-    block.processing = block.processing
+    block.processing = block.processing,
+    verbose = verbose
   )
 
   return(

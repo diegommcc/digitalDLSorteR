@@ -6,7 +6,7 @@
 \title{digitalDLSorteR: R package for deconvolution of bulk RNA-Seq samples based on
 Deep Learning.}
 \description{
-\emph{digitalDLSorteR} is an R package that implements a Deep Learning based
+\pkg{digitalDLSorteR} is an R package that implements a Deep Learning based
 method to enumerate and quantify the cell type composition of bulk RNA-Seq
 samples. Our method makes use of Deep Neural Network (DNN) models to adjust
 any cell type composition starting from single-cell RNA-Seq (scRNA-Seq) data.
@@ -25,7 +25,7 @@ this type of samples. This fact overcomes the limitation of other methods,
 since stromal and immune cells change significantly their profiles depending
 on the tissue and disease context.
 
-The package can be used in two ways: for deconvolving bulk RNA-seq samples
+The package can be used by two ways: for deconvolving bulk RNA-seq samples
 using a pre-trained model provided by us or for building your own models
 trained from your own scRNA-seq samples. These new models may be published in
 order to make them available for other users that work with similar data

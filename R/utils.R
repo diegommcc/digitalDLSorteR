@@ -280,7 +280,6 @@ loadTrainedModelFromH5 <- function(
     message(paste("\n", file.path, "file provided is not a valid Keras model:"))
     stop(cond)
   })
-  
   if (!slot.exists) {
     model <- new(Class = "DigitalDLSorterDNN",
                  model = loaded.model)

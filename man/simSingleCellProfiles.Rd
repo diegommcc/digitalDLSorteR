@@ -36,10 +36,10 @@ have 10 different cell types in your dataset, if \code{n.cells = 100}, then
 \code{NULL} (by default), \code{n.cells} single-cell profiles for all cell
 types will be simulated.}
 
-\item{file.backend}{Valid file path where to store simulatede single-cell
+\item{file.backend}{Valid file path to store simulated single-cell
 expression profiles as HDF5 file (\code{NULL} by default). If provided,
 data is stored in HDF5 files as back-end by using \pkg{DelayedArray},
-\pkg{HDF5Array} and \pkg{rhdf5} packages instead of loaded in memory. This
+\pkg{HDF5Array} and \pkg{rhdf5} packages instead of loading in memory. This
 is suitable for situations where you have large amount of data that cannot
 be allocated in memory. Note that operations on this data will be carried
 out by blocks (i.e subsets of determined size), which can lead to longer
@@ -52,14 +52,14 @@ and slowest compression). See
 package for more information.}
 
 \item{block.processing}{Boolean indicating if data should be simulated by
-blocks (only if \code{file.backend} is used). \code{FALSE} by default. This
+blocks (only if \code{file.backend} is used, \code{FALSE} by default). This
 functionality is suitable for cases where is not possible to allocate data
-in memory and that exexcution times will be larger.}
+in memory and leads to larger exexcution times.}
 
 \item{block.size}{Number of single-cell expression profiles that will be
 simulated in each iteration during the process. Larger numbers resulting in
-more memory usage but lesser times executions. Set according to your
-computer resources (1000 by default).}
+more memory usage but lesser execution times. Set according to available
+computational resources (1000 by default).}
 
 \item{chunk.dims}{Specifies the dimensions that HDF5 chunk will have. If
 \code{NULL}, the default value is a vector of two items: the number of
@@ -119,7 +119,7 @@ and flexible method for signal extraction from single-cell RNA-seq data.
 Nat Commun 9, 284. doi:
 \href{https://doi.org/10.1038/s41467-017-02554-5}{10.1038/s41467-017-02554-5}
 
-Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
+Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 algorithm to quantify immune cell populations based on scRNA-Seq data.
 Frontiers in Genetics 10, 978. doi:
 \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}

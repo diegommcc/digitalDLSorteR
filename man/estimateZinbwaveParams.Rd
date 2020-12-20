@@ -45,7 +45,7 @@ of your computer. If \code{NULL} (by default), all cells will be used. It
 must be an integer greater than or equal to the number of cell types
 considered and lesser than or equal to the total cells.}
 
-\item{proportional}{If \code{TRUE}, the original proportions of cell types in
+\item{proportional}{If \code{TRUE}, the original cell type proportions in
 the subset of cells set in the argument \code{subset.cells} will be
 respected as far as possible. If \code{FALSE}, all cell types will have the
 same number of cells as far as possible.}
@@ -107,12 +107,12 @@ and flexible method for signal extraction from single-cell RNA-seq data.
 Nat Commun 9, 284. doi:
 \href{https://doi.org/10.1038/s41467-017-02554-5}{10.1038/s41467-017-02554-5}
 
-Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
+Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 algorithm to quantify immune cell populations based on scRNA-Seq data.
 Frontiers in Genetics 10, 978. doi:
 \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
 
-Zappia, L., Phipson, B. y Oshlack, A. Splatter: simulation of single-cell
+Zappia, L., Phipson, B. and Oshlack, A. Splatter: simulation of single-cell
 RNA sequencing data. Genome Biol. 2017; 18: 174. doi:
 \href{https://doi.org/10.1186/s13059-017-1305-0}{10.1186/s13059-017-1305-0}
 }

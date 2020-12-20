@@ -6,22 +6,22 @@
 \usage{
 trainDigitalDLSorterModel(
   object,
+  on.the.fly = FALSE,
   combine = "both",
   batch.size = 64,
-  num.epochs = 20,
+  num.epochs = 10,
   num.hidden.layers = 2,
   num.units = c(200, 200),
   activation.fun = "relu",
   dropout.rate = 0.25,
-  val = FALSE,
-  freq.val = 0.1,
   loss = "kullback_leibler_divergence",
   metrics = c("accuracy", "mean_absolute_error", "categorical_accuracy"),
+  val = FALSE,
+  freq.val = 0.1,
   custom.model = NULL,
   shuffle = FALSE,
-  on.the.fly = TRUE,
-  view.metrics.plot = TRUE,
   threads = 1,
+  view.metrics.plot = TRUE,
   verbose = TRUE
 )
 }
@@ -30,47 +30,52 @@ trainDigitalDLSorterModel(
 \code{single.cell.real}/\code{single.cell.simul}, \code{prob.cell.matrix}
 and, optionally, \code{bulk.simul} slots.}
 
-\item{combine}{Type of profiles (bulk, single-cell or both) that will be used
-for training. It can be \code{'both'}, \code{single-cell} or \code{bulk}.
-For test data, both types of profiles will be used.}
+\item{on.the.fly}{Boolean indicating if data will be generated on the fly
+during training (\code{FALSE} by default).}
+
+\item{combine}{Type of profiles (bulk, single-cell or both) which will be
+used for training. It can be \code{'both'}, \code{'single-cell'} or
+\code{'bulk'}. For test data, both types of profiles will be used.}
 
 \item{batch.size}{Number of samples per gradient update. If unspecified,
 \code{batch.size} will default to 64.}
 
-\item{num.epochs}{Number of epochs to train the model.}
+\item{num.epochs}{Number of epochs to train the model (10 by default).}
 
-\item{num.hidden.layers}{NUmber of hidden layers of neural network. This
-number must be equal to the length of \code{num.units} argument.}
-
-\item{num.units}{Vector indicating the number of neurons per hidden layer.
-The length of this vector must be equal to \code{num.hidden.layers}
+\item{num.hidden.layers}{Number of hidden layers of neural network (2 by
+default). This number must be equal to the length of \code{num.units}
 argument.}
 
-\item{activation.fun}{Activation function to use. Look at
+\item{num.units}{Vector indicating the number of neurons per hidden layer
+(\code{c(200, 200)} by default). The length of this vector must be equal to
+\code{num.hidden.layers} argument.}
+
+\item{activation.fun}{Activation function to use (\code{'relu'} by default).
+Look at
 \href{https://keras.rstudio.com/reference/activation_relu.html}{keras
-documentation} to know available activation functions (\code{'relu'} by
-default).}
+documentation} to know available activation functions.}
 
 \item{dropout.rate}{Float between 0 and 1 indicating the fraction of the
 input neurons to drop in layer dropouts (0.25 by default). By default,
-\pkg{digitalDLSorteR} implements dropout layers for each hidden layer.}
+\pkg{digitalDLSorteR} implements dropout layers per hidden layer.}
+
+\item{loss}{Character indicating loss function selected for training the
+model (\code{'kullback_leibler_divergence'} by default). Look at
+\href{https://keras.rstudio.com/reference/loss_mean_squared_error.html}{keras
+documentation} to know available loss functions.}
+
+\item{metrics}{Vector of metrics used to evaluate the performance of the
+model during training and evaluation (\code{c("accuracy",
+  "mean_absolute_error", "categorical_accuracy")} by default). Look at
+\href{https://keras.rstudio.com/reference/metric_binary_accuracy.html}{keras
+documentation} to know available performance metrics.}
 
 \item{val}{Boolean that determines if a validation subset is used during
 training (\code{FALSE} by default).}
 
 \item{freq.val}{Float between 0.1 and 0.5 that determines the number of
-samples from training data that will be used as validation subset.}
-
-\item{loss}{Character indicating loss function selected for training the
-model (Kullback-Leibler divergence by default). Look at
-\href{https://keras.rstudio.com/reference/loss_mean_squared_error.html}{keras
-documentation} to know available loss functions.}
-
-\item{metrics}{Vector of metrics used to evaluate the performance of the
-model during training and on test data (\code{c("accuracy",
-  "mean_absolute_error", "categorical_accuracy")} by default). Look at
-\href{https://keras.rstudio.com/reference/metric_binary_accuracy.html}{keras
-documentation} to know available performance metrics.}
+samples from training data that will be used as validation subset (0.1 by
+default).}
 
 \item{custom.model}{Allows to use a more customized neural network. It must
 be a \code{keras.engine.sequential.Sequential} object (\code{NULL} by
@@ -81,16 +86,13 @@ will be ignored.}
 default). Note that if \code{bulk.simul} is not \code{NULL}, data already
 has been shuffled and \code{shuffle} will be ignored.}
 
-\item{on.the.fly}{Boolean indicating if data will be generated on the fly
-during training.}
+\item{threads}{Number of threads used during the simulation of bulk samples
+if \code{on.the.fly = TRUE} (1 by default).}
 
 \item{view.metrics.plot}{Boolean indicating if show progression plots of loss
 and metrics during training (\code{TRUE} by default). \pkg{keras} for R
 allows to see the progression of the model during training if you are
 working on RStudio.}
-
-\item{threads}{Number of threads used during the generation of bulk samples
-if \code{on.the.fly = TRUE} (1 by default).}
 
 \item{verbose}{Boolean indicating if show the progression of the model during
 training and information about the architecture of the model (\code{TRUE}
@@ -100,46 +102,60 @@ by default).}
 A \code{\linkS4class{DigitalDLSorter}} object with
 \code{trained.model} slot containing a
 \code{\linkS4class{DigitalDLSorterDNN}} object. For more information about
-the structure of this class, see \code{\linkS4class{DigitalDLSorterDNN}}.
+the structure of this class, see \code{?\linkS4class{DigitalDLSorterDNN}}.
 }
 \description{
 Train Deep Neural Network model with training data from
-\code{\linkS4class{DigitalDLSorter}} object. Moreover, model is evaluated on
-test data and prediction results are produced in order to determine the
-performance of the model (see \code{?\link{calculateEvalMetrics}} for
-details).
+\code{\linkS4class{DigitalDLSorter}} object. In addition, trained model is
+evaluated on test data and prediction results are produced in order to
+determine its performance (see \code{?\link{calculateEvalMetrics}}). Training
+and evaluation can be performed by using simulated profiles stored in
+\code{\linkS4class{DigitalDLSorter}} object or 'on the fly' by simulating
+bulk profiles at the same time as training/evaluation takes place (see
+Details).
 }
 \details{
+\strong{\pkg{keras}/\pkg{tensorflow} environment}
+
 All steps related with Deep Learning in \pkg{digitalDLSorteR} package are
 performed by using \pkg{keras} package, an API in R for \pkg{keras} in Python
 available from CRAN. We recommend use the guide of installation available at
-\url{https://keras.rstudio.com/} in order to set a custom configuration (type
-of back-end used, CPU or GPU, etc.).
+\url{https://keras.rstudio.com/} in order to set a more customized
+configuration.
+
+\strong{Simulation of bulk RNA-seq profiles 'on the fly'}
+
+\code{trainDigitalDLSorterModel} allows to avoid storing bulk RNA-seq
+profiles by using \code{on.the.fly} argument. This functionality aims to
+avoid exexcution times and memory usage from \code{simBulkProfiles}, since
+simulated bulk profiles are built in each batch during training/evaluation.
+
+\strong{Neural network architecture}
 
 By default, \code{trainDigitalDLSorterModel} implements the selected
 architecture by Torroja and Sánchez-Cabo, 2019. However, because of it is
 possible that the provided architecture does not produce good results, it is
-possible to change number of hidden layers, number of neurons for each hidden
-layers, dropout rate, activation function and loss function by using the
-corresponding arguments (see Arguments). For more customized models, it is
-possible to provide a pre-built model in \code{custom.model} (a
-\code{keras.engine.sequential.Sequential} object) where it is necessary that
-the number of input neurons is equal to the number of considered
-features/genes and the number of output neurons is equal to the number of
-considered cell types.
+possible to change some parameters: number of hidden layers, number of
+neurons for each hidden layer, dropout rate, activation function and loss
+function by using the corresponding arguments (see Arguments). For more
+customized models, it is possible to provide a pre-built model in
+\code{custom.model} argument (a \code{keras.engine.sequential.Sequential}
+object) where it is necessary that the number of input neurons is equal to
+the number of considered features/genes and the number of output neurons is
+equal to the number of considered cell types.
 }
 \examples{
 ## to ensure compatibility
 tensorflow::tf$compat$v1$disable_eager_execution()
 DDLSSmallCompleted <- trainDigitalDLSorterModel(
   object = DDLSSmallCompleted,
-  batch.size = 128,
+  batch.size = 64,
   num.epochs = 5 ## 20
 )
 
 }
 \references{
-Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
+Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 Learning algorithm to quantify immune cell populations based on scRNA-Seq
 data. Frontiers in Genetics 10, 978. doi:
 \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}

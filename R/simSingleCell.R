@@ -46,7 +46,7 @@ NULL
 #'   of your computer. If \code{NULL} (by default), all cells will be used. It
 #'   must be an integer greater than or equal to the number of cell types
 #'   considered and lesser than or equal to the total cells.
-#' @param proportional If \code{TRUE}, the original proportions of cell types in
+#' @param proportional If \code{TRUE}, the original cell type proportions in
 #'   the subset of cells set in the argument \code{subset.cells} will be
 #'   respected as far as possible. If \code{FALSE}, all cell types will have the
 #'   same number of cells as far as possible.
@@ -84,12 +84,12 @@ NULL
 #'   Nat Commun 9, 284. doi:
 #'   \href{https://doi.org/10.1038/s41467-017-02554-5}{10.1038/s41467-017-02554-5}
 #'
-#'   Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
+#'   Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 #'   algorithm to quantify immune cell populations based on scRNA-Seq data.
 #'   Frontiers in Genetics 10, 978. doi:
 #'   \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
 #'
-#'   Zappia, L., Phipson, B. y Oshlack, A. Splatter: simulation of single-cell
+#'   Zappia, L., Phipson, B. and Oshlack, A. Splatter: simulation of single-cell
 #'   RNA sequencing data. Genome Biol. 2017; 18: 174. doi:
 #'   \href{https://doi.org/10.1186/s13059-017-1305-0}{10.1186/s13059-017-1305-0}
 #'   
@@ -491,10 +491,10 @@ estimateZinbwaveParams <- function(
 #' @param cell.types Vector indicating which cell types you want to simulate. If
 #'   \code{NULL} (by default), \code{n.cells} single-cell profiles for all cell
 #'   types will be simulated.
-#' @param file.backend Valid file path where to store simulatede single-cell
+#' @param file.backend Valid file path to store simulated single-cell
 #'   expression profiles as HDF5 file (\code{NULL} by default). If provided,
 #'   data is stored in HDF5 files as back-end by using \pkg{DelayedArray},
-#'   \pkg{HDF5Array} and \pkg{rhdf5} packages instead of loaded in memory. This
+#'   \pkg{HDF5Array} and \pkg{rhdf5} packages instead of loading in memory. This
 #'   is suitable for situations where you have large amount of data that cannot
 #'   be allocated in memory. Note that operations on this data will be carried
 #'   out by blocks (i.e subsets of determined size), which can lead to longer
@@ -505,13 +505,13 @@ estimateZinbwaveParams <- function(
 #'   ?\code{\link[HDF5Array]{getHDF5DumpCompressionLevel}} from \pkg{HDF5Array}
 #'   package for more information.
 #' @param block.processing Boolean indicating if data should be simulated by
-#'   blocks (only if \code{file.backend} is used). \code{FALSE} by default. This
+#'   blocks (only if \code{file.backend} is used, \code{FALSE} by default). This
 #'   functionality is suitable for cases where is not possible to allocate data
-#'   in memory and that exexcution times will be larger.
+#'   in memory and leads to larger exexcution times.
 #' @param block.size Number of single-cell expression profiles that will be
 #'   simulated in each iteration during the process. Larger numbers resulting in
-#'   more memory usage but lesser times executions. Set according to your
-#'   computer resources (1000 by default).
+#'   more memory usage but lesser execution times. Set according to available
+#'   computational resources (1000 by default).
 #' @param chunk.dims Specifies the dimensions that HDF5 chunk will have. If
 #'   \code{NULL}, the default value is a vector of two items: the number of
 #'   genes considered by ZINB-WaVE model during the simulation and only one
@@ -543,10 +543,7 @@ estimateZinbwaveParams <- function(
 #'   Nat Commun 9, 284. doi:
 #'   \href{https://doi.org/10.1038/s41467-017-02554-5}{10.1038/s41467-017-02554-5}
 #'
-#'
-#'
-#'
-#'   Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
+#'   Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 #'   algorithm to quantify immune cell populations based on scRNA-Seq data.
 #'   Frontiers in Genetics 10, 978. doi:
 #'   \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
