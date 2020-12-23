@@ -36,57 +36,65 @@ NULL
   return(file.obj)
 }
 
+
+################################################################################
+############# REVISAR, ESTÁ INCOMPLETO ######################
 .useH5backend <- function(
   counts,
   file.backend,
   compression.level = NULL,
   group = "single.cell",
-  sparse = TRUE,
+  chunk.dims = NULL,
+  sparse = FALSE,
   verbose = TRUE
 ) {
-  if (!is.null(file.backend)) {
-    if (file.exists(file.backend)) {
-      stop("'file.backend' already exists. It must be a valid file path that ", 
-           "does not exist")
-      if (is.null(compression.level)) {
-        compression.level <- HDF5Array::getHDF5DumpCompressionLevel()
-      } else {
-        if (compression.level < 0 || compression.level > 9) {
-          stop("compression.level must be an integer between 0 (no ", 
-               "compression) and 9 (highest and slowest compression). ")
-        }
-      }
-    }
-    counts <- DelayedArray::DelayedArray(seed = counts)
-    if (sparse) {
-      counts <- HDF5Array::writeTENxMatrix(
-        x = counts,
-        filepath = file.backend,
-        group = group,
-        # chunkdim = HDF5Array::getHDF5DumpChunkDim(dim(counts)),
-        level = compression.level,
-        # with.dimnames = TRUE,
-        verbose = verbose
-      )  
-    } else {
-      counts <- HDF5Array::writeHDF5Array( 
-        x = counts,
-        filepath = file.backend,
-        group = group,
-        chunkdim = HDF5Array::getHDF5DumpChunkDim(dim(counts)),
-        level = compression.level,
-        with.dimnames = TRUE,
-        verbose = verbose
-      )  
+  if (file.exists(file.backend)) {
+    ## check if group exists in order to allow storing all data in only one file!!!!!!!!!!!!
+    if (group %in% rhdf5::h5ls(file.backend)[, "name"]) {
+      stop("Group in 'file.backend' already exists. It must be valid file path and name that ", 
+           "do not exist")  
     }
     
+    if (is.null(compression.level)) {
+      compression.level <- HDF5Array::getHDF5DumpCompressionLevel()
+    } else {
+      if (compression.level < 0 || compression.level > 9) {
+        stop("compression.level must be an integer between 0 (no ", 
+             "compression) and 9 (highest and slowest compression). ")
+      }
+    }
   }
+  if (verbose) message("\n=== Writing data to a HDF5 file\n")
+  counts <- DelayedArray::DelayedArray(seed = counts)
+  if (is.null(chunk.dims)) chunk.dims <- c(nrow(counts), 1)
+  if (sparse) {
+    counts <- HDF5Array::writeTENxMatrix(
+      x = counts,
+      filepath = file.backend,
+      group = group,
+      # chunkdim = HDF5Array::getHDF5DumpChunkDim(dim(counts)),
+      level = compression.level,
+      # with.dimnames = TRUE,
+      verbose = verbose
+    )  
+  } else {
+    counts <- HDF5Array::writeHDF5Array( 
+      x = counts,
+      filepath = file.backend,
+      name = group,
+      chunkdim = chunk.dims,
+      level = compression.level,
+      with.dimnames = TRUE,
+      verbose = verbose
+    )  
+  }
+  return(counts)
 }
 
 .readCountsFile <- function(
   counts.file, 
   gene.column = 1,
-  name.dataset = NULL,
+  name.h5 = NULL,
   file.backend = NULL,
   block.processing = FALSE
 ) {
@@ -108,12 +116,14 @@ NULL
                              sep = "\t", stringsAsFactors = F)
     colnames(counts) <- cell.names$V1
   } else if (grepl(".h5$|.hdf5$", counts.file)) {
-    if (is.null(name.dataset)) {
+    if (is.null(name.h5)) {
       stop("If you provide a HDF5 file, you must give name of the dataset in the file") 
     } else if (!is.null(file.backend) && block.processing) {
-      counts <- HDF5Array::HDF5Array(filepath = counts, name = name.dataset)
+      # hdf5 file will be used as back-end
+      counts <- HDF5Array::HDF5Array(filepath = counts.file, name = name.h5)
     } else if (is.null(file.backend)) {
-      counts <- rhdf5::h5read(file = counts, name = name.dataset)
+      # file will be loeaded in memory
+      counts <- rhdf5::h5read(file = counts.file, name = name.h5)
     }
   } else {
     stop("File format is not recognizable. Please look at the allowed data",
@@ -128,15 +138,17 @@ NULL
   genes.metadata,
   file.backend,
   compression.level,
+  chunk.dims,
   block.processing,
   verbose
 ) {
   # could be a check of counts class -> if (is(counts, "HDF5Array"))
-  if (!is.null(file.backend) && !block.processing) {
+  if (!is.null(file.backend)) {
     counts <- .useH5backend(
       counts = counts,
       file.backend = file.backend,
       compression.level = compression.level,
+      chunk.dims = chunk.dims,
       group = "single.cell.real",
       verbose = verbose
     )
@@ -198,53 +210,67 @@ NULL
     cells.metadata[, cell.ID.column] <- make.unique(names = cells.metadata[, cell.ID.column])
   }
   # intersect between cells ----------------------------------------------------
-  common.cells <- intersect(colnames(counts), cells.metadata[, cell.ID.column])
-  diff <- abs(dim(counts)[2] - length(common.cells))
-  disc <- abs(length(cells.metadata[, cell.ID.column]) - length(common.cells))
-  if (length(common.cells) < min(dim(counts)[2], dim(cells.metadata)[1])) {
-    stop(paste("There are", diff,
-               "cells that don't match between counts matrix and metadata"))
-  } else if (diff != 0){ # this check includes the last
-    warning(paste("There are", diff,
-                  "cells that don't match between counts matrix and metadata"))
-  } else if (disc != 0) {
-    if (verbose) {
-      message("=== Intersection between matrix counts and cells.metadata:")
-      message(paste("   ", disc, "cells have been discarded from cells.metadata"),
-              "\n")
+  if (!is.null(colnames(counts))) {
+    common.cells <- intersect(colnames(counts), cells.metadata[, cell.ID.column])
+    diff <- abs(dim(counts)[2] - length(common.cells))
+    disc <- abs(length(cells.metadata[, cell.ID.column]) - length(common.cells))
+    if (length(common.cells) < min(dim(counts)[2], dim(cells.metadata)[1])) {
+      stop(paste("There are", diff,
+                 "cells that don't match between counts matrix and metadata"))
+    } else if (diff != 0){ # this check includes the last
+      warning(paste("There are", diff,
+                    "cells that don't match between counts matrix and metadata"))
+    } else if (disc != 0) {
+      if (verbose) {
+        message("=== Intersection between matrix counts and cells.metadata:")
+        message(paste("   ", disc, "cells have been discarded from cells.metadata"),
+                "\n")
+      }
+    }
+    cells.metadata <- cells.metadata[cells.metadata[, cell.ID.column] %in%
+                                       common.cells, , drop = FALSE]
+    counts <- counts[, common.cells]
+  } else {
+    if (ncol(counts) != nrow(cells.metadata)) {
+      stop("Matrix counts has not colnames and cells metdata has not same ", 
+           "number of IDs. Please, provide a correct counts matrix")
+    } else {
+      colnames(counts) <- cells.metadata[, cell.ID.column]
+      warning(paste("Matrix counts has not colnames, so", cell.ID.column, 
+                    "column from cells metadata will be used")) 
     }
   }
-  cells.metadata <- cells.metadata[cells.metadata[, cell.ID.column] %in%
-                                     common.cells, , drop = FALSE]
-  # # duplicated ID genes --------------------------------------------------------
-  # if (any(duplicated(genes.metadata[, gene.ID.column]))) {
-  #   message("=== Removing duplicated genes:")
-  #   message(paste0("    There are duplicated IDs in genes.metadata (column ",
-  #                  gene.ID.column, ").\n    Removing duplicated IDs"),
-  #           "\n")
-  #   genes.metadata <- genes.metadata[!duplicated(genes.metadata[, gene.ID.column]), ]
-  # }
   # intersect between genes ----------------------------------------------------
-  common.genes <- intersect(rownames(counts), genes.metadata[, gene.ID.column])
-  diff <- abs(dim(counts)[1] - length(common.genes))
-  disc <- abs(length(genes.metadata[, gene.ID.column]) - length(common.genes))
-  if (length(common.genes) < min(dim(counts)[1], dim(genes.metadata)[1])) {
-    stop(paste("There are", diff,
-               "genes that don't match between counts matrix and metadata"))
-  } else if (diff != 0){
-    stop(paste("There are", diff,
-                  "genes that don't match between counts matrix and metadata"))
-  } else if (disc != 0) {
-    if (verbose) {
-      message("=== Intersection between matrix counts and genes.metadata:")
-      message(paste("   ", disc, "genes have been discarded from genes.metadata"),
-              "\n") 
+  if (!is.null(rownames(counts))) {
+    common.genes <- intersect(rownames(counts), genes.metadata[, gene.ID.column])
+    diff <- abs(dim(counts)[1] - length(common.genes))
+    disc <- abs(length(genes.metadata[, gene.ID.column]) - length(common.genes))
+    if (length(common.genes) < min(dim(counts)[1], dim(genes.metadata)[1])) {
+      stop(paste("There are", diff,
+                 "genes that don't match between counts matrix and metadata"))
+    } else if (diff != 0){
+      stop(paste("There are", diff,
+                    "genes that don't match between counts matrix and metadata"))
+    } else if (disc != 0) {
+      if (verbose) {
+        message("=== Intersection between matrix counts and genes.metadata:")
+        message(paste("   ", disc, "genes have been discarded from genes.metadata"),
+                "\n") 
+      }
     }
+    genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
+                                       common.genes, , drop = FALSE]
+    counts <- counts[common.genes, ]
+  } else {
+    if (nrow(counts) != nrow(genes.metadata)) {
+      stop("Matrix counts has not rownames and genes metadata has not same ", 
+           "number of IDs. Please, provide a correct counts matrix")
+    } else {
+      rownames(counts) <- genes.metadata[, gene.ID.column]
+      warning(paste("Matrix counts has not rownames, so", gene.ID.column, 
+                    "column from genes metadata will be used")) 
+    } 
   }
-  genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
-                                     common.genes, , drop = FALSE]
-  counts <- counts[common.genes, common.cells]
-  
   # filter genes by min.counts and min.cells -----------------------------------
   if (!block.processing) {
     filtered.genes <- .filterGenesSparse(
@@ -267,7 +293,6 @@ NULL
       verbose = verbose
     )
   }
-  
   return(list(filtered.genes[[1]], cells.metadata, filtered.genes[[2]]))
 }
 
@@ -339,6 +364,11 @@ NULL
   fun.aggregate,
   verbose
 ) { 
+  
+  if (verbose) {
+    message("=== Processing HDF5 data by blocks\n")
+    DelayedArray:::set_verbose_block_processing(TRUE)
+  }
   ##############################################################################
   ################################# ATTENTION ##################################
   # duplicated genes means that there are duplicated rownames and this is not 
@@ -350,20 +380,24 @@ NULL
       message("=== Aggregating ", sum(dup.genes), 
               " duplicated genes by ", fun.aggregate) 
     }
-    counts.r <- DelayedArray::rowsum(x = counts[, 1:400], group = factor(rownames(counts)))
+    counts.r <- DelayedArray::rowsum(x = counts, group = factor(rownames(counts)))
     genes.metadata <- genes.metadata[match(rownames(counts), 
                                            genes.metadata[, gene.ID.column]), ]
   }
   # removing genes without any expression
-  row.zero <- DelayedMatrixStats::rowSums2(counts) > 0
+  row.zero <- DelayedArray::rowSums(counts) > 0
   if (!all(row.zero)) {
     if (verbose) {
-      message(paste("=== Removing", sum(!row.zero),
-                    "genes without expression in any cell"))  
+      message(paste("\n=== Removing", sum(!row.zero),
+                    "genes without expression in any cell\n"))  
     }
     counts <- counts[row.zero, ]
-    genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
-                                       rownames(counts), , drop = FALSE]
+    if (is.null(rownames(counts))) {
+      genes.metadata <- genes.metadata[row.zero, , drop = FALSE]
+    } else {
+      genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
+                                         rownames(counts), , drop = FALSE]  
+    }
   }
   # filtered genes
   if (min.counts == 0 && min.cells == 0) {
@@ -371,21 +405,24 @@ NULL
   } else if (min.counts < 0 || min.cells < 0) {
     stop("min.counts and min.cells must be greater than or equal to zero")
   }
-  dim.bef <- dim(counts)
-  counts <- counts[DelayedMatrixStats::rowSums2(counts > min.counts) >= min.cells, ]
+  remove.genes <- DelayedArray::rowSums(counts > min.counts) >= min.cells
+  counts <- counts[remove.genes, ]
   if (dim(counts)[1] == 0) {
     stop(paste("Resulting counts matrix after filtering with min.genes =",
                min.counts, "and min.cells =", min.cells,
                "does not have entries"))
   }
   if (verbose) {
-    message("=== Filtering features by min.counts and min.cells:")
-    message(paste("    - Selected features:",  dim(counts)[1]))
-    message(paste("    - Discarded features:", dim.bef[1] - dim(counts)[1])) 
+    message("\n=== Filtering features by min.counts and min.cells:")
+    message(paste("    - Selected features:",  sum(remove.genes)))
+    message(paste("    - Discarded features:", sum(!remove.genes))) 
   }
-  genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
-                                     rownames(counts), , drop = FALSE]
-  
+  if (is.null(rownames(counts))) {
+    genes.metadata <- genes.metadata[remove.genes, , drop = FALSE]
+  } else {
+    genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
+                                       rownames(counts), , drop = FALSE]  
+  }
   return(list(counts, genes.metadata))
 }
 
@@ -401,7 +438,7 @@ NULL
   cells.metadata <- SingleCellExperiment::colData(SCEobject)
   if (any(dim(cells.metadata) == 0)) {
     stop("No data provided in colData slot. Metadata about cells is needed, ",
-         "please look ?loadRealSCProfiles or ?loadFinalSCProfiles")
+         "please see ?loadSCProfiles")
   }
   if (!missing(cell.ID.column) && new.data) {
     # check if given IDs exist in cells.metadata. In cells.metadata is not
@@ -428,11 +465,10 @@ NULL
   if (!missing(gene.ID.column) && new.data) {
     if (any(dim(genes.metadata) == 0)) {
       stop("No data provided in rowData slot. Metadata about genes is needed, ",
-           "please look ?loadRealSCProfiles or ?loadFinalSCProfiles")
+           "please see ?loadSCProfiles")
       # if (class(gene.ID.column) == "numeric") gene.ID.column <- "gene_names"
       # genes.metadata <- S4Vectors::DataFrame(gene.ID.column = rownames(counts))
     }
-
     # check if given IDs exist in genes.metadata. In cells.metadata is not
     # necessary because the data are provided from an SCE object
     .checkColumn(metadata = genes.metadata,
@@ -462,11 +498,13 @@ NULL
   single.cell, 
   cell.ID.column, 
   gene.ID.column,
+  name.dataset.h5,
   min.cells, 
   min.counts,
   fun.aggregate,
   file.backend,
   compression.level,
+  chunk.dims,
   block.processing,
   verbose
 ) {
@@ -479,6 +517,9 @@ NULL
   } else if (!fun.aggregate %in% c("sum", "mean", "median")) {
     stop("'fun.aggregate' must be one of the following options: 'sum', 'mean' ", 
          "or 'median'")
+  } else if (file.exists(file.backend)) {
+    stop("'file.backend' already exists. It must be a valid file path that ", 
+         "does not exist ")
   }
   if (is(single.cell, "SingleCellExperiment")) {
     # extract data (no filtering)
@@ -491,6 +532,15 @@ NULL
     )
   } else if (length(single.cell) == 0) {
     stop(paste("'single.cell' argument is empty"))
+  } else if (length(single.cell) == 3 && !missing(name.dataset.h5)) {
+    # from file --> hdf5 (needs dataset name)
+    list.data <- list(
+      .readCountsFile(counts.file = single.cell[[1]], name.h5 = name.dataset.h5, 
+                      file.backend = file.backend,
+                      block.processing = block.processing),
+      .readTabFiles(single.cell[[2]]),
+      .readTabFiles(single.cell[[3]])
+    )
   } else if (length(single.cell) == 3) {
     # from files --> tsv, tsv.gz, mtx
     list.data <- list(
@@ -498,22 +548,19 @@ NULL
       .readTabFiles(single.cell[[2]]),
       .readTabFiles(single.cell[[3]])
     )
-  } else if (length(single.cell) == 4) {
-    # from file --> hdf5 (needs dataset name)
-    list.data <- list(
-      .readCountsFile(single.cell[[1]], name.h5 = single.cell[[2]]),
-      .readTabFiles(single.cell[[3]]),
-      .readTabFiles(single.cell[[4]])
-    )
   } else {
-    stop(paste("Incorrect number of data elements given. Please look at the allowed data for",
-               arg, "in ?loadRealSCProfiles or ?loadFinalSCProfiles"))
+    stop(paste("Incorrect number of data elements given. Please look at ", 
+               "allowed data for in ?loadSCProfiles"))
   }
   # use HDF5 backend and block.processing from both SCE object and files
   if (block.processing && is.null(file.backend)) {
     stop("block.processing is only compatible with HDF5 files used as back-end") 
   } else if (block.processing && !is.null(file.backend)) {
-    if (!is(list.data[[1]], "HDF5Array")) {
+    if (!class(list.data[[1]]) %in% c("HDF5Array", "DelayedArray", "DelayedMatrix")) {
+      if (verbose) {
+        message("=== Provided data does not store in a HDF5 file and ", 
+                "'block.processing = TRUE, so writing data to a HDF5 file'")
+      }
       list.data[[1]] <- .useH5backend(
         counts = list.data[[1]], 
         file.backend = file.backend,
@@ -525,7 +572,6 @@ NULL
   } else if (!block.processing) {
     list.data[[1]] <- Matrix::Matrix(as.matrix(list.data[[1]]), sparse = TRUE)
   }
-  
   list.data <- .processData(
     counts = list.data[[1]],
     cells.metadata = list.data[[2]],
@@ -546,6 +592,7 @@ NULL
       genes.metadata = list.data[[3]],
       file.backend = file.backend,
       compression.level = compression.level,
+      chunk.dims = chunk.dims,
       block.processing = block.processing,
       verbose = verbose
     )
@@ -590,6 +637,7 @@ NULL
 #'   corresponding to cell names in expression matrix.
 #' @param gene.ID.column Name or number of the column in genes metadata
 #'   corresponding to the names used for features/genes.
+#' @param name.dataset.h5 Name of data set if HDF5 file is provided.
 #' @param min.counts Minimum gene counts to filter (0 by default).
 #' @param min.cells Minimum of cells with more than min.counts (0 by default).
 #' @param fun.aggregate In case of duplicated genes, it is possible to set the
@@ -635,13 +683,15 @@ NULL
 #' 
 loadSCProfiles <- function(
   single.cell.data,
-  cell.ID.column = 1,
-  gene.ID.column = 1,
+  cell.ID.column,
+  gene.ID.column,
+  name.dataset.h5,
   min.counts = 0,
   min.cells = 0,
   fun.aggregate = "sum",
   file.backend = NULL,
-  compression.level = 6,
+  compression.level = NULL,
+  chunk.dims = NULL,
   block.processing = FALSE,
   verbose = TRUE,
   project = "DigitalDLSorterProject"
@@ -650,11 +700,13 @@ loadSCProfiles <- function(
     single.cell = single.cell.data,
     cell.ID.column = cell.ID.column,
     gene.ID.column = gene.ID.column,
+    name.dataset.h5 = name.dataset.h5,
     min.cells = min.cells,
     min.counts = min.counts,
     fun.aggregate = fun.aggregate,
     file.backend = file.backend,
     compression.level = compression.level,
+    chunk.dims = chunk.dims,
     block.processing = block.processing,
     verbose = verbose
   )

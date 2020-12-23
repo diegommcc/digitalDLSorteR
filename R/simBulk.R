@@ -258,11 +258,11 @@ generateBulkCellMatrix <- function(
     limit = total.test
   )
   if (verbose) {
-    message(paste("\n=== The number of bulk samples that will be generated ", 
+    message(paste("\n=== The number of bulk samples that will be generated", 
                   "has been fixed to", num.bulk.samples))  
   }
   # split data into training and test sets
-  cells <- rownames(cells.metadata) # [, cell.ID.column]
+  cells <- cells.metadata[, cell.ID.column]
   names(cells) <- cells.metadata[, cell.type.column]
   # train set: 
   # balanced.type.cells == TRUE --> same number of cells by cell types
@@ -980,8 +980,6 @@ setCount <- function(x, setList, sn, n.cells) {
 #'   Pagès H (2020). HDF5Array: HDF5 backend for DelayedArray objects. R package
 #'   version 1.18.0.
 #'   
-
-#'   
 simBulkProfiles <- function(
   object,
   type.data = "both",
@@ -1048,7 +1046,7 @@ simBulkProfiles <- function(
     names(bulk.counts) <- c("train", "test")
     object@bulk.simul <- bulk.counts
   } else {
-    if (!is.null(object@bulk.simul) && type.data %in% names(object@bulk.simul)) {
+    if (!is.null(bulk.simul(object)) && type.data %in% names(bulk.simul(object))) {
       warning(paste(type.data, "data in 'bulk.simul' slot will be overwritten", 
                     "\n\n"),
               call. = FALSE, immediate. = TRUE)
@@ -1121,6 +1119,7 @@ simBulkProfiles <- function(
     r.i <- 0
     ## iteration over cells 
     for (iter in seq(ceiling(n / block.size))) {
+      if (verbose) message(paste("   - Writing block", iter))
       if ((block.size * iter) - n > 0) {
         dif <- block.size
         dif.2 <- (block.size * iter) - n
@@ -1146,7 +1145,7 @@ simBulkProfiles <- function(
           object = object,
           pattern = pattern,
           cl = threads
-        ) 
+        )
       }
       if (iter == 1) {
         rhdf5::h5write(
@@ -1156,9 +1155,6 @@ simBulkProfiles <- function(
       } else {
         # check number of cells in the next loop
         rhdf5::h5set_extent(file.backend, type.data, dims = c(J, n))
-        # print("dimensions:")
-        # print((dif * (iter - 1)) + 1)
-        # print((dif * (iter - 1)) + ncol(bulk.samples))
         rhdf5::h5write(
           obj = bulk.samples, 
           file = file.backend, name = type.data, 
@@ -1167,7 +1163,6 @@ simBulkProfiles <- function(
           level = compression.level
         )
       }
-      if (verbose) message(paste("   - Block", iter, "written"))
     }
     rhdf5::H5close()
     # HDF5Array object for SingleCellExperiment class
@@ -1232,15 +1227,18 @@ simBulkProfiles <- function(
 .setBulk <- function(x, object, pattern) {
   sep.b <- grepl(pattern = pattern, x = x)
   if (any(sep.b)) {
-    cols <- match(x[sep.b], colnames(single.cell.simul(object))) %>% sort()
-    sim.counts <- as.matrix(assay(single.cell.simul(object))[, cols])
-    real.counts <- as.matrix(assay(single.cell.real(object))[, x[!sep.b]])
+    cols.sim <- match(x[sep.b], colnames(single.cell.simul(object))) %>% sort()
+    cols.real <- match(x[!sep.b], colnames(single.cell.real(object))) %>% sort()
+    sim.counts <- as.matrix(assay(single.cell.simul(object))[, cols.sim])
+    real.counts <- as.matrix(assay(single.cell.real(object))[, cols.real])
     counts <- .mergeMatrices(x = real.counts, y = sim.counts) # merge matrices
   } else if (all(sep.b)) {
     cols <- match(x[sep.b], colnames(single.cell.simul(object))) %>% sort()
     counts <- as.matrix(assay(single.cell.simul(object))[, cols])
   } else {
-    counts <- as.matrix(assay(single.cell.real(object))[, x])
+    cols <- match(x, colnames(single.cell.real(object))) %>% sort()
+    counts <- as.matrix(assay(single.cell.real(object))[, cols])
   }
   return(rowSums(edgeR::cpm.default(counts)))  
 }
+
