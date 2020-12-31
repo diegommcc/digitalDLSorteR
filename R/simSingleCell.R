@@ -126,17 +126,19 @@ estimateZinbwaveParams <- function(
     new.data = FALSE
   )
   # check if parameters are correct
-  mapply(function(x, y) {
-    .checkColumn(
-      metadata = list.data[[2]],
-      ID.column = x,
-      type.metadata = "cells.metadata",
-      arg = y
-    )
-  },
-  c(cell.ID.column, cell.type.column, cell.cov.columns),
-  c("cell.ID.column", "cell.type.column",
-    rep("cell.cov.columns", length(cell.cov.columns))))
+  mapply(
+    function(x, y) {
+      .checkColumn(
+        metadata = list.data[[2]],
+        ID.column = x,
+        type.metadata = "cells.metadata",
+        arg = y
+      )
+    },
+    c(cell.ID.column, cell.type.column, cell.cov.columns),
+    c("cell.ID.column", "cell.type.column",
+      rep("cell.cov.columns", length(cell.cov.columns)))
+  )
   
   if (!missing(gene.cov.columns)) {
     lapply(gene.cov.columns, function(x) {
@@ -145,74 +147,52 @@ estimateZinbwaveParams <- function(
                    type.metadata = "genes.metadata",
                    arg = "gene.cov.columns")
     })  
-    lapply(gene.cov.columns,
-           function(x) {
-             if (length(unique(list.data[[3]][, x])) < 2) {
-               stop(paste(x, "must have 2 or more unique elements"))
-             }
-           })
+    lapply(
+      gene.cov.columns,
+      function(x) {
+        if (length(unique(list.data[[3]][, x])) < 2) {
+          stop(paste(x, "must have 2 or more unique elements"))
+        }
+      }
+    )
   }
-
   # check if covariates and cell types have at least two levels
-  lapply(c(cell.type.column, cell.cov.columns),
-         function(x) {
-           if (length(unique(list.data[[2]][, x])) < 2) {
-             stop(paste(x, "must have 2 or more unique elements"))
-           }
-         })
-
+  lapply(
+    c(cell.type.column, cell.cov.columns),
+    function(x) {
+      if (length(unique(list.data[[2]][, x])) < 2) {
+        stop(paste(x, "must have 2 or more unique elements"))
+      }
+    }
+  )
   # set configuration of parallel computations
-  if (threads <= 0) {
-    threads <- 1
-  }
+  if (threads <= 0) threads <- 1
   if (verbose) {
-    message(paste("=== Set parallel environment to", threads, "threads\n"))
+    message(paste("=== Set parallel environment to", threads, "thread(s)\n"))
   }
   snowParam <- BiocParallel::SnowParam(workers = threads, type = "SOCK")
-  
-  if (!is.null(subset.cells) && is.numeric(subset.cells)) {
-    sub.list.data <- .subsetCells(
-      counts = list.data[[1]], 
-      cells.metadata = list.data[[2]], 
-      cell.type.column = cell.type.column, 
-      cell.ID.column = cell.ID.column, 
-      total.subset = subset.cells,
-      proportional = proportional,
-      verbose = verbose
-    )
-    if (any(Matrix::rowSums(sub.list.data[[1]]) == 0)) {
-      warning("There are some genes with zero expression in selected cells. ", 
-              "Consider increasing the minimum expression levels when loading ", 
-              "data with the loadSCProfiles function with min.counts and ", 
-              "min.cells arguments.\n", call. = FALSE, immediate. = TRUE)
-      list.data.filf <- .filterGenesSparse(
-        counts = sub.list.data[[1]], 
-        genes.metadata = list.data[[3]], 
-        gene.ID.column = gene.ID.column, 
-        min.counts = 0, 
-        min.cells = 0, 
-        fun.aggregate = "sum"
-      )
-      list.data[[1]] <- list.data.filf[[1]]
-      list.data[[3]] <- list.data.filf[[2]]
-    } else {
-      list.data[[1]] <- sub.list.data[[1]]
-    }
-    list.data[[2]] <- sub.list.data[[2]]
-  }
-  
+  # set cell types that will be estimated
   if (set.type == "All" || "All" %in% set.type) {
     formula.cell.model <- as.formula(paste("~", paste(c(cell.cov.columns, 
                                                         cell.type.column), 
                                                       collapse = "+")))
     if (verbose) {
-      message("=== Estimate parameters for the whole experiment\n")
+      message("=== Estimate parameters for all cell types experiment\n")
       message(paste("=== Create cell model matrix based on", 
                     paste(cell.cov.columns, collapse = ", "),
                     "and", cell.type.column, "columns:"))
       message("\t", formula.cell.model, "\n")
     }
-    ## why one cell type is used as intercept? are there any other way?
+    # subset of cells
+    list.data <- .reduceDataset(
+      subset.cells = subset.cells,
+      list.data = list.data,
+      cell.type.column = cell.type.column, 
+      cell.ID.column = cell.ID.column, 
+      gene.ID.column = gene.ID.column,
+      proportional = proportional,
+      verbose = verbose
+    )
     sdm <- model.matrix(
       formula.cell.model,
       data = list.data[[2]][match(colnames(list.data[[1]]),
@@ -220,41 +200,49 @@ estimateZinbwaveParams <- function(
     )
     sdm.ncol <- ncol(sdm)
     sdm.colnames <- colnames(sdm)
+    
   } else {
     if (!all(set.type %in% unique(list.data[[2]][, cell.type.column])))
       stop("Cell type(s) provided in 'set.type' argument not found")
-    
+    # formula with only specific cell types
+    formula.cell.model <- as.formula(paste("~", paste(c(cell.cov.columns, 
+                                                        cell.type.column), 
+                                                      collapse = "+")))
     if (verbose) {
       message("=== Estimate parameters for ", paste(set.type, collapse = ", "), 
-              " from the experiment\n")
-      message("=== Collect counts for", paste(set.type, collapse = ", "), 
-              "cells\n")
+              " cell type(s) from the experiment\n")
+      message(paste("=== Create cell model matrix based on", 
+                    paste(cell.cov.columns, collapse = ", "),
+                    "and", cell.type.column, "columns:"))
+      message("\t", formula.cell.model, "\n")
     }
     cell.IDs <- list.data[[2]][which(list.data[[2]][, cell.type.column] == set.type),
                                cell.ID.column]
+    list.data[[2]] <- list.data[[2]][cell.IDs, ]
     list.data[[1]] <- list.data[[1]][, cell.IDs]
-    sdm <- NULL
-    sdm.ncol <- 1
-    sdm.colnames <- seq(1)
-    if (any(Matrix::rowSums(list.data[[1]]) == 0)) {
-      warning("There are some genes with zero expression in selected cells. ", 
-              "Consider increasing the minimum expression levels when loading ", 
-              "data with the loadSCProfiles() function with min.counts and ", 
-              "min.cells arguments.\n", call. = FALSE, immediate. = TRUE)
-      list.data.filf <- .filterGenesSparse(
-        counts = list.data[[1]], 
-        genes.metadata = list.data[[3]], 
-        gene.ID.column = gene.ID.column, 
-        min.counts = 0, 
-        min.cells = 0, 
-        fun.aggregate = "sum"
-      )
-      list.data[[1]] <- list.data.filf[[1]]
-      list.data[[3]] <- list.data.filf[[2]]
-    }
+    # subset of cells
+    list.data <- .reduceDataset(
+      subset.cells = subset.cells,
+      list.data = list.data,
+      cell.type.column = cell.type.column, 
+      cell.ID.column = cell.ID.column, 
+      gene.ID.column = gene.ID.column,
+      proportional = proportional,
+      verbose = verbose
+    )
+    sdm <- model.matrix(
+      formula.cell.model,
+      data = list.data[[2]][match(colnames(list.data[[1]]),
+                                  list.data[[2]][, cell.ID.column]), ]
+    )
+    sdm.ncol <- ncol(sdm)
+    sdm.colnames <- colnames(sdm)
+    # sdm <- NULL
+    # sdm.ncol <- 1
+    # sdm.colnames <- seq(1)
   }
   # covariates for genes
-  if (!is.null(gene.cov.columns) || !missing(gene.cov.columns)) {
+  if (!missing(gene.cov.columns)) {
     formula.gene.model <- as.formula(paste("~", paste(gene.cov.columns, 
                                                       collapse = "+")))
     if (verbose) {
@@ -267,9 +255,8 @@ estimateZinbwaveParams <- function(
                           rownames(list.data[[1]]), 
                           list.data[[3]][, gene.ID.column]), ])
   } else {
-    if (verbose) {
+    if (verbose) 
       message("=== Create gene model matrix without gene covariates\n")
-    }
     gdm <- model.matrix(~1, data = list.data[[3]][match(rownames(list.data[[1]]),
                                                     list.data[[3]][, gene.ID.column]), ])
   }
@@ -279,8 +266,9 @@ estimateZinbwaveParams <- function(
     message("=== Run estimation process ",
             paste("(Start time", format(start_time, "%X)"), "\n"))
   }
+  # why ceiling
   zinbParamsObj <- splatter::zinbEstimate(
-    counts = ceiling(as.matrix(list.data[[1]])), # why ceiling
+    counts = ceiling(as.matrix(list.data[[1]])), 
     BPPARAM = snowParam, 
     design.samples = sdm, 
     design.genes = gdm, 
@@ -326,6 +314,48 @@ estimateZinbwaveParams <- function(
   }
   return(object)
 }
+
+.reduceDataset <- function(
+  subset.cells,
+  list.data,
+  cell.type.column, 
+  cell.ID.column, 
+  gene.ID.column,
+  proportional,
+  verbose
+) {
+  sub.list.data <- .subsetCells(
+    counts = list.data[[1]], 
+    cells.metadata = list.data[[2]], 
+    cell.type.column = cell.type.column, 
+    cell.ID.column = cell.ID.column, 
+    total.subset = subset.cells,
+    proportional = proportional,
+    verbose = verbose
+  )
+  if (any(Matrix::rowSums(sub.list.data[[1]]) == 0)) {
+    warning("There are some genes with zero expression in selected cells. ", 
+            "Consider increasing the minimum expression levels when loading ", 
+            "data with the loadSCProfiles function with min.counts and ", 
+            "min.cells arguments.\n", call. = FALSE, immediate. = TRUE)
+    list.data.filf <- .filterGenesSparse(
+      counts = sub.list.data[[1]], 
+      genes.metadata = list.data[[3]], 
+      gene.ID.column = gene.ID.column, 
+      min.counts = 0, 
+      min.cells = 0, 
+      fun.aggregate = "sum",
+      verbose = verbose
+    )
+    list.data[[1]] <- list.data.filf[[1]]
+    list.data[[3]] <- list.data.filf[[2]]
+  } else {
+    list.data[[1]] <- sub.list.data[[1]]
+  }
+  list.data[[2]] <- sub.list.data[[2]]
+  return(list.data)
+}
+
       
 # function for check if slot is correct
 .checkSlot <- function(object, slot) {
@@ -429,7 +459,7 @@ estimateZinbwaveParams <- function(
   
   if (verbose) {
     message("=== Number of cells for each cell type:\n",
-            paste(names(nums.cells), nums.cells, sep = ": ", collapse = "\n  - "), 
+            paste0("    - ", names(nums.cells), ": ", nums.cells, collapse = "\n"), 
             "\n")
   }
   # random sampling of cells
@@ -586,7 +616,6 @@ simSingleCellProfiles <- function(
         stop("compression.level must be an integer between 0 (no compression) and 9 (highest and slowest compression). ")
       }
     }
-    
   }
   # extract data
   list.data <- .extractDataFromSCE(
@@ -595,15 +624,16 @@ simSingleCellProfiles <- function(
     new.data = FALSE
   )
   zinb.object <- zinb.params(object)
-
+  # for cases where estimation was performed in some cell types
+  cell.types.used <- list.data[[2]][rownames(zinb.object@model@X), 
+                                    cell.type.column] %>% unique()
   # check if cell.type.column exists in cells.metadata
   .checkColumn(metadata = list.data[[2]],
                ID.column = cell.type.column,
                type.metadata = "cells.metadata",
                arg = "cell.type.column")
-  if (n.cells < 0) {
-    stop("n.cells must be greater than 0 cells per cell type")
-  }
+  
+  if (n.cells < 0) stop("n.cells must be greater than 0 cells per cell type")
   # generate metadata for simulated cells
   colnames(list.data[[1]]) <- paste(list.data[[2]][, cell.type.column],
                                     list.data[[2]][, cell.ID.column],
@@ -622,7 +652,7 @@ simSingleCellProfiles <- function(
                          replacement = "",
                          x = model.cell.types)
   if (!is.null(cell.types)) {
-    if (!all(cell.types %in% unique(list.data[[2]][, cell.type.column])))
+    if (!all(cell.types %in% cell.types.used))
       stop("Cell type(s) provided in 'cell.types' not found")
     cell.sel <- cell.type.names %in% cell.types
     cell.type.names <- cell.type.names[cell.sel]
@@ -650,8 +680,11 @@ simSingleCellProfiles <- function(
     inter.cell.type <- setdiff(cell.types, cell.type.names)
     if (length(inter.cell.type) != 0) intercept.celltype <- TRUE
   } else {
-    inter.cell.type <- setdiff(levels(factor(list.data[[2]][, cell.type.column])),
-                               cell.type.names)
+    inter.cell.type <- setdiff(
+      levels(factor(list.data[[2]][rownames(zinb.object@model@X), 
+                                   cell.type.column])),
+      cell.type.names
+    )
     intercept.celltype <- TRUE
   }
   if (intercept.celltype) {
@@ -659,7 +692,7 @@ simSingleCellProfiles <- function(
     cell.index <- rownames(zinb.object@model@X)[
       rowSums(zinb.object@model@X[, grep(cell.type.column, 
                                          colnames(zinb.object@model@X), 
-                                         value = T)]) == 0]
+                                         value = T), drop = FALSE]) == 0]
     nams <- sample(cell.index, size = n.cells, replace = T)
     ns <- names(cell.set.names)
     cell.set.names <- c(cell.set.names, nams)

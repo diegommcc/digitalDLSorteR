@@ -49,19 +49,17 @@ NULL
   verbose = TRUE
 ) {
   if (file.exists(file.backend)) {
-    ## check if group exists in order to allow storing all data in only one file!!!!!!!!!!!!
     if (group %in% rhdf5::h5ls(file.backend)[, "name"]) {
-      stop("Group in 'file.backend' already exists. It must be valid file path and name that ", 
-           "do not exist")  
+      stop("'file.backend' and name group already exist. They cannot exist")  
     }
-    
-    if (is.null(compression.level)) {
-      compression.level <- HDF5Array::getHDF5DumpCompressionLevel()
-    } else {
-      if (compression.level < 0 || compression.level > 9) {
-        stop("compression.level must be an integer between 0 (no ", 
-             "compression) and 9 (highest and slowest compression). ")
-      }
+    # warning("'file.backend' already exists, but ")
+  }
+  if (is.null(compression.level)) {
+    compression.level <- HDF5Array::getHDF5DumpCompressionLevel()
+  } else {
+    if (compression.level < 0 || compression.level > 9) {
+      stop("compression.level must be an integer between 0 (no ", 
+           "compression) and 9 (highest and slowest compression). ")
     }
   }
   if (verbose) message("\n=== Writing data to a HDF5 file\n")
@@ -137,6 +135,7 @@ NULL
   cells.metadata, 
   genes.metadata,
   file.backend,
+  name.dataset.backend,
   compression.level,
   chunk.dims,
   block.processing,
@@ -149,7 +148,7 @@ NULL
       file.backend = file.backend,
       compression.level = compression.level,
       chunk.dims = chunk.dims,
-      group = "single.cell.real",
+      group = name.dataset.backend,
       verbose = verbose
     )
   } else if (is.null(file.backend)) {
@@ -162,7 +161,6 @@ NULL
   )
   return(sce)
 }
-
 
 .checkColumn <- function(metadata, ID.column, type.metadata, arg) {
   tryCatch(expr = ID.column <- as.numeric(ID.column),
@@ -364,9 +362,8 @@ NULL
   fun.aggregate,
   verbose
 ) { 
-  
   if (verbose) {
-    message("=== Processing HDF5 data by blocks\n")
+    message("\n=== Processing data in HDF5 by blocks\n")
     DelayedArray:::set_verbose_block_processing(TRUE)
   }
   ##############################################################################
@@ -494,6 +491,12 @@ NULL
   }
 }
 
+.randomStr <- function() {
+  a <- do.call(paste0, replicate(5, sample(LETTERS, 1, TRUE), FALSE))
+  return(paste0("/", a, sprintf("%04d", sample(9999, 1, TRUE)), 
+                sample(LETTERS, 1, TRUE)))
+}
+
 .loadSingleCellData <- function(
   single.cell, 
   cell.ID.column, 
@@ -503,6 +506,7 @@ NULL
   min.counts,
   fun.aggregate,
   file.backend,
+  name.dataset.backend,
   compression.level,
   chunk.dims,
   block.processing,
@@ -517,9 +521,25 @@ NULL
   } else if (!fun.aggregate %in% c("sum", "mean", "median")) {
     stop("'fun.aggregate' must be one of the following options: 'sum', 'mean' ", 
          "or 'median'")
-  } else if (file.exists(file.backend)) {
-    stop("'file.backend' already exists. It must be a valid file path that ", 
-         "does not exist ")
+  } 
+  if (!is.null(file.backend)) {
+    if (file.exists(file.backend)) {
+      if (is.null(name.dataset.backend)) {
+        warning("'file.backend' already exists. Using a random name dataset in order to use this HDF5 file as backend",
+                call. = FALSE, immediate. = TRUE)
+        print("jj")
+        name.dataset.backend <- HDF5Array::getHDF5DumpName(for.use = TRUE)
+        while (strsplit(name.dataset.backend, 
+                        split = "/")[[1]][2] %in% 
+               rhdf5::h5ls(file.backend)[, "name"]) {
+          name.dataset.backend <- .randomStr()
+        }
+        print(name.dataset.backend)
+      } else if (name.dataset.backend %in% rhdf5::h5ls(file.backend)[, "name"]) {
+        stop("'file.backend' and 'name.dataset.backend' already exist. Please, ", 
+             "introduce a correct file path or other dataset name")
+      }
+    }  
   }
   if (is(single.cell, "SingleCellExperiment")) {
     # extract data (no filtering)
@@ -535,7 +555,8 @@ NULL
   } else if (length(single.cell) == 3 && !missing(name.dataset.h5)) {
     # from file --> hdf5 (needs dataset name)
     list.data <- list(
-      .readCountsFile(counts.file = single.cell[[1]], name.h5 = name.dataset.h5, 
+      .readCountsFile(counts.file = single.cell[[1]], 
+                      name.h5 = name.dataset.h5, 
                       file.backend = file.backend,
                       block.processing = block.processing),
       .readTabFiles(single.cell[[2]]),
@@ -549,24 +570,26 @@ NULL
       .readTabFiles(single.cell[[3]])
     )
   } else {
-    stop(paste("Incorrect number of data elements given. Please look at ", 
+    stop(paste("Incorrect number of data elements given. Please look at", 
                "allowed data for in ?loadSCProfiles"))
   }
   # use HDF5 backend and block.processing from both SCE object and files
   if (block.processing && is.null(file.backend)) {
     stop("block.processing is only compatible with HDF5 files used as back-end") 
   } else if (block.processing && !is.null(file.backend)) {
-    if (!class(list.data[[1]]) %in% c("HDF5Array", "DelayedArray", "DelayedMatrix")) {
+    if (!class(list.data[[1]]) %in% c("HDF5Matrix", "HDF5Array", 
+                                      "DelayedArray", "DelayedMatrix")) {
       if (verbose) {
-        message("=== Provided data does not store in a HDF5 file and ", 
-                "'block.processing = TRUE, so writing data to a HDF5 file'")
+        message("=== Provided data is not stored as HDF5 file and ", 
+                "'block.processing' has been set to TRUE, so data will be ", 
+                "written in HDF5 file for block processing")
       }
       list.data[[1]] <- .useH5backend(
         counts = list.data[[1]], 
-        file.backend = file.backend,
+        file.backend = HDF5Array::getHDF5DumpFile(for.use = TRUE),
         compression.level = compression.level,
-        group = "single.cell.raw",
-        verbose = verbose
+        group = HDF5Array::getHDF5DumpName(for.use = TRUE),
+        # verbose = verbose
       ) 
     }
   } else if (!block.processing) {
@@ -584,13 +607,13 @@ NULL
     block.processing = block.processing,
     verbose = verbose
   )
-
   return(
     .createSCEObject(
       counts = list.data[[1]],
       cells.metadata = list.data[[2]],
       genes.metadata = list.data[[3]],
       file.backend = file.backend,
+      name.dataset.backend = name.dataset.backend,
       compression.level = compression.level,
       chunk.dims = chunk.dims,
       block.processing = block.processing,
@@ -607,7 +630,7 @@ NULL
 #'
 #' Create a \code{DigitalDLSorter} object from single-cell RNA-seq data from
 #' files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5) or from a
-#' \code{SingleCellExperiment} object. Data will be store in
+#' \code{ment} object. Data will be store in
 #' \code{single.cell.real} slot. Provided data must be composed by three pieces
 #' of information: \itemize{ \item Single-cell counts: genes in rows and cells
 #' in columns. \item Cells metadata: with annotations (columns) for each cell
@@ -616,7 +639,7 @@ NULL
 #' argument must be a vector of three elements ordered so that the first file
 #' corresponds to matrix counts, the second to cells metadata and the last to
 #' genes metadata. On the other hand, if data is provided as
-#' \code{SingleCellExperiment}, the object must contains single-cell counts in
+#' \code{ment}, the object must contains single-cell counts in
 #' \code{assay} slot, cells metadata in \code{colData} slot and genes metadata
 #' in \code{rowData}.
 #'
@@ -630,7 +653,7 @@ NULL
 #' @param single.cell.data If data is provided from files,
 #'   \code{single.cell.real} must be a vector with the file paths for three
 #'   elements: single-cell counts, cells metadata and genes metadata. If data is
-#'   provided from a \code{SingleCellExperiment} object, single-cell counts must
+#'   provided from a \code{ment} object, single-cell counts must
 #'   be in \code{assay} slot, cells metadata in \code{colData} slot and genes
 #'   metadata in \code{rowData} slot.
 #' @param cell.ID.column Name or number of the column in cells metadata
@@ -690,6 +713,7 @@ loadSCProfiles <- function(
   min.cells = 0,
   fun.aggregate = "sum",
   file.backend = NULL,
+  name.dataset.backend = NULL,
   compression.level = NULL,
   chunk.dims = NULL,
   block.processing = FALSE,
@@ -705,6 +729,7 @@ loadSCProfiles <- function(
     min.counts = min.counts,
     fun.aggregate = fun.aggregate,
     file.backend = file.backend,
+    name.dataset.backend = name.dataset.backend,
     compression.level = compression.level,
     chunk.dims = chunk.dims,
     block.processing = block.processing,
