@@ -36,9 +36,6 @@ NULL
   return(file.obj)
 }
 
-
-################################################################################
-############# REVISAR, ESTÁ INCOMPLETO ######################
 .useH5backend <- function(
   counts,
   file.backend,
@@ -48,12 +45,12 @@ NULL
   sparse = FALSE,
   verbose = TRUE
 ) {
-  if (file.exists(file.backend)) {
-    if (group %in% rhdf5::h5ls(file.backend)[, "name"]) {
-      stop("'file.backend' and name group already exist. They cannot exist")  
-    }
-    # warning("'file.backend' already exists, but ")
-  }
+  # if (file.exists(file.backend)) {
+  #   if (group %in% rhdf5::h5ls(file.backend)[, "name"]) {
+  #     stop("'file.backend' and name group already exist. They cannot exist")  
+  #   }
+  #   # warning("'file.backend' already exists, but ")
+  # }
   if (is.null(compression.level)) {
     compression.level <- HDF5Array::getHDF5DumpCompressionLevel()
   } else {
@@ -62,17 +59,24 @@ NULL
            "compression) and 9 (highest and slowest compression). ")
     }
   }
-  if (verbose) message("\n=== Writing data to a HDF5 file\n")
+  if (verbose) message("\n=== Writing data to a HDF5 file")
   counts <- DelayedArray::DelayedArray(seed = counts)
-  if (is.null(chunk.dims)) chunk.dims <- c(nrow(counts), 1)
+  # check correct chunk.dims
+  if (is.null(chunk.dims)) {
+    chunk.dims <- c(nrow(counts), 1)
+  } else {
+    if (any(chunk.dims > dim(counts))) {
+      warning("'chunk.dims' must be equal to or lesser than dimension of ", 
+              "data. Setting default value", call. = FALSE, immediate. = TRUE)
+      chunk.dims <- c(nrow(counts), 1)
+    }
+  }
   if (sparse) {
     counts <- HDF5Array::writeTENxMatrix(
       x = counts,
       filepath = file.backend,
       group = group,
-      # chunkdim = HDF5Array::getHDF5DumpChunkDim(dim(counts)),
       level = compression.level,
-      # with.dimnames = TRUE,
       verbose = verbose
     )  
   } else {
@@ -115,7 +119,8 @@ NULL
     colnames(counts) <- cell.names$V1
   } else if (grepl(".h5$|.hdf5$", counts.file)) {
     if (is.null(name.h5)) {
-      stop("If you provide a HDF5 file, you must give name of the dataset in the file") 
+      stop("If you provide a HDF5 file, you must give the name of dataset in ", 
+           "the file") 
     } else if (!is.null(file.backend) && block.processing) {
       # hdf5 file will be used as back-end
       counts <- HDF5Array::HDF5Array(filepath = counts.file, name = name.h5)
@@ -142,7 +147,9 @@ NULL
   verbose
 ) {
   # could be a check of counts class -> if (is(counts, "HDF5Array"))
-  if (!is.null(file.backend)) {
+  if (!is.null(file.backend) && 
+      !class(counts) %in% c("HDF5Matrix", "HDF5Array", 
+                                    "DelayedArray", "DelayedMatrix")) {
     counts <- .useH5backend(
       counts = counts,
       file.backend = file.backend,
@@ -203,9 +210,11 @@ NULL
                arg = "gene.ID.column")
   # duplicated ID cells --------------------------------------------------------
   if (any(duplicated(cells.metadata[, cell.ID.column]))) {
-    warning(paste0("There are duplicated IDs in cells.metadata (column ",
-                   cell.ID.column, "). Making unique"))
-    cells.metadata[, cell.ID.column] <- make.unique(names = cells.metadata[, cell.ID.column])
+    warning("There are duplicated IDs in cells.metadata (column ", 
+            cell.ID.column, "). Making unique")
+    cells.metadata[, cell.ID.column] <- make.unique(
+      names = cells.metadata[, cell.ID.column]
+    )
   }
   # intersect between cells ----------------------------------------------------
   if (!is.null(colnames(counts))) {
@@ -215,14 +224,16 @@ NULL
     if (length(common.cells) < min(dim(counts)[2], dim(cells.metadata)[1])) {
       stop(paste("There are", diff,
                  "cells that don't match between counts matrix and metadata"))
-    } else if (diff != 0){ # this check includes the last
-      warning(paste("There are", diff,
-                    "cells that don't match between counts matrix and metadata"))
+    } else if (diff != 0) { # this check includes the last
+      warning("There are", diff, "cells that don't match between counts ", 
+              "matrix and metadata")
     } else if (disc != 0) {
       if (verbose) {
         message("=== Intersection between matrix counts and cells.metadata:")
-        message(paste("   ", disc, "cells have been discarded from cells.metadata"),
-                "\n")
+        message(
+          paste("   ", disc, "cells have been discarded from cells.metadata"),
+          "\n"
+        )
       }
     }
     cells.metadata <- cells.metadata[cells.metadata[, cell.ID.column] %in%
@@ -252,7 +263,7 @@ NULL
     } else if (disc != 0) {
       if (verbose) {
         message("=== Intersection between matrix counts and genes.metadata:")
-        message(paste("   ", disc, "genes have been discarded from genes.metadata"),
+        message("    ", disc, " genes have been discarded from genes.metadata",
                 "\n") 
       }
     }
@@ -468,27 +479,14 @@ NULL
     }
     # check if given IDs exist in genes.metadata. In cells.metadata is not
     # necessary because the data are provided from an SCE object
-    .checkColumn(metadata = genes.metadata,
-                 ID.column = gene.ID.column,
-                 type.metadata = "genes.metadata",
-                 arg = "gene.ID.column")
+    .checkColumn(
+      metadata = genes.metadata,
+      ID.column = gene.ID.column,
+      type.metadata = "genes.metadata",
+      arg = "gene.ID.column"
+    )
   }
   return(list(counts, cells.metadata, genes.metadata))
-}
-
-.readHDF5 <- function(
-  counts, 
-  name.dataset, 
-  file.backend,
-  block.processing
-) {
-  if (!file.exists(counts)) {
-    stop("File provided does not exists")
-  } else if (!is.null(file.backend) && block.processing) {
-    return(HDF5Array::HDF5Array(filepath = counts, name = name.dataset))
-  } else if (is.null(file.backend)) {
-    return(rhdf5::h5read(file = counts, name = name.dataset))
-  }
 }
 
 .randomStr <- function() {
@@ -523,23 +521,13 @@ NULL
          "or 'median'")
   } 
   if (!is.null(file.backend)) {
-    if (file.exists(file.backend)) {
-      if (is.null(name.dataset.backend)) {
-        warning("'file.backend' already exists. Using a random name dataset in order to use this HDF5 file as backend",
-                call. = FALSE, immediate. = TRUE)
-        print("jj")
-        name.dataset.backend <- HDF5Array::getHDF5DumpName(for.use = TRUE)
-        while (strsplit(name.dataset.backend, 
-                        split = "/")[[1]][2] %in% 
-               rhdf5::h5ls(file.backend)[, "name"]) {
-          name.dataset.backend <- .randomStr()
-        }
-        print(name.dataset.backend)
-      } else if (name.dataset.backend %in% rhdf5::h5ls(file.backend)[, "name"]) {
-        stop("'file.backend' and 'name.dataset.backend' already exist. Please, ", 
-             "introduce a correct file path or other dataset name")
-      }
-    }  
+    hdf5Params <- .checkHDF5parameters(
+      file.backend = file.backend, 
+      name.dataset.backend = name.dataset.backend, 
+      compression.level = compression.level
+    )
+    name.dataset.backend <- hdf5Params[[1]]
+    compression.level <- hdf5Params[[2]]
   }
   if (is(single.cell, "SingleCellExperiment")) {
     # extract data (no filtering)
@@ -570,8 +558,8 @@ NULL
       .readTabFiles(single.cell[[3]])
     )
   } else {
-    stop(paste("Incorrect number of data elements given. Please look at", 
-               "allowed data for in ?loadSCProfiles"))
+    stop("Incorrect number of data elements given. Please look at ", 
+         "allowed data for in ?loadSCProfiles")
   }
   # use HDF5 backend and block.processing from both SCE object and files
   if (block.processing && is.null(file.backend)) {
@@ -675,6 +663,9 @@ NULL
 #'   amount of data that cannot be allocated in memory. Note that operations on
 #'   this data will be carried out by blocks (i.e subsets of determined size),
 #'   which can lead to longer execution times. \code{NULL} by default.
+#' @param name.dataset.backend Name of the dataset in the HDF5 file that will be
+#'   used. Note that it cannot exist. If \code{NULL} (by default), a random
+#'   datset name will be used.
 #' @param compression.level The compression level used if \code{file.backend} is
 #'   provided. It is an integer value between 0 (no compression) and 9 (highest
 #'   and slowest compression). See ?\code{\link{getHDF5DumpCompressionLevel}}
