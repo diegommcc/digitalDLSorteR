@@ -38,7 +38,7 @@ setMethod(f = "prob.matrix<-",
 ## cell.names
 
 #' @title Get and set \code{cell.names} slot in a
-#'   \code{\code{\linkS4class{ProbMatrixCellTypes}}} object.
+#'   \code{\linkS4class{ProbMatrixCellTypes}} object.
 #'
 #' @param object A \code{\linkS4class{ProbMatrixCellTypes}} object.
 #'

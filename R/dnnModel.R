@@ -59,7 +59,8 @@ NULL
 #'   during training (\code{FALSE} by default).
 #' @param combine Type of profiles (bulk, single-cell or both) which will be
 #'   used for training. It can be \code{'both'}, \code{'single-cell'} or
-#'   \code{'bulk'}. For test data, both types of profiles will be used.
+#'   \code{'bulk'} (\code{'both'} by default). For test data, both types of 
+#'   profiles will be used.
 #' @param batch.size Number of samples per gradient update. If unspecified,
 #'   \code{batch.size} will default to 64.
 #' @param num.epochs Number of epochs to train the model (10 by default).
@@ -161,13 +162,38 @@ trainDigitalDLSorterModel <- function(
   } else if (batch.size <= 10) {
     stop("'batch.size' argument must be greater than or equal to 10")
   }
+  # check if data provided is correct regarding on the fly training
+  if (!on.the.fly) {
+    if (verbose) message("=== Training and test from stored data was selected")
+    if ((combine == "both" && is.null(bulk.simul(object)) ||
+         combine == "both" && (is.null(single.cell.real(object)) && 
+                               is.null(single.cell.simul(object))))) {
+      stop("If 'combine = 'both'' is selected, both 'bulk.simul' and at least ",
+           "one single cell slot must be provided")
+    } else if (combine == "bulk" && is.null(bulk.simul(object))) {
+      stop("If 'combine = 'bulk'' is selected, 'bulk.simul' must be provided")
+    }
+  } else {
+    if (verbose) message("=== Training and test on the fly was selected")
+    if (combine == "both" && (is.null(single.cell.real(object)) && 
+                               is.null(single.cell.simul(object)))) {
+      stop("If 'combine = 'both'' is selected, at least ",
+           "one single cell slot must be provided")
+    }
+  }
+  # single-cell must e provided independently on on.the.fly
+  if (combine == "single-cell" && (is.null(single.cell.real(object)) && 
+                                   is.null(single.cell.simul(object)))) {
+    stop("If 'combine = 'single-cell'' is selected, at least ",
+         "one single cell slot must be provided")
+  }
   if (!is.null(trained.model(object))) {
     warning("'trained.model' slot is not empty. For the moment, digitalDLSorteR",
-            " does not support for multiple trained models, so the actual model",
+            " does not support for multiple trained models, so the current model",
             " will be overwritten\n",
             call. = FALSE, immediate. = TRUE)
   }
-  # plots in RStudio during training --> not work in terminal
+  # plots in RStudio during training --> dont work in terminal
   if (view.metrics.plot) view.plot <- "auto"
   else view.plot <- 0
   
@@ -187,7 +213,6 @@ trainDigitalDLSorterModel <- function(
   )
   n.train <- nrow(prob.matrix.train)
   n.test <- nrow(prob.matrix.test)
-  
   if (is.null(custom.model)) {
     if (num.hidden.layers != length(num.units)) {
       stop("The number of hidden layers must be equal to the length of ", 
@@ -231,8 +256,9 @@ trainDigitalDLSorterModel <- function(
       stop("The number of neurons of the first layer must be equal to the ", 
            "number of genes considered by DigitalDLSorter object (", 
            nrow(single.cell.real(object))," in this case)")
-    } else if (keras::get_output_shape_at(custom.model$layers[[length(custom.model$layers)]], 1)[[2]] != 
-               ncol(prob.cell.types(object, "train") %>% prob.matrix())) {
+    } else if (keras::get_output_shape_at(
+        custom.model$layers[[length(custom.model$layers)]], 1
+      )[[2]] != ncol(prob.cell.types(object, "train") %>% prob.matrix())) {
       stop("The number of neurons of the last layer must be equal to the ", 
            "number of cell types considered by DigitalDLSorter object (", 
            ncol(prob.cell.types(object, "train") %>% prob.matrix()), 
@@ -343,8 +369,6 @@ trainDigitalDLSorterModel <- function(
     threads = threads,
     verbose = verbose
   )
-  ## necesario? quizás es preferible calcular las métricas a posteriori usando 
-  # las propias funciones de keras
   test.eval <- model %>% evaluate_generator(
     generator = gen.test,
     steps = ceiling(n.test / batch.size)
@@ -382,8 +406,7 @@ trainDigitalDLSorterModel <- function(
     features = rownames(single.cell.real(object))
   )
   trained.model(object) <- network.object
-  
-  message("DONE")
+  if (verbose) message("DONE")
   return(object)
 }
 
@@ -420,7 +443,7 @@ trainDigitalDLSorterModel <- function(
     }
     if (shuffle) {
       shuffling <- sample(seq(length(data.index)))
-      sel.data <- prob.matrix[data.index, ]
+      sel.data <- prob.matrix[data.index, , drop = FALSE]
       counts <- .dataForDNN(
         object = object, 
         sel.data = sel.data, 
@@ -433,7 +456,7 @@ trainDigitalDLSorterModel <- function(
         sel.data[shuffling, ]
       ))
     } else {
-      sel.data <- prob.matrix[data.index, ]
+      sel.data <- prob.matrix[data.index, , drop = FALSE]
       counts <- .dataForDNN(
         object = object, 
         sel.data = sel.data, 
@@ -467,7 +490,7 @@ trainDigitalDLSorterModel <- function(
       data.index <- data.index[data.index <= n.samples]
       nb <<- 0
     }
-    sel.data <- prob.matrix[data.index, ]
+    sel.data <- prob.matrix[data.index, , drop = FALSE]
     counts <- .dataForDNN(
       object = object, 
       sel.data = sel.data, 
@@ -489,7 +512,10 @@ trainDigitalDLSorterModel <- function(
 ) {
   bulk.data <- grepl(pattern = "Bulk_", rownames(sel.data))
   if (any(bulk.data)) {
-    bulk.samples <-  as.matrix(assay(bulk.simul(object, type.data))[, rownames(sel.data)[bulk.data]])
+    bulk.samples <-  as.matrix(
+      assay(bulk.simul(object, type.data))[, rownames(sel.data)[bulk.data], 
+                                           drop = FALSE]
+    )
   } 
   if (any(!bulk.data))  {
     sel.cells <- rownames(sel.data)[!bulk.data]
@@ -505,9 +531,9 @@ trainDigitalDLSorterModel <- function(
     cell.samples <- .mergeMatrices(x = cell.samples[[2]], y = cell.samples[[1]])
   }
   # return final matrix counts
-  if (any(bulk.data) && any(!bulk.data)) 
+  if (any(bulk.data) && any(!bulk.data)) {
     counts <- cbind(bulk.samples, cell.samples)[, rownames(sel.data)]
-  else if (any(bulk.data)) 
+  } else if (any(bulk.data)) 
     counts <- bulk.samples[, rownames(sel.data)]
   else if (any(!bulk.data)) 
     counts <- cell.samples[, rownames(sel.data)]
@@ -525,7 +551,8 @@ trainDigitalDLSorterModel <- function(
 ) {
   bulk.data <- grepl(pattern = "Bulk_", rownames(sel.data))
   if (any(bulk.data)) {
-    sel.bulk.cells <- prob.cell.types(object, type.data)@cell.names[rownames(sel.data)[bulk.data], ]
+    sel.bulk.cells <- prob.cell.types(object, type.data)@cell.names[
+      rownames(sel.data)[bulk.data], , drop = FALSE]
     bulk.samples <- apply(
       X = sel.bulk.cells,
       MARGIN = 1,
@@ -538,22 +565,27 @@ trainDigitalDLSorterModel <- function(
     sel.cells <- rownames(sel.data)[!bulk.data]
     sim.cells <- grep(pattern = pattern, sel.cells, value = TRUE)
     real.cells <- grep(pattern = pattern, sel.cells, value = TRUE, invert = TRUE)
-    cell.samples <- mapply(FUN = function(x, y) {
-      if (!is.null(x) && y == 1) {
-        return(as.matrix(assay(single.cell.simul(object))[, x]))
-      } else if (!is.null(x) && y == 2) {
-        return(as.matrix(assay(single.cell.real(object))[, x]))
-      }
-    }, x = list(sim.cells, real.cells), y = c(1, 2))
+    cell.samples <- mapply(
+      FUN = function(x, y) {
+        if (!is.null(x) && y == 1) {
+          return(as.matrix(assay(single.cell.simul(object))[, x, drop = FALSE]))
+        } else if (!is.null(x) && y == 2) {
+          return(as.matrix(assay(single.cell.real(object))[, x, drop = FALSE]))
+        }
+      }, 
+      x = list(sim.cells, real.cells), 
+      y = c(1, 2)
+    )
     cell.samples <- .mergeMatrices(x = cell.samples[[2]], y = cell.samples[[1]])
   }
   # return final matrix counts
-  if (any(bulk.data) && any(!bulk.data)) 
-    counts <- cbind(bulk.samples, cell.samples)[, rownames(sel.data)]
-  else if (any(bulk.data)) 
+  if (any(bulk.data) && any(!bulk.data)) {
+    counts <- cbind(bulk.samples, cell.samples)[, rownames(sel.data)] 
+  } else if (any(bulk.data)) {
     counts <- bulk.samples[, rownames(sel.data)]
-  else if (any(!bulk.data)) 
+  } else if (any(!bulk.data)) {
     counts <- cell.samples[, rownames(sel.data)]
+  }
   # normalize data for training and testing
   counts <- edgeR::cpm.default(y = counts, log = TRUE, prior.count = 1)
   return(t(scale(counts)))
@@ -568,8 +600,12 @@ trainDigitalDLSorterModel <- function(
   verbose
 ) {
   if (combine == "both") {
-    if (verbose)
-      message("    Combining single-cell profiles and simulated bulk samples\n")
+    # if (verbose) {
+    #   message(
+    #     paste("    Combining single-cell profiles and simulated bulk samples for", 
+    #           type.data, "data\n")
+    #   )
+    # }
     # include probabilities of single-cell profiles: 1 for X cell type
     tpsm <- matrix(
       unlist(sapply(
@@ -642,7 +678,7 @@ trainDigitalDLSorterModel <- function(
   genes.out <- setdiff(rownames(x), rownames(y))
   zero.genes <- matrix(0, nrow = length(genes.out), ncol = ncol(y), 
                        dimnames = list(genes.out, NULL))
-  return(cbind(x, rbind(y, zero.genes)[rownames(x), ]))
+  return(cbind(x, rbind(y, zero.genes)[rownames(x), , drop = FALSE]))
 }
 
 .mergePropsSort <- function(m.small, m.big) {

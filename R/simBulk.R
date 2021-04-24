@@ -1,4 +1,5 @@
-#' @import ggplot2
+#' @importFrom ggplot2 ggplot aes geom_violin geom_boxplot geom_line theme ggtitle element_text
+#' @importFrom rlang .data
 NULL
 
 
@@ -84,11 +85,6 @@ NULL
 #' @param balanced.type.cells Boolean indicating if training and test cells will
 #'   be split in a balanced way considering cell types (\code{FALSE} by
 #'   default).
-#' @param exclusive.types Vector of cell types which allows to establish cell
-#'   types that biologically do not make sense to be mixed during the generation
-#'   of bulk samples. Some samples presents this exclusive cell types. If it is
-#'   equal to NULL (by default), all cell types will be mixed when generating
-#'   bulk samples (this argument will disappear).
 #' @param verbose Show informative messages during the execution (\code{TRUE} by
 #'   default).
 #'
@@ -141,7 +137,6 @@ generateBulkCellMatrix <- function(
   proportions.train = c(10, 5, 20, 15, 10, 40),
   proportions.test = c(10, 5, 20, 15, 10, 40),
   balanced.type.cells = FALSE,
-  exclusive.types = NULL,
   verbose = TRUE
 ) {
   if (!is(object, "DigitalDLSorter")) {
@@ -156,9 +151,10 @@ generateBulkCellMatrix <- function(
          "greater than or equal to 0.05")
   } else if (!is.data.frame(prob.design)) {
     stop(paste("prob.design must be a data.frame with three column names:",
-               "cell.type.column: must be equal to cell.type.column in cells.metadata (colData slot of single.cell.final)",
-               "from: frequency from which the cell type can appear",
-               "to: frequency up to which the cell type can appear", sep = "\n   - "))
+               paste("'cell.type.column': must be equal to cell.type.column in",
+                     "cells metadata (colData slot of SingleCellExperiment objects)"),
+               "'from': frequency from which the cell type can appear",
+               "'to': frequency up to which the cell type can appear", sep = "\n   - "))
   } else if (sum(abs(proportions.train)) != 100 ||
              sum(abs(proportions.test)) != 100) {
     stop("Proportions provided must add up to 100")
@@ -168,7 +164,8 @@ generateBulkCellMatrix <- function(
     stop("'num.bulk.samples' argument must be provided")
   }
   if (!is.null(prob.cell.types(object)) || !length(prob.cell.types(object)) == 0) {
-    warning("'prob.cell.types' slot already has the probability matrices. Note that it will be overwritten\n\n",
+    warning("'prob.cell.types' slot already has the probability matrices. ", 
+            "Note that it will be overwritten\n\n",
             call. = FALSE, immediate. = TRUE)
   }
   if (!all(unlist(lapply(X = list(proportions.train, proportions.test),
@@ -184,22 +181,29 @@ generateBulkCellMatrix <- function(
       single.cell.simul(object) %>% 
         SingleCellExperiment::colData()
     )
-    # check if cell.type.column is correct
+    # check if cell.type.column and cell.ID.column arecorrect
     lapply(
       X = list(list.metadata[[1]], list.metadata[[2]]),
       FUN = function(x) {
-        .checkColumn(
-          metadata = x,
-          ID.column = cell.type.column,
-          type.metadata = "cells.metadata",
-          arg = "cell.type.column"
+        mapply(
+          function(y, z) {
+            .checkColumn(
+              metadata = x,
+              ID.column = y,
+              type.metadata = "cells.metadata",
+              arg = z
+            )
+          },
+          c(cell.ID.column, cell.type.column),
+          c("cell.ID.column", "cell.type.column")
         )
       }
     )
-    list.metadata[[1]]$simCellName <- paste(
-      list.metadata[[1]][, cell.type.column], 
-      list.metadata[[1]][, cell.ID.column], sep = "_"
-    )
+    # list.metadata[[1]][, cell.ID.column] <- paste(
+    #   list.metadata[[1]][, cell.type.column], 
+    #   list.metadata[[1]][, cell.ID.column], sep = "_"
+    # )
+    # list.metadata[[1]]$simCellName <- list.metadata[[1]][, cell.ID.column]
     list.metadata[[1]]$Simulated <- FALSE
     cells.metadata <- S4Vectors::rbind(list.metadata[[1]], list.metadata[[2]])  
   } else {
@@ -207,15 +211,16 @@ generateBulkCellMatrix <- function(
       SingleCellExperiment::colData()
   }
   # check if prob.design is correctly built
-  lapply(X = c(cell.type.column, "from", "to"),
-         FUN = function(x) {
-           .checkColumn(
-             metadata = prob.design,
-             ID.column = x,
-             type.metadata = "prob.design",
-             arg = ""
-           )
-         }
+  lapply(
+    X = c(cell.type.column, "from", "to"),
+    FUN = function(x) {
+      .checkColumn(
+        metadata = prob.design,
+        ID.column = x,
+        type.metadata = "prob.design",
+        arg = ""
+      )
+    }
   )
   if (any(duplicated(prob.design[, cell.type.column]))) {
     stop(paste("prob.design must not contain duplicated cell types in",
@@ -322,7 +327,6 @@ generateBulkCellMatrix <- function(
   }
   
   # check if all cell types are present in train and test data
-
   if (verbose) {
     message("\n=== Train Set cells by type:")
     tb <- unlist(lapply(train.set.list, length))
@@ -331,7 +335,7 @@ generateBulkCellMatrix <- function(
     tb <- unlist(lapply(test.set.list, length))
     message(paste0("    - ", names(tb), ": ", tb, collapse = "\n"), "\n")
   }
-
+  # take prob.design
   prob.list <- apply(
     X = prob.design, MARGIN = 1,
     FUN = function (x) {
@@ -339,29 +343,18 @@ generateBulkCellMatrix <- function(
     }
   )
   names(prob.list) <- prob.design[, cell.type.column]
-
-  # check if there are exclusive types
-  if (!is.null(exclusive.types)) {
-    if (length(exclusive.types) < 2) {
-      stop("'exclusive.types' must be at least 2 different cell types")
-    } else if (any(duplicated(exclusive.types))) {
-      stop("'exclusive.types' can not contain duplicated elements")
-    } else if (!all(exclusive.types %in% unique(cells.metadata[, cell.type.column]))) {
-      stop("Cell types present in exclusive.types argument must be present in cells.metadata")
-    }
-    message("=== Setting the next exclusive cell types in some bulk samples: ",
-            paste(exclusive.types, collapse = ", "), "\n")
-    index.ex <- match(exclusive.types, names(prob.list))
-  } else {
-    index.ex <- NULL
-  }
+  # check if there are exclusive types --> change for introduce zeros
+  exclusive.types <- NULL
+  
   n.cell.types <- length(unique(train.types))
   functions.list <- list(.generateSet1, .generateSet2, .generateSet3,
                          .generateSet4, .generateSet5, .generateSet6)
-
+  ## resume this code by using a loop or do.call implementation, because the code 
+  ## is duplicated (is the same for training and test)
   # TRAIN SETS -----------------------------------------------------------------
-  excl.cell.type <- c(index.ex, index.ex, NULL, NULL, index.ex, NULL)
-  train.prob.matrix <- matrix(rep(0, n.cell.types), nrow = 1, byrow = T)
+  excl.cell.type <- c(NULL, NULL, NULL, NULL, NULL, NULL)
+  train.prob.matrix <- matrix(rep(0, n.cell.types), nrow = 1, byrow = TRUE)
+  colnames(train.prob.matrix) <- names(prob.list)
   train.plots <- list()
   n <- 1
   first <- TRUE
@@ -498,27 +491,27 @@ generateBulkCellMatrix <- function(
     train = train.prob.matrix.object,
     test = test.prob.matrix.object
   )
-
-  message("DONE")
+  if (verbose) message("DONE")
   return(object)
 }
 
-.violinPlot <- function(df, title, x = CellType, y = Prob) {
-  plot <- ggplot(df, aes(x = {{x}}, y = {{y}})) +
+.violinPlot <- function(df, title, x = "CellType", y = "Prob") {
+  plot <- ggplot(df, aes(x = .data[[x]], y = .data[[y]])) +
     geom_violin() + ggtitle(title) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
   return(plot)
 }
 
-.boxPlot <- function(df, title, x = CellType, y = Prob) {
-  plot <- ggplot(df, aes(x = {{x}}, y = {{y}})) +
+.boxPlot <- function(df, title, x = "CellType", y = "Prob") {
+  plot <- ggplot(df, aes(x = .data[[x]], y = .data[[y]])) +
     geom_boxplot() + ggtitle(title) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
   return(plot)
 }
 
-.linesPlot <- function(df, title, x = CellType, y = Prob, group = Sample) {
-  plot <- ggplot(df,aes(x = {{x}}, y = {{y}}, group = {{group}})) +
+.linesPlot <- function(df, title, x = "CellType", y = "Prob", group = "Sample") {
+  plot <- ggplot(df, aes(x = .data[[x]], y = .data[[y]],
+                        group = .data[[group]])) +
     geom_line(colour = "grey60") + ggtitle(title) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
   return(plot)
@@ -537,7 +530,7 @@ generateBulkCellMatrix <- function(
   df <- reshape2::melt(dummy)
   colnames(df) <- c("Sample", "nMix", "Prob")
   df$nMix <- factor(df$nMix)
-  plot.list[[4]] <- .boxPlot(df = df, x = nMix, title = title)
+  plot.list[[4]] <- .boxPlot(df = df, x = "nMix", title = title)
   names(plot.list) <- c("violinplot", "boxplot", "linesplot", "nmix")
   return(plot.list)
 }
@@ -562,6 +555,14 @@ setCount <- function(x, setList, sn, n.cells) {
   return(list(vec, sel))
 }
 
+.cellExcluder2 <- function(vec) {
+  num.zero <- sample(seq(0, length(vec)), size = 1)
+  sel <- sample(seq(1:10), size = num.zero)
+  vec[sel] <- 0
+  return(list(vec, sel))
+}
+
+# recursive implementation, maybe improvable
 .setHundredLimit <- function(
   x, 
   index.ex = NULL, 
@@ -718,14 +719,10 @@ setCount <- function(x, setList, sn, n.cells) {
     while (sum(p) < 100) {
       p[i] <- p[i] + sample(seq(100 - sum(p)), size = 1)
       i <- i + 1
-      if (i > n.cell.types) {
-        i <- 1
-      }
+      if (i > n.cell.types) i <- 1
     }
     p <- sampling(p)
-    if (sum(p == 0) < n.cell.types) {
-      probs[[length(probs) + 1]] <- p
-    }
+    if (sum(p == 0) < n.cell.types) probs[[length(probs) + 1]] <- p
   }
   probs <- matrix(unlist(probs), nrow = n, byrow = T)
   colnames(probs) <- colnames(prob.matrix)
@@ -761,9 +758,7 @@ setCount <- function(x, setList, sn, n.cells) {
     }
     p[1] <- p[1] + 1
     p <- sample(p)
-    if (sum(p == 0) < n.cell.types) {
-      probs[[length(probs) + 1]] <- p
-    }
+    if (sum(p == 0) < n.cell.types) probs[[length(probs) + 1]] <- p
   }
   # probs <- lapply(X = probs, FUN = function(x) return(x[names(prob.list)]))
   probs <- matrix(unlist(probs), nrow = n, byrow = T)
@@ -1013,11 +1008,10 @@ simBulkProfiles <- function(
              "and 9 (highest and slowest compression). ")
       }
     }
-    
   }
   if (threads <= 0) threads <- 1
   if (verbose) {
-    message(paste("=== Set parallel environment to", threads, "threads"))
+    message(paste("=== Set parallel environment to", threads, "thread(s)"))
   }
   if (type.data == "both") {
     if (!is.null(object@bulk.simul)) {
@@ -1075,7 +1069,7 @@ simBulkProfiles <- function(
       names(bulk.simul(object)) <- type.data
     }
   }
-  message("\nDONE")
+  if (verbose) message("\nDONE")
   return(object)
 }
 
@@ -1241,4 +1235,3 @@ simBulkProfiles <- function(
   }
   return(rowSums(edgeR::cpm.default(counts)))  
 }
-

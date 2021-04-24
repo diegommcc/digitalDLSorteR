@@ -109,8 +109,8 @@ setMethod(f = "show",
             if (is.null(object@prob.matrix)) {
               cat("ProbMatrixCellTypes object empty")
             } else {
-              cat(paste0("  Probability matrix for ",
-                         object@type.data, ": "))
+              cat(paste0("  Cell type matrix for ",
+                         object@type.data, "data: "))
               cat(paste(dim(object@prob.matrix), c("bulk samples and",
                                                    "cell types"),
                         collapse = " "))
@@ -354,9 +354,9 @@ setMethod(
 .bulkShow <- function(se) {
   cat("   ", dim(se)[1], "features and", dim(se)[2], "samples\n")
   if (is.null(rowData(se)[[1]])) rownames.se <- "---"
-  else rownames.se <- S4Vectors:::selectSome(rowData(se)[[1]], 6)
+  else rownames.se <- S4Vectors:::selectSome(rownames(rowData(se)), 6)
   if (identical(colnames(se), character(0))) colnames.se <- "---"
-  else colnames.se <- S4Vectors:::selectSome(colData(se)[[1]], 6)
+  else colnames.se <- S4Vectors:::selectSome(rownames(colData(se)), 6)
   cat("    rownames:", rownames.se, "\n")
   cat("    colnames:", colnames.se, "\n")
 }
@@ -427,7 +427,7 @@ setMethod(f = "show",
               .sceShow(object@single.cell.simul)
             }
             if (!is.null(object@prob.cell.types)) {
-              cat("Probability matrices:\n")
+              cat("Cell type composition matrices:\n")
               lapply(X = c("train", "test"), FUN = function(x) {
                 if (x %in% names(object@prob.cell.types)) {
                   cat(show(object@prob.cell.types[[x]]), "\n")

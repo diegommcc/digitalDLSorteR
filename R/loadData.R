@@ -100,9 +100,9 @@ NULL
   file.backend = NULL,
   block.processing = FALSE
 ) {
-  if (grepl(pattern = ".tsv|.rds", x = counts.file)) {
+  if (grepl(pattern = ".tsv|.rds", x = counts.file, ignore.case = FALSE)) {
     counts <- .readTabFiles(file = counts.file)
-  } else if (grepl(pattern = ".mtx$", x = counts.file)) {
+  } else if (grepl(pattern = ".mtx$", x = counts.file, ignore.case = FALSE)) {
     if (!file.exists(counts.file))
       stop(paste(counts.file, "file not found"))
     base.dir <- dirname(counts.file)
@@ -117,7 +117,7 @@ NULL
     cell.names <- read.delim(file.path(base.dir, "barcodes.tsv"), header = F,
                              sep = "\t", stringsAsFactors = F)
     colnames(counts) <- cell.names$V1
-  } else if (grepl(".h5$|.hdf5$", counts.file)) {
+  } else if (grepl(".h5$|.hdf5$", counts.file, ignore.case = FALSE)) {
     if (is.null(name.h5)) {
       stop("If you provide a HDF5 file, you must give the name of dataset in ", 
            "the file") 
@@ -512,12 +512,13 @@ NULL
 ) {
   # check if single-cell data are real or final
   if (is.null(single.cell)) {
-    stop(paste("'single.cell' argument cannot be NULL"))
-  } else if (is.null(cell.ID.column) || is.null(gene.ID.column)) {
-    stop("cell.ID.column and gene.ID.column are mandatory. Please look ",
+    stop(paste("Please, provide a single.cell argument"))
+  } else if (is.null(cell.ID.column) || is.null(gene.ID.column) || 
+             missing(cell.ID.column) || missing(gene.ID.column)) {
+    stop("cell.ID.column and gene.ID.column arguments are needed. Please look ",
          "?loadSCProfiles")
   } else if (!fun.aggregate %in% c("sum", "mean", "median")) {
-    stop("'fun.aggregate' must be one of the following options: 'sum', 'mean' ", 
+    stop("fun.aggregate must be one of the following options: 'sum', 'mean' ", 
          "or 'median'")
   } 
   if (!is.null(file.backend)) {

@@ -110,8 +110,12 @@ estimateZinbwaveParams <- function(
     stop("The object provided is not of DigitalDLSorter class")
   } else if (is.null(single.cell.real(object))) {
     stop("single.cell.real slot is empty")
-  } else if (is.null(cell.cov.columns)) { ## its neccesary?
-    stop("At least one covariate in cell.cov.column is required")
+  } else if (missing(cell.ID.column) || missing(gene.ID.column) || 
+             is.null(cell.ID.column) || is.null(gene.ID.column)) {
+    stop("cell.ID.column and gene.ID.column arguments are needed. Please look ",
+         "?estimateZinbwaveParams")
+  } else if (missing(cell.type.column) || is.null(cell.type.column)) {
+    stop("cell.type.column argument is needed. Please, look ?estimateZinbwaveParams")
   }
   if (!is.null(zinb.params(object = object))) {
     warning("zinb.params slot already has a ZinbParams object. Note that it will
@@ -127,35 +131,54 @@ estimateZinbwaveParams <- function(
   )
   # check if cell.ID.column and cell.type.column are correct
   mapply(
-    function(x, y) {
+    FUN = function(x, y) {
       .checkColumn(
         metadata = list.data[[2]],
         ID.column = x,
         type.metadata = "cells.metadata",
         arg = y
-      )
+      )  
     },
-    c(cell.ID.column, cell.type.column, cell.cov.columns),
-    c("cell.ID.column", "cell.type.column",
-      rep("cell.cov.columns", length(cell.cov.columns)))
+    x = c(cell.ID.column, cell.type.column),
+    y = c("cell.ID.column", "cell.type.column")
   )
-  # check if covariates and cell types have at least two levels
-  lapply(
-    c(cell.type.column, cell.cov.columns),
-    function(x) {
-      if (length(unique(list.data[[2]][, x])) < 2) 
-        stop(x, " must have 2 or more unique elements")
-    }
-  )
-  if (!missing(gene.cov.columns)) {
-    lapply(gene.cov.columns, function(x) {
-      .checkColumn(
-        metadata = list.data[[3]],
-        ID.column = x,
-        type.metadata = "genes.metadata",
-        arg = "gene.cov.columns"
-      )
-    })
+  # check if cell type variable has at least two levels
+  if (length(unique(list.data[[2]][, cell.type.column])) < 2) 
+    stop(x, " must have 2 or more unique elements")  
+  # if cell.cov.columns is provided, check if everything is correct
+  if (!(missing(cell.cov.columns) || is.null(cell.cov.columns))) {
+    lapply(
+      X = cell.cov.columns, 
+      FUN = function(x) {
+        .checkColumn(
+          metadata = list.data[[2]],
+          ID.column = x,
+          type.metadata = "cells.metadata",
+          arg = "cell.cov.columns"
+        )
+      }
+    )
+    lapply(
+      X = cell.cov.columns,
+      FUN = function(x) {
+        if (length(unique(list.data[[2]][, x])) < 2) 
+          stop(x, " must have 2 or more unique elements")
+      }
+    )
+  }
+  ## if gene.cov.columns is provided, check if everything is correct
+  if (!(missing(gene.cov.columns) || is.null(gene.cov.columns))) {
+    lapply(
+      X = gene.cov.columns, 
+      FUN = function(x) {
+        .checkColumn(
+          metadata = list.data[[3]],
+          ID.column = x,
+          type.metadata = "genes.metadata",
+          arg = "gene.cov.columns"
+        )
+      }
+    )
     lapply(
       gene.cov.columns,
       function(x) {
@@ -164,7 +187,7 @@ estimateZinbwaveParams <- function(
       }
     )
   }
-  # set configuration of parallel computations
+  # set configuration of parallel computations 
   if (threads <= 0) threads <- 1
   if (verbose) {
     message("=== Set parallel environment to ", threads, " thread(s)\n")
@@ -172,15 +195,27 @@ estimateZinbwaveParams <- function(
   snowParam <- BiocParallel::SnowParam(workers = threads, type = "SOCK")
   # set cell types that will be estimated
   if (set.type == "All" || "All" %in% set.type) {
-    formula.cell.model <- as.formula(paste("~", paste(c(cell.cov.columns, 
-                                                        cell.type.column), 
-                                                      collapse = "+")))
-    if (verbose) {
-      message("=== Estimate parameters for all cell types experiment\n")
-      message(paste("=== Create cell model matrix based on", 
-                    paste(cell.cov.columns, collapse = ", "),
-                    "and", cell.type.column, "columns:"))
-      message("\t", formula.cell.model, "\n")
+    if (!(missing(cell.cov.columns) || is.null(cell.cov.columns))) {
+      formula.cell.model <- as.formula(
+        paste("~", paste(c(cell.cov.columns, cell.type.column), collapse = "+"))
+      )  
+      if (verbose) {
+        message("=== Estimate parameters for all cell types in the experiment\n")
+        message(paste("=== Create cell model matrix based on", 
+                      paste(cell.cov.columns, collapse = ", "),
+                      "and", cell.type.column, "columns:"))
+        message("\t", formula.cell.model, "\n")
+      }
+    } else {
+      formula.cell.model <- as.formula(
+        paste("~", paste(cell.type.column, collapse = "+"))
+      ) 
+      if (verbose) {
+        message("=== Estimate parameters for all cell types in the experiment\n")
+        message(paste("=== Create cell model matrix based on", 
+                      cell.type.column, "columns:"))
+        message("\t", formula.cell.model, "\n")
+      }
     }
     # subset of cells
     list.data <- .reduceDataset(
@@ -199,26 +234,38 @@ estimateZinbwaveParams <- function(
     )
     sdm.ncol <- ncol(sdm)
     sdm.colnames <- colnames(sdm)
-    
   } else {
     if (!all(set.type %in% unique(list.data[[2]][, cell.type.column])))
-      stop("Cell type(s) provided in 'set.type' argument not found")
+      stop("Cell type(s) provided in set.type argument not found")
     # check if set.type contains at least two or more cell types
     if (length(set.type) < 2) {
-      stop("'set.type' must contain two or more different cell types in order 
+      stop("set.type must contain two or more different cell types in order 
            to estimate the parameters of the model") 
     }
     # formula with only specific cell types
-    formula.cell.model <- as.formula(
-      paste("~", paste(c(cell.cov.columns, cell.type.column), collapse = "+"))
-    )
-    if (verbose) {
-      message("=== Estimate parameters for ", paste(set.type, collapse = ", "), 
-              " cell type(s) from the experiment\n")
-      message(paste("=== Create cell model matrix based on", 
-                    paste(cell.cov.columns, collapse = ", "),
-                    "and", cell.type.column, "columns:"))
-      message("\t", formula.cell.model, "\n")
+    if (!(missing(cell.cov.columns) || is.null(cell.cov.columns))) {
+      formula.cell.model <- as.formula(
+        paste("~", paste(c(cell.cov.columns, cell.type.column), collapse = "+"))
+      )  
+      if (verbose) {
+        message("=== Estimate parameters for ", paste(set.type, collapse = ", "), 
+                " cell type(s) from the experiment\n")
+        message(paste("=== Create cell model matrix based on", 
+                      paste(cell.cov.columns, collapse = ", "),
+                      "and", cell.type.column, "columns:"))
+        message("\t", formula.cell.model, "\n")
+      }
+    } else {
+      formula.cell.model <- as.formula(
+        paste("~", paste(cell.type.column, collapse = "+"))
+      )  
+      if (verbose) {
+        message("=== Estimate parameters for ", paste(set.type, collapse = ", "), 
+                " cell type(s) from the experiment\n")
+        message(paste("=== Create cell model matrix based on", 
+                      cell.type.column, "columns:"))
+        message("\t", formula.cell.model, "\n")
+      }
     }
     cell.IDs <- list.data[[2]][which(list.data[[2]][, cell.type.column] == set.type),
                                cell.ID.column]
@@ -246,9 +293,10 @@ estimateZinbwaveParams <- function(
     # sdm.colnames <- seq(1)
   }
   # covariates for genes
-  if (!missing(gene.cov.columns)) {
-    formula.gene.model <- as.formula(paste("~", paste(gene.cov.columns, 
-                                                      collapse = "+")))
+  if (!(missing(gene.cov.columns) || is.null(gene.cov.columns))) {
+    formula.gene.model <- as.formula(
+      paste("~", paste(gene.cov.columns, collapse = "+"))
+    )
     if (verbose) {
       message("=== Create gene model matrix with ", 
               gene.cov.columns, " covariate(s)")
@@ -262,7 +310,7 @@ estimateZinbwaveParams <- function(
     if (verbose) 
       message("=== Create gene model matrix without gene covariates\n")
     gdm <- model.matrix(
-      ~1, data = list.data[[3]][match(rownames(list.data[[1]]),
+      ~ 1, data = list.data[[3]][match(rownames(list.data[[1]]),
                                       list.data[[3]][, gene.ID.column]), ]
     )
   }
@@ -382,8 +430,10 @@ estimateZinbwaveParams <- function(
   cell.type.column
 ) {
   num.cells.dataset <- table(cells.metadata[, cell.type.column])
-  prop.final <- ifelse(num.cells.dataset < num.cells, 
-                       num.cells.dataset, num.cells)
+  prop.final <- ifelse(
+    test = num.cells.dataset < num.cells, 
+    yes = num.cells.dataset, no = num.cells
+  )
   available.cells <- num.cells.dataset - prop.final
   dif <- total.subset - sum(prop.final)
   if (sum(available.cells) >= dif) {
@@ -460,7 +510,7 @@ estimateZinbwaveParams <- function(
     cell.type.column = cell.type.column
   )
   if (any(nums.cells == 0))
-    stop("Some cell types have zero cells. Please, provide a greater 'total.subset'")
+    stop("Some cell types have zero cells. Please, provide a greater total.subset")
   
   if (verbose) {
     message("=== Number of cells for each cell type:\n",
@@ -490,8 +540,7 @@ estimateZinbwaveParams <- function(
 ) {
   if (file.exists(file.backend)) {
     if (is.null(name.dataset.backend)) {
-      warning("'file.backend' already exists. Using a random name dataset in 
-              order to use this HDF5 file as backend",
+      warning("file.backend already exists. Using a random name dataset",
               call. = FALSE, immediate. = TRUE)
       name.dataset.backend <- HDF5Array::getHDF5DumpName(for.use = TRUE)
       while (strsplit(name.dataset.backend, 
@@ -500,7 +549,7 @@ estimateZinbwaveParams <- function(
         name.dataset.backend <- .randomStr()
       }
     } else if (name.dataset.backend %in% rhdf5::h5ls(file.backend)[, "name"]) {
-      stop("'file.backend' and 'name.dataset.backend' already exist. Please, ", 
+      stop("file.backend and name.dataset.backend already exist. Please, ", 
            "introduce a correct file path or other dataset name")
     }
   } else {
@@ -511,7 +560,7 @@ estimateZinbwaveParams <- function(
     compression.level <- HDF5Array::getHDF5DumpCompressionLevel()
   } else {
     if (compression.level < 0 || compression.level > 9) {
-      stop("'compression.level' must be an integer between 0 (no compression) ", 
+      stop("compression.level must be an integer between 0 (no compression) ", 
            "and 9 (highest compression and slowest reading/writing). ")
     }
   }
@@ -652,6 +701,16 @@ simSingleCellProfiles <- function(
             object. Note that it will be overwritten\n", 
             call. = FALSE, immediate. = TRUE)
   }
+  if (missing(cell.ID.column) || is.null(cell.ID.column)) {
+    stop("cell.ID.column argument is needed. Please see ",
+         "?simSingleCellProfiles")
+  } else if (missing(cell.type.column) || is.null(cell.type.column)) {
+    stop("cell.type.column argument is needed. Please, see ?simSingleCellProfiles")
+  } else if (missing(n.cells) || is.null(n.cells)) {
+    stop("n.cells argument is needed. Please, see ?simSingleCellProfiles")
+  } else if (!is.numeric(n.cells)) {
+    stop("n.cells argument must be a integer. Please, see ?simSingleCellProfiles")
+  }
   # check if parameters related to hdf5 file are correct
   if (!is.null(file.backend)) {
     hdf5Params <- .checkHDF5parameters(
@@ -685,7 +744,7 @@ simSingleCellProfiles <- function(
   # for cases where estimation was performed in some cell types
   cell.types.used <- list.data[[2]][rownames(zinb.object@model@X), 
                                     cell.type.column] %>% unique()
-  if (n.cells < 0) stop("n.cells must be greater than 0 cells per cell type")
+  if (n.cells < 0) stop("n.cells must be greater than 0 (cells per cell type)")
   # generate metadata for simulated cells
   colnames(list.data[[1]]) <- paste(list.data[[2]][, cell.type.column],
                                     list.data[[2]][, cell.ID.column],
@@ -704,7 +763,7 @@ simSingleCellProfiles <- function(
                          x = model.cell.types)
   if (!is.null(cell.types)) {
     if (!all(cell.types %in% cell.types.used)) {
-      stop("Cell type(s) provided in 'cell.types' not found in ZINB-WaVE model.",
+      stop("Cell type(s) provided in cell.types not found in ZINB-WaVE model.",
            "\n  Only cell types that have been used during estimation of ",
            "parameters can be simulated")
     }
@@ -783,8 +842,8 @@ simSingleCellProfiles <- function(
     message("    - i (# entries): ", n * J)
   }
   if (block.processing && is.null(file.backend)) {
-    stop("'block.processing' is only compatible with the use of HDF5 files ", 
-         "as back-end ('file.backend' argument)")
+    stop("block.processing is only compatible with the use of HDF5 files ", 
+         "as back-end (file.backend argument)")
   } else if (block.processing && !is.null(file.backend)) {
     if (n < block.size) {
       block.size <- n
@@ -798,7 +857,7 @@ simSingleCellProfiles <- function(
       chunk.dims <- c(J, 1)
     } else {
       if (any(chunk.dims > c(J, n))) {
-        warning("'chunk.dims' must be equal to or lesser than dimension of ", 
+        warning("chunk.dims must be equal to or lesser than dimension of ", 
                 "data. Setting default value", call. = FALSE, immediate. = TRUE)
         chunk.dims <- c(J, 1)
       }
@@ -876,7 +935,8 @@ simSingleCellProfiles <- function(
     )  
   }
   sim.cells.metadata <- list.data[[2]][cell.set.names, ]
-  sim.cells.metadata$simCellName <- names(cell.set.names)
+  sim.cells.metadata$simCellName <- NULL # it is not used
+  sim.cells.metadata[, cell.ID.column] <- names(cell.set.names)
   rownames(sim.cells.metadata) <- names(cell.set.names)
   sim.cells.metadata$Simulated <- TRUE
   
