@@ -6,8 +6,8 @@
 NULL
 
 
-## internal function to store default colors in order to avoid modify default
-## colors in ggplot2
+# internal function to store default colors in order to avoid modify default
+# colors in ggplot2
 color.list <- function() {
   color.list.2 <- c(
     RColorBrewer::brewer.pal(12, "Paired"), "#d45b91", "#374738",
