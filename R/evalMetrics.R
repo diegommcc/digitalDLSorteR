@@ -33,7 +33,7 @@ color.list <- function() {
 #' to know the performance of the model. By default, absolute error (AbsErr),
 #' proportional absolute error (ppAbsErr), squared error (SqrErr) and
 #' proportional squared error (ppSqrErr) are calculated for each test sample.
-#' Moreover, each one of these metrics are aggregated using their mean values by
+#' Moreover, each one of these metrics is aggregated using their mean values by
 #' three criteria: each cell type (\code{CellType}), probability bins of 0.1
 #' (\code{pBin}), number of different cell types present in the sample
 #' \code{nMix} and a combination of \code{pBin} and \code{nMix}
@@ -66,7 +66,7 @@ calculateEvalMetrics <- function(
   metrics = c("MAE", "MSE")
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
+    stop("The provided object is not of class DigitalDLSorter")
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@predict.results)) {
     stop("The provided object does not have a trained model for evaluation")
@@ -107,12 +107,20 @@ calculateEvalMetrics <- function(
   ## calculate stats
   amd <- .updateAMD(amd = amd, use.met = use.met)
   amdf <- amd %>% filter(amd$Prob > 0 & amd$Prob < 1)
-  eval.stats <- lapply(use.met, function(x) .calculateMetrics(mat = amd, err = x))
-  eval.stats.f <- lapply(use.met, function(x) .calculateMetrics(mat = amdf, err = x))
+  eval.stats <- lapply(
+    X = use.met, 
+    FUN = function(x) .calculateMetrics(mat = amd, err = x)
+  )
+  eval.stats.f <- lapply(
+    X = use.met, 
+    FUN = function(x) .calculateMetrics(mat = amdf, err = x)
+  )
   ## update object
-  trained.model(object)@eval.stats.samples <- list(raw = amd,
-                                                   allData = eval.stats,
-                                                   filData = eval.stats.f)
+  trained.model(object)@eval.stats.samples <- list(
+    raw = amd,
+    allData = eval.stats,
+    filData = eval.stats.f
+  )
   return(object)
 }
 
@@ -129,36 +137,55 @@ calculateEvalMetrics <- function(
 se <- function(x) sqrt(var(x)/length(x))
 
 ## mean error by
-.meanErr <- function(x, err, by, name) {
+.meanErr <- function(
+  x, 
+  err, 
+  by, 
+  name
+) {
   if (!err %in% colnames(x))
     stop(paste(err, "does not present"))
   if (is(by, "character")) {
-    list.res <- lapply(list(mean, sd, se), function(fun) {
-      res <- aggregate(x[[err]], FUN = fun, by = list(by = x[[by]]))
-      colnames(res) <- c(by, name)
-      return(res)
-    })
-    res <- Reduce(function(x, y) merge(x = x, y = y, by = by),
-                  list.res)
-    colnames(res) <- c(by, paste0(name, ".mean"),
-                       paste0(name, ".sd"),
-                       paste0(name, ".se"))
+    list.res <- lapply(
+      X = list(mean, sd, se), 
+      FUN = function(fun) {
+        res <- aggregate(x = x[[err]], FUN = fun, by = list(by = x[[by]]))
+        colnames(res) <- c(by, name)
+        return(res)
+      }
+    )
+    res <- Reduce(f = function(x, y) merge(x = x, y = y, by = by), X = list.res)
+    colnames(res) <- c(
+      by, paste0(name, ".mean"),
+      paste0(name, ".sd"),
+      paste0(name, ".se")
+    )
   } else {
-    list.res <- lapply(list(mean, sd, se), function(fun) {
-      res <- aggregate(x[[err]], FUN = fun, by = by)
-      colnames(res) <- c(names(by), name)
-      return(res)
-    })
-    res <- Reduce(function(x, y) merge(x = x, y = y, by = names(by)),
-                  list.res)
-    colnames(res) <- c(names(by), paste0(name, ".mean"),
-                       paste0(name, ".sd"),
-                       paste0(name, ".se"))
+    list.res <- lapply(
+      X = list(mean, sd, se), 
+      FUN = function(fun) {
+        res <- aggregate(x = x[[err]], FUN = fun, by = by)
+        colnames(res) <- c(names(by), name)
+        return(res)
+      }
+    )
+    res <- Reduce(
+      f = function(x, y) merge(x = x, y = y, by = names(by)), x = list.res
+    )
+    colnames(res) <- c(
+      names(by), paste0(name, ".mean"),
+      paste0(name, ".sd"),
+      paste0(name, ".se")
+    )
   }
   return(res)
 }
 
-.statsBlock <- function(x, err, by) {
+.statsBlock <- function(
+  x, 
+  err, 
+  by
+) {
   if (err == "MAE") {
     err.x <- c("AbsErr", "ppAbsErr")
     name <- c("MAE", "ppMAE")
@@ -175,22 +202,30 @@ se <- function(x) sqrt(var(x)/length(x))
   return(d.err)
 }
 
-.calculateMetrics <- function(mat, err) {
+.calculateMetrics <- function(
+  mat, 
+  err
+) {
   pBinNMix <- list(pBinNMix = paste(mat$pBin, mat$nMix, sep = "_"))
   by.stats <- list(Sample = "Sample", CellType = "CellType",
                    pBin = "pBin", nMix = "nMix", pBinNMix = pBinNMix)
-  list.stats <- lapply(X = by.stats, function(x) .statsBlock(mat, err = err, by = x))
+  list.stats <- lapply(
+    X = by.stats, FUN = function(x) .statsBlock(x = mat, err = err, by = x)
+  )
   return(list.stats)
 }
 
-.updateAMD <- function(amd, use.met) {
+.updateAMD <- function(
+  amd, 
+  use.met
+) {
   for (i in names(use.met)) {
     if (i == "MAE") {
-      amd$AbsErr <- .AbsErr(amd)
-      amd$ppAbsErr <- .ppAbsErr(amd)
+      amd$AbsErr <- .AbsErr(x = amd)
+      amd$ppAbsErr <- .ppAbsErr(x = amd)
     } else if (i == "MSE") {
-      amd$SqrErr <- .SqrErr(amd)
-      amd$ppSqrErr <- .ppSqrErr(amd)
+      amd$SqrErr <- .SqrErr(x = amd)
+      amd$ppSqrErr <- .ppSqrErr(x = amd)
     }
   }
   return(amd)

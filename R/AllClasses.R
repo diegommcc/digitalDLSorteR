@@ -401,50 +401,75 @@ setMethod(
 }
 
 
-setMethod(f = "show",
-          signature = "DigitalDLSorter",
-          definition = function(object) {
-            if (.allSlotsNull(object)) {
-              cat("An empty object of class", class(object), "\n")
-              opt <- options(show.error.messages = FALSE)
-              on.exit(options(opt))
-              stop()
-            } else {
-              cat("An object of class", class(object), "\n")
-            }
-            if (!is.null(object@single.cell.real)) {
-              cat("Real single-cell profiles:\n")
-              .sceShow(object@single.cell.real)
-            } else {
-              cat("Real single-cell profiles:\n")
-              .sceShow(S4Vectors::DataFrame())
-            }
-            if (!is.null(object@zinb.params)) {
-              .zinbModelShow(object@zinb.params@model)
-            }
-            if (!is.null(object@single.cell.simul)) {
-              cat("Simulated single-cell profiles:\n")
-              .sceShow(object@single.cell.simul)
-            }
-            if (!is.null(object@prob.cell.types)) {
-              cat("Cell type composition matrices:\n")
-              lapply(X = c("train", "test"), FUN = function(x) {
-                if (x %in% names(object@prob.cell.types)) {
-                  cat(show(object@prob.cell.types[[x]]), "\n")
-                }
-              })
-            }
-            if (!is.null(object@bulk.simul)) {
-              cat("Simulated bulk samples:\n")
-              lapply(X = c("train", "test"), FUN = function(x) {
-                if (x %in% names(object@bulk.simul)) {
-                  cat(paste(" ", x, "bulk samples:\n"))
-                  .bulkShow(object@bulk.simul[[x]])
-                }
-              })
-            }
-            if (!is.null(object@trained.model)) {
-              cat(show(object@trained.model), "\n")
-            }
-            cat("Project:", object@project, "\n")
-          })
+setMethod(
+  f = "show",
+  signature = "DigitalDLSorter",
+  definition = function(object) {
+    if (.allSlotsNull(object)) {
+      cat("An empty object of class", class(object), "\n")
+      opt <- options(show.error.messages = FALSE)
+      on.exit(options(opt))
+      stop()
+    } else {
+      cat("An object of class", class(object), "\n")
+    }
+    if (!is.null(object@single.cell.real)) {
+      cat("Real single-cell profiles:\n")
+      .sceShow(object@single.cell.real)
+    } else {
+      cat("Real single-cell profiles:\n")
+      .sceShow(S4Vectors::DataFrame())
+    }
+    if (!is.null(object@zinb.params)) {
+      .zinbModelShow(object@zinb.params@model)
+    }
+    if (!is.null(object@single.cell.simul)) {
+      cat("Simulated single-cell profiles:\n")
+      .sceShow(object@single.cell.simul)
+    }
+    if (!is.null(object@prob.cell.types)) {
+      cat("Cell type composition matrices:\n")
+      lapply(X = c("train", "test"), FUN = function(x) {
+        if (x %in% names(object@prob.cell.types)) {
+          cat(show(object@prob.cell.types[[x]]), "\n")
+        }
+      })
+    }
+    if (!is.null(object@bulk.simul)) {
+      cat("Simulated bulk samples:\n")
+      lapply(
+        X = c("train", "test"), FUN = function(x) {
+          if (x %in% names(object@bulk.simul)) {
+            cat(paste(" ", x, "bulk samples:\n"))
+            .bulkShow(object@bulk.simul[[x]])
+          }
+        }
+      )
+    }
+    if (!is.null(object@trained.model)) {
+      cat(show(object@trained.model), "\n")
+    }
+    if (!is.null(object@deconv.data)) {
+      cat("Bulk samples to deconvolute:\n")
+      lapply(
+        X = names(object@deconv.data), FUN = function(x) {
+          if (x %in% names(object@deconv.data)) {
+            cat(paste(" ", x, "bulk samples:\n"))
+            .bulkShow(object@deconv.data[[x]])
+          }
+        }
+      )
+    }
+    if (!is.null(object@deconv.results)) {
+      cat("Results (estimated cell proportions):\n")
+      lapply(
+        X = names(object@deconv.results), FUN = function(x) {
+          if (x %in% names(object@deconv.results)) {
+            cat(paste(" Results of", x, "bulk samples\n"))
+          }
+        }
+      )
+    }
+    cat("Project:", object@project, "\n")
+  }
+)

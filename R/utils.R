@@ -296,7 +296,7 @@ loadTrainedModelFromH5 <- function(
   return(object)
 }
 
-#' Plot training history of a trained DigitalDLSorter DNN model.
+#' Plot training history of a trained DigitalDLSorter DNN model
 #'
 #' Plot training history of a trained DigitalDLSorter DNN model.
 #'
@@ -333,7 +333,7 @@ plotTrainingHistory <- function(
 }
 
 
-#' Load data to deconvolute from tabulated text file.
+#' Load data to deconvolute from tabulated text file
 #'
 #' Load data to deconvolute from text file. Accepted formats are tsv and tsv.gz.
 #' You must specify the correct extension.
@@ -358,8 +358,11 @@ loadDeconvDataFromFile <- function(
   if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
   }
+  counts <- .readTabFiles(file = file.path)
   se.object <- SummarizedExperiment::SummarizedExperiment(
-    assays = list(counts = .readTabFiles(file = file.path))
+    assays = list(counts = counts),
+    rowData = data.frame(rownames(counts)),
+    colData = data.frame(colnames(counts)),
   )
   # generate name for data if is not provided
   if (is.null(name.data)) {

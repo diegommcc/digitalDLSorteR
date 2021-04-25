@@ -168,23 +168,23 @@ trainDigitalDLSorterModel <- function(
     if ((combine == "both" && is.null(bulk.simul(object)) ||
          combine == "both" && (is.null(single.cell.real(object)) && 
                                is.null(single.cell.simul(object))))) {
-      stop("If 'combine = 'both'' is selected, both 'bulk.simul' and at least ",
+      stop("If combine = 'both' is selected, 'bulk.simul' and at least ",
            "one single cell slot must be provided")
     } else if (combine == "bulk" && is.null(bulk.simul(object))) {
-      stop("If 'combine = 'bulk'' is selected, 'bulk.simul' must be provided")
+      stop("If combine = 'bulk' is selected, 'bulk.simul' must be provided")
     }
   } else {
     if (verbose) message("=== Training and test on the fly was selected")
     if (combine == "both" && (is.null(single.cell.real(object)) && 
                                is.null(single.cell.simul(object)))) {
-      stop("If 'combine = 'both'' is selected, at least ",
+      stop("If combine = 'both' is selected, at least ",
            "one single cell slot must be provided")
     }
   }
   # single-cell must e provided independently on on.the.fly
   if (combine == "single-cell" && (is.null(single.cell.real(object)) && 
                                    is.null(single.cell.simul(object)))) {
-    stop("If 'combine = 'single-cell'' is selected, at least ",
+    stop("If combine = 'single-cell' is selected, at least ",
          "one single cell slot must be provided")
   }
   if (!is.null(trained.model(object))) {
@@ -199,8 +199,6 @@ trainDigitalDLSorterModel <- function(
   
   if (verbose) verbose.model <- 1
   else verbose.model <- 0
-  
-  # number of samples
   prob.matrix.train <- .targetForDNN(
     object = object, combine = combine, 
     shuffle = TRUE, type.data = "train", 
@@ -213,6 +211,20 @@ trainDigitalDLSorterModel <- function(
   )
   n.train <- nrow(prob.matrix.train)
   n.test <- nrow(prob.matrix.test)
+  # check if the number of samples is compatible with batch.size
+  if (n.train < batch.size) {
+    stop(
+      paste0("The number of samples used for training (", n.train, ") is too ", 
+             "small compared to 'batch.size' (", batch.size, "). Please, ", 
+             "increase the number of samples or consider reducing 'batch.size'")
+    )
+  } else if (n.test < batch.size) {
+    stop(
+      paste0("The number of samples used for test (", n.train, ") is too ", 
+             "small compared to 'batch.size' (", batch.size, "). Please, ", 
+             "increase the number of samples or consider reducing 'batch.size'")
+    )
+  }
   if (is.null(custom.model)) {
     if (num.hidden.layers != length(num.units)) {
       stop("The number of hidden layers must be equal to the length of ", 
@@ -375,7 +387,7 @@ trainDigitalDLSorterModel <- function(
   )
   ## prediction of test samples
   if (verbose) {
-    message(paste0("  - ", names(test.eval), ": ", lapply(test.eval, round, 4),
+    message(paste0("   - ", names(test.eval), ": ", lapply(test.eval, round, 4),
                    collapse = "\n"))
     message(paste("\n=== Generating prediction results using test data\n"))
   }
@@ -698,7 +710,7 @@ trainDigitalDLSorterModel <- function(
 
 .simplifySet <- function(vec, index, set) {
   summ <- sum(vec[index])
-  # vec <- vec[-index]
+  vec <- vec[-c(index)]
   names.vec <- names(vec)
   vec <- c(vec, summ)
   names(vec) <- c(names.vec, set)
@@ -715,34 +727,43 @@ trainDigitalDLSorterModel <- function(
 
 .simplifySetGeneral <- function(results, simplify.set) {
   cell.types <- colnames(results)
+  if (length(simplify.set) < 2) 
+    stop("The minimum number of cell types for simplifying is two")
   if (is.null(names(simplify.set)) ||
-      length(names(simplify.set)) != length(simplify.set)) {
-    stop("Each element in the list must have the corresponding new cell type")
+      (length(names(simplify.set)) != length(simplify.set))) {
+    stop("Each element in the list must contain the corresponding new class as name")
+  } else if (length(unique(names(simplify.set))) == length(simplify.set)) {
+    stop("There are not duplicated names to aggregate results. List items ", 
+         "must have duplicated names under which to aggregate the results")
   }
-  lapply(X = simplify.set, FUN = function(x, types) {
-    if (!all(x %in% types)) {
-      stop("Some elements in simplify.set are not present in cell types ",
-           "considered by the model")
-    } else if (length(x) < 2) {
-      stop("The minimum number of cell types for simplifying is two")
-    }
-  }, types = cell.types)
-
-  index <- lapply(X = simplify.set, FUN = function(x) unique(which(colnames(results) %in% x)))
+  ## check that elements are correct
+  lapply(
+    X = simplify.set, 
+    FUN = function(x, types) {
+      if (!all(x %in% types)) {
+        stop("Some elements in 'simplify.set' are not present among the cell types ",
+             "considered by the model")
+      } 
+    }, 
+    types = cell.types
+  )
+  index <- lapply(
+    X = simplify.set, FUN = function(x) unique(which(colnames(results) %in% x))
+  )
   if (any(duplicated(unlist(index)))) {
-    stop("It is not possible assign a determined cell type more than once")
+    stop("'simplify.set' presents duplicated cell types. Please, provide ", 
+         "only unique cell types among those considered by the model")
   }
   # for more than 1 subset
-  r <- 1
-  for (n in index) {
+  indexNamesUnique <- unique(names(index))
+  for (n in indexNamesUnique) {
     results <- t(apply(
-      results,
+      X = results,
       FUN = .simplifySet,
       MARGIN = 1,
-      index = n,
-      set = names(index)[r]
+      index = unlist(index)[names(index) == n],
+      set = n
     ))
-    r <- r + 1
   }
   results <- results[, -unlist(index)]
   # colnames(results) <- c(na.omit(colnames(results)), names(index))
@@ -751,27 +772,33 @@ trainDigitalDLSorterModel <- function(
 
 .simplifyMajorityGeneral <- function(results, simplify.majority) {
   cell.types <- colnames(results)
-  lapply(X = simplify.majority, FUN = function(x, types) {
-    if (!all(x %in% types)) {
-      stop("Some elements in simplify.set are not present in cell types ",
-           "considered by the model")
-    } else if (length(x) < 2) {
-      stop("The minimum number of cell types for simplifying is two")
-    }
-  }, types = cell.types)
-
-  index <- lapply(X = simplify.majority, FUN = function(x) unique(which(colnames(results) %in% x)))
+  ## check if cell.types provided are correct
+  if (length(simplify.majority) < 2) 
+    stop("The minimum number of cell types for simplifying is two")
+  lapply(
+    X = simplify.majority, 
+    FUN = function(x, types) {
+      if (!all(x %in% types)) {
+        stop("Some elements in 'simplify.majority' are not present among the cell types ",
+             "considered by the model")
+      } 
+    }, 
+    types = cell.types
+  )
+  index <- lapply(
+    X = simplify.majority, 
+    FUN = function(x) unique(which(colnames(results) %in% x))
+  )
   if (any(duplicated(unlist(index)))) {
-    stop("It is not possible assign a determined cell type more than once")
+    stop("'simplify.majority' presents duplicated cell types. Please, provide ", 
+         "only unique cell types among those considered by the model")
   }
-  for (n in index) {
-    results <- t(apply(
-      results,
-      FUN = .simplifyMajority,
-      MARGIN = 1,
-      index = n
-    ))
-  }
+  results <- t(apply(
+    X = results,
+    FUN = .simplifyMajority,
+    MARGIN = 1,
+    index = unlist(index)
+  ))
   return(results)
 }
 
@@ -820,7 +847,7 @@ trainDigitalDLSorterModel <- function(
 #' @param simplify.majority List specifying which cell types should be
 #'   compressed into the cell type with greater proportions in each sample.
 #'   Unlike \code{simplify.set}, it allows to maintain the complexity of the
-#'   results while compressing the information, because it is not created a new
+#'   results while compressing the information, since it is not created a new
 #'   label.
 #' @param verbose Show informative messages during the execution.
 #'
@@ -867,7 +894,7 @@ trainDigitalDLSorterModel <- function(
 #'
 deconvDigitalDLSorter <- function(
   data,
-  model = "breast.generic",
+  model = "breast.chung.generic",
   batch.size = 128,
   normalize = TRUE,
   simplify.set = NULL,
@@ -895,12 +922,12 @@ deconvDigitalDLSorter <- function(
     verbose = verbose
   )
   if (!is.null(simplify.set) && !is.null(simplify.majority)) {
-    stop("Only one type of simplification must be selected")
+    stop("Only one type of simplification can be selected")
   } else {
     if (!is.null(simplify.set)) {
       if (!is(simplify.set, "list")) {
-        stop("Simplify arguments must be list with each element being the cell types",
-             "to compress")
+            stop("'simplify.set' must be a list in which each element is a ", 
+                 "cell type considered by the model that will be aggregated")
       }
       results <- .simplifySetGeneral(
         results = results,
@@ -908,8 +935,8 @@ deconvDigitalDLSorter <- function(
       )
     } else if (!is.null(simplify.majority)) {
       if (!is(simplify.majority, "list")) {
-        stop("Simplify arguments must be list with each element being the cell types",
-             "to compress")
+        stop("'simplify.majority' must be a list in which each element is a ", 
+             "cell type considered by the model")
       }
       results <- .simplifyMajorityGeneral(
         results = results,
@@ -917,8 +944,7 @@ deconvDigitalDLSorter <- function(
       )
     }
   }
-
-  message("DONE")
+  if (verbose) message("DONE")
 
   return(results)
 }
@@ -996,27 +1022,23 @@ deconvDigitalDLSorterObj <- function(
   verbose = TRUE
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
+    stop("The provided object is not of class DigitalDLSorter")
   } else if (is.null(object@trained.model)) {
     stop("There is not trained model in DigitalDLSorter object")
-  } else if (batch.size <= 10) {
-    stop("'batch.size' argument must be greater than or equal to 10")
   } else if (!name.data %in% names(deconv.data(object))) {
     stop("'name.data' provided is not present in object")
   }
-
   # checking if model is json format or compiled
   if (is.list(trained.model(object)@model)) {
     model.comp <- .loadModelFromJSON(trained.model(object))
     trained.model(object) <- model.comp
   }
-
   if (missing(name.data)) {
-    message("   No name.data provided. Using the first dataset\n")
+    message("   No 'name.data' provided. Using the first dataset\n")
     index <- 1
   }
-
-  deconv.counts <- assay(object@deconv.data[[name.data]])
+  deconv.counts <- as.matrix(assay(deconv.data(object, name.data)))
+  # print(class(deconv.counts))
   ## deconvolution
   results <- .deconvCore(
     deconv.counts = deconv.counts,
@@ -1027,7 +1049,7 @@ deconvDigitalDLSorterObj <- function(
   )
 
   if (!is.null(simplify.set) || !is.null(simplify.majority)) {
-    object@deconv.results[[name.data]] <- list(raw = results)
+    deconv.results(object, name.data) <- list(raw = results)
     if (!is.null(simplify.set)) {
       if (!is(simplify.set, "list")) {
         stop("Simplify arguments must be list with each element being the cell types",
@@ -1037,7 +1059,7 @@ deconvDigitalDLSorterObj <- function(
         results = results,
         simplify.set = simplify.set
       )
-      object@deconv.results[[name.data]][["simpli.set"]] <- results.set
+      deconv.results(object, name.data)[["simpli.set"]] <- results.set
     }
     if (!is.null(simplify.majority)) {
       if (!is(simplify.majority, "list")) {
@@ -1048,23 +1070,14 @@ deconvDigitalDLSorterObj <- function(
         results = results,
         simplify.majority = simplify.majority
       )
-      object@deconv.results[[name.data]][["simpli.majority"]] <- results.maj
+      deconv.results(object, name.data)[["simpli.majority"]] <- results.maj
     }
   } else {
-    object@deconv.results[[name.data]] <- results
+    deconv.results(object, name.data) <- results
   }
-
   return(object)
 }
 
-
-.simplifyMajority <- function(vec, index) {
-  maxim <- which.max(vec[index])
-  summ <- sum(vec[index])
-  vec[index[-maxim]] <- 0
-  vec[index[maxim]] <- summ
-  return(vec)
-}
 
 .deconvCore <- function(
   deconv.counts,
