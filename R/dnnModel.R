@@ -1,5 +1,5 @@
 #' @importFrom dplyr %>%
-#' @import keras
+#' @importFrom keras keras_model_sequential layer_dense layer_batch_normalization layer_activation layer_dropout get_output_shape_at compile optimizer_adam fit_generator evaluate_generator predict_generator model_from_json set_weights model_to_json get_weights
 #' @importFrom tools file_path_sans_ext
 NULL
 
@@ -263,7 +263,7 @@ trainDigitalDLSorterModel <- function(
     # consider more situations where the function fails
     if (!is(custom.model, "keras.engine.sequential.Sequential")) {
       stop("'custom.model' must be a keras.engine.sequential.Sequential object")
-    } else if (keras::get_input_shape_at(custom.model$layers[[1]], 1)[[2]] != 
+    } else if (keras::c(custom.model$layers[[1]], 1)[[2]] != 
                nrow(single.cell.real(object))) {
       stop("The number of neurons of the first layer must be equal to the ", 
            "number of genes considered by DigitalDLSorter object (", 
@@ -1169,7 +1169,6 @@ deconvDigitalDLSorterObj <- function(
   model.comp <- model_from_json(model.list[[1]])
   model.comp <- set_weights(model.comp, model.list[[2]])
   model(object) <- model.comp
-
   return(object)
 }
 
@@ -1178,6 +1177,5 @@ deconvDigitalDLSorterObj <- function(
   model.json <- model_to_json(model.comp)
   weights <- get_weights(model.comp)
   model(object) <- list(model.json, weights)
-
   return(object)
 }

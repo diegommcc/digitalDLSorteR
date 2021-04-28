@@ -1,8 +1,11 @@
 #' @importFrom dplyr mutate as_tibble left_join inner_join filter
 #' @importFrom tidyr gather
+#' @importFrom yardstick ccc
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom ggpubr stat_cor
 #' @importFrom stats aggregate as.formula sd var
+#' @importFrom ggplot2 ggplot aes geom_violin geom_boxplot geom_line theme ggtitle element_text
+#' @importFrom rlang .data
 NULL
 
 
@@ -39,7 +42,7 @@ color.list <- function() {
 #' \code{nMix} and a combination of \code{pBin} and \code{nMix}
 #' (\code{pBinNMix}). Finally, the process is repeated only for bulk samples,
 #' removing single-cell profiles from the evaluation. Evaluation metrics are
-#' available in \code{eval.stats.samples} slot of \code{DigitalDLSorterDNN}
+#' available in \code{test.deconv.metrics} slot of \code{DigitalDLSorterDNN}
 #' object (\code{trained.model} of \code{DigitalDLSorter} object).
 #'
 #' @param object \code{DigitalDLSorter} object with \code{single.cell.final} and
@@ -49,7 +52,7 @@ color.list <- function() {
 #'
 #' @return A \code{\link{DigitalDLSorter}} object with \code{trained.model} slot
 #'   containing a \code{DigitalDLSorterDNN} object with
-#'   \code{eval.stats.samples} slot.
+#'   \code{test.deconv.metrics} slot.
 #'
 #' @export
 #'
@@ -68,23 +71,23 @@ calculateEvalMetrics <- function(
   if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of class DigitalDLSorter")
   } else if (is.null(trained.model(object)) ||
-             is.null(trained.model(object)@predict.results)) {
+             is.null(trained.model(object)@test.pred)) {
     stop("The provided object does not have a trained model for evaluation")
-  } else if (is.null(final.data(object)) ||
-             !"test" %in% names(final.data(object))) {
-    stop("The provided object does not have the test prediction target for evaluation")
-  } else if (is.null(final.data(object, "test")@metadata)) {
-    stop("The provided object does not have the test prediction target for evaluation")
-  }
+  } else if (is.null(prob.cell.types(object)) ||
+             !"test" %in% names(prob.cell.types(object))) {
+    stop("The provided object does not contain the real cell proportions in ", 
+         "'prob.cell.types' slot")
+  } 
   ## validation metrics
   valid.met <- list(MAE = "MAE", MSE = "MSE")
   use.met <- valid.met[names(valid.met) %in% metrics]
-  if (length(use.met) == 0) {
-    stop("Metrics provided are not valid")
-  }
+  if (length(use.met) == 0) stop("Metrics provided are not valid")
+  
   ## extract information
-  testProbsDeconv <- final.data(object, "test")@metadata[[1]]
-  predictionsDeconv <- trained.model(object)@predict.results
+  testProbsDeconv <- .targetForDNN(
+    object, combine = "both", type.data = "test", fly = FALSE, shuffle = FALSE
+  )
+  predictionsDeconv <- trained.model(object)@test.pred
 
   ## results test
   tmd <- as_tibble(x = testProbsDeconv)
@@ -97,6 +100,7 @@ calculateEvalMetrics <- function(
   pmd <- pmd %>% gather(key = "CellType", value = "Pred", -Sample)
   ## union
   amd <- tmd %>% left_join(pmd, by = c("Sample", "CellType"))
+  # print(amd)
   ## Add bins to Probs
   amd$pBin <- 0
   for (p in seq(from = 0.1, to = 1, by = 0.1)) {
@@ -116,7 +120,7 @@ calculateEvalMetrics <- function(
     FUN = function(x) .calculateMetrics(mat = amdf, err = x)
   )
   ## update object
-  trained.model(object)@eval.stats.samples <- list(
+  trained.model(object)@test.deconv.metrics <- list(
     raw = amd,
     allData = eval.stats,
     filData = eval.stats.f
@@ -154,7 +158,7 @@ se <- function(x) sqrt(var(x)/length(x))
         return(res)
       }
     )
-    res <- Reduce(f = function(x, y) merge(x = x, y = y, by = by), X = list.res)
+    res <- Reduce(f = function(x, y) merge(x = x, y = y, by = by), x = list.res)
     colnames(res) <- c(
       by, paste0(name, ".mean"),
       paste0(name, ".sd"),
@@ -237,14 +241,14 @@ se <- function(x) sqrt(var(x)/length(x))
   else index.err <- 3
 
   if (error %in% c("AbsErr", "ppAbsErr")) {
-    info <- trained.model(object)@eval.stats.samples[[index.err]]$MAE[[facet.by]]
+    info <- trained.model(object)@test.deconv.metrics[[index.err]]$MAE[[facet.by]]
     if (error == "AbsErr") {
       info <- info[, c(facet.by, "MAE.mean")]
     } else if (error == "ppAbsErr") {
       info <- info[, c(facet.by, "ppMAE.mean")]
     }
   } else if (error %in% c("SqrErr", "ppSqrErr")) {
-    info <- trained.model(object)@eval.stats.samples[[index.err]]$MSE[[facet.by]]
+    info <- trained.model(object)@test.deconv.metrics[[index.err]]$MSE[[facet.by]]
     if (error == "SqrErr") {
       info <- info[, c(facet.by, "MSE.mean")]
     } else if (error == "ppSqrErr") {
@@ -264,7 +268,6 @@ se <- function(x) sqrt(var(x)/length(x))
 ########################## Distribution error plots ############################
 ################################################################################
 
-
 #' Generate box plot or violin plot showing how errors are distributed.
 #'
 #' Generate violin plot or box plot showing how errors are distributed by
@@ -274,7 +277,7 @@ se <- function(x) sqrt(var(x)/length(x))
 #' information.
 #'
 #' @param object \code{DigitalDLSorter} object with \code{trained.model} slot
-#'   containing metrics in \code{eval.stats.samples} slot.
+#'   containing metrics in \code{test.deconv.metrics} slot.
 #' @param error Which error is going to represent. The available errors are
 #'   absolute error (\code{"AbsErr"}), proportional absolute error
 #'   (\code{"ppAbsErr"}), squared error (\code{"SqrErr"}) or proportional
@@ -337,7 +340,7 @@ distErrorPlot <- function(
   object,
   error,
   colors,
-  x.by = "pBin",
+  x.by = "CellType",
   facet.by = NULL,
   color.by = "nMix",
   filter.sc = TRUE,
@@ -357,10 +360,10 @@ distErrorPlot <- function(
   if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
   } else if (is.null(trained.model(object)) ||
-             is.null(trained.model(object)@eval.stats.samples)) {
+             is.null(trained.model(object)@test.deconv.metrics)) {
     stop("The provided object does not have evaluation metrics. Use ",
          "'calculateEvalMetrics'")
-  } else if (!is(trained.model(object)@eval.stats.samples[[1]], "tbl_df")) {
+  } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
     stop("Evaluation metrics are not well built, use 'calculateEvalMetrics'")
   } else if (!error %in% c("AbsErr", "ppAbsErr", "SqrErr", "ppSqrErr")) {
     stop("Error provided is not valid. Errors available are: AbsErr, ",
@@ -372,7 +375,7 @@ distErrorPlot <- function(
   } else if (!type %in% c("violinplot", "boxplot")) {
     stop("'type' provided is not valid. Options available are: violinplot, boxplot")
   }
-  amd <- trained.model(object)@eval.stats.samples[[1]]
+  amd <- trained.model(object)@test.deconv.metrics[[1]]
   if (filter.sc) {
     amd <- amd %>% filter(Prob > 0 & Prob < 1)
   }
@@ -430,11 +433,11 @@ distErrorPlot <- function(
   else if (type == "boxplot")
     plot <- plot + geom_boxplot(fill = NA, outlier.shape = NA)
   plot <- plot + scale_color_manual(values = colors, name = color.by) +
-  ggtitle(title.plot) + xlab(x.by) +  ylab(error) +
-  guides(colour = guide_legend(override.aes = list(size = 1.5))) +
-  theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1),
-        plot.title = element_text(face = "bold", hjust = 0.5),
-        legend.title = element_text(face = "bold"))
+    ggtitle(title.plot) + xlab(x.by) +  ylab(error) +
+    guides(colour = guide_legend(override.aes = list(size = 1.5))) +
+    theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1),
+          plot.title = element_text(face = "bold", hjust = 0.5),
+          legend.title = element_text(face = "bold"))
   if (!is.null(ylimit)) plot <- plot + ylim(0, ylimit)
 
   return(plot)
@@ -477,7 +480,7 @@ distErrorPlot <- function(
 #' details.
 #'
 #' @param object \code{DigitalDLSorter} object with \code{trained.model} slot
-#'   containing metrics in \code{eval.stats.samples} slot.
+#'   containing metrics in \code{test.deconv.metrics} slot.
 #' @param colors Vector of colors to use. Only vectors with a number of colors
 #'   equal to or greater than the levels of \code{color.by} will be accepted. By
 #'   default it is used a list of custom colors provided by the package.
@@ -553,15 +556,15 @@ corrExpPredPlot <- function(
   if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
   } else if (is.null(trained.model(object)) ||
-             is.null(trained.model(object)@eval.stats.samples)) {
+             is.null(trained.model(object)@test.deconv.metrics)) {
     stop("The provided object does not have evaluation metrics. Use ",
          "'calculateEvalMetrics'")
-  } else if (!is(trained.model(object)@eval.stats.samples[[1]], "tbl_df")) {
+  } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
     stop("Evaluation metrics are not well built, use 'calculateEvalMetrics'")
   } else if (!color.by %in% c("nMix", "CellType")) {
     stop("'color.by' provided is not valid. Options available are: nMix, CellType")
   }
-  amd <- trained.model(object)@eval.stats.samples[[1]]
+  amd <- trained.model(object)@test.deconv.metrics[[1]]
   if (filter.sc) {
     amd <- amd %>% filter(Prob > 0 & Prob < 1)
   }
@@ -677,7 +680,7 @@ corrExpPredPlot <- function(
 #' argument and examples for more information.
 #'
 #' @param object \code{DigitalDLSorter} object with \code{trained.model} slot
-#'   containing metrics in \code{eval.stats.samples} slot.
+#'   containing metrics in \code{test.deconv.metrics} slot.
 #' @param colors Vector of colors to use. Only vectors with a number of colors
 #'   equal to or greater than the levels of \code{color.by} will be accepted. By
 #'   default it is used a list of custom colors provided by the package.
@@ -746,17 +749,17 @@ blandAltmanLehPlot <- function(
   if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
   } else if (is.null(trained.model(object)) ||
-             is.null(trained.model(object)@eval.stats.samples)) {
+             is.null(trained.model(object)@test.deconv.metrics)) {
     stop("The provided object does not have evaluation metrics. Use ",
          "'calculateEvalMetrics'")
-  } else if (!is(trained.model(object)@eval.stats.samples[[1]], "tbl_df")) {
+  } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
     stop("Evaluation metrics are not well built, use 'calculateEvalMetrics'")
   } else if (!is.null(color.by)) {
     if (!color.by %in% c("nMix", "CellType")) {
       stop("'color.by' provided is not valid. Options available are: nMix, CellType")
     }
   }
-  amd <- trained.model(object)@eval.stats.samples[[1]]
+  amd <- trained.model(object)@test.deconv.metrics[[1]]
   if (filter.sc) {
     amd <- amd %>% filter(Prob > 0 & Prob < 1)
   }
@@ -836,7 +839,7 @@ blandAltmanLehPlot <- function(
 #' by number of different cell types (\code{nMix}) in test bulk samples.
 #'
 #' @param object \code{DigitalDLSorter} object with \code{trained.model} slot
-#'   containing metrics in \code{eval.stats.samples} slot.
+#'   containing metrics in \code{test.deconv.metrics} slot.
 #' @param error MAE or MSE. By default it is used a list of custom colors
 #'   provided by the package.
 #' @param by Variable used to display errors.
@@ -879,10 +882,10 @@ barErrorPlot <- function(
   if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
   } else if (is.null(trained.model(object)) ||
-             is.null(trained.model(object)@eval.stats.samples)) {
+             is.null(trained.model(object)@test.deconv.metrics)) {
     stop("The provided object does not have evaluation metrics. Use ",
          "'calculateEvalMetrics'")
-  } else if (!is(trained.model(object)@eval.stats.samples[[1]], "tbl_df")) {
+  } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
     stop("Evaluation metrics are not well built, use 'calculateEvalMetrics'")
   } else if (!by %in% c("nMix", "CellType")) {
     stop("'by' provided is not valid. Options available are: nMix, CellType")
@@ -900,7 +903,7 @@ barErrorPlot <- function(
   if (!filter.sc) index.stats <- 2
   else index.stats <- 3
 
-  data <- trained.model(object)@eval.stats.samples[[index.stats]][[error]][[by]]
+  data <- trained.model(object)@test.deconv.metrics[[index.stats]][[error]][[by]]
   err.mean <- paste0(error, ".mean")
   err.dis <- paste0(error, ".", dispersion)
 

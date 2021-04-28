@@ -15,7 +15,7 @@
 #'
 getProbMatrix <- function(object, type.data) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("The object provided is not of DigitalDLSorter class")
+    stop("Provided object is not a DigitalDLSorter object")
   } else if (!any(type.data == c("train", "test"))) {
     stop("type.data argument must be 'train' or 'test'")
   }
@@ -68,18 +68,19 @@ showProbPlot <- function(
   type.plot = "boxplot"
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("The object provided is not of DigitalDLSorter class")
+    stop("Provided object is not a DigitalDLSorter object")
   } else if (is.null(object@prob.cell.types) || 
              (length(object@prob.cell.types) == 0)) {
-    stop("prob.cell.types slot is empty")
+    stop("'prob.cell.types' slot is empty")
   } else if (!any(type.data == c("train", "test"))) {
-    stop("type.data argument must be 'train' or 'test'")
+    stop("'type.data' argument must be 'train' or 'test'")
   } else if (length(object@prob.cell.types[[type.data]]) == 0) {
-    stop("ProbMatrixCellTypes object has not saved plots")
+    stop("ProbMatrixCellTypes object does not present plots")
   } else if (set < 1 || set > 6) {
-    stop("set argument must be a number from 1 to 6")
+    stop("'set' argument must be a number from 1 to 6")
   } else if (!any(type.plot == c("violinplot", "boxplot", "linesplot", "nmix"))) {
-    stop("type.plot argument must be one of the next options: violinplot, boxplot, linesplot or nmix")
+    stop("'type.plot' argument must be one of the next options: 'violinplot', ", 
+         "'boxplot', 'linesplot' or 'nmix'")
   }
   return(object@prob.cell.types[[type.data]]@plots[[set]][[type.plot]])
 }
@@ -112,14 +113,14 @@ showProbPlot <- function(
 #'
 preparingToSave <- function(object) {
   if (!is(object, "DigitalDLSorter") || !is(object, "DigitalDLSorterDNN")) {
-    stop("object provided is not a DigitalDLSorter object")
+    stop("Provided object is not a DigitalDLSorter object")
   }
   if (is.null(trained.model(object))) {
-    message("Object provided has not a DigitalDLSorterDNN object. It is not necessary ",
+    message("Provided object has not a DigitalDLSorterDNN object. It is not necessary ",
             "prepare the object for saving on disk")
     return(object)
   } else if (is.null(trained.model(object)@model)) {
-    message("Object provided has not a trained DNN model. It is not necessary ",
+    message("Provided object has not a trained DNN model. It is not necessary ",
             "prepare the object for saving on disk")
     return(object)
   }
@@ -197,7 +198,7 @@ saveTrainedModelAsH5 <- function(
   overwrite = FALSE
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
+    stop("Provided object is not a DigitalDLSorter object")
   } else if (is.null(trained.model(object))) {
     stop("'trained.model' slot is empty")
   } else if (is.null(trained.model(object)@model)) {
@@ -258,7 +259,7 @@ loadTrainedModelFromH5 <- function(
   reset.slot = FALSE
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
+    stop("Provided object is not a DigitalDLSorter object")
   } else if (!file.exists(file.path)) {
     stop(paste(file.path, "file does not exist. Please provide a valid file path"))
   }
