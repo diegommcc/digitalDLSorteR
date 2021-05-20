@@ -12,18 +12,18 @@ barErrorPlot(
   dispersion = "se",
   filter.sc = TRUE,
   title = NULL,
-  angle = 90,
-  theme = theme_grey()
+  angle = NULL,
+  theme = NULL
 )
 }
 \arguments{
 \item{object}{\code{DigitalDLSorter} object with \code{trained.model} slot
-containing metrics in \code{eval.stats.samples} slot.}
+containing metrics in \code{test.deconv.metrics} slot.}
 
-\item{error}{MAE or MSE. By default it is used a list of custom colors
-provided by the package.}
+\item{error}{'MAE' or 'MSE.}
 
-\item{by}{Variable used to display errors.}
+\item{by}{Variable used to display errors. Available options are: 'nMix',
+'CellType'.}
 
 \item{dispersion}{Standard error (\code{'se'}) or standard deviation
 (\code{'sd'}). The first by default.}
@@ -44,13 +44,13 @@ by number of different cell types (\code{nMix}) in test bulk samples.
 }
 \examples{
 barErrorPlot(
-  object = DDLSSmallCompleted,
+  object = DDLSChungComp,
   error = "MSE",
   by = "CellType"
 )
 
 barErrorPlot(
-  object = DDLSSmallCompleted,
+  object = DDLSChungComp,
   error = "MAE",
   by = "nMix"
 )

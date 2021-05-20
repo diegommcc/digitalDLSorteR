@@ -8,7 +8,7 @@ NULL
 ## prob.matrix
 
 #' @title Get and set \code{prob.matrix} slot in a
-#'   \code{\linkS4class{ProbMatrixCellTypes}} object.
+#'   \code{\linkS4class{ProbMatrixCellTypes}} object
 #'
 #' @param object A \code{\linkS4class{ProbMatrixCellTypes}} object.
 #'
@@ -38,7 +38,7 @@ setMethod(f = "prob.matrix<-",
 ## cell.names
 
 #' @title Get and set \code{cell.names} slot in a
-#'   \code{\linkS4class{ProbMatrixCellTypes}} object.
+#'   \code{\linkS4class{ProbMatrixCellTypes}} object
 #'
 #' @param object A \code{\linkS4class{ProbMatrixCellTypes}} object.
 #'
@@ -68,7 +68,7 @@ setMethod(f = "cell.names<-",
 ## set.list
 
 #' @title Get and set \code{set.list} slot in a
-#'   \code{\linkS4class{ProbMatrixCellTypes}} object.
+#'   \code{\linkS4class{ProbMatrixCellTypes}} object
 #'
 #' @param object A \code{\linkS4class{ProbMatrixCellTypes}} object.
 #'
@@ -80,7 +80,7 @@ setMethod(f = "set.list",
           signature = "ProbMatrixCellTypes",
           definition = function(object) object@set.list)
 
-#' @param value List of cells ordered according to the cell type to which they
+#' @param value List of cells sorted according to the cell type to which they
 #'   belong.
 #'
 #' @rdname set.list
@@ -97,7 +97,7 @@ setMethod(f = "set.list<-",
 ## set
 
 #' @title Get and set \code{set} slot in a
-#'   \code{\linkS4class{ProbMatrixCellTypes}} object.
+#'   \code{\linkS4class{ProbMatrixCellTypes}} object
 #'
 #' @param object A \code{\linkS4class{ProbMatrixCellTypes}} object.
 #'
@@ -109,7 +109,7 @@ setMethod(f = "set",
           signature = "ProbMatrixCellTypes",
           definition = function(object) object@set)
 
-#' @param value Vector with the names of cells present in the object.
+#' @param value Vector with names of cells present in the object.
 #'
 #' @rdname set
 #' @export set<-
@@ -122,10 +122,10 @@ setMethod(f = "set<-",
             return(object)
           })
 
-## exclusive.types
+## exclusive.types (deprecated)
 
 #' @title Get and set \code{exclusive.types} slot in a
-#'   \code{\linkS4class{ProbMatrixCellTypes}} object.
+#'   \code{\linkS4class{ProbMatrixCellTypes}} object (deprecated)
 #'
 #' @param object A \code{\linkS4class{ProbMatrixCellTypes}} object.
 #'
@@ -137,8 +137,8 @@ setMethod(f = "exclusive.types",
           signature = "ProbMatrixCellTypes",
           definition = function(object) object@exclusive.types)
 
-#' @param value Optional slot that contains the exclusive cell types on the
-#'   experiment if they are provided. NULL by default.
+#' @param value Optional slot that contains the exclusive cell types in the
+#'   experiment if they are provided. NULL by default. 
 #'
 #' @rdname exclusive.types
 #' @export exclusive.types<-
@@ -154,7 +154,7 @@ setMethod(f = "exclusive.types<-",
 ## plots
 
 #' @title Get and set \code{plots} slot in a
-#'   \code{\linkS4class{ProbMatrixCellTypes}} object.
+#'   \code{\linkS4class{ProbMatrixCellTypes}} object
 #'
 #' @param object A \code{\linkS4class{ProbMatrixCellTypes}} object.
 #'
@@ -187,7 +187,7 @@ setMethod(f = "plots<-",
 ## model
 
 #' @title Get and set \code{model} slot in a
-#'   \code{\code{\linkS4class{DigitalDLSorterDNN}}} object.
+#'   \code{\linkS4class{DigitalDLSorterDNN}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorterDNN}} object.
 #'
@@ -200,7 +200,7 @@ setMethod(f = "model",
           definition = function(object) object@model)
 
 #' @param value A \code{keras.engine.sequential.Sequential} object with a
-#' trained DNN model.
+#' trained Deep Neural Network model.
 #'
 #' @rdname model
 #' @export model<-
@@ -216,7 +216,7 @@ setMethod(f = "model<-",
 ## training.history
 
 #' @title Get and set \code{training.history} slot in a
-#'   \code{\linkS4class{DigitalDLSorterDNN}} object.
+#'   \code{\linkS4class{DigitalDLSorterDNN}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorterDNN}} object.
 #'
@@ -229,7 +229,7 @@ setMethod(f = "training.history",
           definition = function(object) object@training.history)
 
 #' @param value A \code{keras_training_history} object with training history of
-#' DNN model
+#' Deep Neural Network model
 #' @rdname training.history
 #' @export training.history<-
 #'
@@ -244,7 +244,7 @@ setMethod(f = "training.history<-",
 ## test.metrics
 
 #' @title Get and set \code{test.metrics} slot in a
-#'   \code{\linkS4class{DigitalDLSorterDNN}} object.
+#'   \code{\linkS4class{DigitalDLSorterDNN}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorterDNN}} object.
 #'
@@ -257,7 +257,7 @@ setMethod(f = "test.metrics",
           definition = function(object) object@test.metrics)
 
 #' @param value A \code{list} object with the resulting metrics after prediction
-#'   on test data with DNN model.
+#'   on test data with Deep Neural Network model.
 #' @rdname test.metrics
 #' @export test.metrics<-
 #'   
@@ -272,7 +272,7 @@ setMethod(f = "test.metrics<-",
 ## test.pred
 
 #' @title Get and set \code{test.pred} slot in a
-#'   \code{\linkS4class{DigitalDLSorterDNN}} object.
+#'   \code{\linkS4class{DigitalDLSorterDNN}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorterDNN}} object.
 #'
@@ -299,7 +299,7 @@ setMethod(f = "test.pred<-",
 ## cell.types
 
 #' @title Get and set \code{cell.types} slot in a
-#'   \code{\linkS4class{DigitalDLSorterDNN}} object.
+#'   \code{\linkS4class{DigitalDLSorterDNN}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorterDNN}} object.
 #'
@@ -311,10 +311,11 @@ setMethod(f = "cell.types",
           signature = "DigitalDLSorterDNN",
           definition = function(object) object@cell.types)
 
-#' @param value A \code{vector} with cell types considered by DNN model.
+#' @param value A \code{vector} with cell types considered by Deep Neural
+#'   Network model.
 #' @rdname cell.types
 #' @export cell.types<-
-#'
+#'   
 setGeneric("cell.types<-", function(object, value) standardGeneric("cell.types<-"))
 setMethod(f = "cell.types<-",
           signature = "DigitalDLSorterDNN",
@@ -326,7 +327,7 @@ setMethod(f = "cell.types<-",
 ## features
 
 #' @title Get and set \code{features} slot in a
-#'   \code{\linkS4class{DigitalDLSorterDNN}} object.
+#'   \code{\linkS4class{DigitalDLSorterDNN}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorterDNN}} object.
 #'
@@ -338,10 +339,11 @@ setMethod(f = "features",
           signature = "DigitalDLSorterDNN",
           definition = function(object) object@features)
 
-#' @param value A \code{vector} with features (genes) considered by DNN model.
+#' @param value A \code{vector} with features (genes) considered by Deep Neural
+#'   Network model.
 #' @rdname features
 #' @export features<-
-#'
+#'   
 setGeneric("features<-", function(object, value) standardGeneric("features<-"))
 setMethod(f = "features<-",
           signature = "DigitalDLSorterDNN",
@@ -353,7 +355,7 @@ setMethod(f = "features<-",
 ## test.deconv.metrics
 
 #' @title Get and set \code{test.deconv.metrics} slot in a
-#'   \code{\linkS4class{DigitalDLSorterDNN}} object.
+#'   \code{\linkS4class{DigitalDLSorterDNN}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorterDNN}} object.
 #' @param metrics Metrics to show (\code{'All'} by default)
@@ -376,11 +378,11 @@ setMethod(f = "test.deconv.metrics",
             }
           })
 
-#' @param value A \code{list} with evaluation metrics used for evaluating the
-#' performance of the model over each sample from test data.
+#' @param value A list with evaluation metrics used for evaluating the
+#'   performance of the model over each sample from test data.
 #' @rdname test.deconv.metrics
 #' @export test.deconv.metrics<-
-#'
+#'   
 setGeneric(
   name = "test.deconv.metrics<-",
   def = function(object, value, metrics = "All") {
@@ -406,7 +408,7 @@ setMethod(f = "test.deconv.metrics<-",
 ## single.cell.real
 
 #' @title Get and set \code{single.cell.real} slot in a
-#'   \code{\linkS4class{DigitalDLSorter}} object.
+#'   \code{\linkS4class{DigitalDLSorter}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorter}} object.
 #'
@@ -418,11 +420,11 @@ setMethod(f = "single.cell.real",
           signature = "DigitalDLSorter",
           definition = function(object) object@single.cell.real)
 
-#' @param value A \code{SingleCellExperiment} object with real single-cell
-#' profiles.
+#' @param value A \code{\linkS4class{SingleCellExperiment}} object with real
+#'   single-cell profiles.
 #' @rdname single.cell.real
 #' @export single.cell.real<-
-#'
+#'   
 setGeneric("single.cell.real<-", function(object, value) standardGeneric("single.cell.real<-"))
 setMethod(f = "single.cell.real<-",
           signature = "DigitalDLSorter",
@@ -434,7 +436,7 @@ setMethod(f = "single.cell.real<-",
 ## zinb.params
 
 #' @title Get and set \code{zinb.params} slot in a
-#'   \code{\linkS4class{DigitalDLSorter}} object.
+#'   \code{\linkS4class{DigitalDLSorter}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorter}} object.
 #'
@@ -446,12 +448,12 @@ setMethod(f = "zinb.params",
           signature = "DigitalDLSorter",
           definition = function(object) object@zinb.params)
 
-#' @param value A \code{ZinbParams} object with ZiNB-WaVE parameters estimated
-#' from real single-cell profiles.
+#' @param value A \code{\linkS4class{ZINBParams}} object with ZiNB-WaVE
+#'   parameters estimated from real single-cell profiles.
 #'
 #' @rdname zinb.params
 #' @export zinb.params<-
-#'
+#'   
 setGeneric("zinb.params<-", function(object, value) standardGeneric("zinb.params<-"))
 setMethod(f = "zinb.params<-",
           signature = "DigitalDLSorter",
@@ -463,7 +465,7 @@ setMethod(f = "zinb.params<-",
 ## single.cell.simul
 
 #' @title Get and set \code{single.cell.simul} slot in a
-#'   \code{\linkS4class{DigitalDLSorter}} object.
+#'   \code{\linkS4class{DigitalDLSorter}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorter}} object.
 #'
@@ -475,11 +477,11 @@ setMethod(f = "single.cell.simul",
           signature = "DigitalDLSorter",
           definition = function(object) object@single.cell.simul)
 
-#' @param value A \code{SingleCellExperiment} object with real and simulated
-#' single-cell profiles.
+#' @param value A \code{\linkS4class{SingleCellExperiment}} object with real and
+#'   simulated single-cell profiles.
 #' @rdname single.cell.simul
 #' @export single.cell.simul<-
-#'
+#'   
 setGeneric("single.cell.simul<-", function(object, value) standardGeneric("single.cell.simul<-"))
 setMethod(f = "single.cell.simul<-",
           signature = "DigitalDLSorter",
@@ -491,11 +493,11 @@ setMethod(f = "single.cell.simul<-",
 ## prob.cell.types
 
 #' @title Get and set \code{prob.cell.types} slot in a
-#'   \code{\linkS4class{DigitalDLSorter}} object.
+#'   \code{\linkS4class{DigitalDLSorter}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorter}} object.
-#' @param type.data Element of the list. Can be 'train', 'test' or 'both' (the
-#'   last by default).
+#' @param type.data Element of the list. Can be \code{'train'}, \code{'test'} or
+#'   \code{'both'} (the last by default).
 #'
 #' @rdname prob.cell.types
 #' @export prob.cell.types
@@ -529,11 +531,11 @@ setMethod(f = "prob.cell.types<-",
 ## bulk.simul
 
 #' @title Get and set \code{bulk.simul} slot in a
-#'   \code{\linkS4class{DigitalDLSorter}} object.
+#'   \code{\linkS4class{DigitalDLSorter}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorter}} object.
-#' @param type.data Element of the list. Can be 'train', 'test' or 'both' (the
-#'   last by default).
+#' @param type.data Element of the list. Can be \code{'train'}, \code{'test'} or
+#'   \code{'both'} (the last by default).
 #'
 #' @rdname bulk.simul
 #' @export bulk.simul
@@ -549,11 +551,12 @@ setMethod(f = "bulk.simul",
           })
 
 #' @param value A \code{list} with two elements, train and test, each one being
-#'   a \code{SummarizedExperiment} object with simulated bulk RNA-Seq samples.
+#'   a \code{\linkS4class{SummarizedExperiment}} object with simulated bulk
+#'   RNA-Seq samples.
 #'
 #' @rdname bulk.simul
 #' @export bulk.simul<-
-#'
+#'   
 setGeneric("bulk.simul<-", function(object, value, type.data = "both") standardGeneric("bulk.simul<-"))
 setMethod(f = "bulk.simul<-",
           signature = "DigitalDLSorter",
@@ -568,7 +571,7 @@ setMethod(f = "bulk.simul<-",
 ## trained.model
 
 #' @title Get and set \code{trained.model} slot in a
-#'   \code{\linkS4class{DigitalDLSorter}} object.
+#'   \code{\linkS4class{DigitalDLSorter}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorter}} object.
 #'
@@ -580,7 +583,7 @@ setMethod(f = "trained.model",
           signature = "DigitalDLSorter",
           definition = function(object) object@trained.model)
 
-#' @param value A \code{\code{\linkS4class{DigitalDLSorterDNN}}} object.
+#' @param value A \code{\linkS4class{DigitalDLSorterDNN}} object.
 #' @rdname trained.model
 #' @export trained.model<-
 #'
@@ -595,7 +598,7 @@ setMethod(f = "trained.model<-",
 ## deconv.data
 
 #' @title Get and set \code{deconv.data} slot in a
-#'   \code{\linkS4class{DigitalDLSorter}} object.
+#'   \code{\linkS4class{DigitalDLSorter}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorter}} object.
 #' @param name.data Name of the data. If it is \code{NULL} (by default), all
@@ -617,7 +620,7 @@ setMethod(f = "deconv.data",
             }
           })
 
-#' @param value A \code{list} whose names are the reference of the data stored.
+#' @param value A list whose names are the reference of the data stored.
 #' @rdname deconv.data
 #' @export deconv.data<-
 #'
@@ -628,7 +631,10 @@ setMethod(f = "deconv.data<-",
             if (is.null(name.data)) object@deconv.data <- value
             else {
               if (!name.data %in% names(object@deconv.data)) {
-                stop("name.data provided does not exists in deconv.data slot")
+                warning(
+                  "'name.data' provided already exists in deconv.data slot. ", 
+                  "It will be overwritten"
+                )
               }
               object@deconv.data[[name.data]] <- value
             }
@@ -638,7 +644,7 @@ setMethod(f = "deconv.data<-",
 ## deconv.results
 
 #' @title Get and set \code{deconv.results} slot in a
-#'   \code{\linkS4class{DigitalDLSorter}} object.
+#'   \code{\linkS4class{DigitalDLSorter}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorter}} object.
 #' @param name.data Name of the data. If it is \code{NULL} (by default), all
@@ -660,7 +666,7 @@ setMethod(f = "deconv.results",
             }
           })
 
-#' @param value A \code{list} whose names are the reference of the results
+#' @param value A list whose names are the reference of the results
 #'   stored.
 #' @rdname deconv.results
 #' @export deconv.results<-
@@ -671,8 +677,11 @@ setMethod(f = "deconv.results<-",
           definition = function(object, value, name.data) {
             if (is.null(name.data)) object@deconv.results <- value
             else {
-              if (!name.data %in% names(object@deconv.results)) {
-                stop("name.data provided does not exists in deconv.results slot")
+              if (name.data %in% names(object@deconv.results)) {
+                warning(
+                  "'name.data' provided already exists in deconv.results slot.", 
+                  " It will be overwritten"
+                )
               }
               object@deconv.results[[name.data]] <- value
             }
@@ -682,7 +691,7 @@ setMethod(f = "deconv.results<-",
 ## project
 
 #' @title Get and set \code{project} slot in a
-#'   \code{\linkS4class{DigitalDLSorter}} object.
+#'   \code{\linkS4class{DigitalDLSorter}} object
 #'
 #' @param object A \code{\linkS4class{DigitalDLSorter}} object.
 #'
@@ -711,29 +720,32 @@ setMethod(f = "project<-",
 #'
 #' Save \code{\linkS4class{DigitalDLSorter}} and
 #' \code{\linkS4class{DigitalDLSorterDNN}} objects as RDS files. We developed
-#' this generic with the aim of changing the behavior of the base function and
-#' saving the structure and weights of DNN model as R native objects. This is
-#' because \pkg{keras} models are not able to be stored natively as R objects
-#' (e.g. RData or RDS files). By saving the structure as JSON character object
-#' and weights as list object, it is possible recovering the model and carrying
-#' out predictions. If \code{trained.model} slot is empty, the function will
-#' have the usual behavior.
+#' this generic function with the aim of changing the behavior of the base
+#' function and saving the structure and weights of Deep Neural Network model as
+#' R native objects. This is because \pkg{keras} models are not able to be
+#' stored natively as R objects (e.g. RData or RDS files). By saving the
+#' structure as a JSON-like character object and weights as a list, it is
+#' possible to recover the model and to perform predictions. If
+#' \code{trained.model} slot is empty, the function will have the usual
+#' behavior.
 #'
-#' With this option, the state of optimizer is not saved, only architecture and
-#' weights. It is possible to save completely the model as HDF5 file with
-#' \code{\link{saveTrainedModelAsH5}} function and to load into
+#' Note: with this option, the state of optimizer is not saved, only
+#' architecture and weights. It is possible to save completely the model as HDF5
+#' file with \code{\link{saveTrainedModelAsH5}} function and to load into a
 #' \code{\linkS4class{DigitalDLSorter}} object with
-#' \code{\link{loadTrainedModelFromH5}} function.
+#' \code{\link{loadTrainedModelFromH5}} function. See documentation for details.
 #'
 #' Moreover, if you want to save the object as RDA file, it is possible by
 #' converting the model to an allowed R object with
-#' \code{\link{preparingToSave}} function.
+#' \code{\link{preparingToSave}} function. See \code{?\link{preparingToSave}}
+#' for details.
 #'
 #' @inheritParams saveRDS
 #'
 #' @export
 #'
-#' @seealso \code{\link{saveTrainedModelAsH5}} \code{\link{preparingToSave}}
+#' @seealso \code{\linkS4class{DigitalDLSorter}}
+#'   \code{\link{saveTrainedModelAsH5}} \code{\link{preparingToSave}}
 #'   
 setGeneric(
   "saveRDS", function(
@@ -808,43 +820,44 @@ setMethod(
   }
 )
 
-#' Plot a bar plot with deconvoluted cell type proportions.
+#'Bar plot with deconvoluted cell type proportions
 #'
-#' This function allows to plot a bar plot with the deconvoluted cell type
-#' proportions of a given bulk RNA-seq sample using ggplot2.
+#'This function allows to plot a bar plot with the deconvoluted cell type
+#'proportions of a given bulk RNA-seq sample using ggplot2.
 #'
-#' @param data \code{\linkS4class{DigitalDLSorter}} object with
-#'   \code{deconv.results} slot or \code{data.frame}/\code{matrix} with cell
-#'   types as columns and samples as rows.
-#' @param colors Vector with colors that will be used.
-#' @param simplify Type of simplification performed during deconvolution. It can
-#'   be \code{simpli.set} or \code{simpli.maj} (\code{NULL} by default). It is
-#'   only for \code{\linkS4class{DigitalDLSorter}} object.
-#' @param color.line Color of border bars.
-#' @param x.label Label of x axis.
-#' @param rm.x.text Logical value indicating if remove x axis ticks (names of
-#'   samples).
-#' @param title Title of plot.
-#' @param legend.title Title of legend plot.
-#' @param angle Angle of text ticks.
-#' @param name.data If a DigitalDLSorter is given, name of the element that
-#'   stores the results in \code{deconv.results} slot. If not, forget it.
-#' @param ... Other arguments for specific methods.
+#'@param data \code{\linkS4class{DigitalDLSorter}} object with
+#'  \code{deconv.results} slot or data frame/matrix with cell types as columns
+#'  and samples as rows.
+#'@param colors Vector of colors that will be used.
+#'@param simplify Type of simplification performed during deconvolution. It can
+#'  be \code{simpli.set} or \code{simpli.maj} (\code{NULL} by default). It is
+#'  only for \code{\linkS4class{DigitalDLSorter}} objects.
+#'@param color.line Color of border bars.
+#'@param x.label Label of x axis.
+#'@param rm.x.text Logical value indicating if remove x axis ticks (name of
+#'  samples).
+#'@param title Title of plot.
+#'@param legend.title Title of legend plot.
+#'@param angle Angle of text ticks.
+#'@param name.data If a \code{\linkS4class{DigitalDLSorter}} is given, name of
+#'  the element that stores the results in \code{deconv.results} slot.
+#'@param ... Other arguments for specific methods.
 #'
-#' @export
+#'@export
 #'
 #' @examples
 #' ## Using a matrix
 #' \dontrun{barPlotCellTypes(deconvResults)}
 #'
 #' ## Using a DigitalDLSorter object
-#' barPlotCellTypes(DDLSSmallCompleted, name.data = "TCGA.breast")
+#' \dontrun{
+#'   barPlotCellTypes(DDLSChung, name.data = "TCGA.breast")
+#' }
+#'@rdname barPlotCellTypes
 #'
-#' @rdname barPlotCellTypes
-#'
-#' @seealso \code{\link{deconvDigitalDLSorter}}
-#'   \code{\link{deconvDigitalDLSorterObj}}
-#'   
+#'@seealso \code{\link{deconvDigitalDLSorter}}
+#'  \code{\link{deconvDigitalDLSorterObj}}
+#'  
 setGeneric("barPlotCellTypes", function(
   data,
   colors,
@@ -881,7 +894,7 @@ setMethod(
     if (is.null(deconv.results(data))) {
       stop("There is not results to show")
     } else if (is.null(name.data)) {
-      message("'name.data' not provided. By default, the first results are taken")
+      message("'name.data' not provided. By default, first results are taken")
       name.data <- 1
     }
     if (!is.null(simplify)) {
@@ -889,10 +902,10 @@ setMethod(
         stop("No simplified results available")
       } else {
         if (simplify != "simpli.set" && simplify != "simpli.majority") {
-          stop("simplify argument must be one of the next options: ",
+          stop("simplify argument must be one of the following options: ",
                "'simpli.set' or 'simpli.majority'")
         } else if (!any(simplify == names(deconv.results(data)[[name.data]]))) {
-          stop(paste(simplify, "data are not present in DigitalDLSorter object"))
+          stop(paste(simplify, "data is not present in DigitalDLSorter object"))
         }
         
         res <- deconv.results(data)[[name.data]][[simplify]]

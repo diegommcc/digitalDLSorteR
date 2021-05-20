@@ -2,13 +2,13 @@
 % Please edit documentation in R/evalMetrics.R
 \name{distErrorPlot}
 \alias{distErrorPlot}
-\title{Generate box plot or violin plot showing how errors are distributed.}
+\title{Generate box plot or violin plot to show how errors are distributed}
 \usage{
 distErrorPlot(
   object,
   error,
   colors,
-  x.by = "pBin",
+  x.by = "CellType",
   facet.by = NULL,
   color.by = "nMix",
   filter.sc = TRUE,
@@ -22,25 +22,26 @@ distErrorPlot(
   nrow = NULL,
   ncol = NULL,
   title = NULL,
-  theme = theme_grey(),
+  theme = NULL,
   ...
 )
 }
 \arguments{
-\item{object}{\code{DigitalDLSorter} object with \code{trained.model} slot
-containing metrics in \code{eval.stats.samples} slot.}
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object with
+\code{trained.model} slot containing metrics in \code{test.deconv.metrics}
+slot of \code{\linkS4class{DigitalDLSorterDNN}} object.}
 
-\item{error}{Which error is going to represent. The available errors are
-absolute error (\code{"AbsErr"}), proportional absolute error
-(\code{"ppAbsErr"}), squared error (\code{"SqrErr"}) or proportional
-squared error (\code{"ppSqrErr"}).}
+\item{error}{Which error is going to be represented. The available errors are
+absolute error (\code{'AbsErr'}), proportional absolute error
+(\code{'ppAbsErr'}), squared error (\code{'SqrErr'}) or proportional
+squared error (\code{'ppSqrErr'}).}
 
 \item{colors}{Vector of colors to use. Only vectors with a number of colors
 equal to or greater than the levels of \code{color.by} will be accepted. By
-default it is used a list of custom colors provided by the package.}
+default a list of custom colors provided by the package is used.}
 
-\item{x.by}{Variable used for x axis. When \code{facet.by} is not
-\code{NULL}, the best option is \code{pBin} (probability bin). The options
+\item{x.by}{Variable used for X axis. When \code{facet.by} is not
+\code{NULL}, the best option is \code{pBin} (probability bins). The options
 are \code{nMix} (by number of different cell types), \code{CellType} (by
 cell type) and \code{pBin}.}
 
@@ -52,10 +53,12 @@ cell type).}
 \item{color.by}{Variable used to color data. The options are \code{nMix} and
 \code{CellType}.}
 
-\item{filter.sc}{Boolean indicating if filter single-cell profiles and only
-display errors associated with bulk samples (\code{TRUE} by default).}
+\item{filter.sc}{Boolean indicating whether to filter single-cell profiles
+and only display errors associated with bulk samples (\code{TRUE} by
+default).}
 
-\item{error.labels}{Boolean indicating if show average error as annotation.}
+\item{error.labels}{Boolean indicating if to show average error as annotation
+in plots (\code{FALSE} by default).}
 
 \item{pos.x.label}{Position on the X axis of the errors annotations.}
 
@@ -65,33 +68,37 @@ display errors associated with bulk samples (\code{TRUE} by default).}
 
 \item{alpha.point}{Alpha of points (0.1 by default).}
 
-\item{type}{Type of plot, \code{'boxplot'} or \code{'violinplot'}. The last
+\item{type}{Type of plot: \code{'boxplot'} or \code{'violinplot'}. The latter
 by default.}
 
-\item{ylimit}{Upper limit in y axis if it is needed. \code{NULL} by default.}
+\item{ylimit}{Upper limit in y axis if it is required (\code{NULL} by
+default).}
 
-\item{nrow}{Number of rows if \code{facet.by} is different than \code{NULL}.}
+\item{nrow}{Number of rows if \code{facet.by} is different from \code{NULL}.}
 
-\item{ncol}{Number of columns if \code{facet.by} is different than
+\item{ncol}{Number of columns if \code{facet.by} is different from
 \code{NULL}.}
 
 \item{title}{Title of the plot.}
 
-\item{theme}{ggplot theme.}
+\item{theme}{\pkg{ggplot2} theme.}
 
-\item{...}{Additional argument for \code{facet_wrap} ggplot function if
-\code{facet.by} is not equal to \code{NULL}.}
+\item{...}{Additional arguments for \link[ggplot2]{facet_wrap} \pkg{ggplot2}
+function if \code{facet.by} is not equal to \code{NULL}.}
+}
+\value{
+ggplot2 plot
 }
 \description{
-Generate violin plot or box plot showing how errors are distributed by
-proportion bins of 0.1. The errors can be displayed all mixed or split based
-on cell type (\code{CellType}) or number of cell types present in the sample
+Generate violin plot or box plot to show how errors are distributed by
+proportion bins of 0.1. The errors can be displayed all mixed or splited by
+cell type (\code{CellType}) or number of cell types present in the samples
 (\code{nMix}). See \code{facet.by} argument and examples for more
 information.
 }
 \examples{
 distErrorPlot(
-  object = DDLSSmallCompleted,
+  object = DDLSChungComp,
   error = "AbsErr",
   facet.by = "CellType",
   color.by = "nMix",
@@ -99,7 +106,7 @@ distErrorPlot(
 )
 
 distErrorPlot(
-  object = DDLSSmallCompleted,
+  object = DDLSChungComp,
   error = "AbsErr",
   x.by = "CellType",
   facet.by = NULL,

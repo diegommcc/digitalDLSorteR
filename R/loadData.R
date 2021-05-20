@@ -3,7 +3,7 @@ NULL
 
 .readTabFiles <- function(file) {
   if (!file.exists(file)) {
-    stop(paste(file, "file provided does not exists"))
+    stop(paste(file, "file provided does not exist"))
   }
   if (grepl(pattern = ".tsv", x = file)) {
     if (grepl(pattern = ".tsv.gz$", x = file)) {
@@ -11,8 +11,8 @@ NULL
         expr = read.delim(file = gzfile(file), sep = "\t",
                           header = T, stringsAsFactors = F),
         error = function(err) {
-          stop("Provided file contains duplicated rownames/colnames. ", 
-                  "Please, provide a correct counts matrix.")
+          stop("The provided file contains duplicated rownames/colnames. ", 
+                  "Please, provide a correct count matrix")
         },
         warning = function(err) warning(err)
       )
@@ -21,8 +21,8 @@ NULL
         expr = read.delim(file = file, sep = "\t", header = T,
                           stringsAsFactors = F),
         error = function(err) {
-          stop("Provided file contains duplicated rownames/colnames. ", 
-                  "Please, provide a correct counts matrix.")
+          stop("The provided file contains duplicated rownames/colnames. ", 
+                  "Please, provide a correct count matrix")
         },
         warning = function(err) warning(err)
       )
@@ -30,8 +30,8 @@ NULL
   } else if (grepl(pattern = ".rds$", x = file)) {
     file.obj <- readRDS(file = file)
   } else {
-    stop("File format is not recognizable. Please look at the allowed data",
-         " in ?loadRealSCProfiles or ?loadFinalSCProfiles")
+    stop("File format is not recognizable. Please, look at allowed data",
+         " in ?loadSCProfiles")
   }
   return(file.obj)
 }
@@ -55,19 +55,19 @@ NULL
     compression.level <- HDF5Array::getHDF5DumpCompressionLevel()
   } else {
     if (compression.level < 0 || compression.level > 9) {
-      stop("compression.level must be an integer between 0 (no ", 
+      stop("'compression.level' must be an integer between 0 (no ", 
            "compression) and 9 (highest and slowest compression). ")
     }
   }
-  if (verbose) message("\n=== Writing data to a HDF5 file")
+  if (verbose) message("\n=== Writing data to HDF5 file")
   counts <- DelayedArray::DelayedArray(seed = counts)
   # check correct chunk.dims
   if (is.null(chunk.dims)) {
     chunk.dims <- c(nrow(counts), 1)
   } else {
     if (any(chunk.dims > dim(counts))) {
-      warning("'chunk.dims' must be equal to or lesser than dimension of ", 
-              "data. Setting default value", call. = FALSE, immediate. = TRUE)
+      warning("'chunk.dims' must be equal to or lesser than data dimensions. ", 
+              "Setting default value", call. = FALSE, immediate. = TRUE)
       chunk.dims <- c(nrow(counts), 1)
     }
   }
@@ -119,8 +119,8 @@ NULL
     colnames(counts) <- cell.names$V1
   } else if (grepl(".h5$|.hdf5$", counts.file, ignore.case = FALSE)) {
     if (is.null(name.h5)) {
-      stop("If you provide a HDF5 file, you must give the name of dataset in ", 
-           "the file") 
+      stop("If HDF5 file is provided, the name of dataset used must be given in ",
+           "'name.h5' argument") 
     } else if (!is.null(file.backend) && block.processing) {
       # hdf5 file will be used as back-end
       counts <- HDF5Array::HDF5Array(filepath = counts.file, name = name.h5)
@@ -129,7 +129,7 @@ NULL
       counts <- rhdf5::h5read(file = counts.file, name = name.h5)
     }
   } else {
-    stop("File format is not recognizable. Please look at the allowed data",
+    stop("File format is not recognizable. Please, look at allowed data",
          " in ?loadSCProfiles")
   }
   return(counts)
@@ -148,8 +148,9 @@ NULL
 ) {
   # could be a check of counts class -> if (is(counts, "HDF5Array"))
   if (!is.null(file.backend) && 
-      !class(counts) %in% c("HDF5Matrix", "HDF5Array", 
-                                    "DelayedArray", "DelayedMatrix")) {
+      !class(counts) %in% c(
+        "HDF5Matrix", "HDF5Array", "DelayedArray", "DelayedMatrix"
+      )) {
     counts <- .useH5backend(
       counts = counts,
       file.backend = file.backend,
@@ -210,7 +211,7 @@ NULL
                arg = "gene.ID.column")
   # duplicated ID cells --------------------------------------------------------
   if (any(duplicated(cells.metadata[, cell.ID.column]))) {
-    warning("There are duplicated IDs in cells.metadata (column ", 
+    warning("There are duplicated IDs in 'cells.metadata' (column ", 
             cell.ID.column, "). Making unique")
     cells.metadata[, cell.ID.column] <- make.unique(
       names = cells.metadata[, cell.ID.column]
@@ -223,15 +224,15 @@ NULL
     disc <- abs(length(cells.metadata[, cell.ID.column]) - length(common.cells))
     if (length(common.cells) < min(dim(counts)[2], dim(cells.metadata)[1])) {
       stop(paste("There are", diff,
-                 "cells that don't match between counts matrix and metadata"))
-    } else if (diff != 0) { # this check includes the last
+                 "cells that don't match between count matrix and metadata"))
+    } else if (diff != 0) { # this check includes the previous one
       warning("There are", diff, "cells that don't match between counts ", 
               "matrix and metadata")
     } else if (disc != 0) {
       if (verbose) {
-        message("=== Intersection between matrix counts and cells.metadata:")
+        message("=== Intersection between count matrix and cells metadata:")
         message(
-          paste("   ", disc, "cells have been discarded from cells.metadata"),
+          paste("   ", disc, "cells have been discarded from cells metadata"),
           "\n"
         )
       }
@@ -241,12 +242,12 @@ NULL
     counts <- counts[, common.cells]
   } else {
     if (ncol(counts) != nrow(cells.metadata)) {
-      stop("Matrix counts has not colnames and cells metdata has not same ", 
-           "number of IDs. Please, provide a correct counts matrix")
+      stop("Count matrix does not have colnames and cells metadata does not ", 
+           "have the same number of IDs. Please, provide a correct count matrix")
     } else {
       colnames(counts) <- cells.metadata[, cell.ID.column]
-      warning(paste("Matrix counts has not colnames, so", cell.ID.column, 
-                    "column from cells metadata will be used")) 
+      warning(paste("Count matrix does not have colnames, so", cell.ID.column, 
+                    "column of cells metadata will be used")) 
     }
   }
   # intersect between genes ----------------------------------------------------
@@ -255,15 +256,19 @@ NULL
     diff <- abs(dim(counts)[1] - length(common.genes))
     disc <- abs(length(genes.metadata[, gene.ID.column]) - length(common.genes))
     if (length(common.genes) < min(dim(counts)[1], dim(genes.metadata)[1])) {
-      stop(paste("There are", diff,
-                 "genes that don't match between counts matrix and metadata"))
+      stop(paste(
+        "There are", diff, 
+        "genes that don't match between count matrix and metadata"
+      ))
     } else if (diff != 0){
-      stop(paste("There are", diff,
-                    "genes that don't match between counts matrix and metadata"))
+      stop(paste(
+        "There are", diff,
+        "genes that don't match between count matrix and metadata"
+      ))
     } else if (disc != 0) {
       if (verbose) {
-        message("=== Intersection between matrix counts and genes.metadata:")
-        message("    ", disc, " genes have been discarded from genes.metadata",
+        message("=== Intersection between count matrix and genes metadata:")
+        message("    ", disc, " genes have been discarded from genes metadata",
                 "\n") 
       }
     }
@@ -272,11 +277,11 @@ NULL
     counts <- counts[common.genes, ]
   } else {
     if (nrow(counts) != nrow(genes.metadata)) {
-      stop("Matrix counts has not rownames and genes metadata has not same ", 
-           "number of IDs. Please, provide a correct counts matrix")
+      stop("Count matrix has not rownames and genes metadata has not the same ", 
+           "number of IDs. Please, provide a correct count matrix")
     } else {
       rownames(counts) <- genes.metadata[, gene.ID.column]
-      warning(paste("Matrix counts has not rownames, so", gene.ID.column, 
+      warning(paste("Count matrix has not rownames, so", gene.ID.column, 
                     "column from genes metadata will be used")) 
     } 
   }
@@ -314,7 +319,7 @@ NULL
   fun.aggregate,
   verbose
 ) {
-  # duplicated genes in counts matrix (and genes.metadata)
+  # duplicated genes in count matrix (and genes.metadata)
   dup.genes <- duplicated(rownames(counts))
   if (any(dup.genes)) {
     if (verbose) {
@@ -344,17 +349,17 @@ NULL
   if (min.counts == 0 && min.cells == 0) {
     return(list(counts, genes.metadata))
   } else if (min.counts < 0 || min.cells < 0) {
-    stop("min.counts and min.cells must be greater than or equal to zero")
+    stop("'min.counts' and 'min.cells' must be greater than or equal to zero")
   }
   dim.bef <- dim(counts)
   counts <- counts[Matrix::rowSums(counts > min.counts) >= min.cells, ]
   if (dim(counts)[1] == 0) {
-    stop(paste("Resulting counts matrix after filtering with min.genes =",
+    stop(paste("Resulting count matrix after filtering using min.genes =",
                min.counts, "and min.cells =", min.cells,
                "does not have entries"))
   }
   if (verbose) {
-    message("=== Filtering features by min.counts and min.cells:")
+    message("=== Filtering features by 'min.counts' and 'min.cells':")
     message(paste("    - Selected features:",  dim(counts)[1]))
     message(paste("    - Discarded features:", dim.bef[1] - dim(counts)[1]))  
   }
@@ -416,7 +421,7 @@ NULL
   remove.genes <- DelayedArray::rowSums(counts > min.counts) >= min.cells
   counts <- counts[remove.genes, ]
   if (dim(counts)[1] == 0) {
-    stop(paste("Resulting counts matrix after filtering with min.genes =",
+    stop(paste("Resulting count matrix after filtering using min.genes =",
                min.counts, "and min.cells =", min.cells,
                "does not have entries"))
   }
@@ -445,8 +450,8 @@ NULL
   # extract cells.metadata
   cells.metadata <- SingleCellExperiment::colData(SCEobject)
   if (any(dim(cells.metadata) == 0)) {
-    stop("No data provided in colData slot. Metadata about cells is needed, ",
-         "please see ?loadSCProfiles")
+    stop("No data provided in colData slot. Cells metadata is needed. ",
+         "Please, see ?loadSCProfiles")
   }
   if (!missing(cell.ID.column) && new.data) {
     # check if given IDs exist in cells.metadata. In cells.metadata is not
@@ -458,27 +463,27 @@ NULL
   }
   # extract count matrix
   if (length(SummarizedExperiment::assays(SCEobject)) == 0) {
-    stop("No counts data in SingleCellExperiment object provided")
+    stop("No count data in SingleCellExperiment object provided")
   } else if (length(SummarizedExperiment::assays(SCEobject)) > 1) {
-    warning("There are more than one assay, only the first will be used. ", 
-            "Remember it must be the original data and not log-transformed data")
+    warning("There is more than one assay, only the first will be used. ", 
+            "Remember it must be raw data and not log-transformed data")
   }
   counts <- SummarizedExperiment::assay(SCEobject)
   if (is.null(rownames(counts)) || is.null(colnames(counts))) {
-    stop("Counts matrix must have rownames corresponding to features and ",  
+    stop("Count matrix must have rownames corresponding to features and ",  
          "colnames corresponding to cells")
   }
   # extract genes.metadata
   genes.metadata <- SingleCellExperiment::rowData(SCEobject)
   if (!missing(gene.ID.column) && new.data) {
     if (any(dim(genes.metadata) == 0)) {
-      stop("No data provided in rowData slot. Metadata about genes is needed, ",
-           "please see ?loadSCProfiles")
+      stop("No data provided in rowData slot. Genes metadata is needed. ",
+           "Please, see ?loadSCProfiles")
       # if (class(gene.ID.column) == "numeric") gene.ID.column <- "gene_names"
       # genes.metadata <- S4Vectors::DataFrame(gene.ID.column = rownames(counts))
     }
     # check if given IDs exist in genes.metadata. In cells.metadata is not
-    # necessary because the data are provided from an SCE object
+    # necessary because the data is provided from a SCE object
     .checkColumn(
       metadata = genes.metadata,
       ID.column = gene.ID.column,
@@ -510,15 +515,14 @@ NULL
   block.processing,
   verbose
 ) {
-  # check if single-cell data are real or final
   if (is.null(single.cell)) {
-    stop(paste("Please, provide a single.cell argument"))
-  } else if (is.null(cell.ID.column) || is.null(gene.ID.column) || 
-             missing(cell.ID.column) || missing(gene.ID.column)) {
-    stop("cell.ID.column and gene.ID.column arguments are needed. Please look ",
+    stop(paste("Please, provide a 'single.cell' argument"))
+  } else if (missing(cell.ID.column) || missing(gene.ID.column) || 
+             is.null(cell.ID.column) || is.null(gene.ID.column)) {
+    stop("'cell.ID.column' and 'gene.ID.column' arguments are needed. Please, look ",
          "?loadSCProfiles")
   } else if (!fun.aggregate %in% c("sum", "mean", "median")) {
-    stop("fun.aggregate must be one of the following options: 'sum', 'mean' ", 
+    stop("'fun.aggregate' must be one of the following options: 'sum', 'mean' ", 
          "or 'median'")
   } 
   if (!is.null(file.backend)) {
@@ -559,7 +563,7 @@ NULL
       .readTabFiles(single.cell[[3]])
     )
   } else {
-    stop("Incorrect number of data elements given. Please look at ", 
+    stop("Incorrect number of data elements given. Please, look at ", 
          "allowed data for in ?loadSCProfiles")
   }
   # use HDF5 backend and block.processing from both SCE object and files
@@ -615,36 +619,38 @@ NULL
 ########################## Load real single-cell data ##########################
 ################################################################################
 
-#' Create a \code{DigitalDLSorter} object from single-cell RNA-seq data
+#' Create a \code{\linkS4class{DigitalDLSorter}} object from single-cell RNA-seq
+#' data
 #'
-#' Create a \code{DigitalDLSorter} object from single-cell RNA-seq data from
-#' files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5) or from a
-#' \code{ment} object. Data will be store in
-#' \code{single.cell.real} slot. Provided data must be composed by three pieces
-#' of information: \itemize{ \item Single-cell counts: genes in rows and cells
-#' in columns. \item Cells metadata: with annotations (columns) for each cell
-#' (rows). \item Genes metadata with annotations (columns) for each gene (rows).
-#' } In the case that data is provided from files, \code{single.cell.real}
-#' argument must be a vector of three elements ordered so that the first file
-#' corresponds to matrix counts, the second to cells metadata and the last to
-#' genes metadata. On the other hand, if data is provided as
-#' \code{ment}, the object must contains single-cell counts in
-#' \code{assay} slot, cells metadata in \code{colData} slot and genes metadata
-#' in \code{rowData}.
+#' Create a \code{\linkS4class{DigitalDLSorter}} object from single-cell RNA-seq
+#' data using files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5)
+#' or using a \code{\linkS4class{SingleCellExperiment}} object. Data will be
+#' stored in \code{single.cell.real} slot. Provided data must be composed of
+#' three pieces of information: \itemize{ \item Single-cell counts: genes in
+#' rows and cells in columns. \item Cells metadata: annotations (columns) for
+#' each cell (rows). \item Genes metadata: annotations (columns) for each gene
+#' (rows). } If data is provided from files, \code{single.cell.real} argument
+#' must be a vector of three elements ordered so that the first file corresponds
+#' to count matrix, the second to cells metadata and the latter to genes
+#' metadata. On the other hand, if data is provided as
+#' \code{\linkS4class{SingleCellExperiment}}, the object must contain
+#' single-cell counts in \code{assay} slot, cells metadata in \code{colData}
+#' slot and genes metadata in \code{rowData}. Data must be provided without any
+#' transformation (e.g. log-transformation) and raw counts are preferred.
 #'
-#' This data can be used in order to simulate new single-cell profiles using the
-#' ZINB-WaVE framework with \code{\link{estimateZinbwaveParams}} function. By
-#' this way, it is possible to increase the signal of cell types which are
+#' This data can be used to simulate new single-cell profiles using the
+#' ZINB-WaVE framework with \code{\link{estimateZinbwaveParams}} function. In
+#' this way it is possible to increase the signal of cell types which are
 #' underrepresented in the original data set. If this step is not neccesary,
-#' these profiles will be used for simulating bulk RNA-seq with known
-#' composition.
+#' these profiles will be used directly to simulate bulk RNA-seq samples with
+#' known composition.
 #'
 #' @param single.cell.data If data is provided from files,
-#'   \code{single.cell.real} must be a vector with the file paths for three
-#'   elements: single-cell counts, cells metadata and genes metadata. If data is
-#'   provided from a \code{ment} object, single-cell counts must
-#'   be in \code{assay} slot, cells metadata in \code{colData} slot and genes
-#'   metadata in \code{rowData} slot.
+#'   \code{single.cell.real} must be a vector with file paths of three elements:
+#'   single-cell counts, cells metadata and genes metadata. If data is provided
+#'   from a \code{\linkS4class{SingleCellExperiment}} object, single-cell counts
+#'   must be present in \code{assay} slot, cells metadata in \code{colData} slot
+#'   and genes metadata in \code{rowData} slot.
 #' @param cell.ID.column Name or number of the column in cells metadata
 #'   corresponding to cell names in expression matrix.
 #' @param gene.ID.column Name or number of the column in genes metadata
@@ -653,15 +659,15 @@ NULL
 #' @param min.counts Minimum gene counts to filter (0 by default).
 #' @param min.cells Minimum of cells with more than min.counts (0 by default).
 #' @param fun.aggregate In case of duplicated genes, it is possible to set the
-#'   function used for aggregating them. Allowed functions: \code{"sum"},
-#'   \code{"mean"}, \code{"median"}. Note that this functionality only works
+#'   function used for aggregating them. Allowed functions: \code{'sum'},
+#'   \code{'mean'}, \code{'median'}. Note that this functionality only works
 #'   when data are provided from a mtx file (sparse matrices) that allows
 #'   duplicated rownames. Otherwise, R does not allow duplicated rownames.
 #' @param file.backend Valid file path where to store loaded data as HDF5 file.
 #'   If provided, data is stored in HDF5 files as back-end by using
-#'   \code{\link{DelayedArray}} and \code{\link{HDF5Array}} packages instead of
-#'   loaded in memory. This is suitable for situations where you have large
-#'   amount of data that cannot be allocated in memory. Note that operations on
+#'   \pkg{DelayedArray} and \pkg{HDF5Array} packages instead of
+#'   loaded in memory. This is suitable for situations where you have big
+#'   amounts of data that cannot be allocated in memory. Note that operations on
 #'   this data will be carried out by blocks (i.e subsets of determined size),
 #'   which can lead to longer execution times. \code{NULL} by default.
 #' @param name.dataset.backend Name of the dataset in the HDF5 file that will be
@@ -669,16 +675,24 @@ NULL
 #'   datset name will be used.
 #' @param compression.level The compression level used if \code{file.backend} is
 #'   provided. It is an integer value between 0 (no compression) and 9 (highest
-#'   and slowest compression). See ?\code{\link{getHDF5DumpCompressionLevel}}
-#'   from \code{\link{HDF5Array}} package for more information.
-#' @param block.processing Boolean indicating if data should be treated by
+#'   and slowest compression). See
+#'   \code{?\link[HDF5Array]{getHDF5DumpCompressionLevel}} from
+#'   \code{\link{HDF5Array}} package for more information.
+#' @param chunk.dims Specifies dimensions that HDF5 chunk will have. If
+#'   \code{NULL}, the default value is a vector of two items: the number of
+#'   genes considered by \code{\linkS4class{DigitalDLSorter}} object during the
+#'   simulation and only one sample in order to increase the read times in the
+#'   following steps. Greater number of columns written in each chunk can lead
+#'   to longer read times.
+#' @param block.processing Boolean indicating if data should be treated as
 #'   blocks (only if data are provided as HDF5 file). \code{FALSE} by default.
-#'   Note that using this functionality is suitable for cases where is not
-#'   possible to allocate data in memory and that exexcution times will be
-#'   larger.
+#'   Note that to use this functionality is suitable for cases where is not
+#'   possible to allocate data in memory and therefore execution times will be
+#'   longer.
 #' @param verbose Show informative messages during the execution. \code{TRUE} by
 #'   default.
-#' @param project Name of the project for \code{DigitalDLSorter} object.
+#' @param project Name of the project for \code{\linkS4class{DigitalDLSorter}}
+#'   object.
 #'
 #' @export
 #'
@@ -686,7 +700,7 @@ NULL
 #'   \code{\link{generateBulkCellMatrix}}
 #'
 #' @examples
-#' sc.chung.breast <- single.cell.real(DDLSChungSmall)
+#' sc.chung.breast <- single.cell.real(DDLSLi)
 #' DDLSChungSmall <- loadSCProfiles(
 #'   single.cell.real = sc.chung.breast,
 #'   cell.ID.column = "Cell_ID",

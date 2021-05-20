@@ -4,7 +4,7 @@
 \alias{barPlotCellTypes}
 \alias{barPlotCellTypes,DigitalDLSorter-method}
 \alias{barPlotCellTypes,ANY-method}
-\title{Plot a bar plot with deconvoluted cell type proportions.}
+\title{Bar plot with deconvoluted cell type proportions}
 \usage{
 barPlotCellTypes(
   data,
@@ -45,20 +45,20 @@ barPlotCellTypes(
 }
 \arguments{
 \item{data}{\code{\linkS4class{DigitalDLSorter}} object with
-\code{deconv.results} slot or \code{data.frame}/\code{matrix} with cell
-types as columns and samples as rows.}
+\code{deconv.results} slot or data frame/matrix with cell types as columns
+and samples as rows.}
 
-\item{colors}{Vector with colors that will be used.}
+\item{colors}{Vector of colors that will be used.}
 
 \item{simplify}{Type of simplification performed during deconvolution. It can
 be \code{simpli.set} or \code{simpli.maj} (\code{NULL} by default). It is
-only for \code{\linkS4class{DigitalDLSorter}} object.}
+only for \code{\linkS4class{DigitalDLSorter}} objects.}
 
 \item{color.line}{Color of border bars.}
 
 \item{x.label}{Label of x axis.}
 
-\item{rm.x.text}{Logical value indicating if remove x axis ticks (names of
+\item{rm.x.text}{Logical value indicating if remove x axis ticks (name of
 samples).}
 
 \item{title}{Title of plot.}
@@ -69,8 +69,8 @@ samples).}
 
 \item{...}{Other arguments for specific methods.}
 
-\item{name.data}{If a DigitalDLSorter is given, name of the element that
-stores the results in \code{deconv.results} slot. If not, forget it.}
+\item{name.data}{If a \code{\linkS4class{DigitalDLSorter}} is given, name of
+the element that stores the results in \code{deconv.results} slot.}
 }
 \description{
 This function allows to plot a bar plot with the deconvoluted cell type
@@ -81,8 +81,9 @@ proportions of a given bulk RNA-seq sample using ggplot2.
 \dontrun{barPlotCellTypes(deconvResults)}
 
 ## Using a DigitalDLSorter object
-barPlotCellTypes(DDLSSmallCompleted, name.data = "TCGA.breast")
-
+\dontrun{
+  barPlotCellTypes(DDLSChung, name.data = "TCGA.breast")
+}
 }
 \seealso{
 \code{\link{deconvDigitalDLSorter}}

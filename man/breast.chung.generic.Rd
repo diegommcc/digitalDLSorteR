@@ -3,11 +3,12 @@
 \docType{data}
 \name{breast.chung.generic}
 \alias{breast.chung.generic}
-\title{Pre-trained DigitalDLSorter DNN model for deconvolution of TILs present in
-breast cancer environment (generic version).}
+\title{Pre-trained \code{\linkS4class{DigitalDLSorter}} DNN model for deconvolution
+of tumor-infiltrating lymphocytes (TILs) present in breast cancer environment
+(generic version)}
 \format{
-A \code{DigitalDLSorterDNN} object with the following slots:
-\describe{ \item{model}{Trained DNN model.}
+A \code{\linkS4class{DigitalDLSorterDNN}} object with the following
+slots: \describe{ \item{model}{Trained DNN model.}
 \item{training.history}{Evolution of metrics and loss function during
 training.} \item{eval.stats}{Metrics and loss results on test data.}
 \item{predict.results}{Predictions of cell types on test data.}
@@ -21,22 +22,23 @@ training.} \item{eval.stats}{Metrics and loss results on test data.}
 breast.chung.generic
 }
 \description{
-DigitalDLSorter DNN model built and trained with single-cell data from Chung
-et al., 2017 (GSE75688). This model allows the enumeration and quantification
-of immune infiltrated cell types in breast cancer environment. This data set
-consists in single-cell profiles from 11 patients from different tumor
-etiology and stages (see Torroja and Sanchez-Cabo, 2019 for more details).
-The analysis and characterization of the cells was carried out by the authors
-of \code{digitalDLSorteR} package.
+\code{\linkS4class{DigitalDLSorter}} DNN model built and trained with
+single-cell data from Chung et al., 2017 (GSE75688). This model allows the
+enumeration and quantification of immune infiltrated cell types in breast
+cancer environment. This data set consists of single-cell RNA-seq profiles
+from 11 patients from different tumor etiology and stages (see Torroja and
+Sanchez-Cabo, 2019 and Chung et al., 2017 for more details). The analysis and
+characterization of the cells was carried out by the authors of
+\pkg{digitalDLSorteR} package.
 }
 \details{
-The cell types considered in this model are 7. They are the generic groups
-from cell types considered in specific version: B cells, T CD4+ cells, T CD8+
-cells, monocytes, dendritic cells, stromal cells and tumor cells.
+This model considers 7 cell types. They are generic groups of the cell types
+considered by the specific version: B cells, T CD4+ cells, T CD8+ cells,
+monocytes, dendritic cells, stromal cells and tumor cells.
 
-The genes considered are 23.260 in SYMBOL notation.
+The genes considered are 23260 in SYMBOL notation.
 
-The model consists in 2 hidden layers with 200 neurons per layer trained with
+The model consists of 2 hidden layers with 200 neurons per layer trained with
 'kullback_leibler_divergence' loss function  batch size equal to 128 and a
 number of epochs equal to 25.
 }

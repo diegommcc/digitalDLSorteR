@@ -2,12 +2,11 @@
 % Please edit documentation in R/dnnModel.R
 \name{deconvDigitalDLSorter}
 \alias{deconvDigitalDLSorter}
-\title{Deconvolute bulk gene expression samples (bulk RNA-Seq) using a pre-trained
-DigitalDLSorter model}
+\title{Deconvolute bulk RNAseq samples using a pre-trained DigitalDLSorter model}
 \usage{
 deconvDigitalDLSorter(
   data,
-  model = "breast.generic",
+  model = "breast.chung.generic",
   batch.size = 128,
   normalize = TRUE,
   simplify.set = NULL,
@@ -16,20 +15,19 @@ deconvDigitalDLSorter(
 )
 }
 \arguments{
-\item{data}{A \code{matrix} or a \code{data.frame} with bulk gene expression
-of samples. Rows must be genes in symbol notation and columns must be
-samples.}
+\item{data}{Matrix or data frame with bulk-RNAseq samples. Rows must be
+genes in SYMBOL notation and columns must be samples.}
 
-\item{model}{Pre-trained DNN model to use for deconvoluting process. For the
-moment, the available models are for RNA-Seq samples from breast cancer
-(\code{'breast.chung.generic'} and \code{'breast.chung.specific'})
-environment.}
+\item{model}{Pre-trained DNN model to use for deconvoluting \code{data}. Up
+to now, the available models are aimed at deconvolving samples of breast
+cancer (\code{'breast.chung.generic'} and \code{'breast.chung.specific'}).}
 
-\item{batch.size}{Number of samples loadad in-memory each time of
-deconvolution process. If unspecified, \code{batch.size} will default to
+\item{batch.size}{Number of samples loaded in RAM memory each time during the
+deconvolution process. If unspecified, \code{batch.size} will set to
 128.}
 
-\item{normalize}{Normalize data before deconvolution. \code{TRUE} by default.}
+\item{normalize}{Normalize data before deconvolution (\code{TRUE} by
+default).}
 
 \item{simplify.set}{List specifying which cell types should be compressed
 into a new label whose name will be the list name item. See examples for
@@ -38,37 +36,33 @@ details.}
 \item{simplify.majority}{List specifying which cell types should be
 compressed into the cell type with greater proportions in each sample.
 Unlike \code{simplify.set}, it allows to maintain the complexity of the
-results while compressing the information, because it is not created a new
+results while compressing the information, since it is not created a new
 label.}
 
 \item{verbose}{Show informative messages during the execution.}
 }
 \value{
-A \code{data.frame} with samples (\eqn{i}) as rows and cell types
+A data frame with samples (\eqn{i}) as rows and cell types
 (\eqn{j}) as columns. Each entry represents the predicted proportion of
 \eqn{j} cell type in \eqn{i} sample.
 }
 \description{
-Deconvolute bulk gene expression samples (RNA-Seq) quantifying the proportion
-of cell types present in a bulk sample. See in Details the available models.
-This method uses a pre-trained Deep Neural Network model to enumerate and
-quantify the cell types present in bulk RNA-Seq samples. For the moment, the
-available models allow to deconvolute the immune infiltration breast cancer
-(Chung et al., 2017) at two levels: specific cell types
+Deconvolute bulk gene expression samples (bulk RNA-Seq) to enumerate and
+quantify the proportion of cell types present in a bulk sample using Deep
+Neural Network models. This function is intended for users who want to use
+pre-trained models integrated in the package. For the moment, the available
+models allow to deconvolute the immune infiltration of breast cancer (Chung
+et al., 2017) at two levels: specific cell types
 (\code{'breast.chung.specific'}) and generic cell types
 (\code{'breast.chung.generic'}). See \code{\link{breast.chung.generic}} and
-\code{\link{breast.chung.specific}} documentation for details.
+\code{\link{breast.chung.specific}} documentation for details. (this is gonna
+change)
 }
 \details{
-This function is oriented for users that only want to use the method for
-deconvoluting their bulk RNA-Seq samples. For users that are building their
-own model from scRNA-seq, see \code{\link{deconvDigitalDLSorterObj}}. The
-former works with base classes, while the last uses \code{DigitalDLSorter}
-objects.
-
-For situations where there are cell types exclusive to each other because it
-does not make sense that they appear together, see arguments
-\code{simplify.set} and \code{simplify.majority}.
+This function is intended for users who want to use \pkg{digitalDLSorteR} for
+deconvoluting their bulk RNA-Seq samples using pre-trained models. For users
+who want to build their own models from scRNA-seq, see
+\code{?\link{loadSCProfiles}} and \code{?\link{deconvDigitalDLSorterObj}}.
 }
 \examples{
 ## to ensure compatibility
@@ -83,14 +77,15 @@ results1 <- deconvDigitalDLSorter(
 simplify <- list(Tumor = c("ER+", "HER2+", "ER+/HER2+", "TNBC"),
                  Bcells = c("Bmem", "BGC"))
 
-## in this case,  the item names from list will be the new labels
+## in this case names from list will be the new labels
 results2 <- deconvDigitalDLSorter(
   TCGA.breast.small,
   model = "breast.chung.specific",
   normalize = TRUE,
-  simplify.set = simplify)
+  simplify.set = simplify
+)
 
-## in this case, the cell type with greatest proportion will be the new label
+## in this case the cell type with greatest proportion will be the new label
 ## the rest of proportion cell types will be added to the greatest
 results3 <- deconvDigitalDLSorter(
   TCGA.breast.small,

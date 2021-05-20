@@ -3,73 +3,73 @@ context("Loading scRNA-seq data into DigitalDLSorter object")
 ################################################################################
 ##################### From a SingleCellExperiment object #######################
 ################################################################################
-sceChungSmall <- single.cell.real(DDLSChungSmall)
+sceLiSmall <- single.cell.real(DDLSLi)
 
 ## errors related with wrong columns metadata
 test_that("Wrong metadata columns return errors", {
-  expect_error(loadRealSCProfiles(
-    single.cell.real = sceChungSmall,
+  expect_error(loadSCProfiles(
+    single.cell.data = sceLiSmall,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 1
   ))
-  expect_error(suppressWarnings(loadRealSCProfiles(
-    single.cell.real = sceChungSmall,
+  expect_error(suppressWarnings(loadSCProfiles(
+    single.cell.data = sceLiSmall,
     cell.ID.column = "Cell_type",
     gene.ID.column = 2
   )))
-  expect_error(loadRealSCProfiles(
-    single.cell.real = sceChungSmall,
+  expect_error(loadSCProfiles(
+    single.cell.data = sceLiSmall,
     cell.ID.column = "non_existent_column",
     gene.ID.column = 2
   ))
-  expect_error(loadRealSCProfiles(
-    single.cell.real = sceChungSmall,
+  expect_error(loadSCProfiles(
+    single.cell.data = sceLiSmall,
     cell.ID.column = "Cell_type",
     gene.ID.column = "non_existent_column"
   ))
 })
 
 
-## errors related with remove cells or genes (min.cells and min.counts)
-test_that("Catch errors related with min.counts and min.cells", {
-  expect_error(loadRealSCProfiles(
-    single.cell.real = sceChungSmall,
+## errors related to remove cells or genes (min.cells and min.counts)
+test_that("Catch errors related to min.counts and min.cells", {
+  expect_error(loadSCProfiles(
+    single.cell.data = sceLiSmall,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = -1,
     min.cells = 1
   ))
-  expect_error(loadRealSCProfiles(
-    single.cell.real = sceChungSmall,
+  expect_error(loadSCProfiles(
+    single.cell.data = sceLiSmall,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 1,
     min.cells = -1
   ))
-  expect_error(loadRealSCProfiles(
-    single.cell.real = sceChungSmall,
+  expect_error(loadSCProfiles(
+    single.cell.data = sceLiSmall,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
-    min.counts = 100000,
+    min.counts = 10e6,
     min.cells = 10
   ))
-  expect_error(loadRealSCProfiles(
-    single.cell.real = sceChungSmall,
+  expect_error(loadSCProfiles(
+    single.cell.data = sceLiSmall,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 30,
-    min.cells = 30
+    min.cells = 440
   ))
 })
 
 
 test_that("Check if filtering works as expected", {
-  counts.real <- assay(sceChungSmall)
+  counts.real <- assay(sceLiSmall)
   min.counts <- 0
   min.cells <- 12
   counts <- counts.real[Matrix::rowSums(counts.real > min.counts) >= min.cells, ]
-  DDLSFiltered <- loadRealSCProfiles(
-    single.cell.real = sceChungSmall,
+  DDLSFiltered <- loadSCProfiles(
+    single.cell.data = sceLiSmall,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
@@ -81,15 +81,15 @@ test_that("Check if filtering works as expected", {
 
 
 test_that("Check if counts matrix is a sparse matrix object", {
-  DDLS1 <- loadRealSCProfiles(
-    single.cell.real = sceChungSmall,
+  DDLS1 <- loadSCProfiles(
+    single.cell.data = sceLiSmall,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
     min.cells = 0
   )
-  DDLS2 <- loadRealSCProfiles(
-    single.cell.real = sceChungSmall,
+  DDLS2 <- loadSCProfiles(
+    single.cell.data = sceLiSmall,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 12,
@@ -100,36 +100,36 @@ test_that("Check if counts matrix is a sparse matrix object", {
 })
 
 
-## errors related with SingleCellExperiment: data not provided in some slot,
-## data provided in other slots, matrix counts does not have row and column
+## errors related to SingleCellExperiment: data not provided in some slot,
+## data provided in other slots, count matrix does not have row and column
 ## names
 test_that("Wrong SingleCellExperiment object", {
-  counts <- single.cell.real(DDLSChungSmall) %>% assay
+  counts <- single.cell.real(DDLSLi) %>% assay
 
   ## 1 - no rownames neither rowData: genes
-  countsNoGenes <- single.cell.real(DDLSChungSmall) %>% assay
+  countsNoGenes <- single.cell.real(DDLSLi) %>% assay
   rownames(countsNoGenes) <- NULL
-  sceChungNoGenes <- SingleCellExperiment(
+  sceLiNoGenes <- SingleCellExperiment(
     assay = list(counts = countsNoGenes),
-    colData = colData(single.cell.real(DDLSChungSmall))
+    colData = colData(single.cell.real(DDLSLi))
   )
-  expect_error(loadRealSCProfiles(
-    single.cell.real = sceChungNoGenes,
+  expect_error(loadSCProfiles(
+    single.cell.data = sceLiNoGenes,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
     min.cells = 0
-  ), regexp = "Counts matrix must have rownames")
+  ), regexp = "Count matrix must have rownames")
 
   ## 2 - no colnames neither colData: cells
-  countsNoCells <- assay(single.cell.real(DDLSChungSmall))
+  countsNoCells <- assay(single.cell.real(DDLSLi))
   colnames(countsNoCells) <- NULL
-  sceChungNoCells <- SingleCellExperiment(
+  sceLiNoCells <- SingleCellExperiment(
     assay = list(counts = countsNoCells),
-    rowData = rowData(single.cell.real(DDLSChungSmall))
+    rowData = rowData(single.cell.real(DDLSLi))
   )
-  expect_error(loadRealSCProfiles(
-    single.cell.real = sceChungNoCells,
+  expect_error(loadSCProfiles(
+    single.cell.data = sceLiNoCells,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
@@ -137,12 +137,12 @@ test_that("Wrong SingleCellExperiment object", {
   ), regexp = "No data provided in colData slot")
 
   ## 3 - no rowData: genes
-  sceChungRNoRowData <- SingleCellExperiment(
-    assay = list(counts = single.cell.real(DDLSChungSmall) %>% assay),
-    colData = colData(single.cell.real(DDLSChungSmall))
+  sceLiRNoRowData <- SingleCellExperiment(
+    assay = list(counts = single.cell.real(DDLSLi) %>% assay),
+    colData = colData(single.cell.real(DDLSLi))
   )
-  expect_error(loadRealSCProfiles(
-    single.cell.real = sceChungRNoRowData,
+  expect_error(loadSCProfiles(
+    single.cell.data = sceLiRNoRowData,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
@@ -150,71 +150,62 @@ test_that("Wrong SingleCellExperiment object", {
   ), regexp = "No data provided in rowData slot")
 
   ## 4 - no colnames: cells in matrix
-  dfCellsMetadata <- colData(single.cell.real(DDLSChungSmall))
+  dfCellsMetadata <- colData(single.cell.real(DDLSLi))
   rownames(dfCellsMetadata) <- NULL
-  sceChungNoColNames <- SingleCellExperiment(
+  sceLiNoColNames <- SingleCellExperiment(
     assay = list(counts = countsNoCells),
     colData = dfCellsMetadata,
-    rowData = rowData(single.cell.real(DDLSChungSmall))
+    rowData = rowData(single.cell.real(DDLSLi))
   )
-  expect_error(loadRealSCProfiles(
-    single.cell.real = sceChungNoColNames,
+  expect_error(loadSCProfiles(
+    single.cell.data = sceLiNoColNames,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
     min.cells = 0
-  ), regexp = "Counts matrix must have")
+  ), regexp = "Count matrix must have")
 
   ## 5 - No matrix counts
-  sceChungNoCounts <- SingleCellExperiment(
-    colData = colData(single.cell.real(DDLSChungSmall)),
-    rowData = rowData(single.cell.real(DDLSChungSmall))
+  sceLiNoCounts <- SingleCellExperiment(
+    colData = colData(single.cell.real(DDLSLi)),
+    rowData = rowData(single.cell.real(DDLSLi))
   )
-  expect_error(loadRealSCProfiles(
-    single.cell.real = sceChungNoCounts,
+  expect_error(loadSCProfiles(
+    single.cell.data = sceLiNoCounts,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
     min.cells = 0
-  ), regexp = "No counts data in SingleCellExperiment object provided")
+  ), regexp = "No count data in SingleCellExperiment object provided")
 
   ## 6 - More than one assay in SingleCellExperiment: warning, no error
-  sceChungMoreThanOne <- SingleCellExperiment(
+  sceLiMoreThanOne <- SingleCellExperiment(
     assay = list(counts = counts, log = log2(counts  + 1)),
-    colData = colData(single.cell.real(DDLSChungSmall)),
-    rowData = rowData(single.cell.real(DDLSChungSmall))
+    colData = colData(single.cell.real(DDLSLi)),
+    rowData = rowData(single.cell.real(DDLSLi))
   )
-  expect_warning(loadRealSCProfiles(
-    single.cell.real = sceChungMoreThanOne,
+  expect_warning(loadSCProfiles(
+    single.cell.data = sceLiMoreThanOne,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
     min.cells = 0
-  ), regexp = "There are more than one assay, only the first will be used")
+  ), regexp = "There is more than one assay, only the first will be used")
 })
 
 
-## loadFinalSCProfiles core is the same as loadRealSCProfiles, so its behavior
+## loadFinalSCProfiles core is the same as loadSCProfiles, so its behavior
 ## is the same. However, the slot updated is other
-test_that("Check if loadRealSCProfiles and loadFinalSCProfiles work as expected", {
-  DDLSReal <- loadRealSCProfiles(
-    single.cell.real = sceChungSmall,
+test_that("Check if loadSCProfiles works as expected", {
+  DDLS <- loadSCProfiles(
+    single.cell.data = sceLiSmall,
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 2,
     min.cells = 2
   )
-  DDLSFinal <- loadFinalSCProfiles(
-    single.cell.final = sceChungSmall,
-    cell.ID.column = "Cell_ID",
-    gene.ID.column = 2,
-    min.counts = 2,
-    min.cells = 2
-  )
-  expect_is(single.cell.real(DDLSReal), class = "SingleCellExperiment")
-  expect_is(single.cell.final(DDLSReal), class = "NULL")
-  expect_is(single.cell.final(DDLSFinal), class = "SingleCellExperiment")
-  expect_is(single.cell.real(DDLSFinal), class = "NULL")
+  expect_is(single.cell.real(DDLS), class = "SingleCellExperiment")
+  expect_is(single.cell.simul(DDLS), class = "NULL")
 })
 
 
@@ -225,59 +216,59 @@ test_that("Check if loadRealSCProfiles and loadFinalSCProfiles work as expected"
 ## core functions are the same for files and SCE objects, so the behavior
 ## should be the same
 
-file.tests <- "../testdata/"
+file.tests <- "../testdata"
 files.tsv <- c("counts.tsv", "cellsMetadata.tsv", "genesMetadata.tsv")
 files.tsv.gz <- c("counts.tsv.gz", "cellsMetadata.tsv.gz", "genesMetadata.tsv.gz")
 files.sparse <- c("sparse_data/matrix.mtx", "cellsMetadata.tsv", "genesMetadata.tsv")
 
 
 test_that("Check if loading data from tsv files works as expected", {
-  expect_message(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv),
+  expect_message(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 2,
     min.cells = 2
   ), "=== Filtering features")
-  expect_error(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv),
+  expect_error(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 1
   ))
-  expect_error(suppressWarnings(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv),
+  expect_error(suppressWarnings(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv),
     cell.ID.column = "Cell_type",
     gene.ID.column = 2
   )))
-  expect_error(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv),
+  expect_error(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
-    min.counts = 100000,
+    min.counts = 10e6,
     min.cells = 10
   ))
 })
 
 test_that("Check if loading data from tsv.gz files works as expected", {
-  expect_message(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv.gz),
+  expect_message(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv.gz),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 2,
     min.cells = 2
   ), "=== Filtering features")
-  expect_error(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv.gz),
+  expect_error(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv.gz),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 1
   ))
-  expect_error(suppressWarnings(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv.gz),
+  expect_error(suppressWarnings(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv.gz),
     cell.ID.column = "Cell_type",
     gene.ID.column = 2
   )))
-  expect_error(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv.gz),
+  expect_error(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv.gz),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 100000,
@@ -286,25 +277,25 @@ test_that("Check if loading data from tsv.gz files works as expected", {
 })
 
 test_that("Check if loading data from sparse files works as expected", {
-  expect_message(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.sparse),
+  expect_message(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.sparse),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 2,
     min.cells = 2
   ), "=== Filtering features")
-  expect_error(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.sparse),
+  expect_error(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.sparse),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 1
   ))
-  expect_error(suppressWarnings(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.sparse),
+  expect_error(suppressWarnings(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.sparse),
     cell.ID.column = "Cell_type",
     gene.ID.column = 2
   )))
-  expect_error(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.sparse),
+  expect_error(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.sparse),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 100000,
@@ -313,45 +304,35 @@ test_that("Check if loading data from sparse files works as expected", {
 })
 
 
-test_that("Check if objects from files and SCE object are equivalent", {
-  DDLS.SCE <- loadRealSCProfiles(
-    single.cell.real = sceChungSmall,
+test_that("Check if objects from different files are equivalent", {
+  DDLS.tsv <- loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
     min.cells = 12
   )
-  DDLS.tsv <- loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv),
+  DDLS.tsv.gz <- loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv.gz),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
     min.cells = 12
   )
-  DDLS.tsv.gz <- loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv.gz),
-    cell.ID.column = "Cell_ID",
-    gene.ID.column = 2,
-    min.counts = 0,
-    min.cells = 12
-  )
-  DDLS.sparse <- loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.sparse),
+  DDLS.sparse <- loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.sparse),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
     min.cells = 12
   )
   ## DDLS objects
-  expect_equal(DDLS.SCE, DDLS.tsv)
-  expect_equal(DDLS.SCE, DDLS.tsv.gz)
-  expect_equal(DDLS.SCE, DDLS.sparse)
+  expect_equal(DDLS.tsv, DDLS.tsv.gz)
+  expect_equal(DDLS.tsv, DDLS.sparse)
   ## Matrices counts
-  expect_equal(assay(single.cell.real(DDLS.SCE)),
-               assay(single.cell.real(DDLS.tsv)))
-  expect_equal(assay(single.cell.real(DDLS.SCE)),
+  expect_equal(assay(single.cell.real(DDLS.tsv)),
                assay(single.cell.real(DDLS.tsv.gz)))
-  expect_equal(assay(single.cell.real(DDLS.SCE)),
+  expect_equal(assay(single.cell.real(DDLS.tsv)),
                assay(single.cell.real(DDLS.sparse)))
 })
 
@@ -361,8 +342,8 @@ test_that("Check if loading data from sparse files works as expected", {
   files.tsv.gz.bad.1 <- c(
     "counts.bad.tsv.gz", "cellsMetadata.bad.tsv.gz", "genesMetadata.bad.tsv.gz"
   )
-  expect_error(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv.gz.bad.1),
+  expect_error(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv.gz.bad.1),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
@@ -371,8 +352,8 @@ test_that("Check if loading data from sparse files works as expected", {
   files.tsv.gz.bad.2 <- c(
     "counts.bad.tsv.gz", "cellsMetadata.tsv.gz", "genesMetadata.tsv.gz"
   )
-  expect_error(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv.gz.bad.2),
+  expect_error(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv.gz.bad.2),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
@@ -381,8 +362,8 @@ test_that("Check if loading data from sparse files works as expected", {
   files.tsv.gz.bad.3 <- c(
     "counts.tsv.gz", "cellsMetadata.bad.tsv.gz", "genesMetadata.tsv.gz"
   )
-  expect_error(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv.gz.bad.3),
+  expect_error(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv.gz.bad.3),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
@@ -391,8 +372,8 @@ test_that("Check if loading data from sparse files works as expected", {
   files.tsv.gz.bad.4 <- c(
     "counts.tsv.gz", "cellsMetadata.tsv.gz", "genesMetadata.bad.tsv.gz"
   )
-  expect_error(loadRealSCProfiles(
-    single.cell.real = file.path(file.tests, files.tsv.gz.bad.4),
+  expect_error(loadSCProfiles(
+    single.cell.data = file.path(file.tests, files.tsv.gz.bad.4),
     cell.ID.column = "Cell_ID",
     gene.ID.column = 2,
     min.counts = 0,
@@ -401,3 +382,7 @@ test_that("Check if loading data from sparse files works as expected", {
 })
 
 ## check removing duplicates
+
+## check aggregate functions
+
+## check use of HDF5 files

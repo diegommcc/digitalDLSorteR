@@ -4,7 +4,7 @@
 \alias{set.list}
 \alias{set.list<-}
 \title{Get and set \code{set.list} slot in a
-\code{\linkS4class{ProbMatrixCellTypes}} object.}
+\code{\linkS4class{ProbMatrixCellTypes}} object}
 \usage{
 set.list(object)
 
@@ -13,10 +13,10 @@ set.list(object) <- value
 \arguments{
 \item{object}{A \code{\linkS4class{ProbMatrixCellTypes}} object.}
 
-\item{value}{List of cells ordered according to the cell type to which they
+\item{value}{List of cells sorted according to the cell type to which they
 belong.}
 }
 \description{
 Get and set \code{set.list} slot in a
-\code{\linkS4class{ProbMatrixCellTypes}} object.
+\code{\linkS4class{ProbMatrixCellTypes}} object
 }

@@ -3,16 +3,17 @@
 \docType{data}
 \name{breast.chung.specific}
 \alias{breast.chung.specific}
-\title{Pre-trained DigitalDLSorter DNN model for deconvolution of TILs present in
-breast cancer environment (specific version).}
+\title{Pre-trained \code{\linkS4class{DigitalDLSorter}} DNN model for deconvolution
+of tumor-infiltrating lymphocytes (TILs) present in breast cancer environment
+(specific version)}
 \format{
-A \code{DigitalDLSorterDNN} object with the following slots:
+A \code{\linkS4class{DigitalDLSorterDNN}} object with the following slots:
 \describe{ \item{model}{Trained DNN model.}
 \item{training.history}{Evolution of metrics and loss function during
 training.} \item{eval.stats}{Metrics and loss results on test data.}
-\item{predict.results}{Predictions of cell types on test data.}
-\item{cell.types}{Cell types considered by DNN model.}
-\item{features}{Features (genes) considered by model.} }
+\item{predict.results}{Predictions on test data.}
+\item{cell.types}{Cell types considered by the model.}
+\item{features}{Features (genes) considered by the model.} }
 }
 \source{
 \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688}
@@ -21,25 +22,27 @@ training.} \item{eval.stats}{Metrics and loss results on test data.}
 breast.chung.specific
 }
 \description{
-DigitalDLSorter DNN model built and trained with single-cell data from Chung
-et al., 2017 (GSE75688). This model allows the enumeration and quantification
-of immune infiltrated cell types in breast cancer environment. This data set
-consists in single-cell profiles from 11 patients from different tumor
-etiology and stages (see Torroja and Sanchez-Cabo, 2019 for more details).
-The analysis and characterization of cells was carried out by the authors of
-\code{digitalDLSorteR} package.
+\code{\linkS4class{DigitalDLSorter}} DNN model built and trained with
+single-cell data from Chung et al., 2017 (GSE75688). This model allows the
+enumeration and quantification of immune infiltrated cell types in breast
+cancer environment. This data set consists of single-cell RNA-seq profiles
+from 11 patients from different tumor etiology and stages (see Torroja and
+Sanchez-Cabo, 2019 and Chung et al., 2017 for more details). The analysis and
+characterization of cells was carried out by the authors of
+\pkg{digitalDLSorteR}.
 }
 \details{
-The cell types considered in this model are 13, four of them being the
-intrinsic molecular subtypes of breast cancer: ER+, HER2+, ER+/HER2+, TNBC,
-Stromal, Monocyte, TCD4mem (memory CD4+ T cells), BGC (germinal center B
-cells), Bmem (memory B cells), DC (dendritic cells), Macrophage, TCD8 (CD8+ T
-cells) and TCD4reg (regulatory CD4+ T cells).
+This model considers 13 cell types, four of them being the intrinsic
+molecular subtypes of breast cancer (ER+, HER2+, ER+/HER2+ and TNBC) and the
+rest immune and stromal cells (Stromal, Monocyte, TCD4mem (memory CD4+ T
+cells), BGC (germinal center B cells), Bmem (memory B cells), DC (dendritic
+cells), Macrophage, TCD8 (CD8+ T cells) and TCD4reg (regulatory CD4+ T
+cells)).
 
-The genes considered are 23.260 in Symbol notation.
+The genes considered are 23260 in SYMBOL notation.
 
-The model consists in 2 hidden layers with 200 neurons per layer trained with
-'kullback_leibler_divergence' loss function  batch size equal to 128 and a
+The model consists of 2 hidden layers with 200 neurons per layer trained with
+'kullback_leibler_divergence' loss function, batch size equal to 128 and a
 number of epochs equal to 25.
 }
 \references{

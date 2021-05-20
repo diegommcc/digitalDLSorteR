@@ -4,7 +4,7 @@
 \alias{test.pred}
 \alias{test.pred<-}
 \title{Get and set \code{test.pred} slot in a
-\code{\linkS4class{DigitalDLSorterDNN}} object.}
+\code{\linkS4class{DigitalDLSorterDNN}} object}
 \usage{
 test.pred(object)
 
@@ -17,5 +17,5 @@ test.pred(object) <- value
 }
 \description{
 Get and set \code{test.pred} slot in a
-\code{\linkS4class{DigitalDLSorterDNN}} object.
+\code{\linkS4class{DigitalDLSorterDNN}} object
 }

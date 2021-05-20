@@ -4,7 +4,7 @@
 \alias{deconv.results}
 \alias{deconv.results<-}
 \title{Get and set \code{deconv.results} slot in a
-\code{\linkS4class{DigitalDLSorter}} object.}
+\code{\linkS4class{DigitalDLSorter}} object}
 \usage{
 deconv.results(object, name.data = NULL)
 
@@ -16,10 +16,10 @@ deconv.results(object, name.data = NULL) <- value
 \item{name.data}{Name of the data. If it is \code{NULL} (by default), all
 results contained in \code{deconv.results} slot are returned.}
 
-\item{value}{A \code{list} whose names are the reference of the results
+\item{value}{A list whose names are the reference of the results
 stored.}
 }
 \description{
 Get and set \code{deconv.results} slot in a
-\code{\linkS4class{DigitalDLSorter}} object.
+\code{\linkS4class{DigitalDLSorter}} object
 }

@@ -4,13 +4,12 @@
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom ggpubr stat_cor
 #' @importFrom stats aggregate as.formula sd var
-#' @importFrom ggplot2 ggplot aes geom_violin geom_boxplot geom_line theme ggtitle element_text
-#' @importFrom rlang .data
+#' @importFrom ggplot2 ggplot aes geom_point geom_violin geom_boxplot geom_line geom_abline geom_text geom_hline geom_errorbar theme ggtitle element_text xlab ylab scale_color_manual scale_x_continuous scale_y_continuous guides guide_legend facet_wrap stat_smooth annotate stat_density_2d
 NULL
 
 
 # internal function to store default colors in order to avoid modify default
-# colors in ggplot2
+# colors in ggplot2 --> this is something tyhat I have to put better
 color.list <- function() {
   color.list.2 <- c(
     RColorBrewer::brewer.pal(12, "Paired"), "#d45b91", "#374738",
@@ -29,7 +28,6 @@ color.list <- function() {
 ######################## Calculate evaluation metrics ##########################
 ################################################################################
 
-
 #' Calculate evaluation metrics for bulk RNA-seq samples from test data.
 #'
 #' Calculate evaluation metrics for bulk RNA-seq samples from test data in order
@@ -37,21 +35,23 @@ color.list <- function() {
 #' proportional absolute error (ppAbsErr), squared error (SqrErr) and
 #' proportional squared error (ppSqrErr) are calculated for each test sample.
 #' Moreover, each one of these metrics is aggregated using their mean values by
-#' three criteria: each cell type (\code{CellType}), probability bins of 0.1
-#' (\code{pBin}), number of different cell types present in the sample
+#' three criteria: each cell type (\code{CellType}), probability bins in ranges
+#' of 0.1 (\code{pBin}), number of different cell types present in the sample
 #' \code{nMix} and a combination of \code{pBin} and \code{nMix}
 #' (\code{pBinNMix}). Finally, the process is repeated only for bulk samples,
 #' removing single-cell profiles from the evaluation. Evaluation metrics are
-#' available in \code{test.deconv.metrics} slot of \code{DigitalDLSorterDNN}
-#' object (\code{trained.model} of \code{DigitalDLSorter} object).
+#' available in \code{test.deconv.metrics} slot of
+#' \code{\linkS4class{DigitalDLSorterDNN}} object (\code{trained.model} slot of
+#' \code{\linkS4class{DigitalDLSorter}} object).
 #'
-#' @param object \code{DigitalDLSorter} object with \code{single.cell.final} and
-#'   \code{DigitalDLSorterDNN} slots.
+#' @param object \code{\linkS4class{DigitalDLSorter}} object with
+#'   \code{single.cell.final} and \code{\linkS4class{DigitalDLSorterDNN}} slots.
 #' @param metrics Metrics used for evaluating the performance of the model. Mean
 #'   absolute error (MAE) and mean squared error (MSE) by default.
 #'
-#' @return A \code{\link{DigitalDLSorter}} object with \code{trained.model} slot
-#'   containing a \code{DigitalDLSorterDNN} object with
+#' @return A \code{\linkS4class{DigitalDLSorterDNN}} object with
+#'   \code{trained.model} slot containing a
+#'   \code{\linkS4class{DigitalDLSorterDNN}} object with
 #'   \code{test.deconv.metrics} slot.
 #'
 #' @export
@@ -60,22 +60,22 @@ color.list <- function() {
 #'   \code{\link{blandAltmanLehPlot}} \code{\link{barErrorPlot}}
 #'
 #' @examples
-#' DDLSSmallCompleted <- calculateEvalMetrics(
-#'   object = DDLSSmallCompleted
+#' DDLSChungComp <- calculateEvalMetrics(
+#'   object = DDLSChungComp
 #' )
-#'
+#' 
 calculateEvalMetrics <- function(
   object,
   metrics = c("MAE", "MSE")
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of class DigitalDLSorter")
+    stop("Provided object is not of class DigitalDLSorter")
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@test.pred)) {
-    stop("The provided object does not have a trained model for evaluation")
+    stop("Provided object does not have a trained model for evaluation")
   } else if (is.null(prob.cell.types(object)) ||
              !"test" %in% names(prob.cell.types(object))) {
-    stop("The provided object does not contain the real cell proportions in ", 
+    stop("Provided object does not contain the real cell proportions in ", 
          "'prob.cell.types' slot")
   } 
   ## validation metrics
@@ -85,10 +85,9 @@ calculateEvalMetrics <- function(
   
   ## extract information
   testProbsDeconv <- .targetForDNN(
-    object, combine = "both", type.data = "test", fly = FALSE, shuffle = FALSE
+    object, combine = "both", type.data = "test", fly = TRUE, shuffle = FALSE
   )
   predictionsDeconv <- trained.model(object)@test.pred
-
   ## results test
   tmd <- as_tibble(x = testProbsDeconv)
   tmd <- mutate(tmd, Sample = rownames(testProbsDeconv),
@@ -100,7 +99,6 @@ calculateEvalMetrics <- function(
   pmd <- pmd %>% gather(key = "CellType", value = "Pred", -Sample)
   ## union
   amd <- tmd %>% left_join(pmd, by = c("Sample", "CellType"))
-  # print(amd)
   ## Add bins to Probs
   amd$pBin <- 0
   for (p in seq(from = 0.1, to = 1, by = 0.1)) {
@@ -132,7 +130,6 @@ calculateEvalMetrics <- function(
 .SqrErr <- function(x) (x$Prob - x$Pred)**2
 ## proportional square error
 .ppSqrErr <- function(x) x$SqrErr / (x$pBin**2)
-
 ## absolute error
 .AbsErr <- function(x) abs(x$Prob - x$Pred)
 ## proportional absolute error
@@ -214,7 +211,9 @@ se <- function(x) sqrt(var(x)/length(x))
   by.stats <- list(Sample = "Sample", CellType = "CellType",
                    pBin = "pBin", nMix = "nMix", pBinNMix = pBinNMix)
   list.stats <- lapply(
-    X = by.stats, FUN = function(x) .statsBlock(x = mat, err = err, by = x)
+    X = by.stats, FUN = function(x) {
+      .statsBlock(x = mat, err = err, by = x)
+    }
   )
   return(list.stats)
 }
@@ -268,25 +267,26 @@ se <- function(x) sqrt(var(x)/length(x))
 ########################## Distribution error plots ############################
 ################################################################################
 
-#' Generate box plot or violin plot showing how errors are distributed.
+#' Generate box plot or violin plot to show how errors are distributed
 #'
-#' Generate violin plot or box plot showing how errors are distributed by
-#' proportion bins of 0.1. The errors can be displayed all mixed or split based
-#' on cell type (\code{CellType}) or number of cell types present in the sample
+#' Generate violin plot or box plot to show how errors are distributed by
+#' proportion bins of 0.1. The errors can be displayed all mixed or splited by
+#' cell type (\code{CellType}) or number of cell types present in the samples
 #' (\code{nMix}). See \code{facet.by} argument and examples for more
 #' information.
 #'
-#' @param object \code{DigitalDLSorter} object with \code{trained.model} slot
-#'   containing metrics in \code{test.deconv.metrics} slot.
-#' @param error Which error is going to represent. The available errors are
-#'   absolute error (\code{"AbsErr"}), proportional absolute error
-#'   (\code{"ppAbsErr"}), squared error (\code{"SqrErr"}) or proportional
-#'   squared error (\code{"ppSqrErr"}).
+#' @param object \code{\linkS4class{DigitalDLSorter}} object with
+#'   \code{trained.model} slot containing metrics in \code{test.deconv.metrics}
+#'   slot of \code{\linkS4class{DigitalDLSorterDNN}} object.
+#' @param error Which error is going to be represented. The available errors are
+#'   absolute error (\code{'AbsErr'}), proportional absolute error
+#'   (\code{'ppAbsErr'}), squared error (\code{'SqrErr'}) or proportional
+#'   squared error (\code{'ppSqrErr'}).
 #' @param colors Vector of colors to use. Only vectors with a number of colors
 #'   equal to or greater than the levels of \code{color.by} will be accepted. By
-#'   default it is used a list of custom colors provided by the package.
-#' @param x.by Variable used for x axis. When \code{facet.by} is not
-#'   \code{NULL}, the best option is \code{pBin} (probability bin). The options
+#'   default a list of custom colors provided by the package is used.
+#' @param x.by Variable used for X axis. When \code{facet.by} is not
+#'   \code{NULL}, the best option is \code{pBin} (probability bins). The options
 #'   are \code{nMix} (by number of different cell types), \code{CellType} (by
 #'   cell type) and \code{pBin}.
 #' @param facet.by Variable used to display data in different panels. If it is
@@ -295,23 +295,28 @@ se <- function(x) sqrt(var(x)/length(x))
 #'   cell type).
 #' @param color.by Variable used to color data. The options are \code{nMix} and
 #'   \code{CellType}.
-#' @param filter.sc Boolean indicating if filter single-cell profiles and only
-#'   display errors associated with bulk samples (\code{TRUE} by default).
-#' @param error.labels Boolean indicating if show average error as annotation.
+#' @param filter.sc Boolean indicating whether to filter single-cell profiles
+#'   and only display errors associated with bulk samples (\code{TRUE} by
+#'   default).
+#' @param error.labels Boolean indicating if to show average error as annotation
+#'   in plots (\code{FALSE} by default).
 #' @param pos.x.label Position on the X axis of the errors annotations.
 #' @param pos.y.label Position on the Y axis of the errors annotations.
 #' @param size.point Size of points (0.1 by default).
 #' @param alpha.point Alpha of points (0.1 by default).
-#' @param type Type of plot, \code{'boxplot'} or \code{'violinplot'}. The last
+#' @param type Type of plot: \code{'boxplot'} or \code{'violinplot'}. The latter
 #'   by default.
-#' @param ylimit Upper limit in y axis if it is needed. \code{NULL} by default.
-#' @param nrow Number of rows if \code{facet.by} is different than \code{NULL}.
-#' @param ncol Number of columns if \code{facet.by} is different than
+#' @param ylimit Upper limit in y axis if it is required (\code{NULL} by
+#'   default).
+#' @param nrow Number of rows if \code{facet.by} is different from \code{NULL}.
+#' @param ncol Number of columns if \code{facet.by} is different from
 #'   \code{NULL}.
 #' @param title Title of the plot.
-#' @param theme ggplot theme.
-#' @param ... Additional argument for \code{facet_wrap} ggplot function if
-#'   \code{facet.by} is not equal to \code{NULL}.
+#' @param theme \pkg{ggplot2} theme.
+#' @param ... Additional arguments for \link[ggplot2]{facet_wrap} \pkg{ggplot2}
+#'   function if \code{facet.by} is not equal to \code{NULL}.
+#'
+#' @return ggplot2 plot
 #'
 #' @export
 #'
@@ -320,7 +325,7 @@ se <- function(x) sqrt(var(x)/length(x))
 #'
 #' @examples
 #' distErrorPlot(
-#'   object = DDLSSmallCompleted,
+#'   object = DDLSChungComp,
 #'   error = "AbsErr",
 #'   facet.by = "CellType",
 #'   color.by = "nMix",
@@ -328,7 +333,7 @@ se <- function(x) sqrt(var(x)/length(x))
 #' )
 #'
 #' distErrorPlot(
-#'   object = DDLSSmallCompleted,
+#'   object = DDLSChungComp,
 #'   error = "AbsErr",
 #'   x.by = "CellType",
 #'   facet.by = NULL,
@@ -354,26 +359,26 @@ distErrorPlot <- function(
   nrow = NULL,
   ncol = NULL,
   title = NULL,
-  theme = theme_grey(),
+  theme = NULL,
   ...
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
+    stop("Provided object is not of DigitalDLSorter class")
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@test.deconv.metrics)) {
-    stop("The provided object does not have evaluation metrics. Use ",
-         "'calculateEvalMetrics'")
+    stop("Provided object does not have evaluation metrics. Use ",
+         "calculateEvalMetrics function")
   } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
-    stop("Evaluation metrics are not well built, use 'calculateEvalMetrics'")
+    stop("Evaluation metrics are incorrect. Please, use calculateEvalMetrics function")
   } else if (!error %in% c("AbsErr", "ppAbsErr", "SqrErr", "ppSqrErr")) {
-    stop("Error provided is not valid. Errors available are: AbsErr, ",
-         "ppAbsErr, SqrErr, ppSqrErr")
+    stop("'error' provided is not valid. Errors available are: 'AbsErr', ",
+         "'ppAbsErr', 'SqrErr' and 'ppSqrErr'")
   } else if (!color.by %in% c("nMix", "CellType")) {
-    stop("'color.by' provided is not valid. Options available are: nMix, CellType")
+    stop("'color.by' provided is not valid. Options available are: 'nMix' and 'CellType'")
   } else if (!x.by %in% c("nMix", "CellType", "pBin")) {
-    stop("'x.by' provided is not valid. Options available are: nMix, CellType, pBin")
+    stop("'x.by' provided is not valid. Options available are: 'nMix', 'CellType' and 'pBin'")
   } else if (!type %in% c("violinplot", "boxplot")) {
-    stop("'type' provided is not valid. Options available are: violinplot, boxplot")
+    stop("'type' provided is not valid. Options available are: 'violinplot' and 'boxplot'")
   }
   amd <- trained.model(object)@test.deconv.metrics[[1]]
   if (filter.sc) {
@@ -383,7 +388,7 @@ distErrorPlot <- function(
     colors <- color.list()
   }
   if (length(colors) < length(unique(amd[[color.by]]))) {
-    stop("Colors provided are not enought")
+    stop("The number of colors provided is not enought")
   }
   if (is.null(title))
     title.plot <- paste(error, "by", x.by)
@@ -433,12 +438,12 @@ distErrorPlot <- function(
   else if (type == "boxplot")
     plot <- plot + geom_boxplot(fill = NA, outlier.shape = NA)
   plot <- plot + scale_color_manual(values = colors, name = color.by) +
-    ggtitle(title.plot) + xlab(x.by) +  ylab(error) +
+    ggtitle(title.plot) + xlab(x.by) + ylab(error) +
     guides(colour = guide_legend(override.aes = list(size = 1.5))) +
     theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1),
           plot.title = element_text(face = "bold", hjust = 0.5),
           legend.title = element_text(face = "bold"))
-  if (!is.null(ylimit)) plot <- plot + ylim(0, ylimit)
+  if (!is.null(ylimit)) plot <- plot + ggplot2::ylim(0, ylimit)
 
   return(plot)
 }
@@ -468,22 +473,22 @@ distErrorPlot <- function(
 ######################### Correlation Pred/Exp plots ###########################
 ################################################################################
 
-#' Generate correlation plot between predicted and expected cell type
-#' proportions from test samples.
+#' Generate correlation plots between predicted and expected cell type
+#' proportions of test data
 #'
 #' Generate correlation plot between predicted and expected cell type
-#' proportions from test samples. The correlation plots can be displayed all
-#' mixed or split based on cell type (\code{CellType}) or the number of cell
-#' types present in the sample (\code{nMix}). See \code{facet.by} argument and
-#' examples for more information. Moreover, a correlation value selected by user
-#' is displayed as annotation on the plots. See \code{corr} argument for
-#' details.
+#' proportions of test data The correlation plots can be displayed all mixed or
+#' splited by cell type (\code{CellType}) or number of cell types present in the
+#' samples (\code{nMix}). See \code{facet.by} argument and examples for more
+#' information. Moreover, a correlation value selected by user is displayed as
+#' annotation on the plots. See \code{corr} argument for details.
 #'
-#' @param object \code{DigitalDLSorter} object with \code{trained.model} slot
-#'   containing metrics in \code{test.deconv.metrics} slot.
+#' @param object \code{\linkS4class{DigitalDLSorter}} object with
+#'   \code{trained.model} slot containing metrics in \code{test.deconv.metrics}
+#'   slot of \code{\linkS4class{DigitalDLSorterDNN}} object.
 #' @param colors Vector of colors to use. Only vectors with a number of colors
 #'   equal to or greater than the levels of \code{color.by} will be accepted. By
-#'   default it is used a list of custom colors provided by the package.
+#'   default, a list of custom colors provided by the package is used.
 #' @param facet.by Variable used to display data in different panels. If it is
 #'   \code{NULL}, the plot is not separated into different panels. The options
 #'   are \code{nMix} (by number of different cell types) and \code{CellType} (by
@@ -494,24 +499,24 @@ distErrorPlot <- function(
 #'   are Pearson's correlation coefficient (\code{'pearson'}) and concordance
 #'   correlation coefficient (\code{'ccc'}). The argument can be equal to
 #'   \code{'pearson'}, \code{'ccc'} or \code{'both'} (by default).
-#' @param filter.sc Boolean indicating if filter single-cell profiles and only
-#'   display correlations of results associated with bulk samples (\code{TRUE}
-#'   by default).
-#' @param pos.x.label Position on the X axis of the errors annotations. 0.95 by
-#'   default.
-#' @param pos.y.label Position on the Y axis of the errors annotations. 0.1 by
-#'   default.
+#' @param filter.sc Boolean indicating whether to filter single-cell profiles
+#'   and only display errors associated with bulk samples (\code{TRUE} by
+#'   default).
+#' @param pos.x.label Position on the X axis of the correlation annotations.
+#'   0.95 by default.
+#' @param pos.y.label Position on the Y axis of the correlation annotations. 0.1
+#'   by default.
 #' @param sep.labels Space separating annotations if \code{corr} is equal to
-#'   \code{'both'}. 0.15 by default.
+#'   \code{'both'} (0.15 by default).
 #' @param size.point Size of points (0.1 by default).
 #' @param alpha.point Alpha of points (0.1 by default).
-#' @param nrow Number of rows if \code{facet.by} is different than \code{NULL}.
-#' @param ncol Number of columns if \code{facet.by} is different than
+#' @param nrow Number of rows if \code{facet.by} is different from \code{NULL}.
+#' @param ncol Number of columns if \code{facet.by} is different from
 #'   \code{NULL}.
 #' @param title Title of the plot.
-#' @param theme ggplot theme.
-#' @param ... Additional argument for \code{facet_wrap} ggplot function if
-#'   \code{facet.by} is not equal to \code{NULL}.
+#' @param theme \pkg{ggplot2} theme.
+#' @param ... Additional arguments for \link[ggplot2]{facet_wrap} \pkg{ggplot2}
+#'   function if \code{facet.by} is not equal to \code{NULL}.
 #'
 #' @export
 #'
@@ -521,14 +526,14 @@ distErrorPlot <- function(
 #' @examples
 #' ## correlations by cell type
 #' corrExpPredPlot(
-#'   object = DDLSSmallCompleted,
+#'   object = DDLSChungComp,
 #'   facet.by = "CellType",
 #'   color.by = "CellType",
 #'   corr = "both"
 #' )
 #' ## correlations of all samples mixed
 #' corrExpPredPlot(
-#'   object = DDLSSmallCompleted,
+#'   object = DDLSChungComp,
 #'   facet.by = NULL,
 #'   color.by = "CellType",
 #'   corr = "ccc",
@@ -550,19 +555,19 @@ corrExpPredPlot <- function(
   ncol = NULL,
   nrow = NULL,
   title = NULL,
-  theme = theme_grey(),
+  theme = NULL,
   ...
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
+    stop("Provided object is not of DigitalDLSorter class")
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@test.deconv.metrics)) {
-    stop("The provided object does not have evaluation metrics. Use ",
-         "'calculateEvalMetrics'")
+    stop("Provided object does not have evaluation metrics. Use ",
+         "calculateEvalMetrics")
   } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
-    stop("Evaluation metrics are not well built, use 'calculateEvalMetrics'")
+    stop("Evaluation metrics are not correct, use calculateEvalMetrics function")
   } else if (!color.by %in% c("nMix", "CellType")) {
-    stop("'color.by' provided is not valid. Options available are: nMix, CellType")
+    stop("'color.by' provided is not valid. Options available are: 'nMix' and 'CellType'")
   }
   amd <- trained.model(object)@test.deconv.metrics[[1]]
   if (filter.sc) {
@@ -572,7 +577,7 @@ corrExpPredPlot <- function(
     colors <- color.list()
   }
   if (length(colors) < length(unique(amd[[color.by]]))) {
-    stop("Colors provided are not enought")
+    stop("The number of colors provided is not enought")
   }
   if (is.null(title))
     title.plot <- "Correlation Expected/Predicted"
@@ -595,8 +600,8 @@ corrExpPredPlot <- function(
           legend.title = element_text(face = "bold"))
   if (!is.null(facet.by)) {
     if (!facet.by %in% c("nMix", "CellType")) {
-      stop("'facet.by' provided is not valid. Options available are: nMix, ",
-           "CellType or NULL")
+      stop("'facet.by' provided is not valid. Options available are: 'nMix', ",
+           "'CellType' or 'NULL'")
     }
     plot <- plot + facet_wrap(as.formula(paste("~", facet.by)),
                               nrow = nrow, ncol = ncol, ...)
@@ -658,7 +663,7 @@ corrExpPredPlot <- function(
         size = size.ann
       )
     } else {
-      stop("Argument corr invalid. Only supported 'pearson', 'ccc' and 'both'")
+      stop("Argument 'corr' invalid. Only supported 'pearson', 'ccc' and 'both'")
     }
   }
   return(plot)
@@ -670,12 +675,12 @@ corrExpPredPlot <- function(
 ######################## Bland-Altman agreement plot ###########################
 ################################################################################
 
-#' Generate Bland-Altman agreement plot between predicted and expected cell type
-#' proportions from test samples.
+#' Generate Bland-Altman agreement plots between predicted and expected cell type
+#' proportions from test data
 #'
-#' Generate  Bland-Altman agreement plot between predicted and expected cell
-#' type proportions from test samples. The  Bland-Altman agreement plots can be
-#' displayed all mixed or split based on cell type (\code{CellType}) or the
+#' Generate Bland-Altman agreement plots between predicted and expected cell
+#' type proportions from test data. The Bland-Altman agreement plots can be
+#' displayed all mixed or splited by cell type (\code{CellType}) or the
 #' number of cell types present in the sample (\code{nMix}). See \code{facet.by}
 #' argument and examples for more information.
 #'
@@ -684,12 +689,12 @@ corrExpPredPlot <- function(
 #' @param colors Vector of colors to use. Only vectors with a number of colors
 #'   equal to or greater than the levels of \code{color.by} will be accepted. By
 #'   default it is used a list of custom colors provided by the package.
+#' @param color.by Variable used to color data. The options are \code{nMix} and
+#'   \code{CellType}.
 #' @param facet.by Variable used to display data in different panels. If it is
 #'   \code{NULL}, the plot is not separated into different panels. The options
 #'   are \code{nMix} (by number of different cell types) and \code{CellType} (by
 #'   cell type).
-#' @param color.by Variable used to color data. The options are \code{nMix} and
-#'   \code{CellType}.
 #' @param log.2 If show  Bland-Altman agreement plot in log2 space (\code{FALSE}
 #'   by default).
 #' @param filter.sc Boolean indicating if filter single-cell profiles and only
@@ -717,13 +722,13 @@ corrExpPredPlot <- function(
 #' @examples
 #' ## Bland-Altman plot by cell type
 #' blandAltmanLehPlot(
-#'   object = DDLSSmallCompleted,
+#'   object = DDLSChungComp,
 #'   facet.by = "CellType",
 #'   color.by = "CellType"
 #' )
 #' ## Bland-Altman plot of all samples mixed
 #' blandAltmanLehPlot(
-#'   object = DDLSSmallCompleted,
+#'   object = DDLSChungComp,
 #'   facet.by = NULL,
 #'   color.by = "CellType",
 #'   alpha.point = 0.3,
@@ -743,20 +748,20 @@ blandAltmanLehPlot <- function(
   ncol = NULL,
   nrow = NULL,
   title = NULL,
-  theme = theme_grey(),
+  theme = NULL,
   ...
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
+    stop("Provided object is not of DigitalDLSorter class")
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@test.deconv.metrics)) {
-    stop("The provided object does not have evaluation metrics. Use ",
+    stop("Provided object does not have evaluation metrics. Use ",
          "'calculateEvalMetrics'")
   } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
-    stop("Evaluation metrics are not well built, use 'calculateEvalMetrics'")
+    stop("Evaluation metrics are not correctly built, use 'calculateEvalMetrics'")
   } else if (!is.null(color.by)) {
     if (!color.by %in% c("nMix", "CellType")) {
-      stop("'color.by' provided is not valid. Options available are: nMix, CellType")
+      stop("'color.by' provided is not valid. Options available are: 'nMix', 'CellType'")
     }
   }
   amd <- trained.model(object)@test.deconv.metrics[[1]]
@@ -840,9 +845,9 @@ blandAltmanLehPlot <- function(
 #'
 #' @param object \code{DigitalDLSorter} object with \code{trained.model} slot
 #'   containing metrics in \code{test.deconv.metrics} slot.
-#' @param error MAE or MSE. By default it is used a list of custom colors
-#'   provided by the package.
-#' @param by Variable used to display errors.
+#' @param error 'MAE' or 'MSE.
+#' @param by Variable used to display errors. Available options are: 'nMix',
+#'   'CellType'.
 #' @param dispersion Standard error (\code{'se'}) or standard deviation
 #'   (\code{'sd'}). The first by default.
 #' @param filter.sc Boolean indicating if filter single-cell profiles and only
@@ -859,13 +864,13 @@ blandAltmanLehPlot <- function(
 #'
 #' @examples
 #' barErrorPlot(
-#'   object = DDLSSmallCompleted,
+#'   object = DDLSChungComp,
 #'   error = "MSE",
 #'   by = "CellType"
 #' )
 #'
 #' barErrorPlot(
-#'   object = DDLSSmallCompleted,
+#'   object = DDLSChungComp,
 #'   error = "MAE",
 #'   by = "nMix"
 #' )
@@ -876,8 +881,8 @@ barErrorPlot <- function(
   dispersion = "se",
   filter.sc = TRUE,
   title = NULL,
-  angle = 90,
-  theme = theme_grey()
+  angle = NULL,
+  theme = NULL
 ) {
   if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
@@ -888,21 +893,31 @@ barErrorPlot <- function(
   } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
     stop("Evaluation metrics are not well built, use 'calculateEvalMetrics'")
   } else if (!by %in% c("nMix", "CellType")) {
-    stop("'by' provided is not valid. Options available are: nMix, CellType")
+    stop("'by' provided is not valid. Options available are: 'nMix', 'CellType'")
   } else if (!error %in% c("MAE", "MSE")) {
-    stop("Error provided is not valid. Errors available are: MAE, MSE")
+    stop("Error provided is not valid. Errors available are: 'MAE', 'MSE'")
   } else if (!dispersion %in% c("se", "sd")) {
     stop("Dispersion provided is not valid. Options available are: sd (standard",
          " deviation) or se (standard error)")
   }
   if (is.null(title))
-    title.plot <- paste0("Bar Error plot by ", by, " (",error, ")")
+    title.plot <- paste0("Bar error plot by ", by, " (",error, ")")
   else
     title.plot <- title
   ## filter sc data
   if (!filter.sc) index.stats <- 2
   else index.stats <- 3
-
+  if (is.null(angle)) {
+    if (by == "nMix") {
+      angle <- 0 
+      hjust <- 0
+    } else if (by == "CellType") {
+      angle <- 90
+      hjust <- 1
+    }
+  }  else {
+    hjust <- 1
+  }
   data <- trained.model(object)@test.deconv.metrics[[index.stats]][[error]][[by]]
   err.mean <- paste0(error, ".mean")
   err.dis <- paste0(error, ".", dispersion)
@@ -913,9 +928,8 @@ barErrorPlot <- function(
                            ymax = .data[[err.mean]] + .data[[err.dis]])) +
     theme + geom_errorbar(width = 0.2) + geom_point(size = 1.5) +
     xlab(by) + ylab(error) + ggtitle(title.plot) +
-    theme(axis.text.x = element_text(size = 8, angle = angle, hjust = 1, vjust = 0.5),
+    theme(axis.text.x = element_text(size = 8, angle = angle, hjust = hjust, vjust = 0.5),
           plot.title = element_text(face = "bold", hjust = 0.5),
           legend.title = element_text(face = "bold"))
-
   return(plot)
 }

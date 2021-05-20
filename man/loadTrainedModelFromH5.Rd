@@ -2,13 +2,13 @@
 % Please edit documentation in R/utils.R
 \name{loadTrainedModelFromH5}
 \alias{loadTrainedModelFromH5}
-\title{Load from HDF5 file a trained DigitalDLSorter DNN model.}
+\title{Load from HDF5 file a trained DigitalDLSorter Deep Neural Network model}
 \usage{
 loadTrainedModelFromH5(object, file.path, reset.slot = FALSE)
 }
 \arguments{
-\item{object}{\code{\link{DigitalDLSorter}} object with \code{trained.model}
-slot.}
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object with
+\code{trained.model} slot.}
 
 \item{file.path}{Valid file path where model are stored.}
 
@@ -16,13 +16,16 @@ slot.}
 \code{\link{DigitalDLSorterDNN}} object will be formed, but it will not
 contain other slots (\code{FALSE} by default).}
 }
+\value{
+\code{\linkS4class{DigitalDLSorter}} object with \code{trained.model}
+slot with the new model loaded
+}
 \description{
-Load from HDF5 file a trained DigitalDLSorter DNN model into a
-\code{\link{DigitalDLSorter}} object. Note that HDF5 file must be a keras
-valid trained model.
+Load from HDF5 file a trained  Deep Neural Network model into a
+\code{\linkS4class{DigitalDLSorter}} object. Note that HDF5 file must be a
+keras valid trained model.
 }
 \seealso{
 \code{\link{trainDigitalDLSorterModel}}
-\code{\link{deconvDigitalDLSorterObj}}
-\code{\link{saveTrainedModelAsH5}}
+\code{\link{deconvDigitalDLSorterObj}} \code{\link{saveTrainedModelAsH5}}
 }

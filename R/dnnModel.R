@@ -1,5 +1,5 @@
 #' @importFrom dplyr %>%
-#' @importFrom keras keras_model_sequential layer_dense layer_batch_normalization layer_activation layer_dropout get_output_shape_at compile optimizer_adam fit_generator evaluate_generator predict_generator model_from_json set_weights model_to_json get_weights
+#' @importFrom keras keras_model_sequential layer_dense layer_batch_normalization layer_activation layer_dropout get_output_shape_at compile optimizer_adam fit_generator evaluate_generator predict_generator model_from_json set_weights model_to_json get_weights load_model_hdf5 save_model_hdf5
 #' @importFrom tools file_path_sans_ext
 NULL
 
@@ -7,14 +7,14 @@ NULL
 ######################## Train and evaluate DNN model ##########################
 ################################################################################
 
-############################################
+################################################################################
 # important: implement tryCatch functions for parameters that are passed to keras
-# in order to provided a custom error message
-# explain in documentation the useaga of on the fly training
+# in order to provide with a custom error message
+# explain in documentation the usage of on the fly training
 
 #' Train Deep Neural Network model
 #'
-#' Train Deep Neural Network model with training data from
+#' Train Deep Neural Network model using training data from
 #' \code{\linkS4class{DigitalDLSorter}} object. In addition, trained model is
 #' evaluated on test data and prediction results are produced in order to
 #' determine its performance (see \code{?\link{calculateEvalMetrics}}). Training
@@ -25,10 +25,10 @@ NULL
 #'
 #' \strong{\pkg{keras}/\pkg{tensorflow} environment}
 #'
-#' All steps related with Deep Learning in \pkg{digitalDLSorteR} package are
+#' All steps related to Deep Learning in \pkg{digitalDLSorteR} package are
 #' performed by using \pkg{keras} package, an API in R for \pkg{keras} in Python
-#' available from CRAN. We recommend use the guide of installation available at
-#' \url{https://keras.rstudio.com/} in order to set a more customized
+#' available from CRAN. We recommend using the guide of installation available
+#' at \url{https://keras.rstudio.com/} in order to set a more customized
 #' configuration.
 #'
 #' \strong{Simulation of bulk RNA-seq profiles 'on the fly'}
@@ -41,26 +41,25 @@ NULL
 #' \strong{Neural network architecture}
 #'
 #' By default, \code{trainDigitalDLSorterModel} implements the selected
-#' architecture by Torroja and Sánchez-Cabo, 2019. However, because of it is
-#' possible that the provided architecture does not produce good results, it is
-#' possible to change some parameters: number of hidden layers, number of
-#' neurons for each hidden layer, dropout rate, activation function and loss
-#' function by using the corresponding arguments (see Arguments). For more
-#' customized models, it is possible to provide a pre-built model in
-#' \code{custom.model} argument (a \code{keras.engine.sequential.Sequential}
-#' object) where it is necessary that the number of input neurons is equal to
-#' the number of considered features/genes and the number of output neurons is
-#' equal to the number of considered cell types.
+#' architecture in Torroja and Sánchez-Cabo, 2019. However, because of it is
+#' possible that the default architecture does not produce good results, it is
+#' possible to change its parameters by using the corresponding argument: number
+#' of hidden layers, number of neurons for each hidden layer, dropout rate,
+#' activation function and loss function. For more customized models, it is
+#' possible to provide a pre-built model in \code{custom.model} argument (a
+#' \code{keras.engine.sequential.Sequential} object) where it is necessary that
+#' the number of input neurons is equal to the number of considered
+#' features/genes and the number of output neurons is equal to the number of
+#' considered cell types.
 #'
 #' @param object \code{\linkS4class{DigitalDLSorter}} object with
 #'   \code{single.cell.real}/\code{single.cell.simul}, \code{prob.cell.matrix}
-#'   and, optionally, \code{bulk.simul} slots.
+#'   and optionally \code{bulk.simul} slots.
 #' @param on.the.fly Boolean indicating if data will be generated on the fly
 #'   during training (\code{FALSE} by default).
-#' @param combine Type of profiles (bulk, single-cell or both) which will be
-#'   used for training. It can be \code{'both'}, \code{'single-cell'} or
-#'   \code{'bulk'} (\code{'both'} by default). For test data, both types of 
-#'   profiles will be used.
+#' @param combine Type of profiles which will be used for training. It can be
+#'   \code{'both'}, \code{'single-cell'} or \code{'bulk'} (\code{'both'} by
+#'   default). For test data, both types of profiles will be used.
 #' @param batch.size Number of samples per gradient update. If unspecified,
 #'   \code{batch.size} will default to 64.
 #' @param num.epochs Number of epochs to train the model (10 by default).
@@ -76,7 +75,7 @@ NULL
 #'   documentation} to know available activation functions.
 #' @param dropout.rate Float between 0 and 1 indicating the fraction of the
 #'   input neurons to drop in layer dropouts (0.25 by default). By default,
-#'   \pkg{digitalDLSorteR} implements dropout layers per hidden layer.
+#'   \pkg{digitalDLSorteR} implements 1 dropout layer per hidden layer.
 #' @param loss Character indicating loss function selected for training the
 #'   model (\code{'kullback_leibler_divergence'} by default). Look at
 #'   \href{https://keras.rstudio.com/reference/loss_mean_squared_error.html}{keras
@@ -88,17 +87,19 @@ NULL
 #'    documentation} to know available performance metrics.
 #' @param val Boolean that determines if a validation subset is used during
 #'   training (\code{FALSE} by default).
-#' @param freq.val Float between 0.1 and 0.5 that determines the number of
+#' @param freq.val Float between 0.1 and 0.5 that determines the proportion of
 #'   samples from training data that will be used as validation subset (0.1 by
 #'   default).
-#' @param custom.model Allows to use a more customized neural network. It must
-#'   be a \code{keras.engine.sequential.Sequential} object (\code{NULL} by
-#'   default). If provided, the arguments related to neural network architecture
-#'   will be ignored.
+#' @param custom.model Allows to use customized neural network. It must be a
+#'   \code{keras.engine.sequential.Sequential} where the number of input neurons
+#'   is equal to the number of considered features/genes and the number of
+#'   output neurons is equal to the number of considered cell types (\code{NULL}
+#'   by default). If provided, the arguments related to neural network
+#'   architecture will be ignored.
 #' @param shuffle Boolean indicating if data will be shuffled (\code{TRUE} by
 #'   default). Note that if \code{bulk.simul} is not \code{NULL}, data already
 #'   has been shuffled and \code{shuffle} will be ignored.
-#' @param threads Number of threads used during the simulation of bulk samples
+#' @param threads Number of threads used during simulation of bulk samples
 #'   if \code{on.the.fly = TRUE} (1 by default).
 #' @param view.metrics.plot Boolean indicating if show progression plots of loss
 #'   and metrics during training (\code{TRUE} by default). \pkg{keras} for R
@@ -121,8 +122,8 @@ NULL
 #' @examples
 #' ## to ensure compatibility
 #' tensorflow::tf$compat$v1$disable_eager_execution()
-#' DDLSSmallCompleted <- trainDigitalDLSorterModel(
-#'   object = DDLSSmallCompleted,
+#' DDLSChung <- trainDigitalDLSorterModel(
+#'   object = DDLSChungComp,
 #'   batch.size = 64,
 #'   num.epochs = 5 ## 20
 #' )
@@ -156,7 +157,7 @@ trainDigitalDLSorterModel <- function(
   if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
   } else if (is.null(prob.cell.types(object))) {
-    stop("prob.cell.types slot is empty")
+    stop("'prob.cell.types' slot is empty")
   } else if (num.epochs <= 1) {
     stop("'num.epochs' argument must be greater than or equal to 2")
   } else if (batch.size <= 10) {
@@ -168,16 +169,16 @@ trainDigitalDLSorterModel <- function(
     if ((combine == "both" && is.null(bulk.simul(object)) ||
          combine == "both" && (is.null(single.cell.real(object)) && 
                                is.null(single.cell.simul(object))))) {
-      stop("If combine = 'both' is selected, 'bulk.simul' and at least ",
+      stop("If 'combine = both' is selected, 'bulk.simul' and at least ",
            "one single cell slot must be provided")
     } else if (combine == "bulk" && is.null(bulk.simul(object))) {
-      stop("If combine = 'bulk' is selected, 'bulk.simul' must be provided")
+      stop("If 'combine' = bulk is selected, 'bulk.simul' must be provided")
     }
   } else {
     if (verbose) message("=== Training and test on the fly was selected")
     if (combine == "both" && (is.null(single.cell.real(object)) && 
                                is.null(single.cell.simul(object)))) {
-      stop("If combine = 'both' is selected, at least ",
+      stop("If 'combine = both' is selected, at least ",
            "one single cell slot must be provided")
     }
   }
@@ -220,7 +221,7 @@ trainDigitalDLSorterModel <- function(
     )
   } else if (n.test < batch.size) {
     stop(
-      paste0("The number of samples used for test (", n.train, ") is too ", 
+      paste0("The number of samples used for test (", n.test, ") is too ", 
              "small compared to 'batch.size' (", batch.size, "). Please, ", 
              "increase the number of samples or consider reducing 'batch.size'")
     )
@@ -263,7 +264,7 @@ trainDigitalDLSorterModel <- function(
     # consider more situations where the function fails
     if (!is(custom.model, "keras.engine.sequential.Sequential")) {
       stop("'custom.model' must be a keras.engine.sequential.Sequential object")
-    } else if (keras::c(custom.model$layers[[1]], 1)[[2]] != 
+    } else if (keras::get_input_shape_at(custom.model$layers[[1]], 1)[[2]] !=
                nrow(single.cell.real(object))) {
       stop("The number of neurons of the first layer must be equal to the ", 
            "number of genes considered by DigitalDLSorter object (", 
@@ -285,10 +286,13 @@ trainDigitalDLSorterModel <- function(
     optimizer = optimizer_adam(),
     metrics = metrics
   )
-  # pattern for set simulated and real cells
-  pattern <- paste0(colnames(prob.cell.types(object, "train") %>% 
-                               prob.matrix()), "_S", 
-                    collapse = "|")
+  # pattern to set simulated and real cells
+  if (!is.null(single.cell.simul(object))) {
+    sufix.names <- unique(colData(single.cell.simul(object))$sufix)
+  } else {
+    sufix.names <- "_Simul"
+  }
+  pattern <- sufix.names
   ## set if samples will be generated on the fly
   if (on.the.fly) {
     .dataForDNN <<- .dataForDNN.onFly
@@ -299,7 +303,7 @@ trainDigitalDLSorterModel <- function(
   ## training model
   if (val) {
     if (freq.val < 0.1 || freq.val > 0.5) {
-      stop("freq.val must be a float between 0.1 and 0.5")
+      stop("'freq.val' must be a float between 0.1 and 0.5")
     }
     # with validation subset. generator divide train set in two subsets
     n.val <- ceiling(n.train * freq.val)
@@ -525,7 +529,7 @@ trainDigitalDLSorterModel <- function(
   bulk.data <- grepl(pattern = "Bulk_", rownames(sel.data))
   if (any(bulk.data)) {
     bulk.samples <-  as.matrix(
-      assay(bulk.simul(object, type.data))[, rownames(sel.data)[bulk.data], 
+      assay(bulk.simul(object, type.data))[, rownames(sel.data)[bulk.data],
                                            drop = FALSE]
     )
   } 
@@ -612,13 +616,6 @@ trainDigitalDLSorterModel <- function(
   verbose
 ) {
   if (combine == "both") {
-    # if (verbose) {
-    #   message(
-    #     paste("    Combining single-cell profiles and simulated bulk samples for", 
-    #           type.data, "data\n")
-    #   )
-    # }
-    # include probabilities of single-cell profiles: 1 for X cell type
     tpsm <- matrix(
       unlist(sapply(
         X = names(prob.cell.types(object, type.data) %>% set.list()),
@@ -733,7 +730,7 @@ trainDigitalDLSorterModel <- function(
       (length(names(simplify.set)) != length(simplify.set))) {
     stop("Each element in the list must contain the corresponding new class as name")
   } else if (length(unique(names(simplify.set))) == length(simplify.set)) {
-    stop("There are not duplicated names to aggregate results. List items ", 
+    stop("There are not duplicated names to aggregate results. Items of the list ", 
          "must have duplicated names under which to aggregate the results")
   }
   ## check that elements are correct
@@ -807,40 +804,34 @@ trainDigitalDLSorterModel <- function(
 ##################### Deconvolution of new bulk samples ########################
 ################################################################################
 
-#' Deconvolute bulk gene expression samples (bulk RNA-Seq) using a pre-trained
-#' DigitalDLSorter model
+#' Deconvolute bulk RNAseq samples using a pre-trained DigitalDLSorter model
 #'
-#' Deconvolute bulk gene expression samples (RNA-Seq) quantifying the proportion
-#' of cell types present in a bulk sample. See in Details the available models.
-#' This method uses a pre-trained Deep Neural Network model to enumerate and
-#' quantify the cell types present in bulk RNA-Seq samples. For the moment, the
-#' available models allow to deconvolute the immune infiltration breast cancer
-#' (Chung et al., 2017) at two levels: specific cell types
+#' Deconvolute bulk gene expression samples (bulk RNA-Seq) to enumerate and
+#' quantify the proportion of cell types present in a bulk sample using Deep
+#' Neural Network models. This function is intended for users who want to use
+#' pre-trained models integrated in the package. For the moment, the available
+#' models allow to deconvolute the immune infiltration of breast cancer (Chung
+#' et al., 2017) at two levels: specific cell types
 #' (\code{'breast.chung.specific'}) and generic cell types
 #' (\code{'breast.chung.generic'}). See \code{\link{breast.chung.generic}} and
-#' \code{\link{breast.chung.specific}} documentation for details.
+#' \code{\link{breast.chung.specific}} documentation for details. (this is gonna
+#' change)
 #'
-#' This function is oriented for users that only want to use the method for
-#' deconvoluting their bulk RNA-Seq samples. For users that are building their
-#' own model from scRNA-seq, see \code{\link{deconvDigitalDLSorterObj}}. The
-#' former works with base classes, while the last uses \code{DigitalDLSorter}
-#' objects.
+#' This function is intended for users who want to use \pkg{digitalDLSorteR} for
+#' deconvoluting their bulk RNA-Seq samples using pre-trained models. For users
+#' who want to build their own models from scRNA-seq, see
+#' \code{?\link{loadSCProfiles}} and \code{?\link{deconvDigitalDLSorterObj}}.
 #'
-#' For situations where there are cell types exclusive to each other because it
-#' does not make sense that they appear together, see arguments
-#' \code{simplify.set} and \code{simplify.majority}.
-#'
-#' @param data A \code{matrix} or a \code{data.frame} with bulk gene expression
-#'   of samples. Rows must be genes in symbol notation and columns must be
-#'   samples.
-#' @param model Pre-trained DNN model to use for deconvoluting process. For the
-#'   moment, the available models are for RNA-Seq samples from breast cancer
-#'   (\code{'breast.chung.generic'} and \code{'breast.chung.specific'})
-#'   environment.
-#' @param batch.size Number of samples loadad in-memory each time of
-#'   deconvolution process. If unspecified, \code{batch.size} will default to
+#' @param data Matrix or data frame with bulk-RNAseq samples. Rows must be
+#'   genes in SYMBOL notation and columns must be samples.
+#' @param model Pre-trained DNN model to use for deconvoluting \code{data}. Up
+#'   to now, the available models are aimed at deconvolving samples of breast
+#'   cancer (\code{'breast.chung.generic'} and \code{'breast.chung.specific'}).
+#' @param batch.size Number of samples loaded in RAM memory each time during the
+#'   deconvolution process. If unspecified, \code{batch.size} will set to
 #'   128.
-#' @param normalize Normalize data before deconvolution. \code{TRUE} by default.
+#' @param normalize Normalize data before deconvolution (\code{TRUE} by
+#'   default).
 #' @param simplify.set List specifying which cell types should be compressed
 #'   into a new label whose name will be the list name item. See examples for
 #'   details.
@@ -851,7 +842,7 @@ trainDigitalDLSorterModel <- function(
 #'   label.
 #' @param verbose Show informative messages during the execution.
 #'
-#' @return A \code{data.frame} with samples (\eqn{i}) as rows and cell types
+#' @return A data frame with samples (\eqn{i}) as rows and cell types
 #'   (\eqn{j}) as columns. Each entry represents the predicted proportion of
 #'   \eqn{j} cell type in \eqn{i} sample.
 #'
@@ -872,14 +863,15 @@ trainDigitalDLSorterModel <- function(
 #' simplify <- list(Tumor = c("ER+", "HER2+", "ER+/HER2+", "TNBC"),
 #'                  Bcells = c("Bmem", "BGC"))
 #'
-#' ## in this case,  the item names from list will be the new labels
+#' ## in this case names from list will be the new labels
 #' results2 <- deconvDigitalDLSorter(
 #'   TCGA.breast.small,
 #'   model = "breast.chung.specific",
 #'   normalize = TRUE,
-#'   simplify.set = simplify)
+#'   simplify.set = simplify
+#' )
 #'
-#' ## in this case, the cell type with greatest proportion will be the new label
+#' ## in this case the cell type with greatest proportion will be the new label
 #' ## the rest of proportion cell types will be added to the greatest
 #' results3 <- deconvDigitalDLSorter(
 #'   TCGA.breast.small,
@@ -888,10 +880,10 @@ trainDigitalDLSorterModel <- function(
 #'   simplify.majority = simplify)
 #'
 #' @references Chung, W., Eum, H. H., Lee, H. O., Lee, K. M., Lee, H. B., Kim,
-#' K. T., et al. (2017). Single-cell RNA-seq enables comprehensive tumour and
-#' immune cell profiling in primary breast cancer. Nat. Commun. 8 (1), 15081.
-#' doi: \href{https://doi.org/10.1038/ncomms15081}{10.1038/ncomms15081}.
-#'
+#'   K. T., et al. (2017). Single-cell RNA-seq enables comprehensive tumour and
+#'   immune cell profiling in primary breast cancer. Nat. Commun. 8 (1), 15081.
+#'   doi: \href{https://doi.org/10.1038/ncomms15081}{10.1038/ncomms15081}.
+#'   
 deconvDigitalDLSorter <- function(
   data,
   model = "breast.chung.generic",
@@ -909,7 +901,7 @@ deconvDigitalDLSorter <- function(
   } else if (model == "breast.chung.generic") {
     model.dnn <- digitalDLSorteR::breast.chung.generic
   } else {
-    stop("Model provided does not exist")
+    stop("Model provided does not exist. See documentation to see available models")
   }
   model.dnn <- .loadModelFromJSON(model.dnn)
 
@@ -954,42 +946,42 @@ deconvDigitalDLSorter <- function(
 #'
 #' Deconvolute bulk gene expression samples (bulk RNA-Seq) enumerating and
 #' quantifying the proportion of cell types present in a bulk sample. This
-#' function needs a \code{DigitalDLSorter} object with a trained DNN model
-#' (\code{\link{trained.model}} slot) and bulk samples for deconvoluting in
-#' \code{deconv.data} slot.
+#' function needs a \code{DigitalDLSorter} object with a trained Deep Neural
+#' Network model (\code{\link{trained.model}} slot) and the new bulk samples
+#' that will be deconvoluted in \code{deconv.data} slot.
 #'
-#' This function is oriented for users that have trained a DNN model using their
-#' own data. If you want to use a pre-trained model, see
-#' \code{\link{deconvDigitalDLSorter}}.
+#' This function is intended for users who have built a devonvolution model
+#' using their own single-cell RNAseq data. If you want to use a pre-trained
+#' model, see \code{?\link{deconvDigitalDLSorter}}.
 #'
-#' @param object \code{\link{DigitalDLSorter}} object with \code{trained.data}
-#'   and \code{deconv.data} slots.
-#' @param name.data Name of the data store in \code{DigitalDLSorter} object. If
+#' @param object \code{\linkS4class{DigitalDLSorter}} object with
+#'   \code{trained.data} and \code{deconv.data} slots.
+#' @param name.data Name of the data stored in \code{DigitalDLSorter} object. If
 #'   it is not provided, the first data set will be used.
 #' @param batch.size Number of samples per gradient update. If unspecified,
 #'   \code{batch.size} will default to 128.
 #' @param normalize Normalize data before deconvolution. \code{TRUE} by default.
 #' @param simplify.set List specifying which cell types should be compressed
 #'   into a new label whose name will be the list item. See examples for
-#'   details. The results are stored in a list with normal and simpli.majority
-#'   results (if provided). The name of the element in the list is
-#'   \code{'simpli.set'}.
+#'   details. If provided, results are stored in a list with 'raw' and
+#'   'simpli.set' results.
 #' @param simplify.majority List specifying which cell types should be
-#'   compressed into the cell types with greater proportion in each sample.
+#'   compressed into the cell type with greater proportion in each sample.
 #'   Unlike \code{simplify.set}, it allows to maintain the complexity of the
 #'   results while compressing the information, because it is not created a new
-#'   label. The results are stored in a list with normal and simpli.set results
-#'   (if provided). The name of the element in the list is
-#'   \code{'simpli.majority'}.
+#'   label. If provided, the results are stored in a list with 'raw' and
+#'   'simpli.majority' results (if provided).
 #' @param verbose Show informative messages during the execution.
-#' @return A \code{data.frame} with samples (\eqn{i}) as rows and cell types
-#'   (\eqn{j}) as columns. Each entry represents the proportion of \eqn{j} cell
-#'   type in \eqn{i} sample.
+#'
+#' @return \code{\linkS4class{DigitalDLSorter}} object with
+#'   \code{deconv.results} slot. The resulting information is a data frame with
+#'   samples (\eqn{i}) as rows and cell types (\eqn{j}) as columns. Each entry
+#'   represents the proportion of \eqn{j} cell type in \eqn{i} sample.
 #'
 #' @export
 #'
 #' @seealso \code{\link{trainDigitalDLSorterModel}}
-#'   \code{\link{DigitalDLSorter}}
+#'   \code{\linkS4class{DigitalDLSorter}}
 #'
 #' @examples
 #' ## to ensure compatibility
@@ -1000,8 +992,17 @@ deconvDigitalDLSorter <- function(
 #'                  Bcells = c("Bmem", "BGC"))
 #'
 #' ## all results are stored in DigitalDLSorter object
-#' DDLSSmallCompleted <- deconvDigitalDLSorterObj(
-#'   object = DDLSSmallCompleted,
+#' TCGA.se <- SummarizedExperiment::SummarizedExperiment(
+#'   assays = list(counts = TCGA.breast.small),
+#'   rowData = data.frame(rownames(TCGA.breast.small)),
+#'   colData = data.frame(colnames(TCGA.breast.small)),
+#' )
+#' DDLSChungComp <- loadDeconvDataFromSummarizedExperiment(
+#'   object = DDLSChungComp, se.object = TCGA.se,
+#'   name.data = "TCGA.breast"
+#' )
+#' DDLSChungComp <- deconvDigitalDLSorterObj(
+#'   object = DDLSChungComp,
 #'   name.data = "TCGA.breast",
 #'   simplify.set = simplify,
 #'   simplify.majority = simplify
@@ -1023,10 +1024,10 @@ deconvDigitalDLSorterObj <- function(
 ) {
   if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of class DigitalDLSorter")
-  } else if (is.null(object@trained.model)) {
+  } else if (is.null(trained.model(object))) {
     stop("There is not trained model in DigitalDLSorter object")
   } else if (!name.data %in% names(deconv.data(object))) {
-    stop("'name.data' provided is not present in object")
+    stop("'name.data' provided is not present in DigitalDLSorter object")
   }
   # checking if model is json format or compiled
   if (is.list(trained.model(object)@model)) {
@@ -1052,8 +1053,8 @@ deconvDigitalDLSorterObj <- function(
     deconv.results(object, name.data) <- list(raw = results)
     if (!is.null(simplify.set)) {
       if (!is(simplify.set, "list")) {
-        stop("Simplify arguments must be list with each element being the cell types",
-             "to compress")
+        stop("'simplify.set' must be a list in which each element is a ", 
+             "cell type considered by the model that will be aggregated")
       }
       results.set <- .simplifySetGeneral(
         results = results,
@@ -1063,8 +1064,8 @@ deconvDigitalDLSorterObj <- function(
     }
     if (!is.null(simplify.majority)) {
       if (!is(simplify.majority, "list")) {
-        stop("Simplify arguments must be list with each element being the cell types",
-             "to compress")
+        stop("'simplify.majority' must be a list in which each element is a ", 
+             "cell type considered by the model")
       }
       results.maj <- .simplifyMajorityGeneral(
         results = results,
@@ -1075,6 +1076,7 @@ deconvDigitalDLSorterObj <- function(
   } else {
     deconv.results(object, name.data) <- results
   }
+  if (verbose) message("DONE")
   return(object)
 }
 
@@ -1102,9 +1104,9 @@ deconvDigitalDLSorterObj <- function(
   deconv.counts <- deconv.counts[features(model), ]
   if (verbose) {
     message(paste("=== Filtering", sum(!filter.features),
-                  "features in data that are not present in training data\n"))
+                  "features in data that are not present in trained model\n"))
     message(paste("=== Setting", sum(fill.features),
-                  "features that are not present in training data to zero\n"))
+                  "features that are not present in trained model to zero\n"))
   }
   if (normalize) {
     if (verbose) message("=== Normalizing data\n")

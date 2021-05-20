@@ -4,48 +4,52 @@
 \name{DigitalDLSorterDNN-class}
 \alias{DigitalDLSorterDNN-class}
 \alias{DigitalDLSorterDNN}
-\title{The DigitalDLSorterDNN Class.}
+\title{The DigitalDLSorterDNN Class}
 \description{
-The DigitalDLSorterDNN object stores the trained Deep Neural Network, the
-training history of selected metrics and the results of prediction on test
-data. After executing \code{\link{calculateEvalMetrics}}, it is alto possible
-to find the results of the model evaluation.
+The DigitalDLSorterDNN object stores all the information related to Deep
+Neural Network model. It contains the trained model, the training history and
+the results of prediction on test data. After running
+\code{\link{calculateEvalMetrics}}, it is possible to find the performance
+evaluation of the model on test data (see \code{?\link{calculateEvalMetrics}}
+for details).
 }
 \details{
-The steps related with Deep Learning are carried out with \code{keras}
-package, so the model are stored in a R6 class, system used by the package.
-If you want to save the object in an rds file, \code{digitalDLSorteR}
-provides an \code{saveRDS} generic that transforms the keras model into a
-native valid R object. Specifically, the model is converted into a list with
-the architecture of the network and the weights learned during the training.
-The is the minimum information to use the model as predictor. If you want to
-maintain the optimizer state, see \code{\link{saveTrainedModelAsH5}}
-function. If you want to store an object as rda file, see
-\code{\link{preparingToSave}} function.
+The steps related to Deep Learning are carried out using \pkg{keras} package
+which uses R6 classes. If you want to save the object as an RDS file,
+\code{digitalDLSorteR} provides a \code{saveRDS} generic function that
+transforms the model stored as an R6 object into a native valid R object.
+Specifically, the model is converted into a list with the architecture of the
+network and the weights learned during training. That is the minimum
+information needed to use the model as predictor. If you want to maintain the
+optimizer state, see \code{?\link{saveTrainedModelAsH5}}. If you want to
+store \code{\link{DigitalDLSorter}} object as an RDA file, see
+\code{?\link{preparingToSave}}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{model}}{Trained Deep Neural Network model. This slot can contain a R6
+\item{\code{model}}{Trained Deep Neural Network. This slot can contain a R6
 \code{keras.engine.sequential.Sequential} object or a list with two
 elements: the architecture of the model and the resulting weights after
 training.}
 
-\item{\code{training.history}}{List with the evolution of the selected metrics during
+\item{\code{training.history}}{List with the evolution of selected metrics during
 training.}
 
 \item{\code{test.metrics}}{Performance of the model on test data.}
 
-\item{\code{test.pred}}{Deconvolution results matrix of test data. Columns are
-cell types, rows are samples and each entry is the proportion of this cell
-type on this sample.}
+\item{\code{test.pred}}{Deconvolution results on test data. Columns are cell types,
+rows are samples and each entry corresponds to the proportion of this cell
+type in this sample.}
 
-\item{\code{cell.types}}{Vector with the cell types to deconvolute.}
+\item{\code{cell.types}}{Vector with cell types to deconvolute.}
 
 \item{\code{features}}{Vector with features used during training. These features will
-be used for the following predictions.}
+be used in subsequent predictions (the nomenclature used must be the same).}
 
-\item{\code{test.deconv.metrics}}{Performance of the model on each sample of test data
-in comparison with the known cell proportions.}
+\item{\code{test.deconv.metrics}}{Model performance on each sample of test data
+compared to known cell proportions. This slot is used after
+\code{?\link{calculateEvalMetrics}}, so see
+\code{?\link{calculateEvalMetrics}} for more details.}
 }}
 

@@ -2,23 +2,27 @@
 % Please edit documentation in R/utils.R
 \name{loadDeconvDataFromFile}
 \alias{loadDeconvDataFromFile}
-\title{Load data to deconvolute from tabulated text file.}
+\title{Load data to deconvolute from a tabulated text file}
 \usage{
 loadDeconvDataFromFile(object, file.path, name.data = NULL)
 }
 \arguments{
-\item{object}{\code{\link{DigitalDLSorter}} object with \code{trained.model}
-slot.}
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object with
+\code{trained.model} slot.}
 
 \item{file.path}{File path where data is stored.}
 
 \item{name.data}{Name with which the data is stored in
-\code{\link{DigitalDLSorter}} object. If \code{name.data} is not provided,
-base name of file is used.}
+\code{\linkS4class{DigitalDLSorter}} object. If \code{name.data} is not
+provided, base name of file is used.}
+}
+\value{
+\code{\linkS4class{DigitalDLSorter}} object with \code{deconv.data}
+slot with the new bulk-RNAseq samples loaded
 }
 \description{
-Load data to deconvolute from text file. Accepted formats are tsv and tsv.gz.
-You must specify the correct extension.
+Load data to deconvolute from a tabulated text file. Accepted formats are tsv
+and tsv.gz. You must specify the correct extension.
 }
 \seealso{
 \code{\link{trainDigitalDLSorterModel}}

@@ -4,7 +4,7 @@
 \alias{cell.names}
 \alias{cell.names<-}
 \title{Get and set \code{cell.names} slot in a
-\code{\code{\linkS4class{ProbMatrixCellTypes}}} object.}
+\code{\linkS4class{ProbMatrixCellTypes}} object}
 \usage{
 cell.names(object)
 
@@ -19,5 +19,5 @@ argument)}
 }
 \description{
 Get and set \code{cell.names} slot in a
-\code{\code{\linkS4class{ProbMatrixCellTypes}}} object.
+\code{\linkS4class{ProbMatrixCellTypes}} object
 }

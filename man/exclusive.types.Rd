@@ -4,7 +4,7 @@
 \alias{exclusive.types}
 \alias{exclusive.types<-}
 \title{Get and set \code{exclusive.types} slot in a
-\code{\linkS4class{ProbMatrixCellTypes}} object.}
+\code{\linkS4class{ProbMatrixCellTypes}} object (deprecated)}
 \usage{
 exclusive.types(object)
 
@@ -13,10 +13,10 @@ exclusive.types(object) <- value
 \arguments{
 \item{object}{A \code{\linkS4class{ProbMatrixCellTypes}} object.}
 
-\item{value}{Optional slot that contains the exclusive cell types on the
+\item{value}{Optional slot that contains the exclusive cell types in the
 experiment if they are provided. NULL by default.}
 }
 \description{
 Get and set \code{exclusive.types} slot in a
-\code{\linkS4class{ProbMatrixCellTypes}} object.
+\code{\linkS4class{ProbMatrixCellTypes}} object (deprecated)
 }

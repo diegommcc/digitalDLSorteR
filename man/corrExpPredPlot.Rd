@@ -2,8 +2,8 @@
 % Please edit documentation in R/evalMetrics.R
 \name{corrExpPredPlot}
 \alias{corrExpPredPlot}
-\title{Generate correlation plot between predicted and expected cell type
-proportions from test samples.}
+\title{Generate correlation plots between predicted and expected cell type
+proportions of test data}
 \usage{
 corrExpPredPlot(
   object,
@@ -20,17 +20,18 @@ corrExpPredPlot(
   ncol = NULL,
   nrow = NULL,
   title = NULL,
-  theme = theme_grey(),
+  theme = NULL,
   ...
 )
 }
 \arguments{
-\item{object}{\code{DigitalDLSorter} object with \code{trained.model} slot
-containing metrics in \code{eval.stats.samples} slot.}
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object with
+\code{trained.model} slot containing metrics in \code{test.deconv.metrics}
+slot of \code{\linkS4class{DigitalDLSorterDNN}} object.}
 
 \item{colors}{Vector of colors to use. Only vectors with a number of colors
 equal to or greater than the levels of \code{color.by} will be accepted. By
-default it is used a list of custom colors provided by the package.}
+default, a list of custom colors provided by the package is used.}
 
 \item{facet.by}{Variable used to display data in different panels. If it is
 \code{NULL}, the plot is not separated into different panels. The options
@@ -45,55 +46,54 @@ are Pearson's correlation coefficient (\code{'pearson'}) and concordance
 correlation coefficient (\code{'ccc'}). The argument can be equal to
 \code{'pearson'}, \code{'ccc'} or \code{'both'} (by default).}
 
-\item{filter.sc}{Boolean indicating if filter single-cell profiles and only
-display correlations of results associated with bulk samples (\code{TRUE}
-by default).}
+\item{filter.sc}{Boolean indicating whether to filter single-cell profiles
+and only display errors associated with bulk samples (\code{TRUE} by
+default).}
 
-\item{pos.x.label}{Position on the X axis of the errors annotations. 0.95 by
-default.}
+\item{pos.x.label}{Position on the X axis of the correlation annotations.
+0.95 by default.}
 
-\item{pos.y.label}{Position on the Y axis of the errors annotations. 0.1 by
-default.}
+\item{pos.y.label}{Position on the Y axis of the correlation annotations. 0.1
+by default.}
 
 \item{sep.labels}{Space separating annotations if \code{corr} is equal to
-\code{'both'}. 0.15 by default.}
+\code{'both'} (0.15 by default).}
 
 \item{size.point}{Size of points (0.1 by default).}
 
 \item{alpha.point}{Alpha of points (0.1 by default).}
 
-\item{ncol}{Number of columns if \code{facet.by} is different than
+\item{ncol}{Number of columns if \code{facet.by} is different from
 \code{NULL}.}
 
-\item{nrow}{Number of rows if \code{facet.by} is different than \code{NULL}.}
+\item{nrow}{Number of rows if \code{facet.by} is different from \code{NULL}.}
 
 \item{title}{Title of the plot.}
 
-\item{theme}{ggplot theme.}
+\item{theme}{\pkg{ggplot2} theme.}
 
-\item{...}{Additional argument for \code{facet_wrap} ggplot function if
-\code{facet.by} is not equal to \code{NULL}.}
+\item{...}{Additional arguments for \link[ggplot2]{facet_wrap} \pkg{ggplot2}
+function if \code{facet.by} is not equal to \code{NULL}.}
 }
 \description{
 Generate correlation plot between predicted and expected cell type
-proportions from test samples. The correlation plots can be displayed all
-mixed or split based on cell type (\code{CellType}) or the number of cell
-types present in the sample (\code{nMix}). See \code{facet.by} argument and
-examples for more information. Moreover, a correlation value selected by user
-is displayed as annotation on the plots. See \code{corr} argument for
-details.
+proportions of test data The correlation plots can be displayed all mixed or
+splited by cell type (\code{CellType}) or number of cell types present in the
+samples (\code{nMix}). See \code{facet.by} argument and examples for more
+information. Moreover, a correlation value selected by user is displayed as
+annotation on the plots. See \code{corr} argument for details.
 }
 \examples{
 ## correlations by cell type
 corrExpPredPlot(
-  object = DDLSSmallCompleted,
+  object = DDLSChungComp,
   facet.by = "CellType",
   color.by = "CellType",
   corr = "both"
 )
 ## correlations of all samples mixed
 corrExpPredPlot(
-  object = DDLSSmallCompleted,
+  object = DDLSChungComp,
   facet.by = NULL,
   color.by = "CellType",
   corr = "ccc",

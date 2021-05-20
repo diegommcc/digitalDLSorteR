@@ -2,8 +2,8 @@
 % Please edit documentation in R/evalMetrics.R
 \name{blandAltmanLehPlot}
 \alias{blandAltmanLehPlot}
-\title{Generate Bland-Altman agreement plot between predicted and expected cell type
-proportions from test samples.}
+\title{Generate Bland-Altman agreement plots between predicted and expected cell type
+proportions from test data}
 \usage{
 blandAltmanLehPlot(
   object,
@@ -19,13 +19,13 @@ blandAltmanLehPlot(
   ncol = NULL,
   nrow = NULL,
   title = NULL,
-  theme = theme_grey(),
+  theme = NULL,
   ...
 )
 }
 \arguments{
 \item{object}{\code{DigitalDLSorter} object with \code{trained.model} slot
-containing metrics in \code{eval.stats.samples} slot.}
+containing metrics in \code{test.deconv.metrics} slot.}
 
 \item{colors}{Vector of colors to use. Only vectors with a number of colors
 equal to or greater than the levels of \code{color.by} will be accepted. By
@@ -69,22 +69,22 @@ equal to \code{TRUE}.}
 \code{facet.by} is not equal to \code{NULL}.}
 }
 \description{
-Generate  Bland-Altman agreement plot between predicted and expected cell
-type proportions from test samples. The  Bland-Altman agreement plots can be
-displayed all mixed or split based on cell type (\code{CellType}) or the
+Generate Bland-Altman agreement plots between predicted and expected cell
+type proportions from test data. The Bland-Altman agreement plots can be
+displayed all mixed or splited by cell type (\code{CellType}) or the
 number of cell types present in the sample (\code{nMix}). See \code{facet.by}
 argument and examples for more information.
 }
 \examples{
 ## Bland-Altman plot by cell type
 blandAltmanLehPlot(
-  object = DDLSSmallCompleted,
+  object = DDLSChungComp,
   facet.by = "CellType",
   color.by = "CellType"
 )
 ## Bland-Altman plot of all samples mixed
 blandAltmanLehPlot(
-  object = DDLSSmallCompleted,
+  object = DDLSChungComp,
   facet.by = NULL,
   color.by = "CellType",
   alpha.point = 0.3,

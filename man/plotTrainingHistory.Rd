@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{plotTrainingHistory}
 \alias{plotTrainingHistory}
-\title{Plot training history of a trained DigitalDLSorter DNN model.}
+\title{Plot training history of a trained DigitalDLSorter Deep Neural Network model}
 \usage{
 plotTrainingHistory(
   object,
@@ -11,16 +11,17 @@ plotTrainingHistory(
 )
 }
 \arguments{
-\item{object}{\code{DigitalDLSorter} object with \code{trained.model} slot.}
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object with
+\code{trained.model} slot.}
 
 \item{title}{Title of plot.}
 
 \item{metrics}{Which metrics to plot. If it is equal to \code{NULL} (by
-default), all metrics available on \code{\link{DigitalDNNSorter}} object
-will be plotted.}
+default), all metrics available on \code{\linkS4class{DigitalDLSorterDNN}}
+object will be plotted.}
 }
 \description{
-Plot training history of a trained DigitalDLSorter DNN model.
+Plot training history of a trained DigitalDLSorter Deep Neural Network model.
 }
 \seealso{
 \code{\link{trainDigitalDLSorterModel}}

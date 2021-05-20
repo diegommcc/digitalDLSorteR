@@ -4,7 +4,7 @@
 \alias{prob.matrix}
 \alias{prob.matrix<-}
 \title{Get and set \code{prob.matrix} slot in a
-\code{\linkS4class{ProbMatrixCellTypes}} object.}
+\code{\linkS4class{ProbMatrixCellTypes}} object}
 \usage{
 prob.matrix(object)
 
@@ -18,5 +18,5 @@ rows.}
 }
 \description{
 Get and set \code{prob.matrix} slot in a
-\code{\linkS4class{ProbMatrixCellTypes}} object.
+\code{\linkS4class{ProbMatrixCellTypes}} object
 }

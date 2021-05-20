@@ -6,70 +6,73 @@ NULL
 ######################### Estimate Zinbwave parameters #########################
 ################################################################################
 
-#' Estimate parameters from ZINB-WaVE model for simulating new single-cell
+#' Estimate parameters of ZINB-WaVE model for simulating new single-cell
 #' expression profiles
 #'
-#' Estimate parameters from ZINB-WaVE model from a real single-cell data set in
-#' order to simulate new single-cell profiles and to increase the signal of cell
-#' types underrepresented, training the Deep Neural Network in a more balanced
-#' way. \code{\link{simSingleCellProfiles}} function will use the estimated
-#' parameters for simulating new single-cell profiles. See
-#' \code{?\link{simSingleCellProfiles}} for more information.
+#' Estimate parameters of ZINB-WaVE model using a real single-cell data set to
+#' simulate new single-cell profiles and to increase the signal of
+#' underrepresented cell types. If this step is needed, its aim is to train the
+#' Deep Neural Network in a more balanced way. After this step,
+#' \code{\link{simSCProfiles}} function will use the estimated parameters to
+#' simulate new single-cell profiles. See \code{?\link{simSCProfiles}} for more
+#' information.
 #'
 #' ZINB-WaVE is a flexible model for zero-inflated count data. This function
 #' carries out the model fit to real single-cell data modeling \eqn{Y_{ij}} (the
 #' count of feature \eqn{j} for sample \eqn{i}) as a random variable following a
 #' zero-inflated negative binomial (ZINB) distribution. The estimated parameters
 #' will be used for the simulation of new single-cell expression profiles by
-#' sampling a negative binomial distribution and introducing dropouts from a
+#' sampling a negative binomial distribution and inserting dropouts from a
 #' binomial distribution. To do it, \pkg{digitalDLSorteR} uses
-#' \code{zinbEstimate} function from \pkg{splatter} package (Zappia et al.,
-#' 2017), a wrapper around \code{zinbFit} function from \pkg{zinbwave} package
-#' (Risso et al., 2018). For more details about the model, see Risso et al.,
-#' 2018.
+#' \code{\link[splatter]{zinbEstimate}} function from \pkg{splatter} package
+#' (Zappia et al., 2017), a wrapper around \code{\link[zinbwave]{zinbFit}}
+#' function from \pkg{zinbwave} package (Risso et al., 2018). For more details
+#' about the model, see Risso et al., 2018.
 #'
 #' @param object \code{\linkS4class{DigitalDLSorter}} object with a
 #'   \code{single.cell.real} slot.
-#' @param cell.ID.column Name or number of the column in cells metadata
-#'   corresponding to cell names in expression matrix.
-#' @param gene.ID.column Name or number of the column in genes metadata
-#'   corresponding to notation used for features/genes.
-#' @param cell.type.column Name or number of the column in cells metadata
-#'   corresponding to cell type of each cell.
-#' @param cell.cov.columns Name or number of columns in cells metadata that will
-#'   be used as covariates during the fitting of the model.
-#' @param gene.cov.columns Name or number of columns in genes metadata that will
-#'   be used as covariates during the fitting of the model.
-#' @param subset.cells Number of cells used for fitting the ZINB-WaVE model. It
-#'   is useful when the original data set is too large for fitting the model.
-#'   Set a value according to the original data set and the available resources
-#'   of your computer. If \code{NULL} (by default), all cells will be used. It
-#'   must be an integer greater than or equal to the number of cell types
-#'   considered and lesser than or equal to the total cells.
-#' @param proportional If \code{TRUE}, the original cell type proportions in
-#'   the subset of cells set in the argument \code{subset.cells} will be
-#'   respected as far as possible. If \code{FALSE}, all cell types will have the
-#'   same number of cells as far as possible.
-#' @param set.type Cell type to evaluate. \code{'All'} by default. We recommend
-#'   fitting the model to all cell types instead of only a subset of them in
-#'   order to capture the total variability of the original experiment although
-#'   only a subset of cell types is to be simulated.
+#' @param cell.ID.column Name or column number corresponding to cell names of
+#'   expression matrix in cells metadata.
+#' @param gene.ID.column Name or column number corresponding to notation used
+#'   for features/genes in genes metadata.
+#' @param cell.type.column Name or column number corresponding to cell type of
+#'   each cell in cells metadata.
+#' @param cell.cov.columns Name or column number(s) in cells metadata that will
+#'   be used as covariates during the fitting of the model (if no covariates are
+#'   used, set it empty or \code{NULL}).
+#' @param gene.cov.columns Name or column number(s) in genes metadata that will
+#'   be used as covariates during the fitting of the model (if no covariates are
+#'   used, set it empty or \code{NULL}).
+#' @param subset.cells Number of cells used to fit ZINB-WaVE model. It is useful
+#'   when original data sets are too large to fit the model. Set a value
+#'   according to original data set and available resources in your computer. If
+#'   \code{NULL} (by default), all cells will be used. It must be an integer
+#'   greater than or equal to the number of cell types considered and lesser
+#'   than or equal to the total cells.
+#' @param proportional If \code{TRUE}, original cell type proportions in the
+#'   subset of cells generated by \code{subset.cells} argument will not be
+#'   altered as far as possible. If \code{FALSE}, all cell types will have the
+#'   same number of cells as far as possible (\code{TRUE} by default).
+#' @param set.type Cell type(s) to evaluate (\code{'All'} by default). We
+#'   recommend fitting the model to all cell types instead of just using a
+#'   subset of them in order to capture the total variability present in the
+#'   original experiment even though only a subset of cell types is simulated.
 #' @param threads Number of threads used for the estimation (1 by default). For
-#'   setting the parallel environment \pkg{BiocParallel} package is used.
-#' @param verbose Show informative messages during the execution. \code{TRUE} by
-#'   default.
+#'   setting the parallel environment, \pkg{BiocParallel} package is used.
+#' @param verbose Show informative messages during the execution (\code{TRUE} by
+#'   default).
 #' @return A \code{\linkS4class{DigitalDLSorter}} object with \code{zinb.params}
-#'   slot containing a \code{\linkS4class{ZinbParams}} object. This object
-#'   contains the estimated ZINB parameters from real single-cell data.
+#'   slot containing a \code{\linkS4class{ZINBParams}} object. This object
+#'   contains the estimated ZINB-WaVE parameters from real single-cell data.
 #'
 #' @export
 #'
-#' @seealso \code{\link{simSingleCellProfiles}}
+#' @seealso \code{\link{simSCProfiles}}
 #'
 #' @examples
 #' \dontrun{
-#' DDLSSmallCompleted <- estimateZinbwaveParams(
-#'   object = DDLSSmallCompleted,
+#' DDLSChung <- estimateZinbwaveParams(
+#'   object = DDLSChung,
 #'   cell.ID.column = "Cell_ID",
 #'   gene.ID.column = "external_gene_name",
 #'   cell.type.column = "Cell_type",
@@ -83,12 +86,10 @@ NULL
 #'   and flexible method for signal extraction from single-cell RNA-seq data.
 #'   Nat Commun 9, 284. doi:
 #'   \href{https://doi.org/10.1038/s41467-017-02554-5}{10.1038/s41467-017-02554-5}
-#'
-#'   Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
+#'    Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 #'   algorithm to quantify immune cell populations based on scRNA-Seq data.
 #'   Frontiers in Genetics 10, 978. doi:
 #'   \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
-#'
 #'   Zappia, L., Phipson, B. and Oshlack, A. Splatter: simulation of single-cell
 #'   RNA sequencing data. Genome Biol. 2017; 18: 174. doi:
 #'   \href{https://doi.org/10.1186/s13059-017-1305-0}{10.1186/s13059-017-1305-0}
@@ -109,18 +110,20 @@ estimateZinbwaveParams <- function(
   if (!is(object, "DigitalDLSorter")) {
     stop("The object provided is not of DigitalDLSorter class")
   } else if (is.null(single.cell.real(object))) {
-    stop("single.cell.real slot is empty")
+    stop("'single.cell.real' slot is empty")
   } else if (missing(cell.ID.column) || missing(gene.ID.column) || 
              is.null(cell.ID.column) || is.null(gene.ID.column)) {
-    stop("cell.ID.column and gene.ID.column arguments are needed. Please look ",
-         "?estimateZinbwaveParams")
+    stop("'cell.ID.column' and 'gene.ID.column' arguments are needed. Please, ", 
+         "look at ?estimateZinbwaveParams")
   } else if (missing(cell.type.column) || is.null(cell.type.column)) {
-    stop("cell.type.column argument is needed. Please, look ?estimateZinbwaveParams")
+    stop("'cell.type.column' argument is needed. Please, look at ", 
+         "?estimateZinbwaveParams")
   }
   if (!is.null(zinb.params(object = object))) {
-    warning("zinb.params slot already has a ZinbParams object. Note that it will
-            be overwritten\n",
-            call. = FALSE, immediate. = TRUE)
+    warning(
+      "'zinb.params' slot already has a ZINBParams object. Note that it will be overwritten\n",
+      call. = FALSE, immediate. = TRUE
+    )
   }
   # extract data from SCE to list
   list.data <- .extractDataFromSCE(
@@ -166,6 +169,7 @@ estimateZinbwaveParams <- function(
       }
     )
   }
+  
   ## if gene.cov.columns is provided, check if everything is correct
   if (!(missing(gene.cov.columns) || is.null(gene.cov.columns))) {
     lapply(
@@ -187,6 +191,7 @@ estimateZinbwaveParams <- function(
       }
     )
   }
+  
   # set configuration of parallel computations 
   if (threads <= 0) threads <- 1
   if (verbose) {
@@ -195,18 +200,7 @@ estimateZinbwaveParams <- function(
   snowParam <- BiocParallel::SnowParam(workers = threads, type = "SOCK")
   # set cell types that will be estimated
   if (set.type == "All" || "All" %in% set.type) {
-    if (!(missing(cell.cov.columns) || is.null(cell.cov.columns))) {
-      formula.cell.model <- as.formula(
-        paste("~", paste(c(cell.cov.columns, cell.type.column), collapse = "+"))
-      )  
-      if (verbose) {
-        message("=== Estimate parameters for all cell types in the experiment\n")
-        message(paste("=== Create cell model matrix based on", 
-                      paste(cell.cov.columns, collapse = ", "),
-                      "and", cell.type.column, "columns:"))
-        message("\t", formula.cell.model, "\n")
-      }
-    } else {
+    if (missing(cell.cov.columns) || is.null(cell.cov.columns)) {
       formula.cell.model <- as.formula(
         paste("~", paste(cell.type.column, collapse = "+"))
       ) 
@@ -216,17 +210,30 @@ estimateZinbwaveParams <- function(
                       cell.type.column, "columns:"))
         message("\t", formula.cell.model, "\n")
       }
+    } else {
+      formula.cell.model <- as.formula(
+        paste("~", paste(c(cell.cov.columns, cell.type.column), collapse = "+"))
+      )  
+      if (verbose) {
+        message("=== Estimate parameters for all cell types in the experiment\n")
+        message(paste("=== Create cell model matrix based on", 
+                      paste(cell.cov.columns, collapse = ", "),
+                      "and", cell.type.column, "columns:"))
+        message("\t", formula.cell.model, "\n")
+      }
     }
     # subset of cells
-    list.data <- .reduceDataset(
-      subset.cells = subset.cells,
-      list.data = list.data,
-      cell.type.column = cell.type.column, 
-      cell.ID.column = cell.ID.column, 
-      gene.ID.column = gene.ID.column,
-      proportional = proportional,
-      verbose = verbose
-    )
+    if (!is.null(subset.cells)) {
+      list.data <- .reduceDataset(
+        subset.cells = subset.cells,
+        list.data = list.data,
+        cell.type.column = cell.type.column, 
+        cell.ID.column = cell.ID.column, 
+        gene.ID.column = gene.ID.column,
+        proportional = proportional,
+        verbose = verbose
+      )  
+    }
     sdm <- model.matrix(
       formula.cell.model,
       data = list.data[[2]][match(colnames(list.data[[1]]),
@@ -236,14 +243,25 @@ estimateZinbwaveParams <- function(
     sdm.colnames <- colnames(sdm)
   } else {
     if (!all(set.type %in% unique(list.data[[2]][, cell.type.column])))
-      stop("Cell type(s) provided in set.type argument not found")
+      stop("Cell type(s) provided in 'set.type' argument not found")
     # check if set.type contains at least two or more cell types
     if (length(set.type) < 2) {
-      stop("set.type must contain two or more different cell types in order 
+      stop("'set.type' must contain two or more different cell types in order 
            to estimate the parameters of the model") 
     }
     # formula with only specific cell types
-    if (!(missing(cell.cov.columns) || is.null(cell.cov.columns))) {
+    if (missing(cell.cov.columns) || is.null(cell.cov.columns)) {
+      formula.cell.model <- as.formula(
+        paste("~", paste(cell.type.column, collapse = "+"))
+      )  
+      if (verbose) {
+        message("=== Estimate parameters for ", paste(set.type, collapse = ", "), 
+                " cell type(s) from the experiment\n")
+        message(paste("=== Create cell model matrix based on", 
+                      cell.type.column, "columns:"))
+        message("\t", formula.cell.model, "\n")
+      }
+    } else {
       formula.cell.model <- as.formula(
         paste("~", paste(c(cell.cov.columns, cell.type.column), collapse = "+"))
       )  
@@ -255,32 +273,23 @@ estimateZinbwaveParams <- function(
                       "and", cell.type.column, "columns:"))
         message("\t", formula.cell.model, "\n")
       }
-    } else {
-      formula.cell.model <- as.formula(
-        paste("~", paste(cell.type.column, collapse = "+"))
-      )  
-      if (verbose) {
-        message("=== Estimate parameters for ", paste(set.type, collapse = ", "), 
-                " cell type(s) from the experiment\n")
-        message(paste("=== Create cell model matrix based on", 
-                      cell.type.column, "columns:"))
-        message("\t", formula.cell.model, "\n")
-      }
     }
     cell.IDs <- list.data[[2]][which(list.data[[2]][, cell.type.column] == set.type),
                                cell.ID.column]
     list.data[[2]] <- list.data[[2]][cell.IDs, ]
     list.data[[1]] <- list.data[[1]][, cell.IDs]
     # subset of cells
-    list.data <- .reduceDataset(
-      subset.cells = subset.cells,
-      list.data = list.data,
-      cell.type.column = cell.type.column, 
-      cell.ID.column = cell.ID.column, 
-      gene.ID.column = gene.ID.column,
-      proportional = proportional,
-      verbose = verbose
-    )
+    if (!is.null(subset.cells)) {
+      list.data <- .reduceDataset(
+        subset.cells = subset.cells,
+        list.data = list.data,
+        cell.type.column = cell.type.column, 
+        cell.ID.column = cell.ID.column, 
+        gene.ID.column = gene.ID.column,
+        proportional = proportional,
+        verbose = verbose
+      )  
+    }
     sdm <- model.matrix(
       formula.cell.model,
       data = list.data[[2]][match(colnames(list.data[[1]]),
@@ -293,7 +302,14 @@ estimateZinbwaveParams <- function(
     # sdm.colnames <- seq(1)
   }
   # covariates for genes
-  if (!(missing(gene.cov.columns) || is.null(gene.cov.columns))) {
+  if (missing(gene.cov.columns) || is.null(gene.cov.columns)) {
+    if (verbose) 
+      message("=== Create gene model matrix without gene covariates\n")
+    gdm <- model.matrix(
+      ~ 1, data = list.data[[3]][match(rownames(list.data[[1]]),
+                                       list.data[[3]][, gene.ID.column]), ]
+    )
+  } else {
     formula.gene.model <- as.formula(
       paste("~", paste(gene.cov.columns, collapse = "+"))
     )
@@ -306,13 +322,6 @@ estimateZinbwaveParams <- function(
                         data = list.data[[3]][match(
                           rownames(list.data[[1]]), 
                           list.data[[3]][, gene.ID.column]), ])
-  } else {
-    if (verbose) 
-      message("=== Create gene model matrix without gene covariates\n")
-    gdm <- model.matrix(
-      ~ 1, data = list.data[[3]][match(rownames(list.data[[1]]),
-                                      list.data[[3]][, gene.ID.column]), ]
-    )
   }
   rownames(gdm) <- rownames(list.data[[1]])
   if (verbose) {
@@ -388,9 +397,9 @@ estimateZinbwaveParams <- function(
   )
   if (any(Matrix::rowSums(sub.list.data[[1]]) == 0)) {
     warning("There are some genes with zero expression in selected cells. ", 
-            "Consider increasing the minimum expression levels when loading ", 
-            "data with the loadSCProfiles function with min.counts and ", 
-            "min.cells arguments.\n", call. = FALSE, immediate. = TRUE)
+            "Consider increasing the minimum expression level when loading ", 
+            "data by loadSCProfiles function with 'min.counts' and ", 
+            "'min.cells' arguments\n", call. = FALSE, immediate. = TRUE)
     list.data.filf <- .filterGenesSparse(
       counts = sub.list.data[[1]], 
       genes.metadata = list.data[[3]], 
@@ -469,7 +478,7 @@ estimateZinbwaveParams <- function(
       }
     }
   } else {
-    message("The subseting of cells is not available")
+    message("The subseting of cells is not available for this dataset")
   }
   return(prop.final)
 }
@@ -485,9 +494,9 @@ estimateZinbwaveParams <- function(
   verbose
 ) {
   if (ncol(counts) <= total.subset) {
-    stop("total.subset must be lesser than the total of cells")
+    stop("'total.subset' must be lesser than the total number of cells")
   } else if (total.subset < length(unique(cells.metadata[, cell.type.column]))) {
-    stop("total.subset must be greater than the number of cell types")
+    stop("'total.subset' must be greater than the number of cell types")
   }
   if (!proportional) {
     n.cell.types <- length(unique(cells.metadata[, cell.type.column]))
@@ -510,7 +519,7 @@ estimateZinbwaveParams <- function(
     cell.type.column = cell.type.column
   )
   if (any(nums.cells == 0))
-    stop("Some cell types have zero cells. Please, provide a greater total.subset")
+    stop("Some cell types have zero cells. Please, provide a greater 'total.subset'")
   
   if (verbose) {
     message("=== Number of cells for each cell type:\n",
@@ -540,7 +549,7 @@ estimateZinbwaveParams <- function(
 ) {
   if (file.exists(file.backend)) {
     if (is.null(name.dataset.backend)) {
-      warning("file.backend already exists. Using a random name dataset",
+      warning("'file.backend' already exists. Using a random name dataset",
               call. = FALSE, immediate. = TRUE)
       name.dataset.backend <- HDF5Array::getHDF5DumpName(for.use = TRUE)
       while (strsplit(name.dataset.backend, 
@@ -549,7 +558,7 @@ estimateZinbwaveParams <- function(
         name.dataset.backend <- .randomStr()
       }
     } else if (name.dataset.backend %in% rhdf5::h5ls(file.backend)[, "name"]) {
-      stop("file.backend and name.dataset.backend already exist. Please, ", 
+      stop("'file.backend' and 'name.dataset.backend' already exist. Please, ", 
            "introduce a correct file path or other dataset name")
     }
   } else {
@@ -560,7 +569,7 @@ estimateZinbwaveParams <- function(
     compression.level <- HDF5Array::getHDF5DumpCompressionLevel()
   } else {
     if (compression.level < 0 || compression.level > 9) {
-      stop("compression.level must be an integer between 0 (no compression) ", 
+      stop("'compression.level' must be an integer between 0 (no compression) ", 
            "and 9 (highest compression and slowest reading/writing). ")
     }
   }
@@ -575,7 +584,7 @@ estimateZinbwaveParams <- function(
 #' Simulate new single-cell expression profiles using ZINB-WaVE model parameters
 #'
 #' Simulate single-cell expression profiles by randomly sampling from a negative
-#' binomial distribution and introducing dropouts by sampling from a binomial
+#' binomial distribution and inserting dropouts by sampling from a binomial
 #' distribution using ZINB -WaVE parameters estimated by
 #' \code{\link{estimateZinbwaveParams}} function.
 #'
@@ -583,55 +592,58 @@ estimateZinbwaveParams <- function(
 #' Torroja and Sanchez-Cabo, 2019, this function simulates a determined number
 #' of transcriptional profiles for each cell type provided by randomly sampling
 #' from a negative binomial distribution with \eqn{\mu} and \eqn{\theta}
-#' estimated parameters and introducing dropouts by sampling from a binomial
+#' estimated parameters and inserting dropouts by sampling from a binomial
 #' distribution with pi probability. All parameters are estimated from
 #' single-cell real data using \code{\link{estimateZinbwaveParams}} function. It
 #' uses the ZINB-WaVE model (Risso et al., 2018). For more details about the
-#' model, see \code{\link{estimateZinbwaveParams}}.
+#' model, see \code{?\link{estimateZinbwaveParams}} and Risso et al., 2018.
 #'
 #' \code{file.backend} argument allows to create a HDF5 file with simulated
 #' single-cell profiles that will be used as back-end in order to work with data
-#' allocated on disk, allowing a lower usage of RAM memory. If you use
-#' \code{file.backend} argument with \code{block.processing = FALSE}, all
-#' single-cell profiles will be simulated in one step and, therefore, allocated
-#' in RAM memory. Then, data will be written in HDF5 file. In order to avoid
-#' collapsing RAM memory, single-cell profiles will be simulated and written in
-#' HDF5 files by blocks of \code{block.size} size, by setting
-#' \code{block.processing = TRUE}.
+#' allocated on disk instead of RAM memory. If you use \code{file.backend}
+#' argument with \code{block.processing = FALSE}, all single-cell profiles will
+#' be simulated in one step and, therefore, allocated in RAM memory. Then, data
+#' will be written in HDF5 file. In order to avoid collapsing RAM memory if so
+#' many single-cell profiles are simulated, single-cell profiles can be
+#' simulated and written in HDF5 files by blocks of \code{block.size} size by
+#' setting \code{block.processing = TRUE}.
 #'
 #' @param object \code{\linkS4class{DigitalDLSorter}} object with
 #'   \code{single.cell.real} and \code{zinb.params} slots.
-#' @param cell.ID.column Name or number of the column in cells metadata
-#'   corresponding to cell names in expression matrix.
-#' @param cell.type.column Name or number of the column in cells metadata
-#'   corresponding to the cell type of each cell.
+#' @param cell.ID.column Name or column number corresponding to cell names of
+#'   expression matrix in cells metadata.
+#' @param cell.type.column Name or column number corresponding to the cell type
+#'   of each cell in cells metadata.
 #' @param n.cells Number of simulated cells generated by cell type (i.e. if you
 #'   have 10 different cell types in your dataset, if \code{n.cells = 100}, then
 #'   1000 cell profiles will be simulated).
+#' @param sufix.names Sufix used in simulated cells. This sufix must be unique
+#'   in simulated cells, so ensure that this sufix does not appear in real cell
+#'   names.
 #' @param cell.types Vector indicating which cell types you want to simulate. If
 #'   \code{NULL} (by default), \code{n.cells} single-cell profiles for all cell
 #'   types will be simulated.
 #' @param file.backend Valid file path to store simulated single-cell expression
 #'   profiles as HDF5 file (\code{NULL} by default). If provided, data is stored
 #'   in HDF5 files as back-end by using \pkg{DelayedArray}, \pkg{HDF5Array} and
-#'   \pkg{rhdf5} packages instead of loading in memory. This is suitable for
-#'   situations where you have large amount of data that cannot be allocated in
-#'   memory. Note that operations on this data will be carried out by blocks
-#'   (i.e subsets of determined size), which can lead to longer execution times.
-#' @param name.dataset.backend Name of the dataset in the HDF5 file that will be
-#'   used. Note that it cannot exist. If \code{NULL} (by default), a random
-#'   datset name will be used.
+#'   \pkg{rhdf5} packages instead of loading in RAM memory. This is suitable for
+#'   situations where you have a large amount of data that cannot be allocated
+#'   in memory. Note that operations on this data will be carried out by blocks
+#'   (i.e subsets of determined size) which can lead to longer execution times.
+#' @param name.dataset.backend Name of dataset in HDF5 file that will be used.
+#'   Note that it cannot exist. If \code{NULL} (by default), a random dataset
+#'   name will be used.
 #' @param compression.level The compression level used if \code{file.backend} is
 #'   provided. It is an integer value between 0 (no compression) and 9 (highest
 #'   and slowest compression). See
-#'   ?\code{\link[HDF5Array]{getHDF5DumpCompressionLevel}} from \pkg{HDF5Array}
+#'   \code{?\link[HDF5Array]{getHDF5DumpCompressionLevel}} from \pkg{HDF5Array}
 #'   package for more information.
 #' @param block.processing Boolean indicating if data should be simulated by
 #'   blocks (only if \code{file.backend} is used, \code{FALSE} by default). This
 #'   functionality is suitable for cases where is not possible to allocate data
-#'   in memory and leads to larger exexcution times.
+#'   in memory and it leads to longer execution times.
 #' @param block.size Number of single-cell expression profiles that will be
-#'   simulated in each iteration during the process. Larger numbers resulting in
+#'   simulated in each iteration during the process. Higher numbers resulting in
 #'   more memory usage but lesser execution times. Set according to available
 #'   computational resources (1000 by default). Note that it cannot be greater
 #'   than the total number of simulated cells.
@@ -639,8 +651,9 @@ estimateZinbwaveParams <- function(
 #'   \code{NULL}, the default value is a vector of two items: the number of
 #'   genes considered by ZINB-WaVE model during the simulation and only one
 #'   sample in order to increase the read times in the following steps. Greater
-#'   number of columns written in each chunk can lead to larger read times. Note
-#'   that it cannot be  greater than dimensions of simulated matrix.
+#'   number of columns written in each chunk can lead to longer read times in
+#'   subsequent steps. Note that it cannot be  greater than dimensions of
+#'   simulated matrix.
 #' @param verbose Show informative messages during the execution (\code{TRUE} by
 #'   default).
 #'
@@ -654,8 +667,8 @@ estimateZinbwaveParams <- function(
 #' @seealso \code{\link{estimateZinbwaveParams}}
 #'
 #' @examples
-#' DDLSSmallCompleted <- simSingleCellProfiles(
-#'   object = DDLSSmallCompleted,
+#' DDLSChung <- simSCProfiles(
+#'   object = DDLSChung,
 #'   cell.ID.column = "Cell_ID",
 #'   cell.type.column = "Cell_type",
 #'   n.cells = 10,
@@ -666,17 +679,17 @@ estimateZinbwaveParams <- function(
 #'   and flexible method for signal extraction from single-cell RNA-seq data.
 #'   Nat Commun 9, 284. doi:
 #'   \href{https://doi.org/10.1038/s41467-017-02554-5}{10.1038/s41467-017-02554-5}
-#'
-#'   Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
+#'    Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 #'   algorithm to quantify immune cell populations based on scRNA-Seq data.
 #'   Frontiers in Genetics 10, 978. doi:
 #'   \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
 #'   
-simSingleCellProfiles <- function(
+simSCProfiles <- function(
   object,
   cell.ID.column,
   cell.type.column,
   n.cells,
+  sufix.names = "_Simul",
   cell.types = NULL,
   file.backend = NULL,
   name.dataset.backend = NULL,
@@ -686,30 +699,33 @@ simSingleCellProfiles <- function(
   chunk.dims = NULL,
   verbose = TRUE
 ) {
+  if (!is(object, "DigitalDLSorter")) {
+    stop("Object provided is not of DigitalDLSorter class")
+  }
   if (is.null(zinb.params(object))) {
-    stop("zinb.params slot is empty. To simulate single-cell profiles, ",
-         "DigitalDLSorter object  must contain the estimated parameters ",
-         "for the data with estimateZinbwaveParams function")
+    stop("'zinb.params' slot is empty. To simulate single-cell profiles, ",
+         "DigitalDLSorter object must contain the estimated parameters ",
+         "for data by estimateZinbwaveParams function")
   }
   if (is.null(single.cell.real(object))) {
-    stop("single.cell.real slot is empty. To simulate single-cell ", 
+    stop("'single.cell.real' slot is empty. To simulate single-cell ", 
          "profiles, DigitalDLSorter object must contain the original ", 
          "data. See ?loadSCProfiles")
   }
   if (!is.null(single.cell.simul(object = object))) {
-    warning("single.cell.simul slot already has a SingleCellExperiment 
+    warning("'single.cell.simul' slot already has a SingleCellExperiment 
             object. Note that it will be overwritten\n", 
             call. = FALSE, immediate. = TRUE)
   }
   if (missing(cell.ID.column) || is.null(cell.ID.column)) {
-    stop("cell.ID.column argument is needed. Please see ",
-         "?simSingleCellProfiles")
+    stop("'cell.ID.column' argument is needed. Please, see ",
+         "?simSCProfiles")
   } else if (missing(cell.type.column) || is.null(cell.type.column)) {
-    stop("cell.type.column argument is needed. Please, see ?simSingleCellProfiles")
+    stop("'cell.type.column' argument is needed. Please, see ?simSCProfiles")
   } else if (missing(n.cells) || is.null(n.cells)) {
-    stop("n.cells argument is needed. Please, see ?simSingleCellProfiles")
+    stop("'n.cells' argument is needed. Please, see ?simSCProfiles")
   } else if (!is.numeric(n.cells)) {
-    stop("n.cells argument must be a integer. Please, see ?simSingleCellProfiles")
+    stop("'n.cells' argument must be a integer. Please, see ?simSCProfiles")
   }
   # check if parameters related to hdf5 file are correct
   if (!is.null(file.backend)) {
@@ -744,7 +760,7 @@ simSingleCellProfiles <- function(
   # for cases where estimation was performed in some cell types
   cell.types.used <- list.data[[2]][rownames(zinb.object@model@X), 
                                     cell.type.column] %>% unique()
-  if (n.cells < 0) stop("n.cells must be greater than 0 (cells per cell type)")
+  if (n.cells < 0) stop("'n.cells' must be greater than 0 (cells per cell type)")
   # generate metadata for simulated cells
   colnames(list.data[[1]]) <- paste(list.data[[2]][, cell.type.column],
                                     list.data[[2]][, cell.ID.column],
@@ -763,7 +779,7 @@ simSingleCellProfiles <- function(
                          x = model.cell.types)
   if (!is.null(cell.types)) {
     if (!all(cell.types %in% cell.types.used)) {
-      stop("Cell type(s) provided in cell.types not found in ZINB-WaVE model.",
+      stop("Cell type(s) provided in 'cell.types' not found in ZINB-WaVE model.",
            "\n  Only cell types that have been used during estimation of ",
            "parameters can be simulated")
     }
@@ -779,13 +795,13 @@ simSingleCellProfiles <- function(
     nams <- sample(cell.index, size = n.cells, replace = T)
     if (is.null(cell.set.names)) {
       cell.set.names <- nams
-      names(cell.set.names) <- paste(cell.type.name, "_S",
+      names(cell.set.names) <- paste(cell.type.name, sufix.names,
                                      seq(from = 1, to = n.cells), sep = "")
     } else {
       ns <- names(cell.set.names)
       cell.set.names <- c(cell.set.names, nams)
       names(cell.set.names) <- c(
-        ns, paste(cell.type.name, "_S", 
+        ns, paste(cell.type.name, sufix.names, 
                   seq(from = length(ns) + 1, to = length(ns) + n.cells), 
                   sep = "")
       )
@@ -810,7 +826,7 @@ simSingleCellProfiles <- function(
     ns <- names(cell.set.names)
     cell.set.names <- c(cell.set.names, nams)
     names(cell.set.names) <- c(
-      ns, paste(inter.cell.type, "_S",
+      ns, paste(inter.cell.type, sufix.names,
                 seq(from = length(ns) + 1,
                     to = length(ns) + n.cells),
                 sep = "")
@@ -842,8 +858,8 @@ simSingleCellProfiles <- function(
     message("    - i (# entries): ", n * J)
   }
   if (block.processing && is.null(file.backend)) {
-    stop("block.processing is only compatible with the use of HDF5 files ", 
-         "as back-end (file.backend argument)")
+    stop("'block.processing' is only compatible with the use of HDF5 files ", 
+         "as back-end ('file.backend' argument)")
   } else if (block.processing && !is.null(file.backend)) {
     if (n < block.size) {
       block.size <- n
@@ -857,7 +873,7 @@ simSingleCellProfiles <- function(
       chunk.dims <- c(J, 1)
     } else {
       if (any(chunk.dims > c(J, n))) {
-        warning("chunk.dims must be equal to or lesser than dimension of ", 
+        warning("'chunk.dims' must be equal to or lesser than dimension of ", 
                 "data. Setting default value", call. = FALSE, immediate. = TRUE)
         chunk.dims <- c(J, 1)
       }
@@ -939,6 +955,7 @@ simSingleCellProfiles <- function(
   sim.cells.metadata[, cell.ID.column] <- names(cell.set.names)
   rownames(sim.cells.metadata) <- names(cell.set.names)
   sim.cells.metadata$Simulated <- TRUE
+  sim.cells.metadata$sufix <- sufix.names
   
   sim.sce <- .createSCEObject(
     counts = sim.counts,

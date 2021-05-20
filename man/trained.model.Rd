@@ -4,7 +4,7 @@
 \alias{trained.model}
 \alias{trained.model<-}
 \title{Get and set \code{trained.model} slot in a
-\code{\linkS4class{DigitalDLSorter}} object.}
+\code{\linkS4class{DigitalDLSorter}} object}
 \usage{
 trained.model(object)
 
@@ -13,9 +13,9 @@ trained.model(object) <- value
 \arguments{
 \item{object}{A \code{\linkS4class{DigitalDLSorter}} object.}
 
-\item{value}{A \code{\code{\linkS4class{DigitalDLSorterDNN}}} object.}
+\item{value}{A \code{\linkS4class{DigitalDLSorterDNN}} object.}
 }
 \description{
 Get and set \code{trained.model} slot in a
-\code{\linkS4class{DigitalDLSorter}} object.
+\code{\linkS4class{DigitalDLSorter}} object
 }

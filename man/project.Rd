@@ -4,7 +4,7 @@
 \alias{project}
 \alias{project<-}
 \title{Get and set \code{project} slot in a
-\code{\linkS4class{DigitalDLSorter}} object.}
+\code{\linkS4class{DigitalDLSorter}} object}
 \usage{
 project(object)
 
@@ -17,5 +17,5 @@ project(object) <- value
 }
 \description{
 Get and set \code{project} slot in a
-\code{\linkS4class{DigitalDLSorter}} object.
+\code{\linkS4class{DigitalDLSorter}} object
 }

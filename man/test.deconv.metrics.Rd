@@ -4,7 +4,7 @@
 \alias{test.deconv.metrics}
 \alias{test.deconv.metrics<-}
 \title{Get and set \code{test.deconv.metrics} slot in a
-\code{\linkS4class{DigitalDLSorterDNN}} object.}
+\code{\linkS4class{DigitalDLSorterDNN}} object}
 \usage{
 test.deconv.metrics(object, metrics = "All")
 
@@ -15,10 +15,10 @@ test.deconv.metrics(object, metrics = "All") <- value
 
 \item{metrics}{Metrics to show (\code{'All'} by default)}
 
-\item{value}{A \code{list} with evaluation metrics used for evaluating the
+\item{value}{A list with evaluation metrics used for evaluating the
 performance of the model over each sample from test data.}
 }
 \description{
 Get and set \code{test.deconv.metrics} slot in a
-\code{\linkS4class{DigitalDLSorterDNN}} object.
+\code{\linkS4class{DigitalDLSorterDNN}} object
 }

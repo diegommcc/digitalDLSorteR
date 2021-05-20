@@ -4,78 +4,85 @@
 \name{DigitalDLSorter-class}
 \alias{DigitalDLSorter-class}
 \alias{DigitalDLSorter}
-\title{The DigitalDLSorter Class.}
+\title{The DigitalDLSorter Class}
 \description{
-The DigitalDLSorter object is the core of digitalDLSorteR. This object stores
-the different intermediate data resulting from running pipeline from real
-single-cell data to the trained Deep Neural Network, including the data on
-which to carry out the process of devonvolution. Only it is used in the case
-of building new deconvolution models. For deconvoluting bulk samples using
-pre-trained models, see \code{\link{deconvDigitalDLSorter}} function.
+The DigitalDLSorter object is the core of \code{digitalDLSorteR}. This object
+stores different intermediate data resulting from building new deconvolution
+models from single-cell data. It is only used in the case of building new
+deconvolution models. For deconvolving bulk samples using pre-trained models,
+see \code{\link{deconvDigitalDLSorter}} function.
 }
 \details{
-This object uses other classes to store the different type of data produced
-during the process: \itemize{ \item \code{SingleCellExperiment} class for
-single-cell RNA-seq data, using sparse matrix from the \code{Matrix} package
-(\code{dgCMatrix} class) to store the matrix of counts. \item
-\code{ZinbParams} class with the estimated parameters for the simulation of
-new single-cell profiles. \item \code{SummarizedExperiment} class for storing
-bulk RNA-seq data. In this case, it is possible to load all data in memory or
-the use of HDF5 files as back-end by \code{DelayedArray} and \code{HDF5Array}
-packages. See \code{\link{generateBulkSamples}} for details. \item
-\code{\link{ProbMatrixCellTypes}} class for the composition cell matrices
-built during the process. See \code{?ProbMatrixCellTypes} for details. \item
-\code{\link{DigitalDLSorterDNN}} class for storing the trained Deep Neural
-Network. This step is performed by \code{keras}. See
-\code{\link{DigitalDLSorterDNN}} for details. }
+This object uses other classes to store the different types of data produced
+during the process: \itemize{ \item \code{\linkS4class{SingleCellExperiment}}
+class for single-cell RNA-seq data, using sparse matrix from the
+\pkg{Matrix} package (\code{\linkS4class{dgCMatrix}} class) or
+\code{\linkS4class{HDF5Array}} class in the case of using HDF5 files as
+back-end (see below for more information). \item
+\code{\linkS4class{ZINBParams}} class with estimated parameters for the
+simulation of new single-cell profiles. \item
+\code{\linkS4class{SummarizedExperiment}} class for storing bulk RNA-seq
+data. \item \code{\linkS4class{ProbMatrixCellTypes}} class for the
+composition cell matrices built during the process. See
+\code{?\linkS4class{ProbMatrixCellTypes}} for details. \item
+\code{\linkS4class{DigitalDLSorterDNN}} class to store the information
+related to Deep Neural Network. This step is performed using \code{keras}.
+See \code{?\linkS4class{DigitalDLSorterDNN}} for details. }
 }
 \section{Slots}{
 
 \describe{
 \item{\code{single.cell.real}}{Real single-cell data stored in a
-\code{SingleCellExperiment} object. The counts matrix is stored as a
-\code{dgCMatrix} object to optimize the amount of used memory.}
+\code{SingleCellExperiment} object. The count matrix is stored as
+\code{\linkS4class{dgCMatrix}} or \code{\linkS4class{HDF5Array}} objects.}
 
-\item{\code{zinb.params}}{\code{ZinbParams} object with estimated parameters for the
-simulation of new single-cell expression profiles.}
+\item{\code{zinb.params}}{\code{\linkS4class{ZINBParams}} object with estimated
+parameters for the simulation of new single-cell expression profiles.}
 
-\item{\code{single.cell.simul}}{Simulated single-cell expression profiles used for
-simulating bulk RNA-seq profiles with known cell composition.}
+\item{\code{single.cell.simul}}{Simulated single-cell expression profiles from
+ZINB-WaVE model.}
 
-\item{\code{prob.cell.types}}{\code{ProbMatrixCellTypes} class with the cell
-composition  matrix built for the simulation of bulk RNA-seq profiles. The
-entries determine the proportion of single-cell types that will constitute
-the simulated bulk samples.}
+\item{\code{prob.cell.types}}{\code{\linkS4class{ProbMatrixCellTypes}} class with
+cell composition matrices built for the simulation of bulk RNA-seq profiles
+with known cell composition.}
 
-\item{\code{bulk.simul}}{A list with two elements: train and test simulated bulk
-RNA-seq. This data are stored as a \code{SummarizedExperiment} object. We
-recommend the use of HDF5 file as a back-end due to the large amount of
-memory that they occupy.}
+\item{\code{bulk.simul}}{A list with train and test simulated bulk RNA-seq samples.
+Each entry is a \code{\linkS4class{SummarizedExperiment}} object. The
+count matrices can be stored as \code{\linkS4class{HDF5Array}} files using
+HDF5 files as back-end in case of RAM memory limitations.}
 
-\item{\code{trained.model}}{\code{\link{DigitalDLSorterDNN}} object with the trained
-model, different metrics obtained during the training and evaluation
-metrics from the application of the model on test data. After executing
-\code{\link{calculateEvalMetrics}}, it is alto possible to find the results
-of the model evaluation.}
+\item{\code{trained.model}}{\code{\linkS4class{DigitalDLSorterDNN}} object with all
+the information related to the trained model. See
+\code{?\linkS4class{DigitalDLSorterDNN}} for more details.}
 
-\item{\code{deconv.data}}{Optional slot where is possible to store new bulk samples
-for its deconvolution. It is a list whose name is the name of the data
-provided. It is possible to store more than one dataset to make
-predictions. See \code{\link{deconvDigitalDLSorterObj}} for details.}
+\item{\code{deconv.data}}{List of \code{\linkS4class{SummarizedExperiment}} objects
+where it is possible to store new bulk RNA-seq experiments for their
+deconvolution. The name of the entries corresponds to the name of provided
+data. See \code{\link{deconvDigitalDLSorterObj}} for details.}
 
-\item{\code{deconv.results}}{Slot where the results from the deconvolution process
-over \code{\link{deconv.data}} data are stored. It is a list whose name is
-the name of the data from which they come.}
+\item{\code{deconv.results}}{Slot containing the deconvolution results from applying
+the deconvolution model to data present in \code{\link{deconv.data}} slot.
+It is a list in which the names corresponds to the data from which they
+come.}
 
 \item{\code{project}}{Name of the project.}
 
 \item{\code{version}}{Version of DigitalDLSorteR this object was built under.
 
-The package can be used in two ways: to build new models of deconvolution
-from scRNA-seq data or to deconvolute bulk RNA-seq samples using
-pre-trtained models integrated into the package. If you want to build new
-models, see \code{\link{loadRealSCProfiles}} or
-\code{\link{loadFinalSCProfiles}} functions. If yoy want to use pre-trained
-models, see \code{\link{deconvDigitalDLSorter}} function.}
+The package can be used in two ways: to build new deconvolution models from
+single-cell RNA-seq data or to deconvolute bulk RNA-seq samples using
+pre-trained models integrated into the package. If you want to build new
+models, see \code{\link{loadSCProfiles}} function. If you want to use
+pre-trained models, see \code{\link{deconvDigitalDLSorter}} function.
+
+In order to provide a way of working with big amounts of data in machines
+with RAM limitations, we provide the possibility of using HDF5 files as
+back-end to store count matrices of both single-cell real/simulated and
+bulk RNAseq profiles. To do this, we use \code{\linkS4class{HDF5Array}} and
+\code{\linkS4class{DelayedArray}} classes from the homonymous packages.
+
+Once the neural network is trained, it is possible to save it as RDS, RDA
+and HDF5 files. Please, see \code{\linkS4class{DigitalDLSorterDNN}} for
+more details.}
 }}
 

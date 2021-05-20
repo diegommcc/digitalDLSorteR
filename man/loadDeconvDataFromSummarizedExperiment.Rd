@@ -2,21 +2,27 @@
 % Please edit documentation in R/utils.R
 \name{loadDeconvDataFromSummarizedExperiment}
 \alias{loadDeconvDataFromSummarizedExperiment}
-\title{Load data to deconvolute from \code{SummarizedExperiment} object.}
+\title{Load data to deconvolute from a \code{\linkS4class{SummarizedExperiment}}
+object}
 \usage{
 loadDeconvDataFromSummarizedExperiment(object, se.object, name.data = NULL)
 }
 \arguments{
-\item{object}{\code{DigitalDLSorter} object with \code{trained.model} slot.}
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object with
+\code{trained.model} slot.}
 
-\item{se.object}{\code{SummarizedExperiment} object.}
+\item{se.object}{\code{\linkS4class{SummarizedExperiment}} object.}
 
-\item{name.data}{Name with which the data is stored in \code{DigitalDLSorter}
-object.}
+\item{name.data}{Name with which the data is stored in
+\code{\linkS4class{DigitalDLSorter}} object.}
+}
+\value{
+\code{\linkS4class{DigitalDLSorter}} object with \code{deconv.data}
+slot with the new bulk-RNAseq samples loaded
 }
 \description{
-Load data in \code{\link{DigitalDLSorter}} object to deconvolute from
-\code{SummarizedExperiment} object.
+Load data in \code{\linkS4class{DigitalDLSorter}} object to deconvolute from
+\code{\linkS4class{SummarizedExperiment}} object.
 }
 \seealso{
 \code{\link{trainDigitalDLSorterModel}}

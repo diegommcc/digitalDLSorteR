@@ -4,7 +4,7 @@
 \alias{training.history}
 \alias{training.history<-}
 \title{Get and set \code{training.history} slot in a
-\code{\linkS4class{DigitalDLSorterDNN}} object.}
+\code{\linkS4class{DigitalDLSorterDNN}} object}
 \usage{
 training.history(object)
 
@@ -14,9 +14,9 @@ training.history(object) <- value
 \item{object}{A \code{\linkS4class{DigitalDLSorterDNN}} object.}
 
 \item{value}{A \code{keras_training_history} object with training history of
-DNN model}
+Deep Neural Network model}
 }
 \description{
 Get and set \code{training.history} slot in a
-\code{\linkS4class{DigitalDLSorterDNN}} object.
+\code{\linkS4class{DigitalDLSorterDNN}} object
 }

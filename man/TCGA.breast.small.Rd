@@ -3,7 +3,7 @@
 \docType{data}
 \name{TCGA.breast.small}
 \alias{TCGA.breast.small}
-\title{Breast cancer bulk RNA-Seq samples from TCGA Research Network.}
+\title{Breast cancer bulk RNA-Seq samples from TCGA Research Network}
 \format{
 An object of class \code{matrix} (inherits from \code{array}) with 44831 rows and 15 columns.
 }
@@ -14,8 +14,8 @@ An object of class \code{matrix} (inherits from \code{array}) with 44831 rows an
 TCGA.breast.small
 }
 \description{
-Subset of Breast cancer bulk RNA-Seq samples from TCGA Research Network.
-FPKMs were transformed in TPMs and aggregated based on SYMBOL genes.
+Subset of breast cancer bulk RNA-Seq samples from TCGA Research Network.
+FPKMs were transformed to TPMs and aggregated based on SYMBOL genes.
 }
 \references{
 Koboldt, D. C., Fulton, R. S., McLellan, M. D., Schmidt, H.,

@@ -4,7 +4,7 @@
 \alias{test.metrics}
 \alias{test.metrics<-}
 \title{Get and set \code{test.metrics} slot in a
-\code{\linkS4class{DigitalDLSorterDNN}} object.}
+\code{\linkS4class{DigitalDLSorterDNN}} object}
 \usage{
 test.metrics(object)
 
@@ -14,9 +14,9 @@ test.metrics(object) <- value
 \item{object}{A \code{\linkS4class{DigitalDLSorterDNN}} object.}
 
 \item{value}{A \code{list} object with the resulting metrics after prediction
-on test data with DNN model.}
+on test data with Deep Neural Network model.}
 }
 \description{
 Get and set \code{test.metrics} slot in a
-\code{\linkS4class{DigitalDLSorterDNN}} object.
+\code{\linkS4class{DigitalDLSorterDNN}} object
 }

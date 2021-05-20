@@ -15,10 +15,10 @@ deconvDigitalDLSorterObj(
 )
 }
 \arguments{
-\item{object}{\code{\link{DigitalDLSorter}} object with \code{trained.data}
-and \code{deconv.data} slots.}
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object with
+\code{trained.data} and \code{deconv.data} slots.}
 
-\item{name.data}{Name of the data store in \code{DigitalDLSorter} object. If
+\item{name.data}{Name of the data stored in \code{DigitalDLSorter} object. If
 it is not provided, the first data set will be used.}
 
 \item{batch.size}{Number of samples per gradient update. If unspecified,
@@ -28,36 +28,35 @@ it is not provided, the first data set will be used.}
 
 \item{simplify.set}{List specifying which cell types should be compressed
 into a new label whose name will be the list item. See examples for
-details. The results are stored in a list with normal and simpli.majority
-results (if provided). The name of the element in the list is
-\code{'simpli.set'}.}
+details. If provided, results are stored in a list with 'raw' and
+'simpli.set' results.}
 
 \item{simplify.majority}{List specifying which cell types should be
-compressed into the cell types with greater proportion in each sample.
+compressed into the cell type with greater proportion in each sample.
 Unlike \code{simplify.set}, it allows to maintain the complexity of the
 results while compressing the information, because it is not created a new
-label. The results are stored in a list with normal and simpli.set results
-(if provided). The name of the element in the list is
-\code{'simpli.majority'}.}
+label. If provided, the results are stored in a list with 'raw' and
+'simpli.majority' results (if provided).}
 
 \item{verbose}{Show informative messages during the execution.}
 }
 \value{
-A \code{data.frame} with samples (\eqn{i}) as rows and cell types
-(\eqn{j}) as columns. Each entry represents the proportion of \eqn{j} cell
-type in \eqn{i} sample.
+\code{\linkS4class{DigitalDLSorter}} object with
+\code{deconv.results} slot. The resulting information is a data frame with
+samples (\eqn{i}) as rows and cell types (\eqn{j}) as columns. Each entry
+represents the proportion of \eqn{j} cell type in \eqn{i} sample.
 }
 \description{
 Deconvolute bulk gene expression samples (bulk RNA-Seq) enumerating and
 quantifying the proportion of cell types present in a bulk sample. This
-function needs a \code{DigitalDLSorter} object with a trained DNN model
-(\code{\link{trained.model}} slot) and bulk samples for deconvoluting in
-\code{deconv.data} slot.
+function needs a \code{DigitalDLSorter} object with a trained Deep Neural
+Network model (\code{\link{trained.model}} slot) and the new bulk samples
+that will be deconvoluted in \code{deconv.data} slot.
 }
 \details{
-This function is oriented for users that have trained a DNN model using their
-own data. If you want to use a pre-trained model, see
-\code{\link{deconvDigitalDLSorter}}.
+This function is intended for users who have built a devonvolution model
+using their own single-cell RNAseq data. If you want to use a pre-trained
+model, see \code{?\link{deconvDigitalDLSorter}}.
 }
 \examples{
 ## to ensure compatibility
@@ -68,8 +67,17 @@ simplify <- list(Tumor = c("ER+", "HER2+", "ER+ and HER2+", "TNBC"),
                  Bcells = c("Bmem", "BGC"))
 
 ## all results are stored in DigitalDLSorter object
-DDLSSmallCompleted <- deconvDigitalDLSorterObj(
-  object = DDLSSmallCompleted,
+TCGA.se <- SummarizedExperiment::SummarizedExperiment(
+  assays = list(counts = TCGA.breast.small),
+  rowData = data.frame(rownames(TCGA.breast.small)),
+  colData = data.frame(colnames(TCGA.breast.small)),
+)
+DDLSChungComp <- loadDeconvDataFromSummarizedExperiment(
+  object = DDLSChungComp, se.object = TCGA.se,
+  name.data = "TCGA.breast"
+)
+DDLSChungComp <- deconvDigitalDLSorterObj(
+  object = DDLSChungComp,
   name.data = "TCGA.breast",
   simplify.set = simplify,
   simplify.majority = simplify
@@ -84,5 +92,5 @@ data. Frontiers in Genetics 10, 978. doi:
 }
 \seealso{
 \code{\link{trainDigitalDLSorterModel}}
-\code{\link{DigitalDLSorter}}
+\code{\linkS4class{DigitalDLSorter}}
 }

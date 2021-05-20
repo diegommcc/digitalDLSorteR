@@ -4,7 +4,7 @@
 \alias{model}
 \alias{model<-}
 \title{Get and set \code{model} slot in a
-\code{\code{\linkS4class{DigitalDLSorterDNN}}} object.}
+\code{\linkS4class{DigitalDLSorterDNN}} object}
 \usage{
 model(object)
 
@@ -14,9 +14,9 @@ model(object) <- value
 \item{object}{A \code{\linkS4class{DigitalDLSorterDNN}} object.}
 
 \item{value}{A \code{keras.engine.sequential.Sequential} object with a
-trained DNN model.}
+trained Deep Neural Network model.}
 }
 \description{
 Get and set \code{model} slot in a
-\code{\code{\linkS4class{DigitalDLSorterDNN}}} object.
+\code{\linkS4class{DigitalDLSorterDNN}} object
 }

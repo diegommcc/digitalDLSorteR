@@ -4,7 +4,7 @@
 \alias{prob.cell.types}
 \alias{prob.cell.types<-}
 \title{Get and set \code{prob.cell.types} slot in a
-\code{\linkS4class{DigitalDLSorter}} object.}
+\code{\linkS4class{DigitalDLSorter}} object}
 \usage{
 prob.cell.types(object, type.data = "both")
 
@@ -13,13 +13,13 @@ prob.cell.types(object, type.data = "both") <- value
 \arguments{
 \item{object}{A \code{\linkS4class{DigitalDLSorter}} object.}
 
-\item{type.data}{Element of the list. Can be 'train', 'test' or 'both' (the
-last by default).}
+\item{type.data}{Element of the list. Can be \code{'train'}, \code{'test'} or
+\code{'both'} (the last by default).}
 
 \item{value}{A list with two elements, train and test, each one with a
 \code{\linkS4class{ProbMatrixCellTypes}} object.}
 }
 \description{
 Get and set \code{prob.cell.types} slot in a
-\code{\linkS4class{DigitalDLSorter}} object.
+\code{\linkS4class{DigitalDLSorter}} object
 }
