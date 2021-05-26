@@ -31,12 +31,12 @@ NULL
 #'
 #' @param object \code{\linkS4class{DigitalDLSorter}} object with a
 #'   \code{single.cell.real} slot.
+#' @param cell.type.column Name or column number corresponding to cell type of
+#'   each cell in cells metadata.
 #' @param cell.ID.column Name or column number corresponding to cell names of
 #'   expression matrix in cells metadata.
 #' @param gene.ID.column Name or column number corresponding to notation used
 #'   for features/genes in genes metadata.
-#' @param cell.type.column Name or column number corresponding to cell type of
-#'   each cell in cells metadata.
 #' @param cell.cov.columns Name or column number(s) in cells metadata that will
 #'   be used as covariates during the fitting of the model (if no covariates are
 #'   used, set it empty or \code{NULL}).
@@ -96,9 +96,9 @@ NULL
 #'   
 estimateZinbwaveParams <- function(
   object,
+  cell.type.column,
   cell.ID.column,
   gene.ID.column,
-  cell.type.column,
   cell.cov.columns,
   gene.cov.columns,
   subset.cells = NULL,
@@ -147,7 +147,7 @@ estimateZinbwaveParams <- function(
   )
   # check if cell type variable has at least two levels
   if (length(unique(list.data[[2]][, cell.type.column])) < 2) 
-    stop(x, " must have 2 or more unique elements")  
+    stop("'cell.type.column' must have 2 or more unique elements")  
   # if cell.cov.columns is provided, check if everything is correct
   if (!(missing(cell.cov.columns) || is.null(cell.cov.columns))) {
     lapply(
@@ -522,9 +522,11 @@ estimateZinbwaveParams <- function(
     stop("Some cell types have zero cells. Please, provide a greater 'total.subset'")
   
   if (verbose) {
-    message("=== Number of cells for each cell type:\n",
-            paste0("    - ", names(nums.cells), ": ", nums.cells, collapse = "\n"), 
-            "\n")
+    message(
+      "=== Number of cells for each cell type:\n",
+      paste0("    - ", names(nums.cells), ": ", nums.cells, collapse = "\n"), 
+      "\n"
+    )
   }
   # random sampling of cells
   pos <- sapply(
@@ -536,7 +538,7 @@ estimateZinbwaveParams <- function(
   
   counts <- counts[, pos]
   if (!is(counts, "dgCMatrix")) 
-    counts <- Matrix::Matrix(as.matrix(list.data[[1]]), sparse = TRUE)
+    counts <- Matrix::Matrix(as.matrix(counts), sparse = TRUE)
   
   return(list(counts, cells.metadata[pos, ]))
 }

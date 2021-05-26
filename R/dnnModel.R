@@ -3,6 +3,8 @@
 #' @importFrom tools file_path_sans_ext
 NULL
 
+globalVariables(c(".dataForDNN"))
+
 ################################################################################
 ######################## Train and evaluate DNN model ##########################
 ################################################################################
@@ -122,8 +124,9 @@ NULL
 #' @examples
 #' ## to ensure compatibility
 #' tensorflow::tf$compat$v1$disable_eager_execution()
-#' DDLSChung <- trainDigitalDLSorterModel(
+#' DDLSChungComp <- trainDigitalDLSorterModel(
 #'   object = DDLSChungComp,
+#'   on.the.fly = TRUE,
 #'   batch.size = 64,
 #'   num.epochs = 5 ## 20
 #' )
@@ -295,9 +298,11 @@ trainDigitalDLSorterModel <- function(
   pattern <- sufix.names
   ## set if samples will be generated on the fly
   if (on.the.fly) {
-    .dataForDNN <<- .dataForDNN.onFly
+    assign(.dataForDNN, .dataForDNN.onFly, inherits = TRUE, immediate = TRUE)
+    # .dataForDNN <<- .dataForDNN.onFly
   } else {
-    .dataForDNN <<- .dataForDNN.file
+    assign(.dataForDNN, .dataForDNN.file, inherits = TRUE, immediate = TRUE)
+    # .dataForDNN <<- .dataForDNN.file
   }
   
   ## training model
@@ -729,10 +734,11 @@ trainDigitalDLSorterModel <- function(
   if (is.null(names(simplify.set)) ||
       (length(names(simplify.set)) != length(simplify.set))) {
     stop("Each element in the list must contain the corresponding new class as name")
-  } else if (length(unique(names(simplify.set))) == length(simplify.set)) {
-    stop("There are not duplicated names to aggregate results. Items of the list ", 
-         "must have duplicated names under which to aggregate the results")
-  }
+  } 
+  # else if (length(unique(names(simplify.set))) == length(simplify.set)) {
+  #   stop("There are not duplicated names to aggregate results. Items of the list ", 
+  #        "must have duplicated names under which to aggregate the results")
+  # }
   ## check that elements are correct
   lapply(
     X = simplify.set, 

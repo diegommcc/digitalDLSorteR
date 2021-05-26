@@ -39,7 +39,7 @@ are generated without any parameter introduced by the user.
 }
 \examples{
 lapply(
-  1:6, function(x) {
+  1:5, function(x) {
     showProbPlot(DDLSChungComp,
                  type.data = "train",
                  set = x,

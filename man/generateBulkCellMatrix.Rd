@@ -130,14 +130,16 @@ probMatrix <- data.frame(
   from = c(rep(30, 4), 1, rep(0, 8)),
   to = c(rep(70, 4), 50, rep(15, 8))
 )
-
-DDLSChung <- generateBulkCellMatrix(
-  object = DDLSChung,
-  cell.type.column = "Cell_type",
-  prob.design = probMatrix,
-  num.bulk.samples = 100,
-  verbose = TRUE
-)
+\dontrun{
+  DDLSChung <- generateBulkCellMatrix(
+    object = DDLSChung,
+    cell.type.column = "Cell_type",
+    cell.ID.column = "Cell_ID",
+    prob.design = probMatrix,
+    num.bulk.samples = 100,
+    verbose = TRUE
+  )
+}
 
 }
 \references{

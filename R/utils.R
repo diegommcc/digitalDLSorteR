@@ -56,7 +56,7 @@ getProbMatrix <- function(object, type.data) {
 #'
 #' @examples
 #' lapply(
-#'   1:6, function(x) {
+#'   1:5, function(x) {
 #'     showProbPlot(DDLSChungComp,
 #'                  type.data = "train",
 #'                  set = x,
@@ -144,12 +144,15 @@ preparingToSave <- function(object) {
   rm.x.text = FALSE,
   title = "Results of deconvolution",
   legend.title = "Cell types",
-  angle = 90
+  angle = 90,
+  theme = NULL
 ) {
   df.res <- reshape2::melt(data * 100, value.name = "Proportion")
-
-  p <- ggplot(data = df.res, aes(x = Var1, y = Proportion, fill = Var2)) +
-    geom_bar(stat = "identity", color = color.line) + theme_classic()
+  p <- ggplot(
+    data = df.res, aes(
+      x = .data[["Var1"]], y = .data[["Proportion"]], fill = .data[["Var2"]]
+    )
+  ) + geom_bar(stat = "identity", color = color.line) + theme
   if (!missing(colors)) {
     if (length(colors) < length(unique(df.res$Var2)))
       stop("Number of colors introduced is not enough to the number of cell types")
@@ -160,9 +163,9 @@ preparingToSave <- function(object) {
   if (is.null(x.label)) {
     p <- p + theme(axis.title.x = element_blank())
   } else {
-    p <- p + labs(x = x.label)
+    p <- p + xlab(x.label)
   }
-  p <- p + ggtitle(title) + labs(fill = legend.title) + theme(
+  p <- p + ggtitle(title) + ggplot2::labs(fill = legend.title) + theme(
     plot.title = element_text(face = "bold", hjust = 0.5),
     axis.title = element_text(size = 12),
     axis.text.x = element_text(angle = angle, hjust = 1, vjust = 0.5),

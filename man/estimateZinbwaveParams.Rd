@@ -7,9 +7,9 @@ expression profiles}
 \usage{
 estimateZinbwaveParams(
   object,
+  cell.type.column,
   cell.ID.column,
   gene.ID.column,
-  cell.type.column,
   cell.cov.columns,
   gene.cov.columns,
   subset.cells = NULL,
@@ -23,14 +23,14 @@ estimateZinbwaveParams(
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object with a
 \code{single.cell.real} slot.}
 
+\item{cell.type.column}{Name or column number corresponding to cell type of
+each cell in cells metadata.}
+
 \item{cell.ID.column}{Name or column number corresponding to cell names of
 expression matrix in cells metadata.}
 
 \item{gene.ID.column}{Name or column number corresponding to notation used
 for features/genes in genes metadata.}
-
-\item{cell.type.column}{Name or column number corresponding to cell type of
-each cell in cells metadata.}
 
 \item{cell.cov.columns}{Name or column number(s) in cells metadata that will
 be used as covariates during the fitting of the model (if no covariates are

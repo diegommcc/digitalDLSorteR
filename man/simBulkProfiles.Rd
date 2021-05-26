@@ -115,14 +115,14 @@ generated 'on the fly' during the neural network training. See
 }
 \examples{
 ## loading all data in memory
-DDLSChungComp <- generateBulkSamples(
+DDLSChungComp <- simBulkProfiles(
   DDLSChungComp,
   type.data = "both"
 )
 
 \dontrun{
 ## using HDF5 as backend
-DDLSChungComp <- generateBulkSamples(
+DDLSChungComp <- simBulkProfiles(
   DDLSChungComp,
   threads = 2,
   type.data = "both",

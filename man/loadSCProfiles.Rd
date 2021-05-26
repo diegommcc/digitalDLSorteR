@@ -64,7 +64,7 @@ datset name will be used.}
 provided. It is an integer value between 0 (no compression) and 9 (highest
 and slowest compression). See
 \code{?\link[HDF5Array]{getHDF5DumpCompressionLevel}} from
-\code{\link{HDF5Array}} package for more information.}
+\pkg{HDF5Array} package for more information.}
 
 \item{chunk.dims}{Specifies dimensions that HDF5 chunk will have. If
 \code{NULL}, the default value is a vector of two items: the number of
@@ -84,6 +84,10 @@ default.}
 
 \item{project}{Name of the project for \code{\linkS4class{DigitalDLSorter}}
 object.}
+}
+\value{
+A \code{\linkS4class{DigitalDLSorter}} object with single-cell
+RNA-seq data provided loaded in single.cell.real slot
 }
 \description{
 Create a \code{\linkS4class{DigitalDLSorter}} object from single-cell RNA-seq
@@ -113,7 +117,7 @@ known composition.
 \examples{
 sc.chung.breast <- single.cell.real(DDLSLi)
 DDLSChungSmall <- loadSCProfiles(
-  single.cell.real = sc.chung.breast,
+  single.cell.data = sc.chung.breast,
   cell.ID.column = "Cell_ID",
   gene.ID.column = "external_gene_name",
   min.cells = 0,

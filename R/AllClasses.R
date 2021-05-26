@@ -248,7 +248,7 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #' during the process: \itemize{ \item \code{\linkS4class{SingleCellExperiment}}
 #' class for single-cell RNA-seq data, using sparse matrix from the
 #' \pkg{Matrix} package (\code{\linkS4class{dgCMatrix}} class) or
-#' \code{\linkS4class{HDF5Array}} class in the case of using HDF5 files as
+#' \code{HDF5Array} class in the case of using HDF5 files as
 #' back-end (see below for more information). \item
 #' \code{\linkS4class{ZINBParams}} class with estimated parameters for the
 #' simulation of new single-cell profiles. \item
@@ -262,7 +262,7 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #'
 #' @slot single.cell.real Real single-cell data stored in a
 #'   \code{SingleCellExperiment} object. The count matrix is stored as
-#'   \code{\linkS4class{dgCMatrix}} or \code{\linkS4class{HDF5Array}} objects.
+#'   \code{\linkS4class{dgCMatrix}} or \code{HDF5Array} objects.
 #' @slot zinb.params \code{\linkS4class{ZINBParams}} object with estimated
 #'   parameters for the simulation of new single-cell expression profiles.
 #' @slot single.cell.simul Simulated single-cell expression profiles from
@@ -272,7 +272,7 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #'   with known cell composition.
 #' @slot bulk.simul A list with train and test simulated bulk RNA-seq samples.
 #'   Each entry is a \code{\linkS4class{SummarizedExperiment}} object. The
-#'   count matrices can be stored as \code{\linkS4class{HDF5Array}} files using
+#'   count matrices can be stored as \code{HDF5Array} files using
 #'   HDF5 files as back-end in case of RAM memory limitations.
 #' @slot trained.model \code{\linkS4class{DigitalDLSorterDNN}} object with all
 #'   the information related to the trained model. See
@@ -297,8 +297,8 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #'   In order to provide a way of working with big amounts of data in machines
 #'   with RAM limitations, we provide the possibility of using HDF5 files as
 #'   back-end to store count matrices of both single-cell real/simulated and
-#'   bulk RNAseq profiles. To do this, we use \code{\linkS4class{HDF5Array}} and
-#'   \code{\linkS4class{DelayedArray}} classes from the homonymous packages.
+#'   bulk RNAseq profiles. To do this, we use \code{HDF5Array} and
+#'   \code{DelayedArray} classes from the homonymous packages.
 #'
 #'   Once the neural network is trained, it is possible to save it as RDS, RDA
 #'   and HDF5 files. Please, see \code{\linkS4class{DigitalDLSorterDNN}} for
@@ -353,7 +353,6 @@ setMethod(
   }
 )
 
-
 .sceShow <- function(sce) {
   cat(" ", dim(sce)[1], "features and", dim(sce)[2], "cells\n")
   if (is.null(rownames(sce))) rownames.sce <- "---"
@@ -387,7 +386,6 @@ setMethod(
   # cat("    colnames:", colnames.se, "\n")
 }
 
-
 .zinbModelShow <- function(zinb.model) {
   cat(paste0("ZinbParams object:\n",
              "  ", zinbwave::nSamples(zinb.model), " samples; ",
@@ -412,7 +410,6 @@ setMethod(
   if (res) return(TRUE)
   else return(FALSE)
 }
-
 
 setMethod(
   f = "show",

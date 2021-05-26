@@ -109,14 +109,16 @@ NULL
 #'   from = c(rep(30, 4), 1, rep(0, 8)),
 #'   to = c(rep(70, 4), 50, rep(15, 8))
 #' )
-#'
-#' DDLSChung <- generateBulkCellMatrix(
-#'   object = DDLSChung,
-#'   cell.type.column = "Cell_type",
-#'   prob.design = probMatrix,
-#'   num.bulk.samples = 100,
-#'   verbose = TRUE
-#' )
+#' \dontrun{
+#'   DDLSChung <- generateBulkCellMatrix(
+#'     object = DDLSChung,
+#'     cell.type.column = "Cell_type",
+#'     cell.ID.column = "Cell_ID",
+#'     prob.design = probMatrix,
+#'     num.bulk.samples = 100,
+#'     verbose = TRUE
+#'   )
+#' }
 #'
 #' @references Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq
@@ -147,6 +149,10 @@ generateBulkCellMatrix <- function(
   } else if (!train.freq.bulk <= 0.95 || !train.freq.bulk >= 0.05) {
     stop("'train.seq.bulk' argument must be less than or equal to 0.95 and ", 
          "greater than or equal to 0.05")
+  } else if (missing(cell.ID.column) || missing(cell.type.column) || 
+             is.null(cell.ID.column) || is.null(cell.type.column)) {
+    stop("'cell.ID.column' and 'cell.type.column' arguments are needed. Please, ", 
+         "look at ?estimateZinbwaveParams") 
   } else if (!is.data.frame(prob.design)) {
     stop(paste(
       "prob.design must be a data frame with three column names:",
@@ -184,7 +190,7 @@ generateBulkCellMatrix <- function(
       single.cell.simul(object) %>% 
         SingleCellExperiment::colData()
     )
-    # check if cell.type.column and cell.ID.column arecorrect
+    # check if cell.type.column and cell.ID.column are correct
     lapply(
       X = list(list.metadata[[1]], list.metadata[[2]]),
       FUN = function(x) {
@@ -957,14 +963,14 @@ setCount <- function(x, setList, sn, n.cells) {
 #'
 #' @examples
 #' ## loading all data in memory
-#' DDLSChungComp <- generateBulkSamples(
+#' DDLSChungComp <- simBulkProfiles(
 #'   DDLSChungComp,
 #'   type.data = "both"
 #' )
 #'
 #' \dontrun{
 #' ## using HDF5 as backend
-#' DDLSChungComp <- generateBulkSamples(
+#' DDLSChungComp <- simBulkProfiles(
 #'   DDLSChungComp,
 #'   threads = 2,
 #'   type.data = "both",

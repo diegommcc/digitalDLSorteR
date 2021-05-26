@@ -4,7 +4,8 @@
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom ggpubr stat_cor
 #' @importFrom stats aggregate as.formula sd var
-#' @importFrom ggplot2 ggplot aes geom_point geom_violin geom_boxplot geom_line geom_abline geom_text geom_hline geom_errorbar theme ggtitle element_text xlab ylab scale_color_manual scale_x_continuous scale_y_continuous guides guide_legend facet_wrap stat_smooth annotate stat_density_2d
+#' @importFrom ggplot2 ggplot aes geom_point geom_violin geom_boxplot geom_line geom_abline geom_text geom_hline geom_errorbar geom_bar theme ggtitle element_text xlab ylab scale_color_manual scale_fill_manual scale_x_continuous scale_y_continuous guides guide_legend facet_wrap stat_smooth annotate stat_density_2d element_blank
+#' @importFrom rlang .data
 NULL
 
 
@@ -92,11 +93,12 @@ calculateEvalMetrics <- function(
   tmd <- as_tibble(x = testProbsDeconv)
   tmd <- mutate(tmd, Sample = rownames(testProbsDeconv),
                 nMix = factor(rowSums(testProbsDeconv > 0)))
-  tmd <- tmd %>% gather(key = CellType, value = "Prob", -Sample, -nMix)
+  tmd <- tmd %>% gather(key = "CellType", value = "Prob", 
+                        -.data[["Sample"]], -.data[["nMix"]])
   ## probabilities target test
   pmd <- as_tibble(predictionsDeconv)
   pmd <- mutate(pmd, Sample = rownames(predictionsDeconv))
-  pmd <- pmd %>% gather(key = "CellType", value = "Pred", -Sample)
+  pmd <- pmd %>% gather(key = "CellType", value = "Pred", -.data[["Sample"]])
   ## union
   amd <- tmd %>% left_join(pmd, by = c("Sample", "CellType"))
   ## Add bins to Probs
@@ -382,7 +384,7 @@ distErrorPlot <- function(
   }
   amd <- trained.model(object)@test.deconv.metrics[[1]]
   if (filter.sc) {
-    amd <- amd %>% filter(Prob > 0 & Prob < 1)
+    amd <- amd %>% filter(.data[["Prob"]] > 0 & .data[["Prob"]] < 1)
   }
   if (missing(colors)) {
     colors <- color.list()
@@ -449,7 +451,11 @@ distErrorPlot <- function(
 }
 
 
-.labelsCCCFacet <- function(amd, facet.by, filter.sc) {
+.labelsCCCFacet <- function(
+  amd, 
+  facet.by, 
+  filter.sc
+) {
   unique.facet <- levels(factor(amd[[facet.by]]))
   df <- data.frame(
     unique.facet,
@@ -457,7 +463,7 @@ distErrorPlot <- function(
       X = unique.facet,
       FUN = function(x) {
         amd.fil <- amd[amd[[facet.by]] == x, c("Prob", "Pred")]
-        ccc <- yardstick::ccc(amd.fil, Prob, Pred)$.estimate
+        ccc <- yardstick::ccc(amd.fil, .data[["Prob"]], .data[["Pred"]])$.estimate
         return(paste("CCC =", round(ccc, 3)))
       }
     ))
@@ -571,7 +577,7 @@ corrExpPredPlot <- function(
   }
   amd <- trained.model(object)@test.deconv.metrics[[1]]
   if (filter.sc) {
-    amd <- amd %>% filter(Prob > 0 & Prob < 1)
+    amd <- amd %>% filter(.data[["Prob"]] > 0 & .data[["Prob"]] < 1)
   }
   if (missing(colors)) {
     colors <- color.list()
@@ -584,7 +590,7 @@ corrExpPredPlot <- function(
   else
     title.plot <- title
 
-  plot <- ggplot(amd, aes(x = Prob, y = Pred)) + theme
+  plot <- ggplot(amd, aes(x = .data[["Prob"]], y = .data[["Pred"]])) + theme
   plot <- plot + geom_point(size = size.point, alpha = alpha.point,
                             aes(colour = .data[[color.by]]),
                             position = "jitter", na.rm = TRUE) +
@@ -635,7 +641,7 @@ corrExpPredPlot <- function(
   } else {
     size.ann <- 4
     if (corr == "ccc") {
-      label <- yardstick::ccc(amd, Prob, Pred)$.estimate
+      label <- yardstick::ccc(amd, .data[["Prob"]], .data[["Pred"]])$.estimate
       plot <- plot + annotate(
         "text", hjust = 0,
         x = pos.x.label,
@@ -644,12 +650,14 @@ corrExpPredPlot <- function(
         size = size.ann
       )
     } else if (corr == "pearson") {
-      plot <- plot + stat_cor(method = "pearson",
-                              label.x = pos.x.label,
-                              label.y = pos.y.label,
-                              size = size.ann)
+      plot <- plot + stat_cor(
+        method = "pearson",
+        label.x = pos.x.label,
+        label.y = pos.y.label,
+        size = size.ann
+      )
     } else if (corr == "both") {
-      label <- yardstick::ccc(amd, Prob, Pred)$.estimate
+      label <- yardstick::ccc(amd, .data[["Prob"]], .data[["Pred"]])$.estimate
       plot <- plot + stat_cor(
         method = "pearson",
         label.x = pos.x.label,
@@ -766,21 +774,21 @@ blandAltmanLehPlot <- function(
   }
   amd <- trained.model(object)@test.deconv.metrics[[1]]
   if (filter.sc) {
-    amd <- amd %>% filter(Prob > 0 & Prob < 1)
+    amd <- amd %>% filter(.data[["Prob"]] > 0 & .data[["Prob"]] < 1)
   }
 
   if (log.2) {
     amd <- amd %>% mutate(
-      Mean = (log2(Prob + 0.001) + log2(Pred + 0.001)) / 2,
-      Diff = log2(Pred + 0.001) - log2(Prob + 0.001)
+      Mean = (log2(.data[["Prob"]] + 0.001) + log2(.data[["Pred"]] + 0.001)) / 2,
+      Diff = log2(.data[["Pred"]] + 0.001) - log2(.data[["Prob"]] + 0.001)
     )
     add.title <- "(log2 space)"
     x.lab <- "(log2(Pred) + log2(Exp))/2"
     y.lab <- "log2(Pred / Exp)"
   } else {
     amd <- amd %>% mutate(
-      Mean = (Prob + Pred) / 2,
-      Diff = (Prob - Pred)
+      Mean = (.data[["Prob"]] + .data[["Pred"]]) / 2,
+      Diff = (.data[["Prob"]] - .data[["Pred"]])
     )
     add.title <- "(normal space)"
     x.lab <- "(Pred + Exp)/2"
@@ -795,7 +803,8 @@ blandAltmanLehPlot <- function(
     if (length(colors) < length(unique(amd[[color.by]]))) {
       stop("Colors provided are not enought")
     }
-    plot <- ggplot(amd, aes(x = Mean, y = Diff, colour = .data[[color.by]])) +
+    plot <- ggplot(amd, aes(x = .data[["Mean"]], y = .data[["Diff"]], 
+                            colour = .data[[color.by]])) +
       geom_point(size = size.point, alpha = alpha.point) +
       scale_color_manual(values = colors, name = color.by) +
       guides(colour = guide_legend(override.aes = list(size = 1.5)))
@@ -804,7 +813,7 @@ blandAltmanLehPlot <- function(
       colors <- color.list()
       colors <- colors[1]
     }
-    plot <- ggplot(amd, aes(x = Mean, y = Diff)) +
+    plot <- ggplot(amd, aes(x = .data[["Mean"]], y = .data[["Diff"]])) +
       geom_point(size = size.point, color = colors, alpha = alpha.point)
   }
   if (!is.null(facet.by)) {
@@ -815,11 +824,15 @@ blandAltmanLehPlot <- function(
                               nrow = nrow, ncol = ncol, ...)
   }
   plot <- plot + theme +
-    geom_hline(aes(yintercept = mean(Diff)), linetype = "dashed") +
-    geom_hline(aes(yintercept = mean(Diff) + 1.96 * sd(Diff)),
-               linetype = "dashed", colour = "red") +
-    geom_hline(aes(yintercept = mean(Diff) - 1.96* sd(Diff)),
-               linetype = "dashed", colour = "red") +
+    geom_hline(aes(yintercept = mean(.data[["Diff"]])), linetype = "dashed") +
+    geom_hline(
+      aes(yintercept = mean(.data[["Diff"]]) + 1.96 * sd(.data[["Diff"]])),
+      linetype = "dashed", colour = "red"
+    ) +
+    geom_hline(
+      aes(yintercept = mean(.data[["Diff"]]) - 1.96* sd(.data[["Diff"]])),
+      linetype = "dashed", colour = "red"
+    ) +
     xlab(x.lab) + ylab(y.lab) +
     ggtitle(title.plot) +
     theme(plot.title = element_text(face = "bold", hjust = 0.5),

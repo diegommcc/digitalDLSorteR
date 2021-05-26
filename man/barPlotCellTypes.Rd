@@ -16,6 +16,7 @@ barPlotCellTypes(
   title = "Results of deconvolution",
   legend.title = "Cell types",
   angle = 90,
+  theme = NULL,
   ...
 )
 
@@ -29,7 +30,8 @@ barPlotCellTypes(
   rm.x.text = FALSE,
   title = "Results of deconvolution",
   legend.title = "Cell types",
-  angle = 90
+  angle = 90,
+  theme = NULL
 )
 
 \S4method{barPlotCellTypes}{ANY}(
@@ -40,7 +42,8 @@ barPlotCellTypes(
   rm.x.text = FALSE,
   title = "Results of deconvolution",
   legend.title = "Cell types",
-  angle = 90
+  angle = 90,
+  theme = NULL
 )
 }
 \arguments{
@@ -66,6 +69,8 @@ samples).}
 \item{legend.title}{Title of legend plot.}
 
 \item{angle}{Angle of text ticks.}
+
+\item{theme}{\pkg{ggplot2} theme.}
 
 \item{...}{Other arguments for specific methods.}
 
