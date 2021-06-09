@@ -149,9 +149,10 @@ considered cell types.
 \examples{
 ## to ensure compatibility
 tensorflow::tf$compat$v1$disable_eager_execution()
-DDLSChung <- trainDigitalDLSorterModel(
+DDLSChungComp <- trainDigitalDLSorterModel(
   object = DDLSChungComp,
-  batch.size = 64,
+  on.the.fly = TRUE,
+  batch.size = 24,
   num.epochs = 5 ## 20
 )
 

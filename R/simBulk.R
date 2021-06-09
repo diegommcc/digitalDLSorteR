@@ -215,8 +215,6 @@ generateBulkCellMatrix <- function(
     # list.metadata[[1]]$simCellName <- list.metadata[[1]][, cell.ID.column]
     list.metadata[[1]]$Simulated <- FALSE
     list.metadata[[1]]$sufix <- ""
-    print(colnames(list.metadata[[1]]))
-    print(colnames(list.metadata[[2]]))
     cells.metadata <- S4Vectors::rbind(list.metadata[[1]], list.metadata[[2]])  
   } else {
     cells.metadata <- single.cell.real(object) %>% 
@@ -289,8 +287,10 @@ generateBulkCellMatrix <- function(
       train.set <- sapply(
         X = unique(names(cells)), 
         FUN = function(x, cells, train.freq.cells) {
-          sample(cells[names(cells) == x], 
-                 size = round(length(cells[names(cells) == x]) * train.freq.cells))
+          sample(
+            cells[names(cells) == x], 
+            size = round(length(cells[names(cells) == x]) * train.freq.cells)
+          )
         }, cells = cells, train.freq.cells
       ) %>% unname() %>% unlist()  
     }
@@ -298,8 +298,10 @@ generateBulkCellMatrix <- function(
     train.set <- sapply(
       X = unique(names(cells)), 
       FUN = function(x, cells, train.freq.cells) {
-        sample(cells[names(cells) == x], 
-               size = round(length(cells[names(cells) == x]) * train.freq.cells))
+        sample(
+          cells[names(cells) == x], 
+          size = round(length(cells[names(cells) == x]) * train.freq.cells)
+        )
       }, cells = cells, train.freq.cells
     ) %>% unname() %>% unlist()
   }
@@ -354,8 +356,6 @@ generateBulkCellMatrix <- function(
     }
   )
   names(prob.list) <- prob.design[, cell.type.column]
-  # check if there are exclusive types --> change for introduce zeros
-  exclusive.types <- NULL
   
   n.cell.types <- length(unique(train.types))
   functions.list <- list(.generateSet1, .generateSet2, .generateSet3,
@@ -484,7 +484,6 @@ generateBulkCellMatrix <- function(
     cell.names = train.prob.matrix.names,
     set.list = train.set.list,
     set = train.set,
-    exclusive.types = exclusive.types,
     plots = train.plots,
     type.data = "train"
   )
@@ -494,7 +493,6 @@ generateBulkCellMatrix <- function(
     cell.names = test.prob.matrix.names,
     set.list = test.set.list,
     set = test.set,
-    exclusive.types = exclusive.types,
     plots = test.plots,
     type.data = "test"
   )
@@ -506,21 +504,37 @@ generateBulkCellMatrix <- function(
   return(object)
 }
 
-.violinPlot <- function(df, title, x = "CellType", y = "Prob") {
+.violinPlot <- function(
+  df, 
+  title, 
+  x = "CellType", 
+  y = "Prob"
+) {
   plot <- ggplot(df, aes(x = .data[[x]], y = .data[[y]])) +
     geom_violin() + ggtitle(title) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
   return(plot)
 }
 
-.boxPlot <- function(df, title, x = "CellType", y = "Prob") {
+.boxPlot <- function(
+  df, 
+  title, 
+  x = "CellType", 
+  y = "Prob"
+) {
   plot <- ggplot(df, aes(x = .data[[x]], y = .data[[y]])) +
     geom_boxplot() + ggtitle(title) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
   return(plot)
 }
 
-.linesPlot <- function(df, title, x = "CellType", y = "Prob", group = "Sample") {
+.linesPlot <- function(
+  df, 
+  title, 
+  x = "CellType", 
+  y = "Prob", 
+  group = "Sample"
+) {
   plot <- ggplot(df, aes(x = .data[[x]], y = .data[[y]],
                         group = .data[[group]])) +
     geom_line(colour = "grey60") + ggtitle(title) +
@@ -528,7 +542,12 @@ generateBulkCellMatrix <- function(
   return(plot)
 }
 
-.plotsQCSets <- function(probs, prob.matrix, n, set) {
+.plotsQCSets <- function(
+  probs, 
+  prob.matrix, 
+  n, 
+  set
+) {
   title <- paste0("Bulk Probability Dist. Set ", n, " (", set, ")")
   n.samples <- paste("# samples:", dim(probs)[1])
   plots.functions <- list(.violinPlot, .boxPlot, .linesPlot)
@@ -546,7 +565,12 @@ generateBulkCellMatrix <- function(
   return(plot.list)
 }
 
-setCount <- function(x, setList, sn, n.cells) {
+setCount <- function(
+  x, 
+  setList, 
+  sn, 
+  n.cells
+) {
   names(x) <- sn
   sc <- c()
   x.set <- .setHundredLimit(x = (x * n.cells) / 100, limit = n.cells)
@@ -560,17 +584,12 @@ setCount <- function(x, setList, sn, n.cells) {
   return(sc[seq(n.cells)])
 }
 
+# introduce zeros in selected proportions. when these samples will be 
+# simulated, they will have zero values in these cell types
 .cellExcluder <- function(vec, index.ex) {
-  sel <- sample(index.ex, length(index.ex) - 1)
-  vec[sel] <- 0
-  return(list(vec, sel))
-}
-
-.cellExcluder2 <- function(vec) {
-  num.zero <- sample(seq(0, length(vec)), size = 1)
-  sel <- sample(seq(1:10), size = num.zero)
-  vec[sel] <- 0
-  return(list(vec, sel))
+  # sel <- sample(x = index.ex, size = length(index.ex)) # -1
+  vec[index.ex] <- 0
+  return(list(vec, index.ex))
 }
 
 # recursive implementation, maybe improvable
@@ -609,6 +628,8 @@ setCount <- function(x, setList, sn, n.cells) {
     return(x)
 }
 
+# wrapper function of .setHundredLimit. This function is able to enter zero
+# values while respecting all other proportions
 .adjustHundred <- function(
   x,
   prob.list,
@@ -688,19 +709,36 @@ setCount <- function(x, setList, sn, n.cells) {
   probs <- list()
   # n <- ceiling(num * s.cells/1000)
   n <- num
+  if (!is.null(index.ex)) {
+    sampling <- function(prob.list) {
+      x <- .cellExcluder(
+        vec = unlist(lapply(X = prob.list, FUN = sample, 1)),
+        index.ex = index.ex
+      )
+      return(x[[1]])
+    }
+  } else {
+    sampling <- function(prob.list) unlist(lapply(X = prob.list, FUN = sample, 1))
+  }
   while (length(probs) < n) {
-    probs[[length(probs) + 1]] <- unlist(lapply(X = prob.list, FUN = sample, 1))
+    probs[[length(probs) + 1]] <- sampling(prob.list = prob.list)
   }
   probs <- lapply(X = probs, FUN = function(x) return(round(x * 100 / sum(x))))
   probs <- lapply(X = probs, FUN = sample)
   probs <- lapply(X = probs, FUN = function(x) x[names(prob.list)])
-  probs <- matrix(unlist(probs), nrow = n, byrow = T)
-  probs <- t(apply(X = probs, 1, FUN = function(x) {
-    .adjustHundred(x = x,
-                   prob.list = prob.list,
-                   index.ex = index.ex
+  probs <- matrix(unlist(probs), nrow = n, byrow = TRUE)
+  probs <- t(
+    apply(
+      X = probs, 1, 
+      FUN = function(x) {
+        .adjustHundred(
+          x = x,
+          prob.list = prob.list,
+          index.ex = index.ex
+        )
+      }
     )
-  }))
+  )
   colnames(probs) <- colnames(prob.matrix)
   return(probs)
 }
@@ -722,7 +760,6 @@ setCount <- function(x, setList, sn, n.cells) {
     sampling <- function(p) sample(p)
   }
   probs <- list()
-  # n <- ceiling(num * s.cells/1000)
   n <- num
   while (length(probs) < n) {
     p <- rep(0, n.cell.types)
@@ -776,14 +813,19 @@ setCount <- function(x, setList, sn, n.cells) {
   colnames(probs) <- colnames(prob.matrix)
   probs <- round(probs * 100 / rowSums(probs))
   if (any(rowSums(probs) != 100)) {
-    probs <- t(apply(X = probs, MARGIN = 1,
-                     FUN = function(x) {
-                       .adjustHundred(
-                         x = x,
-                         prob.list = prob.list,
-                         index.ex = index.ex
-                       )
-                     }))  
+    probs <- t(
+      apply(
+        X = probs, 
+        MARGIN = 1,
+        FUN = function(x) {
+          .adjustHundred(
+            x = x,
+            prob.list = prob.list,
+            index.ex = index.ex
+          )
+        }
+      )
+    )  
   }
   return(probs)
 }
@@ -811,23 +853,26 @@ setCount <- function(x, setList, sn, n.cells) {
     }
     p[1] <- p[1] + 1
     p <- sample(p)
-    if (sum(p == 0) < n.cell.types) {
-      probs[[length(probs) + 1]] <- p
-    }
+    if (sum(p == 0) < n.cell.types) probs[[length(probs) + 1]] <- p
   }
   probs <- lapply(X = probs, FUN = sample)
   probs <- matrix(unlist(probs), nrow = n, byrow = T)
   colnames(probs) <- colnames(prob.matrix)
   probs <- round(probs * 100 / rowSums(probs))
   if (any(rowSums(probs) != 100)) {
-    probs <- t(apply(X = probs, MARGIN = 1,
-                     FUN = function(x) {
-                       .adjustHundred(
-                         x = x,
-                         prob.list = prob.list,
-                         index.ex = index.ex
-                       )
-                     }))
+    probs <- t(
+      apply(
+        X = probs, 
+        MARGIN = 1,
+        FUN = function(x) {
+          .adjustHundred(
+            x = x,
+            prob.list = prob.list,
+            index.ex = index.ex
+          )
+        }
+      )
+    )
   }
   return(probs)
 }
@@ -855,10 +900,13 @@ setCount <- function(x, setList, sn, n.cells) {
   }
   probs <- round(probs * 100)
   if (any(rowSums(probs) != 100)) {
-    probs <- t(apply(X = probs, MARGIN = 1,
-                     FUN = function(x) .setHundredLimit(
-                       x = x, index.ex = index.ex
-                     )))  
+    probs <- t(
+      apply(
+        X = probs, 
+        MARGIN = 1,
+        FUN = function(x) .setHundredLimit(x = x, index.ex = index.ex)
+      )
+    )  
   }
   colnames(probs) <- colnames(prob.matrix)
   return(probs)

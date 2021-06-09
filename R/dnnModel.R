@@ -127,7 +127,7 @@ globalVariables(c(".dataForDNN"))
 #' DDLSChungComp <- trainDigitalDLSorterModel(
 #'   object = DDLSChungComp,
 #'   on.the.fly = TRUE,
-#'   batch.size = 64,
+#'   batch.size = 24,
 #'   num.epochs = 5 ## 20
 #' )
 #'
@@ -298,11 +298,11 @@ trainDigitalDLSorterModel <- function(
   pattern <- sufix.names
   ## set if samples will be generated on the fly
   if (on.the.fly) {
-    assign(.dataForDNN, .dataForDNN.onFly, inherits = TRUE, immediate = TRUE)
-    # .dataForDNN <<- .dataForDNN.onFly
+    # assign(.dataForDNN, .dataForDNN.onFly, inherits = TRUE, immediate = TRUE)
+    .dataForDNN <<- .dataForDNN.onFly
   } else {
-    assign(.dataForDNN, .dataForDNN.file, inherits = TRUE, immediate = TRUE)
-    # .dataForDNN <<- .dataForDNN.file
+    # assign(.dataForDNN, .dataForDNN.file, inherits = TRUE, immediate = TRUE)
+    .dataForDNN <<- .dataForDNN.file
   }
   
   ## training model

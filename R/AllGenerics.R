@@ -151,42 +151,6 @@ setMethod(f = "set<-",
             return(object)
           })
 
-## exclusive.types (deprecated)
-
-#' @title Get and set \code{exclusive.types} slot in a
-#'   \code{\linkS4class{ProbMatrixCellTypes}} object (deprecated)
-#'
-#' @docType methods
-#' @name exclusive.types
-#' @rdname exclusive.types
-#' @aliases exclusive.types,ProbMatrixCellTypes-method
-#' 
-#' @param object \code{\linkS4class{ProbMatrixCellTypes}} object.
-#'
-#' @export exclusive.types
-#'
-setGeneric("exclusive.types", function(object) standardGeneric("exclusive.types"))
-setMethod(f = "exclusive.types",
-          signature = "ProbMatrixCellTypes",
-          definition = function(object) object@exclusive.types)
-
-#' @docType methods
-#' @rdname exclusive.types
-#' @aliases exclusive.types<-,ProbMatrixCellTypes-method
-#' 
-#' @param value Optional slot that contains the exclusive cell types in the
-#'   experiment if they are provided. NULL by default. 
-#'
-#' @export exclusive.types<-
-#'
-setGeneric("exclusive.types<-", function(object, value) standardGeneric("exclusive.types<-"))
-setMethod(f = "exclusive.types<-",
-          signature = "ProbMatrixCellTypes",
-          definition = function(object, value) {
-            object@exclusive.types <- value
-            return(object)
-          })
-
 ## plots
 
 #' @title Get and set \code{plots} slot in a
