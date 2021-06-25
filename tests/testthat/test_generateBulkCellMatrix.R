@@ -13,7 +13,7 @@ DDLSLi <- simSCProfiles(
 probMatrixValid <- data.frame(
   Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M", 
                 "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
-  from = c(rep(0, 8), 1, 30),
+  from = c(rep(1, 8), 1, 30),
   to = c(rep(15, 8), 50, 70)
 )
 
@@ -115,7 +115,7 @@ test_that("Wrong prob.design", {
   probMatrixInvalid <-  data.frame(
     Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M", 
                   "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
-    from = c(rep(0, 8), 1, 40),
+    from = c(rep(1, 8), 1, 40),
     to = c(rep(15, 8), 50, 70)
   )
   expect_error(generateBulkCellMatrix(
@@ -159,7 +159,7 @@ test_that("Wrong proportion arguments", {
     cell.ID.column = "Cell_ID",
     cell.type.column = "Cell_Type",
     prob.design = probMatrixValid,
-    proportions.test = c(10, 5, 60, 15, -50),
+    proportions.test = c(60, 5, 60, 15, -40),
     num.bulk.samples = 200,
     verbose = TRUE
   ), regexp = "Proportions cannot be lesser than zero")
