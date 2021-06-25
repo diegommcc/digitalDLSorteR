@@ -442,9 +442,8 @@ distErrorPlot <- function(
   plot <- plot + scale_color_manual(values = colors, name = color.by) +
     ggtitle(title.plot) + xlab(x.by) + ylab(error) +
     guides(colour = guide_legend(override.aes = list(size = 1.5))) +
-    theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1),
-          plot.title = element_text(face = "bold", hjust = 0.5),
-          legend.title = element_text(face = "bold"))
+    theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1)) + 
+    DigitalDLSorterTheme()
   if (!is.null(ylimit)) plot <- plot + ggplot2::ylim(0, ylimit)
 
   return(plot)
@@ -602,8 +601,7 @@ corrExpPredPlot <- function(
     stat_smooth(method = "lm", colour  = "darkblue",
                 alpha = 0.8, size = 0.8, na.rm = TRUE) +
     guides(colour = guide_legend(override.aes = list(size = 1.5))) +
-    theme(plot.title = element_text(face = "bold", hjust = 0.5),
-          legend.title = element_text(face = "bold"))
+    DigitalDLSorterTheme()
   if (!is.null(facet.by)) {
     if (!facet.by %in% c("nMix", "CellType")) {
       stop("'facet.by' provided is not valid. Options available are: 'nMix', ",
@@ -835,8 +833,7 @@ blandAltmanLehPlot <- function(
     ) +
     xlab(x.lab) + ylab(y.lab) +
     ggtitle(title.plot) +
-    theme(plot.title = element_text(face = "bold", hjust = 0.5),
-          legend.title = element_text(face = "bold"))
+    DigitalDLSorterTheme()
   if (density)
     plot <- plot + stat_density_2d(colour = color.density,
                                    alpha = 0.9,
@@ -941,8 +938,8 @@ barErrorPlot <- function(
                            ymax = .data[[err.mean]] + .data[[err.dis]])) +
     theme + geom_errorbar(width = 0.2) + geom_point(size = 1.5) +
     xlab(by) + ylab(error) + ggtitle(title.plot) +
-    theme(axis.text.x = element_text(size = 8, angle = angle, hjust = hjust, vjust = 0.5),
-          plot.title = element_text(face = "bold", hjust = 0.5),
-          legend.title = element_text(face = "bold"))
+    theme(axis.text.x = element_text(size = 8, angle = angle, 
+                                     hjust = hjust, vjust = 0.5)) + 
+    DigitalDLSorterTheme()
   return(plot)
 }

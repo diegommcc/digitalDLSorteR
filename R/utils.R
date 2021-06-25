@@ -1,3 +1,6 @@
+#' @importFrom ggplot2 theme_bw
+NULL
+
 #' Getter function for cell composition matrix
 #'
 #' Getter function for cell composition matrix. This function allows to access
@@ -458,4 +461,11 @@ loadDeconvDataFromSummarizedExperiment <- function(
   deconv.data(object) <- list.data
   
   return(object)
+}
+
+DigitalDLSorterTheme <- function() {
+  digitalTheme <- ggplot2::theme_bw() + theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.title = element_text(face = "bold")
+  )
 }

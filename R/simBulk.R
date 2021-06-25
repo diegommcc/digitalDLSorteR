@@ -560,7 +560,7 @@ generateBulkCellMatrix <- function(
   # first three plots
   plot.list <- lapply(plots.functions, function(f) f(df, paste(title, n.samples)))
   # final plots
-  dummy <- t(apply(as.matrix(prob.matrix), 1, sort, decreasing = T))
+  dummy <- t(apply(as.matrix(stats::na.omit(prob.matrix)), 1, sort, decreasing = T))
   df <- reshape2::melt(dummy)
   colnames(df) <- c("Sample", "nMix", "Prob")
   df$nMix <- factor(df$nMix)
