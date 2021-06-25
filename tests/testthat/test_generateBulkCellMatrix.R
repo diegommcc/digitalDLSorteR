@@ -140,7 +140,7 @@ test_that("Wrong proportion arguments", {
     proportions.train = c(1, 99),
     num.bulk.samples = 200,
     verbose = TRUE
-  ), regexp = "Proportions must be a vector of six elements")
+  ), regexp = "Proportions must be a vector of 5 elements")
 
   ## not add 100
   expect_error(generateBulkCellMatrix(
@@ -148,7 +148,7 @@ test_that("Wrong proportion arguments", {
     cell.ID.column = "Cell_ID",
     cell.type.column = "Cell_Type",
     prob.design = probMatrixValid,
-    proportions.test = c(10, 5, 20, 15, 10, 42),
+    proportions.test = c(10, 5, 20, 15, 52),
     num.bulk.samples = 200,
     verbose = TRUE
   ), regexp = "Proportions provided must add up to 100")
@@ -159,7 +159,7 @@ test_that("Wrong proportion arguments", {
     cell.ID.column = "Cell_ID",
     cell.type.column = "Cell_Type",
     prob.design = probMatrixValid,
-    proportions.test = c(10, 5, 60, 15, 50, -40),
+    proportions.test = c(10, 5, 60, 15, -50),
     num.bulk.samples = 200,
     verbose = TRUE
   ), regexp = "Proportions cannot be lesser than zero")
@@ -170,7 +170,7 @@ test_that("Wrong proportion arguments", {
     cell.ID.column = "Cell_ID",
     cell.type.column = "Cell_Type",
     prob.design = probMatrixValid,
-    proportions.train = c(0, 5, 20, 15, 10, -50),
+    proportions.train = c(0, 5, 20, 15, 10),
     num.bulk.samples = 200,
     verbose = TRUE
   ), regexp = "Proportions provided must add up to 100")
@@ -275,8 +275,8 @@ test_that(
     cell.type.column = "Cell_Type",
     prob.design = probMatrixValid,
     num.bulk.samples = num.bulk.samples,
-    proportions.train = c(10, 20, 1, 9, 50, 10),
-    proportions.test = c(50, 30, 1, 9, 5, 5),
+    proportions.train = c(10, 20, 1, 9, 60),
+    proportions.test = c(50, 30, 1, 9, 10),
     n.cells = n.cells,
     verbose = TRUE
   )

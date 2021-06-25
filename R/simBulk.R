@@ -377,7 +377,7 @@ generateBulkCellMatrix <- function(
     }
     index.ex <- .generateExcludedTypes(
       num = nums.train[n],
-      s.cells = s.cells,
+      s.cells = total.train,
       n.cell.types = n.cell.types,
       prob.zero = prob.zero[n]
     )
@@ -426,7 +426,7 @@ generateBulkCellMatrix <- function(
     }
     index.ex <- .generateExcludedTypes(
       num = nums.test[n],
-      s.cells = s.cells,
+      s.cells = total.test,
       n.cell.types = n.cell.types,
       prob.zero = prob.zero[n]
     )
