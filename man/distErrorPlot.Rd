@@ -10,7 +10,7 @@ distErrorPlot(
   colors,
   x.by = "CellType",
   facet.by = NULL,
-  color.by = "nMix",
+  color.by = "nCellTypes",
   filter.sc = TRUE,
   error.labels = FALSE,
   pos.x.label = 4.6,
@@ -42,16 +42,16 @@ default a list of custom colors provided by the package is used.}
 
 \item{x.by}{Variable used for X axis. When \code{facet.by} is not
 \code{NULL}, the best option is \code{pBin} (probability bins). The options
-are \code{nMix} (by number of different cell types), \code{CellType} (by
-cell type) and \code{pBin}.}
+are \code{nCellTypes} (by number of different cell types), \code{CellType}
+(by cell type) and \code{pBin}.}
 
 \item{facet.by}{Variable used to display data in different panels. If it is
 \code{NULL}, the plot is not separated into different panels. The options
-are \code{nMix} (by number of different cell types) and \code{CellType} (by
-cell type).}
+are \code{nCellTypes} (by number of different cell types) and
+\code{CellType} (by cell type).}
 
-\item{color.by}{Variable used to color data. The options are \code{nMix} and
-\code{CellType}.}
+\item{color.by}{Variable used to color data. The options are
+\code{nCellTypes} and \code{CellType}.}
 
 \item{filter.sc}{Boolean indicating whether to filter single-cell profiles
 and only display errors associated with bulk samples (\code{TRUE} by
@@ -93,7 +93,7 @@ ggplot2 plot
 Generate violin plot or box plot to show how errors are distributed by
 proportion bins of 0.1. The errors can be displayed all mixed or splited by
 cell type (\code{CellType}) or number of cell types present in the samples
-(\code{nMix}). See \code{facet.by} argument and examples for more
+(\code{nCellTypes}). See \code{facet.by} argument and examples for more
 information.
 }
 \examples{
@@ -101,7 +101,7 @@ distErrorPlot(
   object = DDLSChungComp,
   error = "AbsErr",
   facet.by = "CellType",
-  color.by = "nMix",
+  color.by = "nCellTypes",
   error.labels = TRUE
 )
 

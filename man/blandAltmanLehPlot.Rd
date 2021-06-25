@@ -2,8 +2,8 @@
 % Please edit documentation in R/evalMetrics.R
 \name{blandAltmanLehPlot}
 \alias{blandAltmanLehPlot}
-\title{Generate Bland-Altman agreement plots between predicted and expected cell type
-proportions from test data}
+\title{Generate Bland-Altman agreement plots between predicted and expected cell
+type proportions from test data}
 \usage{
 blandAltmanLehPlot(
   object,
@@ -31,13 +31,13 @@ containing metrics in \code{test.deconv.metrics} slot.}
 equal to or greater than the levels of \code{color.by} will be accepted. By
 default it is used a list of custom colors provided by the package.}
 
-\item{color.by}{Variable used to color data. The options are \code{nMix} and
-\code{CellType}.}
+\item{color.by}{Variable used to color data. The options are
+\code{nCellTypes} and \code{CellType}.}
 
 \item{facet.by}{Variable used to display data in different panels. If it is
 \code{NULL}, the plot is not separated into different panels. The options
-are \code{nMix} (by number of different cell types) and \code{CellType} (by
-cell type).}
+are \code{nCellTypes} (by number of different cell types) and
+\code{CellType} (by cell type).}
 
 \item{log.2}{If show  Bland-Altman agreement plot in log2 space (\code{FALSE}
 by default).}
@@ -71,8 +71,8 @@ equal to \code{TRUE}.}
 \description{
 Generate Bland-Altman agreement plots between predicted and expected cell
 type proportions from test data. The Bland-Altman agreement plots can be
-displayed all mixed or splited by cell type (\code{CellType}) or the
-number of cell types present in the sample (\code{nMix}). See \code{facet.by}
+displayed all mixed or splited by cell type (\code{CellType}) or the number
+of cell types present in the sample (\code{nCellTypes}). See \code{facet.by}
 argument and examples for more information.
 }
 \examples{

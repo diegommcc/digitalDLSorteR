@@ -26,13 +26,12 @@ proportional absolute error (ppAbsErr), squared error (SqrErr) and
 proportional squared error (ppSqrErr) are calculated for each test sample.
 Moreover, each one of these metrics is aggregated using their mean values by
 three criteria: each cell type (\code{CellType}), probability bins in ranges
-of 0.1 (\code{pBin}), number of different cell types present in the sample
-\code{nMix} and a combination of \code{pBin} and \code{nMix}
-(\code{pBinNMix}). Finally, the process is repeated only for bulk samples,
-removing single-cell profiles from the evaluation. Evaluation metrics are
-available in \code{test.deconv.metrics} slot of
-\code{\linkS4class{DigitalDLSorterDNN}} object (\code{trained.model} slot of
-\code{\linkS4class{DigitalDLSorter}} object).
+of 0.1 (\code{pBin}) and number of different cell types present in the sample
+\code{}. Finally, the process is repeated only for bulk samples, removing
+single-cell profiles from the evaluation. Evaluation metrics are available in
+\code{test.deconv.metrics} slot of \code{\linkS4class{DigitalDLSorterDNN}}
+object (\code{trained.model} slot of \code{\linkS4class{DigitalDLSorter}}
+object).
 }
 \examples{
 DDLSChungComp <- calculateEvalMetrics(

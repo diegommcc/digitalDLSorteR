@@ -197,7 +197,20 @@ estimateZinbwaveParams <- function(
   if (verbose) {
     message("=== Set parallel environment to ", threads, " thread(s)\n")
   }
-  snowParam <- BiocParallel::SnowParam(workers = threads, type = "SOCK")
+  switch(
+    Sys.info()[['sysname']],
+    Windows= {
+      parallelEnv <- BiocParallel::SnowParam(
+        workers = threads, type = "SOCK"
+      )
+    },
+    Linux  = {
+      parallelEnv <- BiocParallel::MulticoreParam(workers = threads)
+    },
+    Darwin = {
+      parallelEnv <- BiocParallel::MulticoreParam(workers = threads)
+    }
+  )
   # set cell types that will be estimated
   if (set.type == "All" || "All" %in% set.type) {
     if (missing(cell.cov.columns) || is.null(cell.cov.columns)) {
@@ -332,7 +345,7 @@ estimateZinbwaveParams <- function(
   # why ceiling
   zinbParamsObj <- splatter::zinbEstimate(
     counts = ceiling(as.matrix(list.data[[1]])), 
-    BPPARAM = snowParam, 
+    BPPARAM = parallelEnv, 
     design.samples = sdm, 
     design.genes = gdm, 
     O_mu = matrix(

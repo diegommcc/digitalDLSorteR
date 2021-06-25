@@ -22,8 +22,8 @@ containing metrics in \code{test.deconv.metrics} slot.}
 
 \item{error}{'MAE' or 'MSE.}
 
-\item{by}{Variable used to display errors. Available options are: 'nMix',
-'CellType'.}
+\item{by}{Variable used to display errors. Available options are:
+'nCellTypes', 'CellType'.}
 
 \item{dispersion}{Standard error (\code{'se'}) or standard deviation
 (\code{'sd'}). The first by default.}
@@ -40,7 +40,7 @@ by default).}
 }
 \description{
 Generate bar error plot and its dispersion by cell types (\code{CellType}) or
-by number of different cell types (\code{nMix}) in test bulk samples.
+by number of different cell types (\code{nCellTypes}) in test bulk samples.
 }
 \examples{
 barErrorPlot(
@@ -52,7 +52,7 @@ barErrorPlot(
 barErrorPlot(
   object = DDLSChungComp,
   error = "MAE",
-  by = "nMix"
+  by = "nCellTypes"
 )
 }
 \seealso{

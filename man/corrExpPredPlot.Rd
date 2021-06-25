@@ -35,11 +35,11 @@ default, a list of custom colors provided by the package is used.}
 
 \item{facet.by}{Variable used to display data in different panels. If it is
 \code{NULL}, the plot is not separated into different panels. The options
-are \code{nMix} (by number of different cell types) and \code{CellType} (by
-cell type).}
+are \code{nCellTypes} (by number of different cell types) and
+\code{CellType} (by cell type).}
 
-\item{color.by}{Variable used to color data. The options are \code{nMix} and
-\code{CellType}.}
+\item{color.by}{Variable used to color data. The options are
+\code{nCellTypes} and \code{CellType}.}
 
 \item{corr}{Correlation value displayed as annotation. The available metrics
 are Pearson's correlation coefficient (\code{'pearson'}) and concordance
@@ -79,9 +79,9 @@ function if \code{facet.by} is not equal to \code{NULL}.}
 Generate correlation plot between predicted and expected cell type
 proportions of test data The correlation plots can be displayed all mixed or
 splited by cell type (\code{CellType}) or number of cell types present in the
-samples (\code{nMix}). See \code{facet.by} argument and examples for more
-information. Moreover, a correlation value selected by user is displayed as
-annotation on the plots. See \code{corr} argument for details.
+samples (\code{nCellTypes}). See \code{facet.by} argument and examples for
+more information. Moreover, a correlation value selected by user is displayed
+as annotation on the plots. See \code{corr} argument for details.
 }
 \examples{
 ## correlations by cell type

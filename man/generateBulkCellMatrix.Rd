@@ -133,7 +133,7 @@ probMatrix <- data.frame(
   Cell_type = c("ER+", "HER2+", "ER+ and HER2+", "TNBC",
                 "Stromal", "Monocyte", "Tme", "BGC",
                 "Bmem", "DC", "Macrophage", "TCD8", "Treg"),
-  from = c(rep(30, 4), 1, rep(0, 8)),
+  from = c(rep(30, 4), 1, rep(1, 8)),
   to = c(rep(70, 4), 50, rep(15, 8))
 )
 \dontrun{

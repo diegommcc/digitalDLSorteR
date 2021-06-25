@@ -401,8 +401,9 @@ NULL
               " duplicated genes by ", fun.aggregate) 
     }
     counts.r <- DelayedArray::rowsum(x = counts, group = factor(rownames(counts)))
-    genes.metadata <- genes.metadata[match(rownames(counts), 
-                                           genes.metadata[, gene.ID.column]), ]
+    genes.metadata <- genes.metadata[match(
+      x = rownames(counts), table = genes.metadata[, gene.ID.column]
+    ), ]
   }
   # removing genes without any expression
   row.zero <- DelayedArray::rowSums(counts) > 0

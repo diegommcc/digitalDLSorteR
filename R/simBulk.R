@@ -83,9 +83,9 @@ NULL
 #'   majority of random samples without using predefined ranges will be
 #'   generated.
 #' @param proportions.test \code{proportions.train} for test samples.
-#' @param prob.zero Probability of producing cell type proportions equal to 
+#' @param prob.zero Probability of producing cell type proportions equal to
 #'   zero. It is a vector of five elements corresponding to the five methods for
-#'   production of cell type proportions (see \code{proportions.train} for more 
+#'   production of cell type proportions (see \code{proportions.train} for more
 #'   details).
 #' @param balanced.type.cells Boolean indicating if training and test cells will
 #'   be split in a balanced way considering cell types (\code{FALSE} by
@@ -562,10 +562,10 @@ generateBulkCellMatrix <- function(
   # final plots
   dummy <- t(apply(as.matrix(stats::na.omit(prob.matrix)), 1, sort, decreasing = T))
   df <- reshape2::melt(dummy)
-  colnames(df) <- c("Sample", "nMix", "Prob")
-  df$nMix <- factor(df$nMix)
-  plot.list[[4]] <- .boxPlot(df = df, x = "nMix", title = title)
-  names(plot.list) <- c("violinplot", "boxplot", "linesplot", "nmix")
+  colnames(df) <- c("Sample", "nCellTypes", "Prob")
+  df$nCellTypes <- factor(df$nCellTypes)
+  plot.list[[4]] <- .boxPlot(df = df, x = "nCellTypes", title = title)
+  names(plot.list) <- c("violinplot", "boxplot", "linesplot", "ncelltypes")
   return(plot.list)
 }
 
@@ -816,89 +816,6 @@ setCount <- function(
   colnames(prob.matrix) <- names(prob.list)
   return(prob.matrix)
 }
-
-# .generateSet3 <- function(
-#   prob.list,
-#   num,
-#   s.cells,
-#   n.cell.types,
-#   index.ex
-# ) {
-#   # preallocate matrix in order to avoid memory problems
-#   prob.matrix <- matrix(NA_real_, nrow = num, ncol = n.cell.types)
-#   c <- 1
-#   while (c <= num) {
-#     p <- rep(0, n.cell.types)
-#     # To avoid a bias with first cell types, I use sample
-#     i <- sample(
-#       x = setdiff(x = seq(n.cell.types), y = index.ex[[c]]), 
-#       size = 1
-#     )
-#     while (sum(p) < 100) {
-#       p[i] <- p[i] + sample(x = seq((100 - sum(p))), size = 1) #  / n.cell.types
-#       i <- sample(
-#         x = setdiff(x = seq(n.cell.types), y = index.ex[[c]]), # c(index.ex[[c]], i) 
-#         size = 1
-#       )
-#     }
-#     p <- round(p * 100 / sum(p))
-#     p <- .adjustHundred(x = p, prob.list = prob.list, index.ex = index.ex[[c]])
-#     prob.matrix[c, ] <- p
-#     # counter
-#     c <- c + 1
-#   }
-#   colnames(prob.matrix) <- names(prob.list)
-#   return(prob.matrix)
-# }
-
-# .generateSet4 <- function(
-#   prob.list,
-#   num,
-#   s.cells,
-#   n.cell.types,
-#   index.ex
-# ) {
-#   prob.matrix <- matrix(NA_real_, nrow = num, ncol = n.cell.types)
-#   c <- 1
-#   while(c <= num) {
-#     p <- rep(0, n.cell.types)
-#     names(p) <- names(prob.list)
-#     i <- sample(
-#       x = setdiff(x = seq(n.cell.types), y = index.ex[[c]]), 
-#       size = 1
-#     )
-#     while (sum(p) < 100) {
-#       dp <- 101
-#       while (dp > max(prob.list[[i]])) {
-#         dp <- sample(x = prob.list[[i]], size = 1)
-#       }
-#       p[i] <- p[i] + dp
-#       i <- sample(
-#         x = setdiff(x = seq(n.cell.types), y = index.ex[[c]]), 
-#         size = 1
-#       )
-#     }
-#     prob.matrix[c, ] <- p
-#     c <- c + 1
-#   }
-#   prob.matrix <- round(prob.matrix * 100 / rowSums(prob.matrix))
-#   prob.matrix <- do.call(
-#     what = rbind, 
-#     args = lapply(
-#       X = seq(nrow(prob.matrix)), 
-#       FUN = function(x) {
-#         p <- .adjustHundred(
-#           x = prob.matrix[x, ], prob.list = prob.list, index.ex = index.ex[[x]]
-#         )
-#         return(sample(p))
-#       }
-#     )
-#   )
-#   # p <- .adjustHundred(x = p, prob.list = prob.list, index.ex = index.ex[[c]])
-#   # p <- sample(p)
-#   colnames(prob.matrix) <- names(prob.list)
-#   return(prob.matrix)
-# }
 
 .generateSet4 <- function(
   prob.list,
