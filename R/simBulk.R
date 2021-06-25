@@ -110,7 +110,7 @@ NULL
 #'   Cell_type = c("ER+", "HER2+", "ER+ and HER2+", "TNBC",
 #'                 "Stromal", "Monocyte", "Tme", "BGC",
 #'                 "Bmem", "DC", "Macrophage", "TCD8", "Treg"),
-#'   from = c(rep(30, 4), 1, rep(0, 8)),
+#'   from = c(rep(30, 4), 1, rep(1, 8)),
 #'   to = c(rep(70, 4), 50, rep(15, 8))
 #' )
 #' \dontrun{
@@ -243,10 +243,10 @@ generateBulkCellMatrix <- function(
                   unique(cells.metadata[, cell.type.column]))) {
     stop("There are some cell types in 'prob.design' that do not appear in ", 
          "cells metadata. Check that the 'prob.design' matrix is correctly built")
-  } else if (any(prob.design$from < 0) || any(prob.design$from > 99)) {
-    stop("'from' column in 'prob.design' must be greater than or equal to 0 and ",
+  } else if (any(prob.design$from < 1) || any(prob.design$from > 99)) {
+    stop("'from' column in 'prob.design' must be greater than or equal to 1 and ",
          "lesser than or equal to 99")
-  } else if (any(prob.design$to < 1) || any(prob.design$to > 100)) {
+  } else if (any(prob.design$to <= 1) || any(prob.design$to > 100)) {
     stop("'to' column in 'prob.design' must be greater than or equal to 1 and ", 
          "lesser than or equal to 100")
   } else if (any(prob.design$from > prob.design$to)) {
