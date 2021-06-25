@@ -532,7 +532,9 @@ estimateZinbwaveParams <- function(
   pos <- sapply(
     X = names(nums.cells), 
     FUN = function(x) {
-      sample(which(cells.metadata[, cell.type.column] == x), size = nums.cells[x])
+      sample(
+        which(cells.metadata[, cell.type.column] == x), size = nums.cells[x]
+      )
     }
   ) %>% unlist(use.names = FALSE) %>% sort()
   
@@ -731,6 +733,13 @@ simSCProfiles <- function(
   }
   # check if parameters related to hdf5 file are correct
   if (!is.null(file.backend)) {
+    if (!requireNamespace("DelayedArray", quietly = TRUE) || 
+        !requireNamespace("HDF5Array", quietly = TRUE)) {
+      stop("digitalDLSorteR provides the possibility of using HDF5 files as back-end
+         when data are too big to be located in RAM. It uses DelayedArray, 
+         HDF5Array and rhdf5 to do it. Please Please install both packages to 
+         use this functionality")
+    } 
     hdf5Params <- .checkHDF5parameters(
       file.backend = file.backend, 
       name.dataset.backend = name.dataset.backend, 
@@ -863,6 +872,13 @@ simSCProfiles <- function(
     stop("'block.processing' is only compatible with the use of HDF5 files ", 
          "as back-end ('file.backend' argument)")
   } else if (block.processing && !is.null(file.backend)) {
+    if (!requireNamespace("DelayedArray", quietly = TRUE) || 
+        !requireNamespace("HDF5Array", quietly = TRUE)) {
+      stop("digitalDLSorteR provides the possibility of using HDF5 files as back-end
+         when data are too big to be located in RAM. It uses DelayedArray, 
+         HDF5Array and rhdf5 to do it. Please install both packages to 
+         use this functionality")
+    } 
     if (n < block.size) {
       block.size <- n
       warning("The number of simulated cells is lesser than 'block.size'. ",

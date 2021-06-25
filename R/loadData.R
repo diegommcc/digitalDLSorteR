@@ -45,6 +45,13 @@ NULL
   sparse = FALSE,
   verbose = TRUE
 ) {
+  if (!requireNamespace("DelayedArray", quietly = TRUE) || 
+      !requireNamespace("HDF5Array", quietly = TRUE)) {
+    stop("digitalDLSorteR provides the possibility of using HDF5 files as back-end
+         when data are too big to be located in RAM. It uses DelayedArray, 
+         HDF5Array and rhdf5 to do it. Please install both packages to 
+         use this functionality")
+  } 
   # if (file.exists(file.backend)) {
   #   if (group %in% rhdf5::h5ls(file.backend)[, "name"]) {
   #     stop("'file.backend' and name group already exist. They cannot exist")  

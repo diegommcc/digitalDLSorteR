@@ -83,6 +83,10 @@ NULL
 #'   majority of random samples without using predefined ranges will be
 #'   generated.
 #' @param proportions.test \code{proportions.train} for test samples.
+#' @param prob.zero Probability of producing cell type proportions equal to 
+#'   zero. It is a vector of five elements corresponding to the five methods for
+#'   production of cell type proportions (see \code{proportions.train} for more 
+#'   details).
 #' @param balanced.type.cells Boolean indicating if training and test cells will
 #'   be split in a balanced way considering cell types (\code{FALSE} by
 #'   default).
@@ -134,8 +138,9 @@ generateBulkCellMatrix <- function(
   n.cells = 100,
   train.freq.cells = 2/3,
   train.freq.bulk = 2/3,
-  proportions.train = c(10, 5, 20, 15, 10, 40),
-  proportions.test = c(10, 5, 20, 15, 10, 40),
+  proportions.train = c(10, 5, 20, 15, 50),
+  proportions.test = c(10, 5, 20, 15, 50),
+  prob.zero = c(0.5, 0.5, 0.5, 0.5, 0.5),
   balanced.type.cells = FALSE,
   verbose = TRUE
 ) {
@@ -165,8 +170,12 @@ generateBulkCellMatrix <- function(
   } else if (sum(proportions.train) != 100 ||
              sum(proportions.test) != 100) {
     stop("Proportions provided must add up to 100")
-  } else if (length(proportions.train) != 6 || length(proportions.test) != 6) {
-    stop("Proportions must be a vector of six elements")
+  } else if (length(proportions.train) != 5 || length(proportions.test) != 5) {
+    stop("Proportions must be a vector of 5 elements")
+  } else if (length(prob.zero) != 5) {
+    stop("'prob.zero' must be a vector of 5 elements")
+  } else if (any(prob.zero > 1) || any(prob.zero < 0)) {
+    stop("'prob.zero' must be a vector whose elements must be between 0 and 1")
   } else if (missing(num.bulk.samples) || is.null(num.bulk.samples)) {
     stop("'num.bulk.samples' argument must be provided")
   } else if (any(proportions.train < 0) || any(proportions.test < 0)) {
@@ -208,11 +217,6 @@ generateBulkCellMatrix <- function(
         )
       }
     )
-    # list.metadata[[1]][, cell.ID.column] <- paste(
-    #   list.metadata[[1]][, cell.type.column], 
-    #   list.metadata[[1]][, cell.ID.column], sep = "_"
-    # )
-    # list.metadata[[1]]$simCellName <- list.metadata[[1]][, cell.ID.column]
     list.metadata[[1]]$Simulated <- FALSE
     list.metadata[[1]]$sufix <- ""
     cells.metadata <- S4Vectors::rbind(list.metadata[[1]], list.metadata[[2]])  
@@ -334,7 +338,6 @@ generateBulkCellMatrix <- function(
   test.types <- names(test.set)
   test.set.list <- list()
   cell.type.test <- cell.type.names[cell.type.names %in% levels(factor(test.types))]
-  # print(cell.type.test)
   for (ts in cell.type.test) {
     test.set.list[[ts]] <- test.set[test.types == ts]
   }
@@ -358,35 +361,34 @@ generateBulkCellMatrix <- function(
   names(prob.list) <- prob.design[, cell.type.column]
   
   n.cell.types <- length(unique(train.types))
-  functions.list <- list(.generateSet1, .generateSet2, .generateSet3,
-                         .generateSet4, .generateSet5, .generateSet6)
-  ## resume this code by using a loop or do.call implementation, because the code 
-  ## is duplicated (is the same for training and test)
-  # TRAIN SETS -----------------------------------------------------------------
-  excl.cell.type <- c(NULL, NULL, NULL, NULL, NULL, NULL)
-  train.prob.matrix <- matrix(rep(0, n.cell.types), nrow = 1, byrow = TRUE)
+  functions.list <- list(
+    .generateSet1, .generateSet2, .generateSet3, .generateSet4, .generateSet5
+  )
+  # TRAIN SETS #################################################################
+  train.prob.matrix <- matrix(NA_real_, nrow = sum(nums.train), ncol = n.cell.types)
   colnames(train.prob.matrix) <- names(prob.list)
   train.plots <- list()
   n <- 1
-  first <- TRUE
+  loc <- c(0, cumsum(nums.train))
   for (fun in functions.list) {
     if (nums.train[n] == 0) {
       n <- n + 1
       next
     }
+    index.ex <- .generateExcludedTypes(
+      num = nums.train[n],
+      s.cells = s.cells,
+      n.cell.types = n.cell.types,
+      prob.zero = prob.zero[n]
+    )
     train.probs <- fun(
       prob.list = prob.list,
-      prob.matrix = train.prob.matrix,
       num = nums.train[n],
       s.cells = total.train,
       n.cell.types = n.cell.types,
-      index.ex = excl.cell.type[n]
+      index.ex = index.ex
     )
-    train.prob.matrix <- rbind(train.prob.matrix, train.probs)
-    if (first) {
-      train.prob.matrix <- train.prob.matrix[-1, , drop = FALSE]
-      first <- FALSE
-    }
+    train.prob.matrix[seq(loc[n] + 1, loc[n + 1]), ] <- train.probs
     train.plots[[n]] <- .plotsQCSets(
       probs = train.probs,
       prob.matrix = train.prob.matrix,
@@ -411,29 +413,31 @@ generateBulkCellMatrix <- function(
                   dim(train.prob.matrix),
                   collapse = "\n"), "\n")
   }
-  # TEST SETS ------------------------------------------------------------------
-  test.prob.matrix <- matrix(rep(0, n.cell.types), nrow = 1, byrow = T)
+  
+  # TEST SETS ##################################################################
+  test.prob.matrix <-matrix(NA_real_, nrow = sum(nums.test), ncol = n.cell.types)
   test.plots <- list()
   n <- 1
-  first <- TRUE
+  loc <- c(0, cumsum(nums.test))
   for (fun in functions.list) {
     if (nums.test[n] == 0) {
       n <- n + 1
       next
     }
+    index.ex <- .generateExcludedTypes(
+      num = nums.test[n],
+      s.cells = s.cells,
+      n.cell.types = n.cell.types,
+      prob.zero = prob.zero[n]
+    )
     test.probs <- fun(
       prob.list = prob.list,
-      prob.matrix = test.prob.matrix,
       num = nums.test[n],
       s.cells = total.test,
       n.cell.types = n.cell.types,
-      index.ex = excl.cell.type[n]
+      index.ex = index.ex
     )
-    test.prob.matrix <- rbind(test.prob.matrix, test.probs)
-    if (first && nums.test[n] != 0) {
-      test.prob.matrix <- test.prob.matrix[-1, ]
-      first <- FALSE
-    }
+    test.prob.matrix[seq(loc[n] + 1, loc[n + 1]), ] <- test.probs
     test.plots[[n]] <- .plotsQCSets(
       probs = test.probs,
       prob.matrix = test.prob.matrix,
@@ -467,7 +471,7 @@ generateBulkCellMatrix <- function(
     sn = colnames(train.prob.matrix),
     n.cells = n.cells
   ))
-
+  
   test.prob.matrix.names <- t(apply(
     X = test.prob.matrix,
     MARGIN = 1,
@@ -565,6 +569,8 @@ generateBulkCellMatrix <- function(
   return(plot.list)
 }
 
+
+## there is something wrong
 setCount <- function(
   x, 
   setList, 
@@ -577,7 +583,7 @@ setCount <- function(
   for (cType in names(x)) {
     n <- ceiling(x.set[cType]) # n <- ceiling(x[cType])
     if (n > 0) {
-      repl <- ifelse(n > length(setList[[cType]]), TRUE, FALSE)
+      repl <- ifelse(test = n > length(setList[[cType]]), yes = TRUE, no = FALSE)
       sc <- c(sc, sample(setList[[cType]], size = n, replace = repl))
     }
   }
@@ -593,6 +599,8 @@ setCount <- function(
 }
 
 # recursive implementation, maybe improvable
+# this function take 1 cell type from the available cell types (without 
+# using index.ex cell types) and add up or subtract depending what is needed
 .setHundredLimit <- function(
   x, 
   index.ex = NULL, 
@@ -601,21 +609,25 @@ setCount <- function(
   if (sum(x) > limit) {
     while (TRUE) {
       if (is.null(index.ex)) {
-        sel <- sample(seq(length(x)), 1)
+        sel <- sample(x = seq(length(x)), size = 1)
       } else {
-        sel <- sample(seq(length(x))[-index.ex], 1)
+        if (length(index.ex) != length(x) - 1) {
+          sel <- sample(x = which(x != 0), size = 1)
+        } else {
+          sel <- sample(x = seq(length(x))[-index.ex], size = 1) 
+        }
       }
       res <- x[sel] - abs(sum(x) - limit)
-      if (res < 0) res <- x[sel] - sample(x[sel], 1)
+      if (res < 0) res <- x[sel] - sample(x = x[sel], size = 1)
       if (res >= 0) break
     }
     x[sel] <- res
   } else if (sum(x) < limit) {
     while (TRUE) {
       if (is.null(index.ex)) {
-        sel <- sample(seq(length(x)), 1)
+        sel <- sample(x = seq(length(x)), size = 1)
       } else {
-        sel <- sample(seq(length(x))[-index.ex], 1)
+        sel <- sample(x = seq(length(x))[-index.ex], size = 1)
       }
       res <- x[sel] + abs(sum(x) - limit)
       if (res <= limit) break
@@ -628,8 +640,9 @@ setCount <- function(
     return(x)
 }
 
-# wrapper function of .setHundredLimit. This function is able to enter zero
-# values while respecting all other proportions
+# This function is not intended to deal with index.ex, so I'm going to avoid
+# it. Proportions will be corrected by .setHundredLimit. The idea is to 
+# distribute the proportions equally between the different cell types
 .adjustHundred <- function(
   x,
   prob.list,
@@ -641,7 +654,13 @@ setCount <- function(
   if (!is.null(index.ex)) {
     x.list <- .cellExcluder(vec = x, index.ex = index.ex)
     x <- x.list[[1]]
-    w[x.list[[2]]] <- 0
+    # w[x.list[[2]]] <- 0
+    # # this sentence is in order to avoid that there is only one sample when they
+    # # should be two
+    # if (any(w[-x.list[[2]]] == 0)) {
+    #   no.zero <- setdiff(seq_along(w), x.list)
+    #   w[no.zero[w[no.zero] == 0]] <- 1
+    # }
   }
   d <- abs(sum(x) - 100)
   if (sum(x) > 100) {
@@ -666,250 +685,295 @@ setCount <- function(
   return(x)
 }
 
-.generateSet1 <- function(
-  prob.list,
-  prob.matrix,
+
+## generate index.ex variable for each sample using prob.zero
+.generateExcludedTypes <- function(
   num,
   s.cells,
   n.cell.types,
-  index.ex
+  prob.zero
 ) {
-  if (!is.null(index.ex)) {
-    sampling <- function(prob.list) {
-      x <- .cellExcluder(
-        vec = unlist(lapply(X = prob.list, FUN = sample, 1)),
-        index.ex = index.ex
-      )
-      return(x[[1]])
+  if (prob.zero > 1 || prob.zero < 0)
+    stop("'prob.zero' must be an integer between 0 and 1")
+  prob.zero <- 1 - prob.zero
+  # number of cell types equal to zero have the same probability: only changes
+  # the probability of having 0 zeros. Maybe this could be improvable
+  random.zeros <- function(prob.zero) {
+    num.zero <- sample(
+      seq(0, n.cell.types), size = 1, 
+      prob = c(prob.zero, rep((1 - prob.zero) / n.cell.types, n.cell.types))
+    )
+    if (num.zero == 0) {
+      return(NULL) 
+    } else {
+      res <- sample(seq(n.cell.types), size = num.zero)
+      if (length(res) == n.cell.types) 
+        res <- res[-sample(x = n.cell.types, size = 1)]
     }
-  } else {
-    sampling <- function(prob.list) unlist(lapply(X = prob.list, FUN = sample, 1))
+    return(res) 
   }
-  # n <- ceiling(num * s.cells / 1000)
-  n <- num
-  while (dim(prob.matrix)[1] <= n) {
-    prob.matrix <- rbind(prob.matrix, sampling(prob.list = prob.list))
-  }
-  prob.matrix <- prob.matrix[-1, , drop = FALSE]
-  prob.matrix <- round(prob.matrix * 100 / rowSums(prob.matrix))
-  prob.matrix <- t(apply(
-    X = prob.matrix, MARGIN = 1, FUN = .setHundredLimit, index.ex
-  ))
-  return(prob.matrix)
+  return(
+    replicate(
+      n = num,
+      expr = random.zeros(prob.zero = prob.zero)
+    )
+  )
 }
 
-.generateSet2 <- function(
+# cell proportions are randomly sampled from a truncated uniform distribution 
+# with predefined limits according to the a priori knowledge of the abundance 
+# of each cell type
+.generateSet1 <- function(
   prob.list,
-  prob.matrix,
   num,
   s.cells,
   n.cell.types,
   index.ex
 ) {
-  probs <- list()
-  # n <- ceiling(num * s.cells/1000)
-  n <- num
-  if (!is.null(index.ex)) {
-    sampling <- function(prob.list) {
-      x <- .cellExcluder(
+  sampling <- function(prob.list, ex.cells) {
+    return(
+      .cellExcluder(
         vec = unlist(lapply(X = prob.list, FUN = sample, 1)),
-        index.ex = index.ex
-      )
-      return(x[[1]])
-    }
-  } else {
-    sampling <- function(prob.list) unlist(lapply(X = prob.list, FUN = sample, 1))
+        index.ex = ex.cells
+      )[[1]]
+    )
   }
-  while (length(probs) < n) {
-    probs[[length(probs) + 1]] <- sampling(prob.list = prob.list)
+  # preallocate matrix in order to avoid memory problems
+  prob.matrix <- matrix(NA_real_, nrow = num, ncol = n.cell.types)
+  c <- 1
+  while (c <= num) {
+    prob.matrix[c,] <- sampling(prob.list = prob.list, ex.cells = index.ex[[c]])
+    c <- c + 1
   }
-  probs <- lapply(X = probs, FUN = function(x) return(round(x * 100 / sum(x))))
-  probs <- lapply(X = probs, FUN = sample)
-  probs <- lapply(X = probs, FUN = function(x) x[names(prob.list)])
-  probs <- matrix(unlist(probs), nrow = n, byrow = TRUE)
-  probs <- t(
-    apply(
-      X = probs, 1, 
+  prob.matrix <- round(prob.matrix * 100 / rowSums(prob.matrix))
+  prob.matrix <- do.call(
+    what = rbind, 
+    args = lapply(
+      X = seq(nrow(prob.matrix)), 
       FUN = function(x) {
-        .adjustHundred(
-          x = x,
-          prob.list = prob.list,
-          index.ex = index.ex
-        )
+        .setHundredLimit(x = prob.matrix[x, ], index.ex = index.ex[[x]])
       }
     )
   )
-  colnames(probs) <- colnames(prob.matrix)
-  return(probs)
+  colnames(prob.matrix) <- names(prob.list)
+  return(prob.matrix)
 }
+
+# generated by randomly permuting cell type labels on the previous proportions
+# (.generateSet1)
+.generateSet2 <- function(
+  prob.list,
+  num,
+  s.cells,
+  n.cell.types,
+  index.ex
+) {
+  # First, I correct proportions: cell types with zero are not going to be 
+  # changed, but in the next line I resample labels
+  prob.matrix <- .generateSet1(
+    prob.list = prob.list,
+    num = num,
+    s.cells = s.cells,
+    n.cell.types = n.cell.types,
+    index.ex = index.ex
+  )
+  prob.matrix <- t(apply(X = prob.matrix, MARGIN = 1, FUN = sample))
+  colnames(prob.matrix) <- names(prob.list)
+  return(prob.matrix)
+}
+
 
 .generateSet3 <- function(
   prob.list,
-  prob.matrix,
   num,
   s.cells,
   n.cell.types,
   index.ex
 ) {
-  if (!is.null(index.ex)) {
-    sampling <- function(p) {
-      p <- .cellExcluder(vec = sample(p), index.ex = index.ex)
-      return(p[[1]])
-    }
-  } else {
-    sampling <- function(p) sample(p)
-  }
-  probs <- list()
-  n <- num
-  while (length(probs) < n) {
+  # preallocate matrix in order to avoid memory problems
+  prob.matrix <- matrix(NA_real_, nrow = num, ncol = n.cell.types)
+  c <- 1
+  while (c <= num) {
     p <- rep(0, n.cell.types)
-    i <- 1
+    # To avoid a bias with first cell types, I use sample
+    i <- sample(
+      x = setdiff(x = seq(n.cell.types), y = index.ex[[c]]),
+      size = 1
+    )
     while (sum(p) < 100) {
-      p[i] <- p[i] + sample(seq(100 - sum(p)), size = 1)
-      i <- i + 1
-      if (i > n.cell.types) i <- 1
+      p[i] <- p[i] + sample(x = seq((100 - sum(p))), size = 1) #  / n.cell.types
+      i <- sample(
+        x = setdiff(x = seq(n.cell.types), y = index.ex[[c]]), # c(index.ex[[c]], i)
+        size = 1
+      )
     }
-    p <- sampling(p)
-    if (sum(p == 0) < n.cell.types) probs[[length(probs) + 1]] <- p
+    p <- round(p * 100 / sum(p))
+    p <- .adjustHundred(x = p, prob.list = prob.list, index.ex = index.ex[[c]])
+    prob.matrix[c, ] <- p
+    # counter
+    c <- c + 1
   }
-  probs <- matrix(unlist(probs), nrow = n, byrow = T)
-  colnames(probs) <- colnames(prob.matrix)
-  probs <- round(probs * 100 / rowSums(probs))
-  if (any(rowSums(probs) != 100))
-    probs <- t(apply(X = probs, MARGIN = 1, FUN = .setHundredLimit, index.ex))
-  return(probs)
+  colnames(prob.matrix) <- names(prob.list)
+  return(prob.matrix)
 }
+
+# .generateSet3 <- function(
+#   prob.list,
+#   num,
+#   s.cells,
+#   n.cell.types,
+#   index.ex
+# ) {
+#   # preallocate matrix in order to avoid memory problems
+#   prob.matrix <- matrix(NA_real_, nrow = num, ncol = n.cell.types)
+#   c <- 1
+#   while (c <= num) {
+#     p <- rep(0, n.cell.types)
+#     # To avoid a bias with first cell types, I use sample
+#     i <- sample(
+#       x = setdiff(x = seq(n.cell.types), y = index.ex[[c]]), 
+#       size = 1
+#     )
+#     while (sum(p) < 100) {
+#       p[i] <- p[i] + sample(x = seq((100 - sum(p))), size = 1) #  / n.cell.types
+#       i <- sample(
+#         x = setdiff(x = seq(n.cell.types), y = index.ex[[c]]), # c(index.ex[[c]], i) 
+#         size = 1
+#       )
+#     }
+#     p <- round(p * 100 / sum(p))
+#     p <- .adjustHundred(x = p, prob.list = prob.list, index.ex = index.ex[[c]])
+#     prob.matrix[c, ] <- p
+#     # counter
+#     c <- c + 1
+#   }
+#   colnames(prob.matrix) <- names(prob.list)
+#   return(prob.matrix)
+# }
+
+# .generateSet4 <- function(
+#   prob.list,
+#   num,
+#   s.cells,
+#   n.cell.types,
+#   index.ex
+# ) {
+#   prob.matrix <- matrix(NA_real_, nrow = num, ncol = n.cell.types)
+#   c <- 1
+#   while(c <= num) {
+#     p <- rep(0, n.cell.types)
+#     names(p) <- names(prob.list)
+#     i <- sample(
+#       x = setdiff(x = seq(n.cell.types), y = index.ex[[c]]), 
+#       size = 1
+#     )
+#     while (sum(p) < 100) {
+#       dp <- 101
+#       while (dp > max(prob.list[[i]])) {
+#         dp <- sample(x = prob.list[[i]], size = 1)
+#       }
+#       p[i] <- p[i] + dp
+#       i <- sample(
+#         x = setdiff(x = seq(n.cell.types), y = index.ex[[c]]), 
+#         size = 1
+#       )
+#     }
+#     prob.matrix[c, ] <- p
+#     c <- c + 1
+#   }
+#   prob.matrix <- round(prob.matrix * 100 / rowSums(prob.matrix))
+#   prob.matrix <- do.call(
+#     what = rbind, 
+#     args = lapply(
+#       X = seq(nrow(prob.matrix)), 
+#       FUN = function(x) {
+#         p <- .adjustHundred(
+#           x = prob.matrix[x, ], prob.list = prob.list, index.ex = index.ex[[x]]
+#         )
+#         return(sample(p))
+#       }
+#     )
+#   )
+#   # p <- .adjustHundred(x = p, prob.list = prob.list, index.ex = index.ex[[c]])
+#   # p <- sample(p)
+#   colnames(prob.matrix) <- names(prob.list)
+#   return(prob.matrix)
+# }
 
 .generateSet4 <- function(
   prob.list,
-  prob.matrix,
   num,
   s.cells,
   n.cell.types,
   index.ex
 ) {
-  probs <- list()
-  # n <- ceiling(num * s.cells/1000)
-  n <- num
-  while(length(probs) < n) {
+  prob.matrix <- matrix(NA_real_, nrow = num, ncol = n.cell.types)
+  c <- 1
+  while(c <= num) {
     p <- rep(0, n.cell.types)
     names(p) <- names(prob.list)
-    i <- 1
+    i <- sample(
+      x = setdiff(x = seq(n.cell.types), y = index.ex[[c]]), 
+      size = 1
+    )
     while (sum(p) < 100) {
       dp <- 101
       while (dp > max(prob.list[[i]])) {
-        dp <- sample(prob.list[[i]], size = 1)
+        dp <- sample(x = prob.list[[i]], size = 1)
       }
-      p[i] <- dp
-      i <- i + 1
-      if (i > n.cell.types) i <- 1
-    }
-    p[1] <- p[1] + 1
-    p <- sample(p)
-    if (sum(p == 0) < n.cell.types) probs[[length(probs) + 1]] <- p
-  }
-  # probs <- lapply(X = probs, FUN = function(x) return(x[names(prob.list)]))
-  probs <- matrix(unlist(probs), nrow = n, byrow = T)
-  colnames(probs) <- colnames(prob.matrix)
-  probs <- round(probs * 100 / rowSums(probs))
-  if (any(rowSums(probs) != 100)) {
-    probs <- t(
-      apply(
-        X = probs, 
-        MARGIN = 1,
-        FUN = function(x) {
-          .adjustHundred(
-            x = x,
-            prob.list = prob.list,
-            index.ex = index.ex
-          )
-        }
+      p[i] <- p[i] + dp
+      i <- sample(
+        x = setdiff(x = seq(n.cell.types), y = index.ex[[c]]), 
+        size = 1
       )
-    )  
+    }
+    prob.matrix[c, ] <- p
+    c <- c + 1
   }
-  return(probs)
+  prob.matrix <- round(prob.matrix * 100 / rowSums(prob.matrix))
+  prob.matrix <- do.call(
+    what = rbind, 
+    args = lapply(
+      X = seq(nrow(prob.matrix)), 
+      FUN = function(x) {
+        p <- .adjustHundred(
+          x = prob.matrix[x, ], prob.list = prob.list, index.ex = index.ex[[x]]
+        )
+        return(sample(p))
+      }
+    )
+  )
+  # p <- .adjustHundred(x = p, prob.list = prob.list, index.ex = index.ex[[c]])
+  # p <- sample(p)
+  colnames(prob.matrix) <- names(prob.list)
+  return(prob.matrix)
 }
 
 .generateSet5 <- function(
   prob.list,
-  prob.matrix,
   num,
   s.cells,
   n.cell.types,
   index.ex
 ) {
-  probs <- list()
-  # n <- ceiling(num * s.cells/1000)
-  n <- num
-  while(length(probs) < n) {
-    p <- rep(0, n.cell.types)
-    names(p) <- names(prob.list)
-    i <- 1
-    while (sum(p) < 100) {
-      dp <- sample(prob.list[[i]], size = 1)
-      p[i] <- dp
-      i <- i + 1
-      if (i > n.cell.types) i <- 1
-    }
-    p[1] <- p[1] + 1
-    p <- sample(p)
-    if (sum(p == 0) < n.cell.types) probs[[length(probs) + 1]] <- p
-  }
-  probs <- lapply(X = probs, FUN = sample)
-  probs <- matrix(unlist(probs), nrow = n, byrow = T)
-  colnames(probs) <- colnames(prob.matrix)
-  probs <- round(probs * 100 / rowSums(probs))
-  if (any(rowSums(probs) != 100)) {
-    probs <- t(
-      apply(
-        X = probs, 
-        MARGIN = 1,
-        FUN = function(x) {
-          .adjustHundred(
-            x = x,
-            prob.list = prob.list,
-            index.ex = index.ex
-          )
-        }
-      )
+  prob.matrix <- do.call(
+    what = rbind, 
+    args = lapply(
+      X = seq(num), 
+      FUN = function(x) {
+        p <- gtools::rdirichlet(
+          n = 1,
+          alpha = .cellExcluder(
+            rep(1, n.cell.types), index.ex = index.ex[[x]]
+          )[[1]]
+        )
+        p <- round(p * 100 / sum(p))
+        return(.setHundredLimit(x = p, index.ex = index.ex[[x]]))
+      }
     )
-  }
-  return(probs)
-}
-
-.generateSet6 <- function(
-  prob.list,
-  prob.matrix,
-  num,
-  s.cells,
-  n.cell.types,
-  index.ex
-) {
-  # n <- ceiling(num * s.cells/1000)
-  n <- num
-  if (!is.null(index.ex)) {
-    generator <- function() {
-      gtools::rdirichlet(
-        n = 1,
-        alpha = .cellExcluder(rep(1, n.cell.types), index.ex = index.ex)[[1]]
-      )
-    }
-    probs <- t(replicate(n = n, expr = generator(), simplify = TRUE))
-  } else {
-    probs <- gtools::rdirichlet(n, rep(1, n.cell.types))
-  }
-  probs <- round(probs * 100)
-  if (any(rowSums(probs) != 100)) {
-    probs <- t(
-      apply(
-        X = probs, 
-        MARGIN = 1,
-        FUN = function(x) .setHundredLimit(x = x, index.ex = index.ex)
-      )
-    )  
-  }
-  colnames(probs) <- colnames(prob.matrix)
-  return(probs)
+  )
+  colnames(prob.matrix) <- names(prob.list)
+  return(prob.matrix)
 }
 
 ################################################################################
@@ -1058,6 +1122,13 @@ simBulkProfiles <- function(
     stop("'type.data' argument must be one of the next options: 'train', 'test' or 'both'")
   }
   if (!is.null(file.backend)) {
+    if (!requireNamespace("DelayedArray", quietly = TRUE) || 
+        !requireNamespace("HDF5Array", quietly = TRUE)) {
+      stop("digitalDLSorteR provides the possibility of using HDF5 files as back-end
+         when data are too big to be located in RAM. It uses DelayedArray, 
+         HDF5Array and rhdf5 to do it. Please install both packages to 
+         use this functionality")
+    } 
     if (file.exists(file.backend)) {
       stop("'file.backend' already exists. Please provide a correct file path")
     }

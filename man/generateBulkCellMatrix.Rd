@@ -13,8 +13,9 @@ generateBulkCellMatrix(
   n.cells = 100,
   train.freq.cells = 2/3,
   train.freq.bulk = 2/3,
-  proportions.train = c(10, 5, 20, 15, 10, 40),
-  proportions.test = c(10, 5, 20, 15, 10, 40),
+  proportions.train = c(10, 5, 20, 15, 50),
+  proportions.test = c(10, 5, 20, 15, 50),
+  prob.zero = c(0.5, 0.5, 0.5, 0.5, 0.5),
   balanced.type.cells = FALSE,
   verbose = TRUE
 )
@@ -65,6 +66,11 @@ majority of random samples without using predefined ranges will be
 generated.}
 
 \item{proportions.test}{\code{proportions.train} for test samples.}
+
+\item{prob.zero}{Probability of producing cell type proportions equal to
+zero. It is a vector of five elements corresponding to the five methods for
+production of cell type proportions (see \code{proportions.train} for more
+details).}
 
 \item{balanced.type.cells}{Boolean indicating if training and test cells will
 be split in a balanced way considering cell types (\code{FALSE} by

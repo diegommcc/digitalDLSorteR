@@ -40,7 +40,6 @@ Imports:
     ggpubr,
     RColorBrewer
 Suggests:
-    BiocStyle,
     rhdf5,
     DelayedArray,
     DelayedMatrixStats,
