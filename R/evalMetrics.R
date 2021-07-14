@@ -593,8 +593,8 @@ corrExpPredPlot <- function(
                             position = "jitter", na.rm = TRUE) +
     geom_abline(linetype = "dashed", colour = "gray40") +
     scale_color_manual(values = colors, name = color.by) +
-    scale_x_continuous(limits = c(0, 1.1), labels = c(0, 0.25, 0.5, 0.75, 1)) +
-    scale_y_continuous(limits = c(0, 1.1), labels = c(0, 0.25, 0.5, 0.75, 1)) +
+    scale_x_continuous(limits = c(0, 1), labels = c(0, 0.25, 0.5, 0.75, 1)) +
+    scale_y_continuous(limits = c(0, 1), labels = c(0, 0.25, 0.5, 0.75, 1)) +
     ggtitle(title.plot) + xlab("Expected") + ylab("Predicted") +
     stat_smooth(method = "lm", colour  = "darkblue",
                 alpha = 0.8, size = 0.8, na.rm = TRUE) +
@@ -846,7 +846,7 @@ blandAltmanLehPlot <- function(
 ################################################################################
 
 #' Generate bar error plot and its dispersion by cell types or by number of
-#' different cell types in test bulk samples.
+#' different cell types in test bulk samples
 #'
 #' Generate bar error plot and its dispersion by cell types (\code{CellType}) or
 #' by number of different cell types (\code{nCellTypes}) in test bulk samples.

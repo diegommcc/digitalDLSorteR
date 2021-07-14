@@ -170,10 +170,10 @@ generateBulkCellMatrix <- function(
   } else if (sum(proportions.train) != 100 ||
              sum(proportions.test) != 100) {
     stop("Proportions provided must add up to 100")
-  } else if (length(proportions.train) != 5 || length(proportions.test) != 5) {
-    stop("Proportions must be a vector of 5 elements")
-  } else if (length(prob.zero) != 5) {
-    stop("'prob.zero' must be a vector of 5 elements")
+  } else if (length(proportions.train) != 6 || length(proportions.test) != 6) {
+    stop("Proportions must be a vector of 6 elements")
+  } else if (length(prob.zero) != 6) {
+    stop("'prob.zero' must be a vector of 6 elements")
   } else if (any(prob.zero > 1) || any(prob.zero < 0)) {
     stop("'prob.zero' must be a vector whose elements must be between 0 and 1")
   } else if (missing(num.bulk.samples) || is.null(num.bulk.samples)) {
@@ -362,7 +362,8 @@ generateBulkCellMatrix <- function(
   
   n.cell.types <- length(unique(train.types))
   functions.list <- list(
-    .generateSet1, .generateSet2, .generateSet3, .generateSet4, .generateSet5
+    .generateSet1, .generateSet2, .generateSet3, 
+    .generateSet4, .generateSet5, .generateSet6
   )
   # TRAIN SETS #################################################################
   train.prob.matrix <- matrix(NA_real_, nrow = sum(nums.train), ncol = n.cell.types)
@@ -418,6 +419,8 @@ generateBulkCellMatrix <- function(
   test.prob.matrix <-matrix(NA_real_, nrow = sum(nums.test), ncol = n.cell.types)
   test.plots <- list()
   n <- 1
+  # hardcoded because the last function cannot received prob.zero > 0
+  prob.zero[length(prob.zero)] <- 0
   loc <- c(0, cumsum(nums.test))
   for (fun in functions.list) {
     if (nums.test[n] == 0) {
@@ -700,9 +703,10 @@ setCount <- function(
   # the probability of having 0 zeros. Maybe this could be improvable
   random.zeros <- function(prob.zero) {
     num.zero <- sample(
-      seq(0, n.cell.types), size = 1, 
-      prob = c(prob.zero, rep((1 - prob.zero) / n.cell.types, n.cell.types))
+      seq(0, n.cell.types - 1), size = 1,
+      prob = c(prob.zero, rep((1 - prob.zero) / (n.cell.types - 1), n.cell.types - 1))
     )
+    # num.zero <- sample(x = seq(1, n.cell.types - 1), size = 1)
     if (num.zero == 0) {
       return(NULL) 
     } else {
@@ -889,6 +893,26 @@ setCount <- function(
       }
     )
   )
+  colnames(prob.matrix) <- names(prob.list)
+  return(prob.matrix)
+}
+
+
+.generateSet6 <- function(
+  prob.list,
+  num,
+  s.cells,
+  n.cell.types,
+  index.ex
+) {
+  prob.matrix <- matrix(0, nrow = num, ncol = n.cell.types)
+  num.set <- .setHundredLimit(
+    x = rep(ceiling(num / n.cell.types), n.cell.types), limit = num
+  )
+  num.index <- c(0, cumsum(num.set))
+  for (i in seq(n.cell.types)) {
+    prob.matrix[seq(num.index[i] + 1, num.index[i + 1]), i] <- 100
+  }
   colnames(prob.matrix) <- names(prob.list)
   return(prob.matrix)
 }
@@ -1163,7 +1187,7 @@ simBulkProfiles <- function(
       storage.mode = "double"
     )
     r.i <- 0
-    ## iteration over cells 
+    # iteration over cells 
     for (iter in seq(ceiling(n / block.size))) {
       if (verbose) message(paste("   - Writing block", iter))
       if ((block.size * iter) - n > 0) {
@@ -1273,17 +1297,22 @@ simBulkProfiles <- function(
 .setBulk <- function(x, object, pattern) {
   sep.b <- grepl(pattern = pattern, x = x)
   if (any(sep.b)) {
-    cols.sim <- match(x[sep.b], colnames(single.cell.simul(object))) %>% sort()
-    cols.real <- match(x[!sep.b], colnames(single.cell.real(object))) %>% sort()
-    sim.counts <- as.matrix(assay(single.cell.simul(object))[, cols.sim])
-    real.counts <- as.matrix(assay(single.cell.real(object))[, cols.real])
+    cols.sim <- match(
+      x = x[sep.b], table = colnames(single.cell.simul(object))
+    ) %>% sort()
+    cols.real <- match(
+      x = x[!sep.b], table = colnames(single.cell.real(object))
+    ) %>% sort()
+    sim.counts <- as.matrix(assay(single.cell.simul(object))[, cols.sim, drop = FALSE])
+    real.counts <- as.matrix(assay(single.cell.real(object))[, cols.real, drop = FALSE])
     counts <- .mergeMatrices(x = real.counts, y = sim.counts) # merge matrices
   } else if (all(sep.b)) {
-    cols <- match(x[sep.b], colnames(single.cell.simul(object))) %>% sort()
-    counts <- as.matrix(assay(single.cell.simul(object))[, cols])
+    cols <- match(x = x[sep.b], table = colnames(single.cell.simul(object))) %>%
+      sort()
+    counts <- as.matrix(assay(single.cell.simul(object))[, cols, drop = FALSE])
   } else {
-    cols <- match(x, colnames(single.cell.real(object))) %>% sort()
-    counts <- as.matrix(assay(single.cell.real(object))[, cols])
+    cols <- match(x = x, table = colnames(single.cell.real(object))) %>% sort()
+    counts <- as.matrix(assay(single.cell.real(object))[, cols, drop = FALSE])
   }
-  return(rowSums(edgeR::cpm.default(counts)))  
+  return(rowSums(edgeR::cpm.default(y = counts)))  
 }
