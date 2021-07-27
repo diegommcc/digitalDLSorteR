@@ -19,7 +19,6 @@ probMatrixValid <- data.frame(
 
 
 ## check that object contains all information needed
-
 test_that("Wrong object: single.cell.final missing || Wrong column cell type", {
   ## incorrect object
   DDLSLiBad <- DDLSLi

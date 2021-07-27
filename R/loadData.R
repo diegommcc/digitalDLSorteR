@@ -73,7 +73,7 @@ NULL
     chunk.dims <- c(nrow(counts), 1)
   } else {
     if (any(chunk.dims > dim(counts))) {
-      warning("'chunk.dims' must be equal to or lesser than data dimensions. ", 
+      warning("'chunk.dims' must be equal to or less than data dimensions. ", 
               "Setting default value", call. = FALSE, immediate. = TRUE)
       chunk.dims <- c(nrow(counts), 1)
     }

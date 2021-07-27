@@ -615,17 +615,20 @@ corrExpPredPlot <- function(
                                data = labels, hjust = 0,
                                size = size.ann)
     } else if (corr == "pearson") {
-      plot <- plot + stat_cor(method = "pearson",
-                              label.x = pos.x.label,
-                              label.y = pos.y.label,
-                              size = size.ann)
+      plot <- plot + stat_cor(
+        method = "pearson",
+        label.x = pos.x.label,
+        label.y = pos.y.label,
+        size = size.ann
+      )
     } else if (corr == "both") {
       labels <- .labelsCCCFacet(amd, facet.by, filter.sc)
-      plot <- plot + stat_cor(method = "pearson",
-                              label.x = pos.x.label,
-                              label.y = pos.y.label,
-                              size = size.ann)
-      plot <- plot + geom_text(
+      plot <- plot + stat_cor(
+        method = "pearson",
+        label.x = pos.x.label,
+        label.y = pos.y.label,
+        size = size.ann
+      ) + geom_text(
         x = pos.x.label, y = pos.y.label - sep.labels,
         aes(label = .data[["ccc"]]), hjust = 0,
         data = labels,

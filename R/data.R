@@ -24,13 +24,13 @@
 #' 'kullback_leibler_divergence' loss function, batch size equal to 128 and a
 #' number of epochs equal to 25.
 #'
-#' @format A \code{\linkS4class{DigitalDLSorterDNN}} object with the following slots:
-#'   \describe{ \item{model}{Trained DNN model.}
+#' @format A \code{\linkS4class{DigitalDLSorterDNN}} object with the following
+#'   slots: \describe{ \item{model}{Trained DNN model.}
 #'   \item{training.history}{Evolution of metrics and loss function during
-#'   training.} \item{eval.stats}{Metrics and loss results on test data.}
-#'   \item{predict.results}{Predictions on test data.}
-#'   \item{cell.types}{Cell types considered by the model.}
-#'   \item{features}{Features (genes) considered by the model.} }
+#'   training.} \item{test.metrics}{Metrics and loss results on test data.}
+#'   \item{test.pred}{Predictions on test data.} \item{cell.types}{Cell types
+#'   considered by the model.} \item{features}{Features (genes) considered by
+#'   the model.} }
 #'
 #' @source \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688}
 #'
@@ -72,10 +72,10 @@
 #' @format A \code{\linkS4class{DigitalDLSorterDNN}} object with the following
 #'   slots: \describe{ \item{model}{Trained DNN model.}
 #'   \item{training.history}{Evolution of metrics and loss function during
-#'   training.} \item{eval.stats}{Metrics and loss results on test data.}
-#'   \item{predict.results}{Predictions of cell types on test data.}
-#'   \item{cell.types}{Cell types considered by DNN model.}
-#'   \item{features}{Features (genes) considered by model.} }
+#'   training.} \item{test.metrics}{Metrics and loss results on test data.}
+#'   \item{test.pred}{Predictions on test data.} \item{cell.types}{Cell types
+#'   considered by the model.} \item{features}{Features (genes) considered by
+#'   the model.} }
 #'
 #' @source \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688}
 #'
@@ -89,6 +89,51 @@
 #'   Frontiers in Genetics 10, 978. doi: \url{10.3389/fgene.2019.00978}
 #'   
 "breast.chung.generic"
+
+#' Pre-trained \code{\linkS4class{DigitalDLSorter}} DNN model for deconvolution
+#' of tumor-infiltrating lymphocytes (TILs) present in colorectal cancer
+#' environment
+#'
+#' \code{\linkS4class{DigitalDLSorter}} DNN model built and trained with
+#' single-cell data from Li et al., 2017 (GSE81861). This model allows the
+#' enumeration and quantification of immune infiltrated cell types in colorectal
+#' cancer environment. This data set consists of single-cell RNA-seq profiles
+#' from 11 patients from different tumor etiology and stages (see Torroja and
+#' Sanchez-Cabo, 2019 and Li et al., 2017 for more details). The analysis and
+#' characterization of cells was carried out by the authors of
+#' \pkg{digitalDLSorteR}.
+#'
+#' This model considers 10 cell types: cancer cells (CRC), epithelial (Ep),
+#' monocytes (M), macrophages (Mc), fibroblast (Fb), CD4 T cells (CD4), CD8 T
+#' cells (CD8Gp), CD8 T cells (CD8Gn), germinal center B cells (gB) and mature B
+#' cells (pB).
+#'
+#' The genes considered are 36477 in SYMBOL notation.
+#'
+#' The model consists of 2 hidden layers with 200 neurons per layer trained with
+#' 'kullback_leibler_divergence' loss function, batch size equal to 128 and a
+#' number of epochs equal to 30.
+#'
+#' @format A \code{\linkS4class{DigitalDLSorterDNN}} object with the following
+#'   slots: \describe{ \item{model}{Trained DNN model.}
+#'   \item{training.history}{Evolution of metrics and loss function during
+#'   training.} \item{test.metrics}{Metrics and loss results on test data.}
+#'   \item{test.pred}{Predictions on test data.} \item{cell.types}{Cell types
+#'   considered by the model.} \item{features}{Features (genes) considered by
+#'   the model.} }
+#'
+#' @source \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861}
+#'
+#' @references Li, H., Courtois, E. T., Sengupta, D., Tan, Y., Chen, K. H., Goh,
+#'   J. J. L., et al. (2017). Reference component analysis of single-cell
+#'   transcriptomes elucidates cellular heterogeneity in human colorectal
+#'   tumors. Nat. Genet. 49 (5), 708–718. doi: \url{10.1038/ng.3818}
+#'
+#'   Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
+#'   algorithm to quantify immune cell populations based on scRNA-Seq data.
+#'   Frontiers in Genetics 10, 978. doi: \url{10.3389/fgene.2019.00978}
+#'   
+"colorectal.li"
 
 
 #' \code{\link{DigitalDLSorter}} object with Chung et al. 2017 data set
@@ -117,34 +162,6 @@
 #'
 "DDLSChung"
 
-
-
-#' \code{\link{DigitalDLSorter}} object with Chung et al. 2017 data set
-#' (completed version)
-#'
-#' \code{\link{DigitalDLSorter}} object containing the original data set used to
-#' generate \code{breast.chung.generic} and \code{breast.chung.specific} models
-#' in order to show some examples in vignette and documentation. This version is
-#' equivalent to "DDLSChung", but it includes additional steps (Deep Neural
-#' Network, evaluation metrics...).
-#'
-#' For more information about the data set and the models, see
-#' \code{breast.chung.generic} or \code{breast.chung.specific}.
-#'
-#' @source \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688}
-#'
-#' @references Chung, W., Eum, H. H., Lee, H. O., Lee, K. M., Lee, H. B., Kim,
-#'   K. T., et al. (2017). Single-cell RNA-seq enables comprehensive tumour and
-#'   immune cell profiling in primary breast cancer. Nat. Commun. 8 (1), 15081.
-#'   doi: \url{10.1038/ncomms15081}.
-#'
-#'   Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
-#'   algorithm to quantify immune cell populations based on scRNA-Seq data.
-#'   Frontiers in Genetics 10, 978. doi: \url{10.3389/fgene.2019.00978}
-#'   
-"DDLSChungComp"
-
-
 #' \code{\link{DigitalDLSorter}} object with Li et al. 2017 data set
 #'
 #' \code{\link{DigitalDLSorter}} object containing single-cell RNA-seq data from
@@ -170,6 +187,32 @@
 #'   Frontiers in Genetics 10, 978. doi: \url{10.3389/fgene.2019.00978}
 #'   
 "DDLSLi"
+
+#' \code{\link{DigitalDLSorter}} object with Li et al. 2017 data set (trained
+#' version)
+#'
+#' \code{\link{DigitalDLSorter}} object containing a trained model using
+#' single-cell RNA-seq data from Li at al., 2017. It consists of 11 samples fro`m
+#' patients with colorectal cancer in different stages and grades, and different
+#' gender. It contains only the DDLS model in order to provide realistic results
+#' in vignettes.
+#'
+#' For more information about the data set, please see Torroja and Sanchez-Cabo,
+#' 2019 and Li et al., 2017
+#'
+#' @source \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688}
+#'
+#' @references Li, H., Courtois, E. T., Sengupta, D., Tan, Y., Chen, K. H., Goh,
+#'   J. J. L., et al. (2017). Reference component analysis of single-cell
+#'   transcriptomes elucidates cellular heterogeneity in human colorectal
+#'   tumors. Nat. Genet. 49 (5), 708–718. doi: \url{10.1038/ng.3818}
+#'
+#'   Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
+#'   algorithm to quantify immune cell populations based on scRNA-Seq data.
+#'   Frontiers in Genetics 10, 978. doi: \url{10.3389/fgene.2019.00978}
+#'   
+"DDLSLiComp"
+
 
 #' Breast cancer bulk RNA-Seq samples from TCGA Research Network
 #'

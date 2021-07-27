@@ -1,0 +1,1 @@
+context("Simulation of pseudo-bulk RNA-Seq profiles")

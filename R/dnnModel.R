@@ -906,6 +906,8 @@ deconvDigitalDLSorter <- function(
     model.dnn <- digitalDLSorteR::breast.chung.specific
   } else if (model == "breast.chung.generic") {
     model.dnn <- digitalDLSorteR::breast.chung.generic
+  } else if (model == "colorectal.li") {
+    model.dnn <- digitalDLSorteR::colorectal.li
   } else {
     stop("Model provided does not exist. See documentation to see available models")
   }

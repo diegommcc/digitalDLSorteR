@@ -179,7 +179,7 @@ generateBulkCellMatrix <- function(
   } else if (missing(num.bulk.samples) || is.null(num.bulk.samples)) {
     stop("'num.bulk.samples' argument must be provided")
   } else if (any(proportions.train < 0) || any(proportions.test < 0)) {
-    stop("Proportions cannot be lesser than zero")
+    stop("Proportions cannot be less than zero")
   }
   if (!is.null(prob.cell.types(object)) || !length(prob.cell.types(object)) == 0) {
     warning("'prob.cell.types' slot already has probability matrices. ", 
@@ -245,12 +245,12 @@ generateBulkCellMatrix <- function(
          "cells metadata. Check that the 'prob.design' matrix is correctly built")
   } else if (any(prob.design$from < 1) || any(prob.design$from > 99)) {
     stop("'from' column in 'prob.design' must be greater than or equal to 1 and ",
-         "lesser than or equal to 99")
+         "less than or equal to 99")
   } else if (any(prob.design$to <= 1) || any(prob.design$to > 100)) {
     stop("'to' column in 'prob.design' must be greater than or equal to 1 and ", 
-         "lesser than or equal to 100")
+         "less than or equal to 100")
   } else if (any(prob.design$from > prob.design$to)) {
-    stop("'from' entries must be lesser than 'to' entries")
+    stop("'from' entries must be less than 'to' entries")
   } else if (any(abs(prob.design$from) + abs(prob.design$to) > 100)) {
     stop("The sum between the 'from' and 'to' entries must not be greater than", 
          " 100")
@@ -1173,7 +1173,7 @@ simBulkProfiles <- function(
     J <- nrow(assay(single.cell.real(object)))
     if (n < block.size) {
       block.size <- n
-      warning("The number of simulated samples is lesser than 'block.size'. ",
+      warning("The number of simulated samples is less than 'block.size'. ",
               "Only one block will be performed.", 
               call. = FALSE, immediate. = TRUE)
     }
