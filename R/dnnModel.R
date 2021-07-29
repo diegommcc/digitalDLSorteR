@@ -166,8 +166,23 @@ trainDigitalDLSorterModel <- function(
   } else if (batch.size <= 10) {
     stop("'batch.size' argument must be greater than or equal to 10")
   }
+  if (!any(combine %in% c("both", "bulk", "single-cell"))) {
+    stop("'combine' argument must be one of the following options: 'both', 'bulk' or 'single-cell'")
+  }
+  # bulk.simul and single-cell.real/simul must be provided, since we evaluate 
+  # our model on both type of samples compulsory
   # check if data provided is correct regarding on the fly training
+  if (is.null(single.cell.real(object)) && is.null(single.cell.simul(object))) {
+    stop("At least one single-cell slot must be provided ('single.cell.real' ", 
+         "or 'single.cell.simul') as trainDigitalDLSorterModel evaluates ", 
+         "DNN model on both types of profiles: bulk and single-cell")
+  }
   if (!on.the.fly) {
+    if (is.null(bulk.simul(object, "test"))) {
+      stop("trainDigitalDLSorterModel evaluates DNN model on both types of ", 
+           "profiles: bulk and single-cell. Therefore, bulk data for test ", 
+           "must be provided")
+    }
     if (verbose) message("=== Training and test from stored data was selected")
     if ((combine == "both" && is.null(bulk.simul(object)) ||
          combine == "both" && (is.null(single.cell.real(object)) && 
@@ -185,7 +200,7 @@ trainDigitalDLSorterModel <- function(
            "one single cell slot must be provided")
     }
   }
-  # single-cell must e provided independently on on.the.fly
+  # single-cell must e provided independently of on.the.fly
   if (combine == "single-cell" && (is.null(single.cell.real(object)) && 
                                    is.null(single.cell.simul(object)))) {
     stop("If combine = 'single-cell' is selected, at least ",
@@ -198,8 +213,11 @@ trainDigitalDLSorterModel <- function(
             call. = FALSE, immediate. = TRUE)
   }
   # plots in RStudio during training --> dont work in terminal
-  if (view.metrics.plot) view.plot <- "auto"
-  else view.plot <- 0
+  if (view.metrics.plot) {
+    view.plot <- "auto"
+  } else {
+    view.plot <- 0
+  }
   
   if (verbose) verbose.model <- 1
   else verbose.model <- 0
@@ -291,11 +309,11 @@ trainDigitalDLSorterModel <- function(
   )
   # pattern to set simulated and real cells
   if (!is.null(single.cell.simul(object))) {
-    sufix.names <- unique(colData(single.cell.simul(object))$sufix)
+    suffix.names <- unique(colData(single.cell.simul(object))$suffix)
   } else {
-    sufix.names <- "_Simul"
+    suffix.names <- "_Simul"
   }
-  pattern <- sufix.names
+  pattern <- suffix.names
   ## set if samples will be generated on the fly
   if (on.the.fly) {
     # assign(.dataForDNN, .dataForDNN.onFly, inherits = TRUE, immediate = TRUE)
@@ -306,77 +324,77 @@ trainDigitalDLSorterModel <- function(
   }
   
   ## training model
-  if (val) {
-    if (freq.val < 0.1 || freq.val > 0.5) {
-      stop("'freq.val' must be a float between 0.1 and 0.5")
-    }
-    # with validation subset. generator divide train set in two subsets
-    n.val <- ceiling(n.train * freq.val)
-    if (verbose) {
-      message(paste("\n=== Training DNN with", n.train - n.val,
-                    "samples and validating with",
-                    n.val, "samples:\n"))
-    }
-    gen.train <- .trainGenerator(
-      object = object, 
-      prob.matrix = prob.matrix.train,
-      type.data = "train",
-      batch.size = batch.size,
-      combine = combine,
-      shuffle = shuffle,
-      pattern = pattern,
-      min.index = n.val,
-      max.index = n.train,
-      threads = threads,
-      verbose = verbose
-    )
-    gen.val <- .trainGenerator(
-      object = object, 
-      prob.matrix = prob.matrix.train,
-      type.data = "train",
-      batch.size = batch.size,
-      combine = combine,
-      shuffle = FALSE,
-      pattern = pattern,
-      min.index = 0,
-      max.index = n.val,
-      threads = threads,
-      verbose = verbose
-    )
-    history <- model %>% fit_generator(
-      generator = gen.train,
-      steps_per_epoch = ceiling((n.train - n.val) / batch.size),
-      epochs = num.epochs,
-      validation_data = gen.val,
-      validation_steps = n.val / batch.size,
-      verbose = verbose.model,
-      view_metrics = view.plot
-    )
-  } else {
+  # if (val) {
+  #   if (freq.val < 0.1 || freq.val > 0.5) {
+  #     stop("'freq.val' must be a float between 0.1 and 0.5")
+  #   }
+  #   # with validation subset. generator divide train set in two subsets
+  #   n.val <- ceiling(n.train * freq.val)
+  #   if (verbose) {
+  #     message(paste("\n=== Training DNN with", n.train - n.val,
+  #                   "samples and validating with",
+  #                   n.val, "samples:\n"))
+  #   }
+  #   gen.train <- .trainGenerator(
+  #     object = object, 
+  #     prob.matrix = prob.matrix.train,
+  #     type.data = "train",
+  #     batch.size = batch.size,
+  #     combine = combine,
+  #     shuffle = shuffle,
+  #     pattern = pattern,
+  #     min.index = n.val,
+  #     max.index = n.train,
+  #     threads = threads,
+  #     verbose = verbose
+  #   )
+  #   gen.val <- .trainGenerator(
+  #     object = object, 
+  #     prob.matrix = prob.matrix.train,
+  #     type.data = "train",
+  #     batch.size = batch.size,
+  #     combine = combine,
+  #     shuffle = FALSE,
+  #     pattern = pattern,
+  #     min.index = 0,
+  #     max.index = n.val,
+  #     threads = threads,
+  #     verbose = verbose
+  #   )
+  #   history <- model %>% fit_generator(
+  #     generator = gen.train,
+  #     steps_per_epoch = ceiling((n.train - n.val) / batch.size),
+  #     epochs = num.epochs,
+  #     validation_data = gen.val,
+  #     validation_steps = ceiling(n.val / batch.size),
+  #     verbose = verbose.model,
+  #     view_metrics = view.plot
+  #   )
+  # } else {
     # without validation subset
-    if (verbose) 
-      message(paste("\n=== Training DNN with", n.train, "samples:\n"))
-    gen.train <- .trainGenerator(
-      object = object, 
-      prob.matrix = prob.matrix.train,
-      type.data = "train",
-      batch.size = batch.size,
-      combine = combine,
-      shuffle = shuffle,
-      pattern = pattern,
-      min.index = NULL,
-      max.index = NULL,
-      threads = threads,
-      verbose = verbose
-    )
-    history <- model %>% fit_generator(
-      generator = gen.train,
-      steps_per_epoch = ceiling(n.train / batch.size),
-      epochs = num.epochs,
-      verbose = verbose.model,
-      view_metrics = view.plot
-    )
-  }
+  if (verbose) 
+    message(paste("\n=== Training DNN with", n.train, "samples:\n"))
+  gen.train <- .trainGenerator(
+    object = object, 
+    prob.matrix = prob.matrix.train,
+    type.data = "train",
+    batch.size = batch.size,
+    combine = combine,
+    shuffle = shuffle,
+    pattern = pattern,
+    min.index = NULL,
+    max.index = NULL,
+    threads = threads,
+    verbose = verbose
+  )
+  history <- model %>% fit_generator(
+    generator = gen.train,
+    steps_per_epoch = ceiling(n.train / batch.size),
+    epochs = num.epochs,
+    verbose = verbose.model,
+    view_metrics = view.plot
+  )
+  # }
   if (verbose)
     message(paste0("\n=== Evaluating DNN in test data (", n.test, " samples)"))
 
@@ -539,17 +557,31 @@ trainDigitalDLSorterModel <- function(
     )
   } 
   if (any(!bulk.data))  {
-    sel.cells <- rownames(sel.data)[!bulk.data]
-    sim.cells <- grep(pattern = pattern, sel.cells, value = TRUE)
-    real.cells <- grep(pattern = pattern, sel.cells, value = TRUE, invert = TRUE)
-    cell.samples <- mapply(FUN = function(x, y) {
-      if (!is.null(x) && y == 1) {
-        return(as.matrix(assay(single.cell.simul(object))[, x, drop = FALSE]))
-      } else if (!is.null(x) && y == 2) {
-        return(as.matrix(assay(single.cell.real(object))[, x, drop = FALSE]))
-      }
-    }, x = list(sim.cells, real.cells), y = c(1, 2))
-    cell.samples <- .mergeMatrices(x = cell.samples[[2]], y = cell.samples[[1]])
+    if (!is.null(single.cell.simul(object)) && !is.null(single.cell.real(object))) {
+      sel.cells <- rownames(sel.data)[!bulk.data]
+      sim.cells <- grep(pattern = pattern, sel.cells, value = TRUE)
+      real.cells <- grep(pattern = pattern, sel.cells, value = TRUE, invert = TRUE)
+      cell.samples <- mapply(
+        FUN = function(x, y) {
+          if (!is.null(x) && y == 1) {
+            return(as.matrix(assay(single.cell.simul(object))[, x, drop = FALSE]))
+          } else if (!is.null(x) && y == 2) {
+            return(as.matrix(assay(single.cell.real(object))[, x, drop = FALSE]))
+          }
+        }, 
+        x = list(sim.cells, real.cells), 
+        y = c(1, 2)
+      )
+      cell.samples <- .mergeMatrices(x = cell.samples[[2]], y = cell.samples[[1]])  
+    } else if (!is.null(single.cell.real(object)) && 
+               is.null(single.cell.simul(object))) {
+      sel.cells <- rownames(sel.data)[!bulk.data]
+      cell.samples <- as.matrix(assay(single.cell.real(object))[, sel.cells, drop = FALSE])
+    } else if (!is.null(single.cell.simul(object)) && 
+               is.null(single.cell.real(object))) {
+      sel.cells <- rownames(sel.data)[!bulk.data]
+      cell.samples <- as.matrix(assay(single.cell.simul(object))[, sel.cells, drop = FALSE])
+    }
   }
   # return final matrix counts
   if (any(bulk.data) && any(!bulk.data)) {
@@ -583,21 +615,31 @@ trainDigitalDLSorterModel <- function(
     )
   } 
   if (any(!bulk.data))  {
-    sel.cells <- rownames(sel.data)[!bulk.data]
-    sim.cells <- grep(pattern = pattern, sel.cells, value = TRUE)
-    real.cells <- grep(pattern = pattern, sel.cells, value = TRUE, invert = TRUE)
-    cell.samples <- mapply(
-      FUN = function(x, y) {
-        if (!is.null(x) && y == 1) {
-          return(as.matrix(assay(single.cell.simul(object))[, x, drop = FALSE]))
-        } else if (!is.null(x) && y == 2) {
-          return(as.matrix(assay(single.cell.real(object))[, x, drop = FALSE]))
-        }
-      }, 
-      x = list(sim.cells, real.cells), 
-      y = c(1, 2)
-    )
-    cell.samples <- .mergeMatrices(x = cell.samples[[2]], y = cell.samples[[1]])
+    if (!is.null(single.cell.simul(object)) && !is.null(single.cell.real(object))) {
+      sel.cells <- rownames(sel.data)[!bulk.data]
+      sim.cells <- grep(pattern = pattern, sel.cells, value = TRUE)
+      real.cells <- grep(pattern = pattern, sel.cells, value = TRUE, invert = TRUE)
+      cell.samples <- mapply(
+        FUN = function(x, y) {
+          if (!is.null(x) && y == 1) {
+            return(as.matrix(assay(single.cell.simul(object))[, x, drop = FALSE]))
+          } else if (!is.null(x) && y == 2) {
+            return(as.matrix(assay(single.cell.real(object))[, x, drop = FALSE]))
+          }
+        }, 
+        x = list(sim.cells, real.cells), 
+        y = c(1, 2)
+      )
+      cell.samples <- .mergeMatrices(x = cell.samples[[2]], y = cell.samples[[1]])  
+    } else if (!is.null(single.cell.real(object)) && 
+               is.null(single.cell.simul(object))) {
+      sel.cells <- rownames(sel.data)[!bulk.data]
+      cell.samples <- as.matrix(assay(single.cell.real(object))[, sel.cells, drop = FALSE])
+    } else if (!is.null(single.cell.simul(object)) && 
+               is.null(single.cell.real(object))) {
+      sel.cells <- rownames(sel.data)[!bulk.data]
+      cell.samples <- as.matrix(assay(single.cell.simul(object))[, sel.cells, drop = FALSE])
+    }
   }
   # return final matrix counts
   if (any(bulk.data) && any(!bulk.data)) {
@@ -633,12 +675,22 @@ trainDigitalDLSorterModel <- function(
         l = prob.cell.types(object, type.data) %>% set.list()
       )), 
       ncol = length(prob.cell.types(object, type.data) %>% set.list()), 
-      byrow = T,
+      byrow = TRUE,
       dimnames = list(unlist(prob.cell.types(object, type.data) %>% set.list()),
                       names(prob.cell.types(object, type.data) %>% set.list()))
     )
+    allCellTypes <- colnames(prob.cell.types(object, type.data) %>% prob.matrix())
+    if (!all(allCellTypes %in% colnames(tpsm))) {
+      lackTypes <- allCellTypes[!allCellTypes %in% colnames(tpsm)]
+      lackMatrix <- matrix(
+        0, ncol = length(lackTypes), nrow = nrow(tpsm), 
+        dimnames = list(rownames(tpsm), lackTypes)
+      )
+      tpsm <- cbind(tpsm, lackMatrix)
+    }
     tpsm <- tpsm[, colnames(prob.cell.types(object, type.data) %>% 
                               prob.matrix())]
+
     if (fly) {
       probs.matrix <- rbind(
         tpsm, prob.cell.types(object, type.data) %>% prob.matrix() / 100
@@ -651,10 +703,11 @@ trainDigitalDLSorterModel <- function(
       tpsm <- tpsm[sample(nrow(tpsm)), ]
       probs.matrix <- prob.cell.types(object, type.data)@prob.matrix[
         colnames(bulk.simul(object, type.data)), ] / 100
-      if (nrow(tpsm) > nrow(probs.matrix))
+      if (nrow(tpsm) > nrow(probs.matrix)) {
         probs.matrix <- .mergePropsSort(m.small = probs.matrix, m.big = tpsm)
-      else if (nrow(tpsm) <= nrow(probs.matrix))
+      } else if (nrow(tpsm) <= nrow(probs.matrix)) {
         probs.matrix <- .mergePropsSort(m.small = tpsm, m.big = probs.matrix)
+      }
     }
   } else if (combine == "bulk") {
     if (verbose) message("    Using only simulated bulk samples\n")
@@ -676,16 +729,28 @@ trainDigitalDLSorterModel <- function(
           return(rep(v, length(l[[x]])))
         }, l = prob.cell.types(object, type.data) %>% set.list()
       )), ncol = length(prob.cell.types(object, type.data) %>% set.list()), 
-      byrow = T,
+      byrow = TRUE,
       dimnames = list(unlist(prob.cell.types(object, type.data) %>% set.list()),
                       names(prob.cell.types(object, type.data) %>% set.list()))
     )
+    allCellTypes <- colnames(prob.cell.types(object, type.data) %>% prob.matrix())
+    if (!any(allCellTypes %in% colnames(probs.matrix))) {
+      lackTypes <- allCellTypes[!allCellTypes %in% colnames(probs.matrix)]
+      lackMatrix <- matrix(
+        0, ncol = length(lackTypes), nrow = nrow(probs.matrix), 
+        dimnames = list(rownames(probs.matrix), lackTypes)
+      )
+      probs.matrix <- cbind(probs.matrix, lackMatrix)
+    }
     probs.matrix <- probs.matrix[
       , colnames(prob.cell.types(object, type.data) %>% prob.matrix())]
   }
-  ## shuffle only if train on the fly
-  if (shuffle && !fly) return(probs.matrix[sample(nrow(probs.matrix)), ])
-  else return(probs.matrix)
+  # shuffle only if train on the fly
+  if (shuffle && !fly) {
+    return(probs.matrix[sample(nrow(probs.matrix)), ])
+  } else {
+    return(probs.matrix)
+  }
 }
 
 .mergeMatrices <- function(x, y) {
@@ -1047,8 +1112,7 @@ deconvDigitalDLSorterObj <- function(
     index <- 1
   }
   deconv.counts <- as.matrix(assay(deconv.data(object, name.data)))
-  # print(class(deconv.counts))
-  ## deconvolution
+  # deconvolution
   results <- .deconvCore(
     deconv.counts = deconv.counts,
     model = trained.model(object),

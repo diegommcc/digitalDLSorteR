@@ -1,5 +1,9 @@
 context("Simulation of single-cell RNA-Seq profiles")
 
+################################################################################
+####################### estimateZinbwaveParams function ########################
+################################################################################
+
 # estimateZinbwaveParams: check if the function detects errors in parameters
 test_that("Wrong parameters in estimateZinbwaveParams", {
   # incorrect object
@@ -174,7 +178,11 @@ test_that("Functions to subset data in estimateZinwaveParams function (.reduceDa
 })
 
 
-# simSCProfiles: check if the function detects errors in parameters
+################################################################################
+########################### simSCProfiles function #############################
+################################################################################
+
+# check if the function detects errors in parameters
 test_that("Wrong parameters in simSCProfiles", {
   # incorrect object
   DDLSLiBad <- DDLSLi
@@ -185,7 +193,7 @@ test_that("Wrong parameters in simSCProfiles", {
       cell.ID.column = "Cell_ID",
       cell.type.column = "Cell_Type",
       n.cells = 10,
-      sufix.names = "_Simul",
+      suffix.names = "_Simul",
       verbose = TRUE
     ), 
     regexp = "'zinb.params' slot is empty."
@@ -197,7 +205,7 @@ test_that("Wrong parameters in simSCProfiles", {
       cell.ID.column = "Cell_ID",
       cell.type.column = "non_existent_column",
       n.cells = 10,
-      sufix.names = "_Simul",
+      suffix.names = "_Simul",
       verbose = TRUE
     ), 
     regexp = "non_existent_column column is not present in cells.metadata"
@@ -209,7 +217,7 @@ test_that("Wrong parameters in simSCProfiles", {
       cell.ID.column = "Cell_ID",
       cell.type.column = "Cell_Type",
       n.cells = 0,
-      sufix.names = "_Simul",
+      suffix.names = "_Simul",
       verbose = TRUE
     ), 
     regexp = "'n.cells' must be greater than 0"
@@ -222,7 +230,7 @@ test_that("Wrong parameters in simSCProfiles", {
       cell.type.column = "Cell_Type",
       n.cells = 10,
       cell.types = "non_existent_column",
-      sufix.names = "_Simul",
+      suffix.names = "_Simul",
       verbose = TRUE
     ), 
     regexp = "Cell type(s) provided in 'cell.types' not found in ZINB-WaVE model"
@@ -231,56 +239,124 @@ test_that("Wrong parameters in simSCProfiles", {
 
 # simSCProfiles: check if parameters work as expected
 test_that("Parameters working as expected in simSCProfiles", {
-  # incorrect object
-  DDLSLiBad <- DDLSLi
-  zinb.params(DDLSLiBad) <- NULL
-  expect_error(
-    simSCProfiles(
-      object = DDLSLiBad,
-      cell.ID.column = "Cell_ID",
-      cell.type.column = "Cell_Type",
-      n.cells = 10,
-      sufix.names = "_Simul",
-      verbose = TRUE
-    ), 
-    regexp = "'zinb.params' slot is empty."
+  # suffix.names 
+  DDLSLi <- simSCProfiles(
+    object = DDLSLi,
+    cell.ID.column = "Cell_ID",
+    cell.type.column = "Cell_Type",
+    n.cells = 10,
+    suffix.names = "_Suffix",
+    verbose = TRUE
   )
-  # incorrect column
-  expect_error(
-    simSCProfiles(
-      object = DDLSLi,
-      cell.ID.column = "Cell_ID",
-      cell.type.column = "non_existent_column",
-      n.cells = 10,
-      sufix.names = "_Simul",
-      verbose = TRUE
-    ), 
-    regexp = "non_existent_column column is not present in cells.metadata"
+  expect_true(
+    all(grepl(pattern = "_Suffix", colnames(single.cell.simul(DDLSLi))))
   )
-  # n.cells
-  expect_error(
-    simSCProfiles(
-      object = DDLSLi,
-      cell.ID.column = "Cell_ID",
-      cell.type.column = "Cell_Type",
-      n.cells = 0,
-      sufix.names = "_Simul",
-      verbose = TRUE
-    ), 
-    regexp = "'n.cells' must be greater than 0"
-  )
-  # cell.types 
-  expect_error(
+  expect_true(any(colnames(colData(single.cell.simul(DDLSLi))) == "suffix"))
+  # warning if suffix column in cells metadata is going to be overwritten
+  colData(single.cell.real(DDLSLi))$suffix <- 1
+  expect_warning(
     simSCProfiles(
       object = DDLSLi,
       cell.ID.column = "Cell_ID",
       cell.type.column = "Cell_Type",
       n.cells = 10,
-      cell.types = "non_existent_column",
-      sufix.names = "_Simul",
+      suffix.names = "_Simul",
       verbose = TRUE
-    ), 
-    regexp = "Cell type(s) provided in 'cell.types' not found in ZINB-WaVE model"
+    )
+  )
+  # correct number of cells
+  DDLSLi <- simSCProfiles(
+    object = DDLSLi,
+    cell.ID.column = "Cell_ID",
+    cell.type.column = "Cell_Type",
+    n.cells = 14,
+    suffix.names = "_Suffix",
+    verbose = TRUE
+  )
+  expect_equal(dim(single.cell.simul(DDLSLi))[2], 14 * 10)
+  # only CD4 and M cells
+  DDLSLi <- simSCProfiles(
+    object = DDLSLi,
+    cell.ID.column = "Cell_ID",
+    cell.type.column = "Cell_Type",
+    n.cells = 14,
+    suffix.names = "_Suffix",
+    cell.types = c("CD4", "M"),
+    verbose = TRUE
+  )
+  expect_equal(dim(single.cell.simul(DDLSLi))[2], 14 * 2)
+  expect_true(
+    all(
+      unique(colData(single.cell.simul(DDLSLi))[["Cell_Type"]]) %in% 
+        c("M", "CD4")
+    )
   )
 })
+
+# simSCProfiles: check parameters related to HDF5 files used as back-end
+if (requireNamespace("DelayedArray", quietly = TRUE) || 
+    requireNamespace("HDF5Array", quietly = TRUE)) {
+
+  test_that(
+    paste("Using HDF5 files as back-end simSCProfiles: the following", 
+          "tests will write file in temp directory/files. Only available if", 
+          "DelayedArray and HDF5Array packages are installed"), 
+    {
+      # check if HDF5 file exists and if it is correct
+      file <- tempfile()
+      expect_message(
+        DDLSLi <- simSCProfiles(
+          object = DDLSLi,
+          cell.ID.column = "Cell_ID",
+          cell.type.column = "Cell_Type",
+          n.cells = 10,
+          file.backend = file,
+          verbose = TRUE
+        ), 
+        regexp = "=== Writing data to HDF5 file"
+      )
+      expect_equal(dim(single.cell.simul(DDLSLi))[2], 10 * 10)
+      expect_true(file.exists(file))
+      expect_s4_class(object = counts(single.cell.simul(DDLSLi)), class = "HDF5Array")
+      # check if name.dataset.backend changes the name of dataset used
+      DDLSLi <- simSCProfiles(
+        object = DDLSLi,
+        cell.ID.column = "Cell_ID",
+        cell.type.column = "Cell_Type",
+        n.cells = 10,
+        file.backend = file,
+        name.dataset.backend = "new.dataset",
+        verbose = TRUE
+      )
+      expect_true("new.dataset" %in% rhdf5::h5ls(file)[, "name"])
+      # cannot be used the same dataset in the same HDF5 file
+      expect_error(
+        simSCProfiles(
+          object = DDLSLi,
+          cell.ID.column = "Cell_ID",
+          cell.type.column = "Cell_Type",
+          n.cells = 10,
+          file.backend = file,
+          name.dataset.backend = "new.dataset",
+          verbose = TRUE
+        )
+      )
+      # check if block.processing works
+      expect_message(
+        DDLSLi <- simSCProfiles(
+          object = DDLSLi,
+          cell.ID.column = "Cell_ID",
+          cell.type.column = "Cell_Type",
+          n.cells = 10,
+          file.backend = file,
+          name.dataset.backend = "new.dataset.1",
+          block.processing = TRUE,
+          block.size = 5,
+          verbose = TRUE
+        ), regexp = "=== Simulating and writing new single-cell profiles by block"
+      )
+    }
+  )
+} 
+
 

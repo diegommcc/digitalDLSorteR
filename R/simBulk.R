@@ -138,9 +138,9 @@ generateBulkCellMatrix <- function(
   n.cells = 100,
   train.freq.cells = 2/3,
   train.freq.bulk = 2/3,
-  proportions.train = c(10, 5, 20, 15, 50),
-  proportions.test = c(10, 5, 20, 15, 50),
-  prob.zero = c(0.5, 0.5, 0.5, 0.5, 0.5),
+  proportions.train = c(10, 5, 20, 15, 35, 15),
+  proportions.test = c(10, 5, 20, 15, 35, 15),
+  prob.zero = c(0.5, 0.5, 0.5, 0.5, 0.5, 0.5),
   balanced.type.cells = FALSE,
   verbose = TRUE
 ) {
@@ -218,7 +218,7 @@ generateBulkCellMatrix <- function(
       }
     )
     list.metadata[[1]]$Simulated <- FALSE
-    list.metadata[[1]]$sufix <- ""
+    list.metadata[[1]]$suffix <- ""
     cells.metadata <- S4Vectors::rbind(list.metadata[[1]], list.metadata[[2]])  
   } else {
     cells.metadata <- single.cell.real(object) %>% 
@@ -288,26 +288,26 @@ generateBulkCellMatrix <- function(
   if (!balanced.type.cells) {
     train.set <- sample(cells, size = round(nrow(cells.metadata) * train.freq.cells))
     if (length(unique(names(train.set))) != length(unique(names(cells)))) {
-      train.set <- sapply(
-        X = unique(names(cells)), 
+      train.set <- lapply(
+        X = as.list(unique(names(cells))), 
         FUN = function(x, cells, train.freq.cells) {
           sample(
             cells[names(cells) == x], 
             size = round(length(cells[names(cells) == x]) * train.freq.cells)
           )
         }, cells = cells, train.freq.cells
-      ) %>% unname() %>% unlist()  
+      ) %>% unlist()  
     }
   } else {
-    train.set <- sapply(
-      X = unique(names(cells)), 
+    train.set <- lapply(
+      X = as.list(unique(names(cells))), 
       FUN = function(x, cells, train.freq.cells) {
         sample(
           cells[names(cells) == x], 
           size = round(length(cells[names(cells) == x]) * train.freq.cells)
         )
       }, cells = cells, train.freq.cells
-    ) %>% unname() %>% unlist()
+    ) %>% unlist()
   }
   train.types <- names(train.set)
   train.set.list <- list()
@@ -341,7 +341,6 @@ generateBulkCellMatrix <- function(
   for (ts in cell.type.test) {
     test.set.list[[ts]] <- test.set[test.types == ts]
   }
-  
   # check if all cell types are present in train and test data
   if (verbose) {
     message("\n=== Training set cells by type:")
@@ -474,7 +473,6 @@ generateBulkCellMatrix <- function(
     sn = colnames(train.prob.matrix),
     n.cells = n.cells
   ))
-  
   test.prob.matrix.names <- t(apply(
     X = test.prob.matrix,
     MARGIN = 1,
@@ -586,6 +584,8 @@ setCount <- function(
   for (cType in names(x)) {
     n <- ceiling(x.set[cType]) # n <- ceiling(x[cType])
     if (n > 0) {
+      if (is.null(setList[[cType]]))
+        next
       repl <- ifelse(test = n > length(setList[[cType]]), yes = TRUE, no = FALSE)
       sc <- c(sc, sample(setList[[cType]], size = n, replace = repl))
     }
@@ -601,7 +601,7 @@ setCount <- function(
   return(list(vec, index.ex))
 }
 
-# recursive implementation, maybe improvable
+# recursive implementation
 # this function take 1 cell type from the available cell types (without 
 # using index.ex cell types) and add up or subtract depending what is needed
 .setHundredLimit <- function(
@@ -897,7 +897,7 @@ setCount <- function(
   return(prob.matrix)
 }
 
-
+# generate pseudo-bulk samples consisted of only 1 cell type
 .generateSet6 <- function(
   prob.list,
   num,
@@ -910,7 +910,8 @@ setCount <- function(
     x = rep(ceiling(num / n.cell.types), n.cell.types), limit = num
   )
   num.index <- c(0, cumsum(num.set))
-  for (i in seq(n.cell.types)) {
+  # which(num.set != 0) because may be cell types without pseudo-bulk --> error
+  for (i in which(num.set != 0)) {
     prob.matrix[seq(num.index[i] + 1, num.index[i + 1]), i] <- 100
   }
   colnames(prob.matrix) <- names(prob.list)
@@ -1034,7 +1035,7 @@ setCount <- function(
 #' @references Fischer B, Smith M and Pau, G (2020). rhdf5: R Interface to HDF5.
 #'   R package version 2.34.0.
 #'
-#'   Pagès H, Hickey wcfP and Lun A (2020). DelayedArray: A unified framework
+#'   Pagès H, Hickey P and Lun A (2020). DelayedArray: A unified framework
 #'   for working transparently with on-disk and in-memory array-like datasets. R
 #'   package version 0.16.0.
 #'
@@ -1056,11 +1057,11 @@ simBulkProfiles <- function(
     stop("The object provided is not of DigitalDLSorter class")
   } else if (is.null(single.cell.simul(object)) && 
              is.null(single.cell.real(object))) {
-    stop("The are not single-cell profiles in DigitalDLSorter object")
+    stop("There are no single-cell profiles in DigitalDLSorter object")
   } else if (is.null(prob.cell.types(object))) {
     stop("'prob.cell.types' slot is empty")
   } else if (!any(type.data == c("train", "test", "both"))) {
-    stop("'type.data' argument must be one of the next options: 'train', 'test' or 'both'")
+    stop("'type.data' argument must be one of the following options: 'train', 'test' or 'both'")
   }
   if (!is.null(file.backend)) {
     if (!requireNamespace("DelayedArray", quietly = TRUE) || 
@@ -1160,11 +1161,12 @@ simBulkProfiles <- function(
   sel.bulk.cells <- prob.cell.types(object, type.data) %>% cell.names()
   sel.bulk.cells <- sel.bulk.cells[sample(nrow(sel.bulk.cells)), ]
   if (!is.null(single.cell.simul(object))) {
-    sufix.names <- unique(colData(single.cell.simul(object))$sufix)
+    suffix.names <- unique(colData(single.cell.simul(object))$suffix)
   } else {
-    sufix.names <- "_Simul"
+    suffix.names <- "_Simul"
   }
-  pattern <- sufix.names
+  pattern <- suffix.names
+  if (!verbose) pbo <- pbapply::pboptions(type = "none")
   if (block.processing && is.null(file.backend)) {
     stop("'block.processing' is only compatible to the use of HDF5 files ", 
          "as back-end ('file.backend' argument)")
@@ -1199,24 +1201,14 @@ simBulkProfiles <- function(
       }
       sub.i <- seq(from = r.i + 1, to = r.i + block.size)
       r.i <- r.i + block.size
-      if (threads == 1) {
-        bulk.samples <- apply(
-          X = sel.bulk.cells[sub.i, ],
-          MARGIN = 1,
-          FUN = .setBulk,
-          object = object,
-          pattern = pattern
-        )
-      } else {
-        bulk.samples <- pbapply::pbapply(
-          X = sel.bulk.cells[sub.i, ],
-          MARGIN = 1,
-          FUN = .setBulk,
-          object = object,
-          pattern = pattern,
-          cl = threads
-        )
-      }
+      bulk.samples <- pbapply::pbapply(
+        X = sel.bulk.cells[sub.i, , drop = FALSE],
+        MARGIN = 1,
+        FUN = .setBulk,
+        object = object,
+        pattern = pattern,
+        cl = threads
+      )
       if (iter == 1) {
         rhdf5::h5write(
           obj = bulk.samples, file = file.backend, 
@@ -1249,6 +1241,7 @@ simBulkProfiles <- function(
       cl = threads
     )
   }
+  if (!verbose) on.exit(pbapply::pboptions(pbo))
   return(
     .createSEObject(
       counts = bulk.samples,
