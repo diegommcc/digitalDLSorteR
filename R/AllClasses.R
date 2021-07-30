@@ -342,22 +342,35 @@ setMethod(
   }
 )
 
+.selectSome <- function(vec, num) {
+  if (length(vec) < 6)
+    namesSel <- sample(length(vec), size = 6, replace = TRUE)    
+  else 
+    namesSel <- sample(length(vec), size = 6)    
+  return(
+    paste(
+      paste(vec[namesSel[1:3]], collapse = " "), "...", 
+      paste(vec[namesSel[3:6]], collapse = " ")
+    )
+  )
+}
+
 .sceShow <- function(sce) {
   cat(" ", dim(sce)[1], "features and", dim(sce)[2], "cells\n")
   if (is.null(rownames(sce))) rownames.sce <- "---"
-  else rownames.sce <- S4Vectors:::selectSome(rownames(sce), 6)
+  else rownames.sce <- .selectSome(vec = rownames(sce), num = 6)
   if (identical(colnames(sce), character(0))) colnames.sce <- "---"
-  else colnames.sce <- S4Vectors:::selectSome(colnames(sce), 6)
+  else colnames.sce <- .selectSome(vec = colnames(sce), num = 6)
   cat("  rownames:", rownames.sce, "\n")
   cat("  colnames:", colnames.sce, "\n")
 }
 
 .bulkShow <- function(se) {
   cat("   ", dim(se)[1], "features and", dim(se)[2], "samples\n")
-  if (is.null(rowData(se)[[1]])) rownames.se <- "---"
-  else rownames.se <- S4Vectors:::selectSome(rownames(rowData(se)), 6)
+  if (dim(rowData(se))[2] == 0) rownames.se <- "---" 
+  else rownames.se <- .selectSome(vec = rownames(rowData(se)), num = 6)
   if (identical(colnames(se), character(0))) colnames.se <- "---"
-  else colnames.se <- S4Vectors:::selectSome(rownames(colData(se)), 6)
+  else colnames.se <- .selectSome(vec = rownames(colData(se)), num = 6)
   cat("    rownames:", rownames.se, "\n")
   cat("    colnames:", colnames.se, "\n")
 }

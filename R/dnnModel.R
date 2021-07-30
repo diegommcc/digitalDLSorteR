@@ -87,11 +87,6 @@ globalVariables(c(".dataForDNN"))
 #'   "mean_absolute_error", "categorical_accuracy")} by default). Look at
 #'   \href{https://keras.rstudio.com/reference/metric_binary_accuracy.html}{keras
 #'    documentation} to know available performance metrics.
-#' @param val Boolean that determines if a validation subset is used during
-#'   training (\code{FALSE} by default).
-#' @param freq.val Float between 0.1 and 0.5 that determines the proportion of
-#'   samples from training data that will be used as validation subset (0.1 by
-#'   default).
 #' @param custom.model Allows to use customized neural network. It must be a
 #'   \code{keras.engine.sequential.Sequential} where the number of input neurons
 #'   is equal to the number of considered features/genes and the number of
@@ -149,8 +144,6 @@ trainDigitalDLSorterModel <- function(
   loss = "kullback_leibler_divergence",
   metrics = c("accuracy", "mean_absolute_error",
               "categorical_accuracy"),
-  val = FALSE,
-  freq.val = 0.1,
   custom.model = NULL,
   shuffle = FALSE,
   threads = 1,
@@ -237,13 +230,13 @@ trainDigitalDLSorterModel <- function(
   if (n.train < batch.size) {
     stop(
       paste0("The number of samples used for training (", n.train, ") is too ", 
-             "small compared to 'batch.size' (", batch.size, "). Please, ", 
+             "small compared with 'batch.size' (", batch.size, "). Please, ", 
              "increase the number of samples or consider reducing 'batch.size'")
     )
   } else if (n.test < batch.size) {
     stop(
       paste0("The number of samples used for test (", n.test, ") is too ", 
-             "small compared to 'batch.size' (", batch.size, "). Please, ", 
+             "small compared with 'batch.size' (", batch.size, "). Please, ", 
              "increase the number of samples or consider reducing 'batch.size'")
     )
   }
@@ -297,6 +290,9 @@ trainDigitalDLSorterModel <- function(
            "number of cell types considered by DigitalDLSorter object (", 
            ncol(prob.cell.types(object, "train") %>% prob.matrix()), 
            " in this case)")
+    } else if (!grepl("'activation': 'softmax'", keras::get_config(custom.model))) {
+      stop("In order to get proportions as output, the activation function of the ",
+           "last hidden layer must be 'softmax'")
     }
     model <- custom.model
   }
@@ -576,11 +572,15 @@ trainDigitalDLSorterModel <- function(
     } else if (!is.null(single.cell.real(object)) && 
                is.null(single.cell.simul(object))) {
       sel.cells <- rownames(sel.data)[!bulk.data]
-      cell.samples <- as.matrix(assay(single.cell.real(object))[, sel.cells, drop = FALSE])
+      cell.samples <- as.matrix(
+        assay(single.cell.real(object))[, sel.cells, drop = FALSE]
+      )
     } else if (!is.null(single.cell.simul(object)) && 
                is.null(single.cell.real(object))) {
       sel.cells <- rownames(sel.data)[!bulk.data]
-      cell.samples <- as.matrix(assay(single.cell.simul(object))[, sel.cells, drop = FALSE])
+      cell.samples <- as.matrix(
+        assay(single.cell.simul(object))[, sel.cells, drop = FALSE]
+      )
     }
   }
   # return final matrix counts
@@ -634,11 +634,15 @@ trainDigitalDLSorterModel <- function(
     } else if (!is.null(single.cell.real(object)) && 
                is.null(single.cell.simul(object))) {
       sel.cells <- rownames(sel.data)[!bulk.data]
-      cell.samples <- as.matrix(assay(single.cell.real(object))[, sel.cells, drop = FALSE])
+      cell.samples <- as.matrix(
+        assay(single.cell.real(object))[, sel.cells, drop = FALSE]
+      )
     } else if (!is.null(single.cell.simul(object)) && 
                is.null(single.cell.real(object))) {
       sel.cells <- rownames(sel.data)[!bulk.data]
-      cell.samples <- as.matrix(assay(single.cell.simul(object))[, sel.cells, drop = FALSE])
+      cell.samples <- as.matrix(
+        assay(single.cell.simul(object))[, sel.cells, drop = FALSE]
+      )
     }
   }
   # return final matrix counts

@@ -342,8 +342,10 @@ plotTrainingHistory <- function(
       stop("Some of the given metrics are not present in the provided object")
     }
   }
-  plot(trained.model(object)@training.history,
-       metrics = metrics, method = "ggplot2") + ggtitle(title)
+  plot(
+    trained.model(object)@training.history,
+    metrics = metrics, method = "ggplot2"
+  ) + ggtitle(title)
 }
 
 
