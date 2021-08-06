@@ -795,21 +795,18 @@ setMethod(f = "deconv.results",
 #' @export deconv.results<-
 #'
 setGeneric("deconv.results<-", function(object, name.data = NULL, value) standardGeneric("deconv.results<-"))
-setMethod(f = "deconv.results<-",
-          signature = "DigitalDLSorter",
-          definition = function(object, name.data, value) {
-            if (is.null(name.data)) object@deconv.results <- value
-            else {
-              if (name.data %in% names(object@deconv.results)) {
-                warning(
-                  "'name.data' provided already exists in deconv.results slot.", 
-                  " It will be overwritten"
-                )
-              }
-              object@deconv.results[[name.data]] <- value
-            }
-            return(object)
-          })
+setMethod(
+  f = "deconv.results<-",
+  signature = "DigitalDLSorter",
+  definition = function(object, name.data, value) {
+    if (is.null(name.data)) {
+      object@deconv.results <- value  
+    } else {
+      object@deconv.results[[name.data]] <- value
+    }
+    return(object)
+  }
+)
 
 # project
 

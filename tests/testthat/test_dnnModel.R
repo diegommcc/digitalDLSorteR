@@ -89,110 +89,111 @@ test_that(
 
 # check expected behaviour of parameters
 test_that(
-  "Parameters", 
-  {
-    probMatrixValid <- data.frame(
-      Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M", 
-                    "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
-      from = c(rep(1, 8), 1, 30),
-      to = c(rep(15, 8), 50, 70)
-    )
-    DDLSLi <- generateBulkCellMatrix(
-      object = DDLSLi,
-      cell.ID.column = "Cell_ID",
-      cell.type.column = "Cell_Type",
-      prob.design = probMatrixValid,
-      num.bulk.samples = 100,
-      verbose = FALSE
-    )
-    DDLSLi <- simBulkProfiles(DDLSLi, verbose = FALSE)
-    
-    # on.the.fly, batch.size and combine were done
-    # change neural network architecture
-    DDLSLi <- trainDigitalDLSorterModel(
-      object = DDLSLi,
-      num.hidden.layers = 3,
-      num.units = c(200, 200, 100),
-      verbose = FALSE
-    )
-    expect_true(
-      grepl(
-        pattern = "Dense3", 
-        as.character(keras::get_config(trained.model(DDLSLi)@model))
+  desc = "Parameters", 
+  code = 
+    {
+      probMatrixValid <- data.frame(
+        Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M", 
+                      "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
+        from = c(rep(1, 8), 1, 30),
+        to = c(rep(15, 8), 50, 70)
       )
-    )
-    trained.model(DDLSLi) <- NULL
-    DDLSLi <- trainDigitalDLSorterModel(
-      object = DDLSLi,
-      num.hidden.layers = 1,
-      num.units = c(100)
-    )
-    expect_false(
-      grepl(
-        pattern = "Dense3", 
-        as.character(keras::get_config(trained.model(DDLSLi)@model))
-      )
-    )
-    expect_false(
-      grepl("200", as.character(keras::get_config(trained.model(DDLSLi)@model)))
-    )
-    expect_true(
-      grepl("100", as.character(keras::get_config(trained.model(DDLSLi)@model)))
-    )
-    # incorrect architecture
-    trained.model(DDLSLi) <- NULL
-    expect_error(
-      trainDigitalDLSorterModel(
+      DDLSLi <- generateBulkCellMatrix(
         object = DDLSLi,
-        num.hidden.layers = 1,
+        cell.ID.column = "Cell_ID",
+        cell.type.column = "Cell_Type",
+        prob.design = probMatrixValid,
+        num.bulk.samples = 100,
+        verbose = FALSE
+      )
+      DDLSLi <- simBulkProfiles(DDLSLi, verbose = FALSE)
+      
+      # on.the.fly, batch.size and combine were done
+      # change neural network architecture
+      DDLSLi <- trainDigitalDLSorterModel(
+        object = DDLSLi,
+        num.hidden.layers = 3,
         num.units = c(200, 200, 100),
         verbose = FALSE
-      ),
-      regexp = "The number of hidden layers must be equal"
-    )
-    # check if activation.fun works
-    DDLSLi <- trainDigitalDLSorterModel(
-      object = DDLSLi,
-      num.hidden.layers = 1,
-      num.units = c(100),
-      activation.fun = "elu"
-    )
-    expect_true(
-      grepl("elu", as.character(keras::get_config(trained.model(DDLSLi)@model)))
-    )
-    expect_false(
-      grepl("relu", as.character(keras::get_config(trained.model(DDLSLi)@model)))
-    )
-    # check if dropout.rate works
-    trained.model(DDLSLi) <- NULL
-    DDLSLi <- trainDigitalDLSorterModel(
-      object = DDLSLi,
-      num.hidden.layers = 2,
-      num.units = c(100, 100),
-      dropout.rate = 0.45,
-       verbose = FALSE
-    )
-    expect_true(
-      grepl("0.45", as.character(keras::get_config(trained.model(DDLSLi)@model)))
-    )
-    # check if loss and metrics work
-    trained.model(DDLSLi) <- NULL
-    DDLSLi <- trainDigitalDLSorterModel(
-      object = DDLSLi,
-      num.hidden.layers = 2,
-      num.units = c(100, 100),
-      loss = "mean_squared_error",
-      metrics = c("accuracy", "mean_absolute_error",
-                  "cosine_similarity"),
-      verbose = FALSE
-    )
-    expect_true(
-      any(grepl("accuracy", names(trained.model(DDLSLi)@test.metrics)))
-    )
-    expect_true(
-      any(grepl("cosine_similarity", names(trained.model(DDLSLi)@test.metrics)))
-    )
-  }
+      )
+      expect_true(
+        grepl(
+          pattern = "Dense3", 
+          as.character(keras::get_config(trained.model(DDLSLi)@model))
+        )
+      )
+      trained.model(DDLSLi) <- NULL
+      DDLSLi <- trainDigitalDLSorterModel(
+        object = DDLSLi,
+        num.hidden.layers = 1,
+        num.units = c(100)
+      )
+      expect_false(
+        grepl(
+          pattern = "Dense3", 
+          as.character(keras::get_config(trained.model(DDLSLi)@model))
+        )
+      )
+      expect_false(
+        grepl("200", as.character(keras::get_config(trained.model(DDLSLi)@model)))
+      )
+      expect_true(
+        grepl("100", as.character(keras::get_config(trained.model(DDLSLi)@model)))
+      )
+      # incorrect architecture
+      trained.model(DDLSLi) <- NULL
+      expect_error(
+        trainDigitalDLSorterModel(
+          object = DDLSLi,
+          num.hidden.layers = 1,
+          num.units = c(200, 200, 100),
+          verbose = FALSE
+        ),
+        regexp = "The number of hidden layers must be equal"
+      )
+      # check if activation.fun works
+      DDLSLi <- trainDigitalDLSorterModel(
+        object = DDLSLi,
+        num.hidden.layers = 1,
+        num.units = c(100),
+        activation.fun = "elu"
+      )
+      expect_true(
+        grepl("elu", as.character(keras::get_config(trained.model(DDLSLi)@model)))
+      )
+      expect_false(
+        grepl("relu", as.character(keras::get_config(trained.model(DDLSLi)@model)))
+      )
+      # check if dropout.rate works
+      trained.model(DDLSLi) <- NULL
+      DDLSLi <- trainDigitalDLSorterModel(
+        object = DDLSLi,
+        num.hidden.layers = 2,
+        num.units = c(100, 100),
+        dropout.rate = 0.45,
+        verbose = FALSE
+      )
+      expect_true(
+        grepl("0.45", as.character(keras::get_config(trained.model(DDLSLi)@model)))
+      )
+      # check if loss and metrics work
+      trained.model(DDLSLi) <- NULL
+      DDLSLi <- trainDigitalDLSorterModel(
+        object = DDLSLi,
+        num.hidden.layers = 2,
+        num.units = c(100, 100),
+        loss = "mean_squared_error",
+        metrics = c("accuracy", "mean_absolute_error",
+                    "cosine_similarity"),
+        verbose = FALSE
+      )
+      expect_true(
+        any(grepl("accuracy", names(trained.model(DDLSLi)@test.metrics)))
+      )
+      expect_true(
+        any(grepl("cosine_similarity", names(trained.model(DDLSLi)@test.metrics)))
+      )
+    }
 )
 
 # check custom.model parameter
@@ -270,6 +271,7 @@ test_that(
         name = "Dense3"
       ) %>% layer_batch_normalization(name = "CustomBatchNormalization3") %>% 
       layer_activation(activation = "softmax", name = "ActivationSoftmax")
+    trained.model(DDLSLi) <- NULL
     expect_error(
       trainDigitalDLSorterModel(
         object = DDLSLi, 
@@ -390,6 +392,7 @@ test_that(
       ), regexp = "'name.data' provided is not present in DigitalDLSorter object"
     )
     # simplify.set: generate a new class from two or more cell types
+    deconv.results(DDLSLi) <- NULL
     expect_error(
       deconvDigitalDLSorterObj(
         object = DDLSLi,
@@ -399,6 +402,7 @@ test_that(
       ), 
       regexp = "Each element in the list must contain the corresponding new class as name"
     )
+    deconv.results(DDLSLi) <- NULL
     DDLSLi <- deconvDigitalDLSorterObj(
       object = DDLSLi,
       name.data = "TCGA",
@@ -415,6 +419,7 @@ test_that(
       any(colnames(deconv.results(DDLSLi, name.data = "TCGA")$raw) == 
             "Macrophages")
     )
+    deconv.results(DDLSLi) <- NULL
     DDLSLi <- deconvDigitalDLSorterObj(
       object = DDLSLi,
       name.data = "TCGA",
@@ -431,6 +436,7 @@ test_that(
         colnames(deconv.results(DDLSLi, name.data = "TCGA")$simpli.set)
     ))
     # simplify.majority: add up proportions to the most abundant cell type
+    deconv.results(DDLSLi) <- NULL
     DDLSLi <- deconvDigitalDLSorterObj(
       object = DDLSLi,
       name.data = "TCGA",
@@ -452,6 +458,7 @@ test_that(
       )
     )
     # check if both types of simplify can be stored
+    deconv.results(DDLSLi) <- NULL
     DDLSLi <- deconvDigitalDLSorterObj(
       object = DDLSLi,
       name.data = "TCGA",
@@ -470,7 +477,6 @@ test_that(
     barPlotCellTypes(
       data = DDLSLi, colors = default.colors(), simplify = "simpli.majority"
     )
-    deconv.results(DDLSLi, name.data = "TCGA")$raw
   }
 )
 
@@ -646,7 +652,8 @@ test_that(
     )
     DDLSLi <- deconvDigitalDLSorterObj(
       object = DDLSLi,
-      name.data = "TCGA"
+      name.data = "TCGA",
+      verbose = FALSE
     )
     # name.data not provided
     expect_message(
