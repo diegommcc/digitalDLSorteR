@@ -15,16 +15,17 @@ deconvDigitalDLSorter(
 )
 }
 \arguments{
-\item{data}{Matrix or data frame with bulk-RNAseq samples. Rows must be
-genes in SYMBOL notation and columns must be samples.}
+\item{data}{Matrix or data frame with bulk-RNAseq samples. Rows must be genes
+in SYMBOL notation and columns must be samples.}
 
-\item{model}{Pre-trained DNN model to use for deconvoluting \code{data}. Up
-to now, the available models are aimed at deconvolving samples of breast
-cancer (\code{'breast.chung.generic'} and \code{'breast.chung.specific'}).}
+\item{model}{Pre-trained DNN model to use to deconvolve \code{data}. Up to
+now, the available models are aimed at deconvolving samples of breast
+cancer (\code{\link{breast.chung.generic}} and
+\code{\link{breast.chung.specific}}) and colorectal cancer
+\code{\link{colorectal.li}}.}
 
 \item{batch.size}{Number of samples loaded in RAM memory each time during the
-deconvolution process. If unspecified, \code{batch.size} will set to
-128.}
+deconvolution process. If unspecified, \code{batch.size} will set to 128.}
 
 \item{normalize}{Normalize data before deconvolution (\code{TRUE} by
 default).}
@@ -42,21 +43,22 @@ label.}
 \item{verbose}{Show informative messages during the execution.}
 }
 \value{
-A data frame with samples (\eqn{i}) as rows and cell types
-(\eqn{j}) as columns. Each entry represents the predicted proportion of
-\eqn{j} cell type in \eqn{i} sample.
+A data frame with samples (\eqn{i}) as rows and cell types (\eqn{j})
+as columns. Each entry represents the predicted proportion of \eqn{j} cell
+type in \eqn{i} sample.
 }
 \description{
 Deconvolute bulk gene expression samples (bulk RNA-Seq) to enumerate and
 quantify the proportion of cell types present in a bulk sample using Deep
 Neural Network models. This function is intended for users who want to use
-pre-trained models integrated in the package. For the moment, the available
-models allow to deconvolute the immune infiltration of breast cancer (Chung
-et al., 2017) at two levels: specific cell types
-(\code{'breast.chung.specific'}) and generic cell types
-(\code{'breast.chung.generic'}). See \code{\link{breast.chung.generic}} and
-\code{\link{breast.chung.specific}} documentation for details. (this is gonna
-change)
+pre-trained models integrated in the package. So far, the available models
+allow to deconvolute the immune infiltration of breast cancer (Chung et al.,
+2017) and the immune infiltration of colorectal cancer (Li et al., 2017).
+Regarding the former, there are two available models at two different levels
+of specificity: specific cell types (\code{'breast.chung.specific'}) and
+generic cell types (\code{'breast.chung.generic'}). See
+\code{\link{breast.chung.generic}}, \code{\link{breast.chung.specific}}, and
+\code{\link{colorectal.li}} documentation for details.
 }
 \details{
 This function is intended for users who want to use \pkg{digitalDLSorteR} for
@@ -65,7 +67,7 @@ who want to build their own models from scRNA-seq, see
 \code{?\link{loadSCProfiles}} and \code{?\link{deconvDigitalDLSorterObj}}.
 }
 \examples{
-## to ensure compatibility
+# to ensure compatibility
 tensorflow::tf$compat$v1$disable_eager_execution()
 results1 <- deconvDigitalDLSorter(
   data = TCGA.breast.small,
@@ -73,11 +75,11 @@ results1 <- deconvDigitalDLSorter(
   normalize = TRUE
 )
 
-## simplify arguments
+# simplify arguments
 simplify <- list(Tumor = c("ER+", "HER2+", "ER+/HER2+", "TNBC"),
                  Bcells = c("Bmem", "BGC"))
 
-## in this case names from list will be the new labels
+# in this case names from list will be the new labels
 results2 <- deconvDigitalDLSorter(
   TCGA.breast.small,
   model = "breast.chung.specific",
@@ -85,8 +87,8 @@ results2 <- deconvDigitalDLSorter(
   simplify.set = simplify
 )
 
-## in this case the cell type with greatest proportion will be the new label
-## the rest of proportion cell types will be added to the greatest
+# in this case the cell type with greatest proportion will be the new label
+# the rest of proportion cell types will be added to the greatest
 results3 <- deconvDigitalDLSorter(
   TCGA.breast.small,
   model = "breast.chung.specific",

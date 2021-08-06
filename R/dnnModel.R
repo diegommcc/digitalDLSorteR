@@ -117,13 +117,13 @@ globalVariables(c(".dataForDNN"))
 #'   \code{\link{deconvDigitalDLSorter}} \code{\link{deconvDigitalDLSorterObj}}
 #'
 #' @examples
-#' ## to ensure compatibility
+#' # to ensure compatibility
 #' tensorflow::tf$compat$v1$disable_eager_execution()
 #' DDLSChungComp <- trainDigitalDLSorterModel(
 #'   object = DDLSChungComp,
 #'   on.the.fly = TRUE,
 #'   batch.size = 24,
-#'   num.epochs = 5 ## 20
+#'   num.epochs = 5 # 20
 #' )
 #'
 #' @references Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
@@ -158,7 +158,7 @@ trainDigitalDLSorterModel <- function(
     stop("'num.epochs' argument must be greater than or equal to 2")
   } else if (batch.size <= 10) {
     stop("'batch.size' argument must be greater than or equal to 10")
-  }
+  } 
   if (!any(combine %in% c("both", "bulk", "single-cell"))) {
     stop("'combine' argument must be one of the following options: 'both', 'bulk' or 'single-cell'")
   }
@@ -171,11 +171,6 @@ trainDigitalDLSorterModel <- function(
          "DNN model on both types of profiles: bulk and single-cell")
   }
   if (!on.the.fly) {
-    if (is.null(bulk.simul(object, "test"))) {
-      stop("trainDigitalDLSorterModel evaluates DNN model on both types of ", 
-           "profiles: bulk and single-cell. Therefore, bulk data for test ", 
-           "must be provided")
-    }
     if (verbose) message("=== Training and test from stored data was selected")
     if ((combine == "both" && is.null(bulk.simul(object)) ||
          combine == "both" && (is.null(single.cell.real(object)) && 
@@ -184,6 +179,10 @@ trainDigitalDLSorterModel <- function(
            "one single cell slot must be provided")
     } else if (combine == "bulk" && is.null(bulk.simul(object))) {
       stop("If 'combine' = bulk is selected, 'bulk.simul' must be provided")
+    } else if (is.null(bulk.simul(object, "test"))) {
+      stop("trainDigitalDLSorterModel evaluates DNN model on both types of ", 
+           "profiles: bulk and single-cell. Therefore, bulk data for test ", 
+           "must be provided")
     }
   } else {
     if (verbose) message("=== Training and test on the fly was selected")
@@ -200,18 +199,14 @@ trainDigitalDLSorterModel <- function(
          "one single cell slot must be provided")
   }
   if (!is.null(trained.model(object))) {
-    warning("'trained.model' slot is not empty. For the moment, digitalDLSorteR",
+    warning("'trained.model' slot is not empty. So far, digitalDLSorteR",
             " does not support for multiple trained models, so the current model",
             " will be overwritten\n",
             call. = FALSE, immediate. = TRUE)
   }
-  # plots in RStudio during training --> dont work in terminal
-  if (view.metrics.plot) {
-    view.plot <- "auto"
-  } else {
-    view.plot <- 0
-  }
-  
+  # plots in RStudio during training --> does not work in terminal
+  if (view.metrics.plot) view.plot <- "auto"
+  else view.plot <- 0
   if (verbose) verbose.model <- 1
   else verbose.model <- 0
   prob.matrix.train <- .targetForDNN(
@@ -233,7 +228,8 @@ trainDigitalDLSorterModel <- function(
              "small compared with 'batch.size' (", batch.size, "). Please, ", 
              "increase the number of samples or consider reducing 'batch.size'")
     )
-  } else if (n.test < batch.size) {
+  } 
+  if (n.test < batch.size) {
     stop(
       paste0("The number of samples used for test (", n.test, ") is too ", 
              "small compared with 'batch.size' (", batch.size, "). Please, ", 
@@ -245,7 +241,7 @@ trainDigitalDLSorterModel <- function(
       stop("The number of hidden layers must be equal to the length of ", 
            "num.units (number of neurons per layer)")
     }
-    ## check if any argument not provided
+    # check if any argument not provided
     model <- keras_model_sequential(name = "DigitalDLSorter")
     # arbitrary number of hidden layers and neurons
     for (i in seq(num.hidden.layers)) {
@@ -310,7 +306,7 @@ trainDigitalDLSorterModel <- function(
     suffix.names <- "_Simul"
   }
   pattern <- suffix.names
-  ## set if samples will be generated on the fly
+  # set if samples will be generated on the fly
   if (on.the.fly) {
     # assign(.dataForDNN, .dataForDNN.onFly, inherits = TRUE, immediate = TRUE)
     .dataForDNN <<- .dataForDNN.onFly
@@ -318,8 +314,7 @@ trainDigitalDLSorterModel <- function(
     # assign(.dataForDNN, .dataForDNN.file, inherits = TRUE, immediate = TRUE)
     .dataForDNN <<- .dataForDNN.file
   }
-  
-  ## training model
+  # training model --> code corresponding to validation subset: removed
   # if (val) {
   #   if (freq.val < 0.1 || freq.val > 0.5) {
   #     stop("'freq.val' must be a float between 0.1 and 0.5")
@@ -394,7 +389,7 @@ trainDigitalDLSorterModel <- function(
   if (verbose)
     message(paste0("\n=== Evaluating DNN in test data (", n.test, " samples)"))
 
-  ## evaluation of the model: set by default, no options?
+  # evaluation of the model: set by default, no options?
   gen.test <- .predictGenerator(
     object,
     target = TRUE,
@@ -408,7 +403,7 @@ trainDigitalDLSorterModel <- function(
     generator = gen.test,
     steps = ceiling(n.test / batch.size)
   )
-  ## prediction of test samples
+  # prediction of test samples
   if (verbose) {
     message(paste0("   - ", names(test.eval), ": ", lapply(test.eval, round, 4),
                    collapse = "\n"))
@@ -477,7 +472,7 @@ trainDigitalDLSorterModel <- function(
       else nb <<- fill
     }
     if (shuffle) {
-      shuffling <- sample(seq(length(data.index)))
+      shuffling <- sample(seq_along(data.index))
       sel.data <- prob.matrix[data.index, , drop = FALSE]
       counts <- .dataForDNN(
         object = object, 
@@ -499,10 +494,7 @@ trainDigitalDLSorterModel <- function(
         type.data = type.data,
         threads = threads
       )
-      return(list( 
-        counts,
-        sel.data
-      ))
+      return(list(counts, sel.data))
     }
   }
 }
@@ -781,7 +773,7 @@ trainDigitalDLSorterModel <- function(
 
 .simplifySet <- function(vec, index, set) {
   summ <- sum(vec[index])
-  vec <- vec[-c(index)]
+  # vec <- vec[-c(index)]
   names.vec <- names(vec)
   vec <- c(vec, summ)
   names(vec) <- c(names.vec, set)
@@ -798,7 +790,7 @@ trainDigitalDLSorterModel <- function(
 
 .simplifySetGeneral <- function(results, simplify.set) {
   cell.types <- colnames(results)
-  if (length(simplify.set) < 2) 
+  if (any(unlist(lapply(X = simplify.set, FUN = function(x) length(x) < 2))))
     stop("The minimum number of cell types for simplifying is two")
   if (is.null(names(simplify.set)) ||
       (length(names(simplify.set)) != length(simplify.set))) {
@@ -808,7 +800,7 @@ trainDigitalDLSorterModel <- function(
   #   stop("There are not duplicated names to aggregate results. Items of the list ", 
   #        "must have duplicated names under which to aggregate the results")
   # }
-  ## check that elements are correct
+  # check that elements are correct
   lapply(
     X = simplify.set, 
     FUN = function(x, types) {
@@ -833,25 +825,24 @@ trainDigitalDLSorterModel <- function(
       X = results,
       FUN = .simplifySet,
       MARGIN = 1,
-      index = unlist(index)[names(index) == n],
+      index = index[[n]],
       set = n
     ))
   }
   results <- results[, -unlist(index)]
-  # colnames(results) <- c(na.omit(colnames(results)), names(index))
   return(results)
 }
 
 .simplifyMajorityGeneral <- function(results, simplify.majority) {
   cell.types <- colnames(results)
-  ## check if cell.types provided are correct
-  if (length(simplify.majority) < 2) 
+  # check if cell.types provided are correct
+  if (any(unlist(lapply(X = simplify.majority, FUN = function(x) length(x) < 2))))
     stop("The minimum number of cell types for simplifying is two")
   lapply(
     X = simplify.majority, 
     FUN = function(x, types) {
       if (!all(x %in% types)) {
-        stop("Some elements in 'simplify.majority' are not present among the cell types ",
+        stop("Some elements in 'simplify.majority' are not present between the cell types ",
              "considered by the model")
       } 
     }, 
@@ -860,17 +851,19 @@ trainDigitalDLSorterModel <- function(
   index <- lapply(
     X = simplify.majority, 
     FUN = function(x) unique(which(colnames(results) %in% x))
-  )
+  ) 
   if (any(duplicated(unlist(index)))) {
-    stop("'simplify.majority' presents duplicated cell types. Please, provide ", 
+    stop("'simplify.majority' has duplicated cell types. Please, provide ", 
          "only unique cell types among those considered by the model")
   }
-  results <- t(apply(
-    X = results,
-    FUN = .simplifyMajority,
-    MARGIN = 1,
-    index = unlist(index)
-  ))
+  for (n in index) {
+    results <- t(apply(
+      X = results,
+      FUN = .simplifyMajority,
+      MARGIN = 1,
+      index = n
+    ))  
+  }
   return(results)
 }
 
@@ -884,27 +877,29 @@ trainDigitalDLSorterModel <- function(
 #' Deconvolute bulk gene expression samples (bulk RNA-Seq) to enumerate and
 #' quantify the proportion of cell types present in a bulk sample using Deep
 #' Neural Network models. This function is intended for users who want to use
-#' pre-trained models integrated in the package. For the moment, the available
-#' models allow to deconvolute the immune infiltration of breast cancer (Chung
-#' et al., 2017) at two levels: specific cell types
-#' (\code{'breast.chung.specific'}) and generic cell types
-#' (\code{'breast.chung.generic'}). See \code{\link{breast.chung.generic}} and
-#' \code{\link{breast.chung.specific}} documentation for details. (this is gonna
-#' change)
+#' pre-trained models integrated in the package. So far, the available models
+#' allow to deconvolute the immune infiltration of breast cancer (Chung et al.,
+#' 2017) and the immune infiltration of colorectal cancer (Li et al., 2017).
+#' Regarding the former, there are two available models at two different levels
+#' of specificity: specific cell types (\code{'breast.chung.specific'}) and
+#' generic cell types (\code{'breast.chung.generic'}). See
+#' \code{\link{breast.chung.generic}}, \code{\link{breast.chung.specific}}, and
+#' \code{\link{colorectal.li}} documentation for details.
 #'
 #' This function is intended for users who want to use \pkg{digitalDLSorteR} for
 #' deconvoluting their bulk RNA-Seq samples using pre-trained models. For users
 #' who want to build their own models from scRNA-seq, see
 #' \code{?\link{loadSCProfiles}} and \code{?\link{deconvDigitalDLSorterObj}}.
 #'
-#' @param data Matrix or data frame with bulk-RNAseq samples. Rows must be
-#'   genes in SYMBOL notation and columns must be samples.
-#' @param model Pre-trained DNN model to use for deconvoluting \code{data}. Up
-#'   to now, the available models are aimed at deconvolving samples of breast
-#'   cancer (\code{'breast.chung.generic'} and \code{'breast.chung.specific'}).
+#' @param data Matrix or data frame with bulk-RNAseq samples. Rows must be genes
+#'   in SYMBOL notation and columns must be samples.
+#' @param model Pre-trained DNN model to use to deconvolve \code{data}. Up to
+#'   now, the available models are aimed at deconvolving samples of breast
+#'   cancer (\code{\link{breast.chung.generic}} and
+#'   \code{\link{breast.chung.specific}}) and colorectal cancer
+#'   \code{\link{colorectal.li}}.
 #' @param batch.size Number of samples loaded in RAM memory each time during the
-#'   deconvolution process. If unspecified, \code{batch.size} will set to
-#'   128.
+#'   deconvolution process. If unspecified, \code{batch.size} will set to 128.
 #' @param normalize Normalize data before deconvolution (\code{TRUE} by
 #'   default).
 #' @param simplify.set List specifying which cell types should be compressed
@@ -917,16 +912,16 @@ trainDigitalDLSorterModel <- function(
 #'   label.
 #' @param verbose Show informative messages during the execution.
 #'
-#' @return A data frame with samples (\eqn{i}) as rows and cell types
-#'   (\eqn{j}) as columns. Each entry represents the predicted proportion of
-#'   \eqn{j} cell type in \eqn{i} sample.
+#' @return A data frame with samples (\eqn{i}) as rows and cell types (\eqn{j})
+#'   as columns. Each entry represents the predicted proportion of \eqn{j} cell
+#'   type in \eqn{i} sample.
 #'
 #' @export
 #'
 #' @seealso \code{\link{deconvDigitalDLSorterObj}}
 #'
 #' @examples
-#' ## to ensure compatibility
+#' # to ensure compatibility
 #' tensorflow::tf$compat$v1$disable_eager_execution()
 #' results1 <- deconvDigitalDLSorter(
 #'   data = TCGA.breast.small,
@@ -934,11 +929,11 @@ trainDigitalDLSorterModel <- function(
 #'   normalize = TRUE
 #' )
 #'
-#' ## simplify arguments
+#' # simplify arguments
 #' simplify <- list(Tumor = c("ER+", "HER2+", "ER+/HER2+", "TNBC"),
 #'                  Bcells = c("Bmem", "BGC"))
 #'
-#' ## in this case names from list will be the new labels
+#' # in this case names from list will be the new labels
 #' results2 <- deconvDigitalDLSorter(
 #'   TCGA.breast.small,
 #'   model = "breast.chung.specific",
@@ -946,8 +941,8 @@ trainDigitalDLSorterModel <- function(
 #'   simplify.set = simplify
 #' )
 #'
-#' ## in this case the cell type with greatest proportion will be the new label
-#' ## the rest of proportion cell types will be added to the greatest
+#' # in this case the cell type with greatest proportion will be the new label
+#' # the rest of proportion cell types will be added to the greatest
 #' results3 <- deconvDigitalDLSorter(
 #'   TCGA.breast.small,
 #'   model = "breast.chung.specific",
@@ -1005,7 +1000,7 @@ deconvDigitalDLSorter <- function(
     } else if (!is.null(simplify.majority)) {
       if (!is(simplify.majority, "list")) {
         stop("'simplify.majority' must be a list in which each element is a ", 
-             "cell type considered by the model")
+             "vector of more than two cell types considered by the model")
       }
       results <- .simplifyMajorityGeneral(
         results = results,
@@ -1017,7 +1012,6 @@ deconvDigitalDLSorter <- function(
 
   return(results)
 }
-
 
 #' Deconvolute bulk gene expression samples (bulk RNA-Seq)
 #'
@@ -1061,21 +1055,21 @@ deconvDigitalDLSorter <- function(
 #'   \code{\linkS4class{DigitalDLSorter}}
 #'
 #' @examples
-#' ## to ensure compatibility
+#' # to ensure compatibility
 #' \dontrun{
 #' tensorflow::tf$compat$v1$disable_eager_execution()
-#' ## simplify arguments
+#' # simplify arguments
 #' simplify <- list(Tumor = c("ER+", "HER2+", "ER+ and HER2+", "TNBC"),
 #'                  Bcells = c("Bmem", "BGC"))
 #'
-#' ## all results are stored in DigitalDLSorter object
+#' # all results are stored in DigitalDLSorter object
 #' TCGA.se <- SummarizedExperiment::SummarizedExperiment(
 #'   assays = list(counts = TCGA.breast.small),
 #'   rowData = data.frame(rownames(TCGA.breast.small)),
 #'   colData = data.frame(colnames(TCGA.breast.small)),
 #' )
-#' DDLSChungComp <- loadDeconvDataFromSummarizedExperiment(
-#'   object = DDLSChungComp, se.object = TCGA.se,
+#' DDLSChungComp <- loadDeconvData(
+#'   object = DDLSChungComp, data = TCGA.se,
 #'   name.data = "TCGA.breast"
 #' )
 #' DDLSChungComp <- deconvDigitalDLSorterObj(
@@ -1240,7 +1234,6 @@ deconvDigitalDLSorterObj <- function(
                        nrow = length(data.index))))
   }
 }
-
 
 .loadModelFromJSON <- function(object) {
   model.list <- model(object)

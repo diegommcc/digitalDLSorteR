@@ -14,7 +14,7 @@ showProbPlot(object, type.data, set, type.plot = "boxplot")
 \item{type.data}{Subset of data to show: \code{train} or \code{test}.}
 
 \item{set}{Integer determining which of the 6 different subsets is to be
-shown. Note that 1 and 2 follow the same distribution.}
+shown.}
 
 \item{type.plot}{Character determining which type of visualization is to be
 shown. It can be \code{boxplot}, \code{violinplot}, \code{linesplot} or
@@ -39,11 +39,13 @@ are generated without any parameter introduced by the user.
 }
 \examples{
 lapply(
-  1:5, function(x) {
-    showProbPlot(DDLSChungComp,
-                 type.data = "train",
-                 set = x,
-                 type.plot = "boxplot")
+  X = 1:6, FUN = function(x) {
+    showProbPlot(
+      DDLSChungComp,
+      type.data = "train",
+      set = x,
+      type.plot = "boxplot"
+    )
   }
 )
 

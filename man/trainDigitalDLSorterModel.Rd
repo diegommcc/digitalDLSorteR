@@ -16,8 +16,6 @@ trainDigitalDLSorterModel(
   dropout.rate = 0.25,
   loss = "kullback_leibler_divergence",
   metrics = c("accuracy", "mean_absolute_error", "categorical_accuracy"),
-  val = FALSE,
-  freq.val = 0.1,
   custom.model = NULL,
   shuffle = FALSE,
   threads = 1,
@@ -69,13 +67,6 @@ model during training and evaluation (\code{c("accuracy",
   "mean_absolute_error", "categorical_accuracy")} by default). Look at
 \href{https://keras.rstudio.com/reference/metric_binary_accuracy.html}{keras
 documentation} to know available performance metrics.}
-
-\item{val}{Boolean that determines if a validation subset is used during
-training (\code{FALSE} by default).}
-
-\item{freq.val}{Float between 0.1 and 0.5 that determines the proportion of
-samples from training data that will be used as validation subset (0.1 by
-default).}
 
 \item{custom.model}{Allows to use customized neural network. It must be a
 \code{keras.engine.sequential.Sequential} where the number of input neurons
@@ -147,13 +138,13 @@ features/genes and the number of output neurons is equal to the number of
 considered cell types.
 }
 \examples{
-## to ensure compatibility
+# to ensure compatibility
 tensorflow::tf$compat$v1$disable_eager_execution()
 DDLSChungComp <- trainDigitalDLSorterModel(
   object = DDLSChungComp,
   on.the.fly = TRUE,
   batch.size = 24,
-  num.epochs = 5 ## 20
+  num.epochs = 5 # 20
 )
 
 }

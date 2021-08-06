@@ -5,7 +5,7 @@ NULL
 ############## getters and setters for ProbMatrixCellTypes class ###############
 ################################################################################
 
-## prob.matrix
+# prob.matrix
 
 #' @title Get and set \code{prob.matrix} slot in a
 #'   \code{\linkS4class{ProbMatrixCellTypes}} object
@@ -43,7 +43,7 @@ setMethod(f = "prob.matrix<-",
             return(object)
           })
 
-## cell.names
+# cell.names
 
 #' @title Get and set \code{cell.names} slot in a
 #'   \code{\linkS4class{ProbMatrixCellTypes}} object
@@ -80,7 +80,7 @@ setMethod(f = "cell.names<-",
             return(object)
           })
 
-## set.list
+# set.list
 
 #' @title Get and set \code{set.list} slot in a
 #'   \code{\linkS4class{ProbMatrixCellTypes}} object
@@ -116,7 +116,7 @@ setMethod(f = "set.list<-",
             return(object)
           })
 
-## set
+# set
 
 #' @title Get and set \code{set} slot in a
 #'   \code{\linkS4class{ProbMatrixCellTypes}} object
@@ -151,7 +151,7 @@ setMethod(f = "set<-",
             return(object)
           })
 
-## plots
+# plots
 
 #' @title Get and set \code{plots} slot in a
 #'   \code{\linkS4class{ProbMatrixCellTypes}} object
@@ -191,7 +191,7 @@ setMethod(f = "plots<-",
 ############## getters and setters for DigitalDLSorterDNN class ################
 ################################################################################
 
-## model
+# model
 
 #' @title Get and set \code{model} slot in a
 #'   \code{\linkS4class{DigitalDLSorterDNN}} object
@@ -227,7 +227,7 @@ setMethod(f = "model<-",
             return(object)
           })
 
-## training.history
+# training.history
 
 #' @title Get and set \code{training.history} slot in a
 #'   \code{\linkS4class{DigitalDLSorterDNN}} object
@@ -263,7 +263,7 @@ setMethod(f = "training.history<-",
             return(object)
           })
 
-## test.metrics
+# test.metrics
 
 #' @title Get and set \code{test.metrics} slot in a
 #'   \code{\linkS4class{DigitalDLSorterDNN}} object
@@ -299,7 +299,7 @@ setMethod(f = "test.metrics<-",
             return(object)
           })
 
-## test.pred
+# test.pred
 
 #' @title Get and set \code{test.pred} slot in a
 #'   \code{\linkS4class{DigitalDLSorterDNN}} object
@@ -334,7 +334,7 @@ setMethod(f = "test.pred<-",
             return(object)
           })
 
-## cell.types
+# cell.types
 
 #' @title Get and set \code{cell.types} slot in a
 #'   \code{\linkS4class{DigitalDLSorterDNN}} object
@@ -370,7 +370,7 @@ setMethod(f = "cell.types<-",
             return(object)
           })
 
-## features
+# features
 
 #' @title Get and set \code{features} slot in a
 #'   \code{\linkS4class{DigitalDLSorterDNN}} object
@@ -406,7 +406,7 @@ setMethod(f = "features<-",
             return(object)
           })
 
-## test.deconv.metrics
+# test.deconv.metrics
 
 #' @title Get and set \code{test.deconv.metrics} slot in a
 #'   \code{\linkS4class{DigitalDLSorterDNN}} object
@@ -466,7 +466,7 @@ setMethod(f = "test.deconv.metrics<-",
 ################ getters and setters for DigitalDLSorter class #################
 ################################################################################
 
-## single.cell.real
+# single.cell.real
 
 #' @title Get and set \code{single.cell.real} slot in a
 #'   \code{\linkS4class{DigitalDLSorter}} object
@@ -502,7 +502,7 @@ setMethod(f = "single.cell.real<-",
             return(object)
           })
 
-## zinb.params
+# zinb.params
 
 #' @title Get and set \code{zinb.params} slot in a
 #'   \code{\linkS4class{DigitalDLSorter}} object
@@ -538,7 +538,7 @@ setMethod(f = "zinb.params<-",
             return(object)
           })
 
-## single.cell.simul
+# single.cell.simul
 
 #' @title Get and set \code{single.cell.simul} slot in a
 #'   \code{\linkS4class{DigitalDLSorter}} object
@@ -574,7 +574,7 @@ setMethod(f = "single.cell.simul<-",
             return(object)
           })
 
-## prob.cell.types
+# prob.cell.types
 
 #' @title Get and set \code{prob.cell.types} slot in a
 #'   \code{\linkS4class{DigitalDLSorter}} object
@@ -620,7 +620,7 @@ setMethod(f = "prob.cell.types<-",
             return(object)
           })
 
-## bulk.simul
+# bulk.simul
 
 #' Get and set \code{bulk.simul} slot in a
 #'   \code{\linkS4class{DigitalDLSorter}} object
@@ -667,7 +667,7 @@ setMethod(f = "bulk.simul<-",
             return(object)
           })
 
-## trained.model
+# trained.model
 
 #' @title Get and set \code{trained.model} slot in a
 #'   \code{\linkS4class{DigitalDLSorter}} object
@@ -702,7 +702,7 @@ setMethod(f = "trained.model<-",
             return(object)
           })
 
-## deconv.data
+# deconv.data
 
 #' @title Get and set \code{deconv.data} slot in a
 #'   \code{\linkS4class{DigitalDLSorter}} object
@@ -756,7 +756,7 @@ setMethod(f = "deconv.data<-",
             return(object)
           })
 
-## deconv.results
+# deconv.results
 
 #' @title Get and set \code{deconv.results} slot in a
 #'   \code{\linkS4class{DigitalDLSorter}} object
@@ -811,7 +811,7 @@ setMethod(f = "deconv.results<-",
             return(object)
           })
 
-## project
+# project
 
 #' @title Get and set \code{project} slot in a
 #'   \code{\linkS4class{DigitalDLSorter}} object
@@ -986,10 +986,10 @@ setMethod(
 #' @export
 #'
 #' @examples
-#' ## Using a matrix
+#' # Using a matrix
 #' \dontrun{barPlotCellTypes(deconvResults)}
 #'
-#' ## Using a DigitalDLSorter object
+#' # Using a DigitalDLSorter object
 #' \dontrun{
 #'   barPlotCellTypes(DDLSChung, name.data = "TCGA.breast")
 #' }
@@ -1000,7 +1000,7 @@ setMethod(
 #'  
 setGeneric("barPlotCellTypes", function(
   data,
-  colors,
+  colors = NULL,
   simplify = NULL,
   color.line = NA,
   x.label = "Bulk samples",
@@ -1008,7 +1008,7 @@ setGeneric("barPlotCellTypes", function(
   title = "Results of deconvolution",
   legend.title = "Cell types",
   angle = 90,
-  theme = NULL,
+  theme = NULL, 
   ...
 ) {
   standardGeneric("barPlotCellTypes")
@@ -1023,7 +1023,6 @@ setMethod(
   definition = function(
     data,
     colors = NULL,
-    name.data = NULL,
     simplify = NULL,
     color.line = NA,
     x.label = "Bulk samples",
@@ -1031,15 +1030,19 @@ setMethod(
     title = "Results of deconvolution",
     legend.title = "Cell types",
     angle = 90,
-    theme = NULL
+    theme = NULL,
+    name.data = NULL
   ) {
     if (is.null(deconv.results(data))) {
-      stop("There is not results to show")
+      stop("There are no results in DigitalDLSorter object. Please see ?deconvDigitalDLSorterObj")
     } else if (is.null(name.data)) {
-      message("'name.data' not provided. By default, first results are taken")
+      message("'name.data' not provided. By default, first results are used")
       name.data <- 1
+    } else if (!any(name.data %in% names(deconv.results(data))) &&
+               !any(name.data %in% seq_along(deconv.results(data)))) {
+      stop("Provided 'name.data' does not exist")
     }
-    if (!is.null(simplify)) {
+    if (!is.null(simplify) && !is.na(simplify)) {
       if (!is(deconv.results(data)[[name.data]], "list")) {
         stop("No simplified results available")
       } else {
@@ -1049,7 +1052,6 @@ setMethod(
         } else if (!any(simplify == names(deconv.results(data)[[name.data]]))) {
           stop(paste(simplify, "data is not present in DigitalDLSorter object"))
         }
-        
         res <- deconv.results(data)[[name.data]][[simplify]]
       }
     } else {
@@ -1059,6 +1061,10 @@ setMethod(
         res <- deconv.results(data)[[name.data]]
       }
     }
+    if (is.null(colnames(res))) {
+      stop("'data' must have colnames (corresponding cell types). Please run deconvDigitalDLSorterObj")
+    }
+    
     plot <- .barPlot(
       data = res,
       colors = colors,
@@ -1091,6 +1097,9 @@ setMethod(
     angle = 90,
     theme = NULL
   ) {
+    if (is.null(colnames(data))) {
+      stop("'data' must have colnames (corresponding cell types). Please run deconvDigitalDLSorter")
+    }
     plot <- .barPlot(
       data = data,
       colors = colors,
@@ -1103,5 +1112,121 @@ setMethod(
       theme = theme
     )
     return(plot)
+  }
+)
+
+
+#' Load data to deconvolute into a DigitalDLSorter object
+#'
+#' Load data to deconvolute. Data can be provided from a file path of a
+#' tabulated text file (tsv and tsv.gz formats are accepted) or a
+#' \code{\linkS4class{SummarizedExperiment}} object.
+#'
+#' @param object \code{\linkS4class{DigitalDLSorter}} object with
+#'   \code{trained.model} slot.
+#' @param data File path where data is stored or
+#'   \code{\linkS4class{SummarizedExperiment}} object.
+#' @param name.data Name with which data is stored in
+#'   \code{\linkS4class{DigitalDLSorter}} object. When \code{data} is a file
+#'   path and \code{name.data} is not provided, base name of file will be used.
+#'
+#' @return \code{\linkS4class{DigitalDLSorter}} object with \code{deconv.data}
+#'   slot with the new bulk-RNAseq samples loaded
+#'
+#' @export
+#'
+#' @seealso \code{\link{trainDigitalDLSorterModel}}
+#'   \code{\link{deconvDigitalDLSorterObj}}
+#'   
+setGeneric("loadDeconvData", function(
+  object,
+  data,
+  name.data = NULL
+) {
+  standardGeneric("loadDeconvData")
+})
+
+#' @export
+#'
+#' @rdname loadDeconvData
+setMethod(
+  f = "loadDeconvData",
+  signature = signature(object = "DigitalDLSorter", data = "character"),
+  definition = function(
+    object,
+    data,
+    name.data = NULL
+  ) {
+    if (!is(object, "DigitalDLSorter")) {
+      stop("Provided object is not of DigitalDLSorter class")
+    }
+    counts <- .readTabFiles(file = data)
+    if (is.null(rownames(counts)) || is.null(colnames(counts))) {
+      stop("New data must have genes as rows and samples as columns")
+    }
+    se.object <- SummarizedExperiment::SummarizedExperiment(
+      assays = list(counts = counts),
+      rowData = data.frame(rownames(counts)),
+      colData = data.frame(colnames(counts)),
+    )
+    # generate name for data if is not provided
+    if (is.null(name.data)) {
+      name.data <- tools::file_path_sans_ext(basename(data))
+    }
+    # create or not a new list
+    if (is.null(object@deconv.data)) list.data <- list()
+    else list.data <- object@deconv.data
+    # check if name.data exists
+    if (name.data %in% names(list.data)) {
+      stop(paste(name.data, "data already exists in 'deconv.data' slot"))
+    }
+    list.data[[name.data]] <- se.object
+    object@deconv.data <- list.data
+    return(object)
+  }
+)
+
+#' @export
+#'
+#' @rdname loadDeconvData
+setMethod(
+  f = "loadDeconvData",
+  signature = signature(object = "DigitalDLSorter", data = "SummarizedExperiment"),
+  definition = function(
+    object,
+    data,
+    name.data = NULL
+  ) {
+    if (!is(object, "DigitalDLSorter")) {
+      stop("The provided object is not of DigitalDLSorter class")
+    } else if (!is(data, "SummarizedExperiment")) {
+      stop("The provided object is not of SummarizedExperiment class")
+    }
+    if (length(assays(data)) == 0) {
+      stop("assay slot of SummarizedExperiment object is empty")
+    } else if (length(assays(data)) > 1) {
+      warning(paste("There are more than one assays in SummarizedExperiment object,",
+                    "only the first assay will be considered. Remember that it is", "
+                  recommended that the provided data be of the same nature as",
+                  "the data with which the model has been trained (e.g. TPMs)"))
+    }
+    # generate name for data if is not provided
+    if (is.null(name.data)) {
+      if (is.null(deconv.data(object))) {
+        name.data <- "deconv_1"
+      } else {
+        name.data <- paste0("decon_", length(deconv.data(object)) + 1)
+      }
+    }
+    # create or not a new list
+    if (is.null(deconv.data(object))) list.data <- list()
+    else list.data <- deconv.data(object)
+    # check if name.data exists
+    if (name.data %in% names(list.data)) {
+      stop(paste(name.data, "data already exists in deconv.data slot"))
+    }
+    list.data[[name.data]] <- data
+    deconv.data(object) <- list.data
+    return(object)
   }
 )

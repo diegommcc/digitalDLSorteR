@@ -6,17 +6,23 @@
 NULL
 
 setOldClass(Classes = 'package_version')
-setOldClass("keras.engine.sequential.Sequential")
-setOldClass("keras_training_history")
+setOldClass(Classes = "keras.engine.sequential.Sequential")
+setOldClass(Classes = "keras_training_history")
 
-setClassUnion("MatrixOrNULL", c("matrix", "NULL"))
-setClassUnion("ListOrNULL", c("list", "NULL"))
-setClassUnion("CharacterOrNULL", c("character", "NULL"))
-setClassUnion("SingleCellExperimentOrNULL", c("SingleCellExperiment", "NULL"))
-setClassUnion("ZINBParamsOrNULL", c("ZINBParams", "NULL"))
-setClassUnion("KerasOrList", c("keras.engine.sequential.Sequential", "list"))
+setClassUnion(name = "MatrixOrNULL", members = c("matrix", "NULL"))
+setClassUnion(name = "ListOrNULL", members = c("list", "NULL"))
+setClassUnion(name = "CharacterOrNULL", members = c("character", "NULL"))
+setClassUnion(name = "SingleCellExperimentOrNULL", 
+              members = c("SingleCellExperiment", "NULL"))
+setClassUnion(name = "ZINBParamsOrNULL", members = c("ZINBParams", "NULL"))
+setClassUnion(name = "KerasOrList", 
+              members = c("keras.engine.sequential.Sequential", "list"))
+setClassUnion(name = "KerasTrainOrNULL", 
+              members = c("keras_training_history", "NULL"))
 
-## ProbMatrixCellTypes class ----------------------------------------------------
+################################################################################
+######################### ProbMatrixCellTypes class ############################
+################################################################################
 
 #' The Class ProbMatrixCellTypes
 #'
@@ -112,8 +118,9 @@ setMethod(f = "show",
             }
           })
 
-
-## DigitalDLSorterDNN class ----------------------------------------------------
+################################################################################
+######################### DigitalDLSorterDNN class #############################
+################################################################################
 
 #' The DigitalDLSorterDNN Class
 #'
@@ -159,7 +166,7 @@ DigitalDLSorterDNN <- setClass(
   Class = "DigitalDLSorterDNN",
   slots = c(
     model = "KerasOrList",
-    training.history = "keras_training_history",
+    training.history = "KerasTrainOrNULL",
     test.metrics = "ListOrNULL",
     test.pred = "MatrixOrNULL",
     cell.types = "character",
@@ -172,12 +179,12 @@ setMethod(
   f = "initialize", signature = "DigitalDLSorterDNN",
   definition = function(
     .Object,
-    model = NULL,
+    model = list(),
     training.history = NULL,
     test.metrics = NULL,
     test.pred = NULL,
-    cell.types = NULL,
-    features = NULL,
+    cell.types = "-",
+    features = "-",
     test.deconv.metrics = NULL
   ) {
     .Object@model <- model
@@ -223,7 +230,9 @@ setMethod(
 setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 
 
-## DigitalDLSorter class -------------------------------------------------------
+################################################################################
+########################### DigitalDLSorter class ##############################
+################################################################################
 
 #' The DigitalDLSorter Class
 #'
@@ -312,7 +321,6 @@ DigitalDLSorter <- setClass(
   )
 )
 
-
 setMethod(
   f = "initialize", signature = "DigitalDLSorter",
   definition = function(
@@ -380,12 +388,6 @@ setMethod(
   n.bulk <- sum(grepl("Bulk\\.*", rowData(se)[[1]]))
   n.sc <- abs(n.bulk - dim(se)[1])
   cat(n.bulk, "bulk profiles and", n.sc, "single-cell profiles\n")
-  # if (is.null(rowData(se)[[1]])) rownames.se <- "---"
-  # else rownames.se <- S4Vectors:::selectSome(rowData(se)[[1]], 6)
-  # if (identical(colnames(se), character(0))) colnames.se <- "---"
-  # else colnames.se <- S4Vectors:::selectSome(colData(se)[[1]], 6)
-  # cat("    rownames:", rownames.se, "\n")
-  # cat("    colnames:", colnames.se, "\n")
 }
 
 .zinbModelShow <- function(zinb.model) {

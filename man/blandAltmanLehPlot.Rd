@@ -8,7 +8,7 @@ type proportions from test data}
 blandAltmanLehPlot(
   object,
   colors,
-  color.by,
+  color.by = "CellType",
   facet.by = NULL,
   log.2 = FALSE,
   filter.sc = TRUE,
@@ -76,13 +76,13 @@ of cell types present in the sample (\code{nCellTypes}). See \code{facet.by}
 argument and examples for more information.
 }
 \examples{
-## Bland-Altman plot by cell type
+# Bland-Altman plot by cell type
 blandAltmanLehPlot(
   object = DDLSChungComp,
   facet.by = "CellType",
   color.by = "CellType"
 )
-## Bland-Altman plot of all samples mixed
+# Bland-Altman plot of all samples mixed
 blandAltmanLehPlot(
   object = DDLSChungComp,
   facet.by = NULL,

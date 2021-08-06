@@ -12,7 +12,7 @@ distErrorPlot(
   facet.by = NULL,
   color.by = "nCellTypes",
   filter.sc = TRUE,
-  error.labels = FALSE,
+  error.label = FALSE,
   pos.x.label = 4.6,
   pos.y.label = NULL,
   size.point = 0.1,
@@ -31,7 +31,7 @@ distErrorPlot(
 \code{trained.model} slot containing metrics in \code{test.deconv.metrics}
 slot of \code{\linkS4class{DigitalDLSorterDNN}} object.}
 
-\item{error}{Which error is going to be represented. The available errors are
+\item{error}{Which error is going to be represented. Available errors are
 absolute error (\code{'AbsErr'}), proportional absolute error
 (\code{'ppAbsErr'}), squared error (\code{'SqrErr'}) or proportional
 squared error (\code{'ppSqrErr'}).}
@@ -57,7 +57,7 @@ are \code{nCellTypes} (by number of different cell types) and
 and only display errors associated with bulk samples (\code{TRUE} by
 default).}
 
-\item{error.labels}{Boolean indicating if to show average error as annotation
+\item{error.label}{Boolean indicating if to show average error as annotation
 in plots (\code{FALSE} by default).}
 
 \item{pos.x.label}{Position on the X axis of the errors annotations.}
@@ -102,7 +102,7 @@ distErrorPlot(
   error = "AbsErr",
   facet.by = "CellType",
   color.by = "nCellTypes",
-  error.labels = TRUE
+  error.label = TRUE
 )
 
 distErrorPlot(
@@ -112,7 +112,7 @@ distErrorPlot(
   facet.by = NULL,
   filter.sc = FALSE,
   color.by = "CellType",
-  error.labels = TRUE
+  error.label = TRUE
 )
 }
 \seealso{

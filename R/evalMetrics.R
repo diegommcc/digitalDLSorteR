@@ -11,18 +11,17 @@ NULL
 
 # internal function to store default colors in order to avoid modify default
 # colors in ggplot2 --> this is something tyhat I have to put better
-color.list <- function() {
-  color.list.2 <- c(
+default.colors <- function() {
+  colors <- c(
     RColorBrewer::brewer.pal(12, "Paired"), "#d45b91", "#374738",
     RColorBrewer::brewer.pal(12, "Set3"),
     RColorBrewer::brewer.pal(8, "Pastel2"),
     "#333333", "#5D5D5D",
     "#888888", "#B3B3B3"
   )
-  color.list.2[11] <- "#e3dc5b"
-  color.list.2[15] <- "#60c4b4"
-
-  return(color.list.2)
+  colors[11] <- "#e3dc5b"
+  colors[15] <- "#60c4b4"
+  return(colors)
 }
 
 ################################################################################
@@ -75,38 +74,38 @@ calculateEvalMetrics <- function(
     stop("Provided object does not have a trained model for evaluation")
   } else if (is.null(prob.cell.types(object)) ||
              !"test" %in% names(prob.cell.types(object))) {
-    stop("Provided object does not contain the real cell proportions in ", 
+    stop("Provided object does not contain actual cell proportions in ", 
          "'prob.cell.types' slot")
   } 
-  ## validation metrics
+  # validation metrics
   valid.met <- list(MAE = "MAE", MSE = "MSE")
   use.met <- valid.met[names(valid.met) %in% metrics]
-  if (length(use.met) == 0) stop("Metrics provided are not valid")
+  if (length(use.met) == 0) stop("Provided metrics are not valid. Only MAE and/or MSE are accepted")
   
-  ## extract information
+  # extract information
   testProbsDeconv <- .targetForDNN(
     object, combine = "both", type.data = "test", fly = TRUE, shuffle = FALSE
   )
   predictionsDeconv <- trained.model(object)@test.pred
-  ## results test
+  # results test
   tmd <- as_tibble(x = testProbsDeconv)
   tmd <- mutate(tmd, Sample = rownames(testProbsDeconv),
                 nCellTypes = factor(rowSums(testProbsDeconv > 0)))
   tmd <- tmd %>% gather(key = "CellType", value = "Prob", 
                         -.data[["Sample"]], -.data[["nCellTypes"]])
-  ## probabilities target test
+  # probabilities target test
   pmd <- as_tibble(predictionsDeconv)
   pmd <- mutate(pmd, Sample = rownames(predictionsDeconv))
   pmd <- pmd %>% gather(key = "CellType", value = "Pred", -.data[["Sample"]])
-  ## union
+  # union
   amd <- tmd %>% left_join(pmd, by = c("Sample", "CellType"))
-  ## add bins to Probs
+  # add bins to Probs
   amd$pBin <- 0
   for (p in seq(from = 0.1, to = 1, by = 0.1)) {
     amd$pBin[amd$Prob <= p & amd$Prob > p - 0.1] <- p
   }
   amd$pBin[amd$Prob == 0] <- 0.1
-  ## calculate stats
+  # calculate stats
   amd <- .updateAMD(amd = amd, use.met = use.met)
   amdf <- amd %>% filter(amd$Prob > 0 & amd$Prob < 1)
   eval.stats <- lapply(
@@ -117,7 +116,7 @@ calculateEvalMetrics <- function(
     X = use.met, 
     FUN = function(x) .calculateMetrics(mat = amdf, err = x)
   )
-  ## update object
+  # update object
   trained.model(object)@test.deconv.metrics <- list(
     raw = amd,
     allData = eval.stats,
@@ -126,18 +125,18 @@ calculateEvalMetrics <- function(
   return(object)
 }
 
-## square error
+# square error
 .SqrErr <- function(x) (x$Prob - x$Pred)**2
-## proportional square error
+# proportional square error
 .ppSqrErr <- function(x) x$SqrErr / (x$pBin**2)
-## absolute error
+# absolute error
 .AbsErr <- function(x) abs(x$Prob - x$Pred)
-## proportional absolute error
+# proportional absolute error
 .ppAbsErr <- function(x) x$AbsErr / x$pBin
-## standard error
+# standard error
 se <- function(x) sqrt(var(x)/length(x))
 
-## mean error by
+# mean error by
 .meanErr <- function(
   x, 
   err, 
@@ -235,7 +234,7 @@ se <- function(x) sqrt(var(x)/length(x))
 }
 
 .labelsErrorFacet <- function(object, error, facet.by, filter.sc) {
-  ## mean filtering sc profiles or not
+  # mean filtering sc profiles or not
   if (!filter.sc) index.err <- 2
   else index.err <- 3
 
@@ -278,7 +277,7 @@ se <- function(x) sqrt(var(x)/length(x))
 #' @param object \code{\linkS4class{DigitalDLSorter}} object with
 #'   \code{trained.model} slot containing metrics in \code{test.deconv.metrics}
 #'   slot of \code{\linkS4class{DigitalDLSorterDNN}} object.
-#' @param error Which error is going to be represented. The available errors are
+#' @param error Which error is going to be represented. Available errors are
 #'   absolute error (\code{'AbsErr'}), proportional absolute error
 #'   (\code{'ppAbsErr'}), squared error (\code{'SqrErr'}) or proportional
 #'   squared error (\code{'ppSqrErr'}).
@@ -298,7 +297,7 @@ se <- function(x) sqrt(var(x)/length(x))
 #' @param filter.sc Boolean indicating whether to filter single-cell profiles
 #'   and only display errors associated with bulk samples (\code{TRUE} by
 #'   default).
-#' @param error.labels Boolean indicating if to show average error as annotation
+#' @param error.label Boolean indicating if to show average error as annotation
 #'   in plots (\code{FALSE} by default).
 #' @param pos.x.label Position on the X axis of the errors annotations.
 #' @param pos.y.label Position on the Y axis of the errors annotations.
@@ -329,7 +328,7 @@ se <- function(x) sqrt(var(x)/length(x))
 #'   error = "AbsErr",
 #'   facet.by = "CellType",
 #'   color.by = "nCellTypes",
-#'   error.labels = TRUE
+#'   error.label = TRUE
 #' )
 #'
 #' distErrorPlot(
@@ -339,7 +338,7 @@ se <- function(x) sqrt(var(x)/length(x))
 #'   facet.by = NULL,
 #'   filter.sc = FALSE,
 #'   color.by = "CellType",
-#'   error.labels = TRUE
+#'   error.label = TRUE
 #' )
 distErrorPlot <- function(
   object,
@@ -349,7 +348,7 @@ distErrorPlot <- function(
   facet.by = NULL,
   color.by = "nCellTypes",
   filter.sc = TRUE,
-  error.labels = FALSE,
+  error.label = FALSE,
   pos.x.label = 4.6,
   pos.y.label = NULL,
   size.point = 0.1,
@@ -367,29 +366,30 @@ distErrorPlot <- function(
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@test.deconv.metrics)) {
     stop("Provided object does not have evaluation metrics. Use ",
-         "calculateEvalMetrics function")
+         "'calculateEvalMetrics' function")
   } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
-    stop("Evaluation metrics are incorrect. Please, use calculateEvalMetrics function")
+    stop("Evaluation metrics are incorrect. Please, use 'calculateEvalMetrics' function")
   } else if (!error %in% c("AbsErr", "ppAbsErr", "SqrErr", "ppSqrErr")) {
-    stop("'error' provided is not valid. Errors available are: 'AbsErr', ",
+    stop("'error' provided is not valid. Available errors are: 'AbsErr', ",
          "'ppAbsErr', 'SqrErr' and 'ppSqrErr'")
-  } else if (!color.by %in% c("nCellTypes", "CellType")) {
-    stop("'color.by' provided is not valid. Options available are: 'nCellTypes' and 'CellType'")
   } else if (!x.by %in% c("nCellTypes", "CellType", "pBin")) {
-    stop("'x.by' provided is not valid. Options available are: 'nCellTypes', 'CellType' and 'pBin'")
+    stop("'x.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' and 'pBin'")
   } else if (!type %in% c("violinplot", "boxplot")) {
-    stop("'type' provided is not valid. Options available are: 'violinplot' and 'boxplot'")
-  }
+    stop("'type' provided is not valid. Available options are: 'violinplot' and 'boxplot'")
+  } else if (!is.null(color.by)) {
+    if (!color.by %in% c("nCellTypes", "CellType")) {
+      stop("'color.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' and NULL")
+    }
+  } 
   amd <- trained.model(object)@test.deconv.metrics[[1]]
   if (filter.sc) {
     amd <- amd %>% filter(.data[["Prob"]] > 0 & .data[["Prob"]] < 1)
   }
-  if (missing(colors)) {
-    colors <- color.list()
-  }
-  if (length(colors) < length(unique(amd[[color.by]]))) {
-    stop("The number of colors provided is not enought")
-  }
+  if (missing(colors)) colors <- default.colors()
+  if (!is.null(color.by)) {
+    if (length(colors) < length(unique(amd[[color.by]]))) 
+      stop("Number of provided colors is not enough")
+  } 
   if (is.null(title))
     title.plot <- paste(error, "by", x.by)
   else
@@ -404,19 +404,19 @@ distErrorPlot <- function(
   }
   if (!is.null(facet.by)) {
     if (!facet.by %in% c("nCellTypes", "CellType")) {
-      stop("'facet.by' provided is not valid. Options available are: nCellTypes, ",
-           "CellType or NULL")
+      stop("'facet.by' provided is not valid. Available options are: 'nCellTypes', ",
+           "'CellType' or NULL")
     }
     plot <- plot + facet_wrap(as.formula(paste("~", facet.by)),
                               nrow = nrow, ncol = ncol, ...)
-    if (error.labels) {
+    if (error.label) {
       labels <- .labelsErrorFacet(object, error, facet.by, filter.sc)
       plot <- plot + geom_text(x = pos.x.label, y = pos.y.label,
                                aes(label = .data[[error]]),
                                data = labels, size = 3)
     }
   } else {
-    if (error.labels) {
+    if (error.label) {
       if (x.by == "nCellTypes" && is(pos.x.label, "numeric")) {
         pos.x.label <- levels(factor(amd[[x.by]]))[1]
       } else if (x.by == "CellType" && is(pos.x.label, "numeric")) {
@@ -430,9 +430,18 @@ distErrorPlot <- function(
       )
     }
   }
-  plot <- plot + geom_point(size = size.point, alpha = alpha.point,
-                            aes(colour = .data[[color.by]]),
-                            position = "jitter")
+  if (!is.null(color.by)) {
+    plot <- plot + geom_point(
+      size = size.point, alpha = alpha.point,
+      aes(colour = .data[[color.by]]),
+      position = "jitter"
+    )  
+  } else {
+    plot <- plot + geom_point(
+      size = size.point, alpha = alpha.point,
+      position = "jitter", color = colors[1]
+    )  
+  }
   if (type == "violinplot")
     plot <- plot + geom_violin(trim = TRUE, scale = "width", fill = NA)
   else if (type == "boxplot")
@@ -446,7 +455,6 @@ distErrorPlot <- function(
 
   return(plot)
 }
-
 
 .labelsCCCFacet <- function(
   amd, 
@@ -470,7 +478,6 @@ distErrorPlot <- function(
   }
   return(df)
 }
-
 
 ################################################################################
 ######################### Correlation Pred/Exp plots ###########################
@@ -498,7 +505,7 @@ distErrorPlot <- function(
 #'   \code{CellType} (by cell type).
 #' @param color.by Variable used to color data. The options are
 #'   \code{nCellTypes} and \code{CellType}.
-#' @param corr Correlation value displayed as annotation. The available metrics
+#' @param corr Correlation value displayed as annotation. Available metrics
 #'   are Pearson's correlation coefficient (\code{'pearson'}) and concordance
 #'   correlation coefficient (\code{'ccc'}). The argument can be equal to
 #'   \code{'pearson'}, \code{'ccc'} or \code{'both'} (by default).
@@ -527,14 +534,14 @@ distErrorPlot <- function(
 #'   \code{\link{blandAltmanLehPlot}} \code{\link{barErrorPlot}}
 #'
 #' @examples
-#' ## correlations by cell type
+#' # correlations by cell type
 #' corrExpPredPlot(
 #'   object = DDLSChungComp,
 #'   facet.by = "CellType",
 #'   color.by = "CellType",
 #'   corr = "both"
 #' )
-#' ## correlations of all samples mixed
+#' # correlations of all samples mixed
 #' corrExpPredPlot(
 #'   object = DDLSChungComp,
 #'   facet.by = NULL,
@@ -566,21 +573,23 @@ corrExpPredPlot <- function(
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@test.deconv.metrics)) {
     stop("Provided object does not have evaluation metrics. Use ",
-         "calculateEvalMetrics")
+         "'calculateEvalMetrics' function")
   } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
-    stop("Evaluation metrics are not correct, use calculateEvalMetrics function")
-  } else if (!color.by %in% c("nCellTypes", "CellType")) {
-    stop("'color.by' provided is not valid. Options available are: 'nCellTypes' and 'CellType'")
+    stop("Evaluation metrics are not correct, use 'calculateEvalMetrics' function")
+  } else if (!is.null(color.by)) {
+    if (!color.by %in% c("nCellTypes", "CellType"))
+      stop("'color.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' or NULL")
   }
   amd <- trained.model(object)@test.deconv.metrics[[1]]
   if (filter.sc) {
     amd <- amd %>% filter(.data[["Prob"]] > 0 & .data[["Prob"]] < 1)
   }
-  if (missing(colors)) {
-    colors <- color.list()
-  }
-  if (length(colors) < length(unique(amd[[color.by]]))) {
-    stop("The number of colors provided is not enought")
+  if (missing(colors)) colors <- default.colors()
+  
+  if (!is.null(color.by)) {
+    if (length(colors) < length(unique(amd[[color.by]]))) {
+      stop("Number of provided colors is not enough")
+    }  
   }
   if (is.null(title))
     title.plot <- "Correlation Expected/Predicted"
@@ -588,32 +597,42 @@ corrExpPredPlot <- function(
     title.plot <- title
 
   plot <- ggplot(amd, aes(x = .data[["Prob"]], y = .data[["Pred"]])) + theme
-  plot <- plot + geom_point(size = size.point, alpha = alpha.point,
-                            aes(colour = .data[[color.by]]),
-                            position = "jitter", na.rm = TRUE) +
-    geom_abline(linetype = "dashed", colour = "gray40") +
-    scale_color_manual(values = colors, name = color.by) +
+  if (!is.null(color.by)) {
+    plot <- plot + geom_point(
+      size = size.point, alpha = alpha.point,
+      aes(colour = .data[[color.by]]),
+      position = "jitter", na.rm = TRUE
+    ) + scale_color_manual(values = colors, name = color.by) 
+  } else {
+    plot <- plot + geom_point(
+      size = size.point, alpha = alpha.point, color = colors[1], 
+      position = "jitter", na.rm = TRUE
+    ) 
+  }
+   plot <- plot + geom_abline(linetype = "dashed", colour = "gray40") +
     scale_x_continuous(limits = c(0, 1), labels = c(0, 0.25, 0.5, 0.75, 1)) +
     scale_y_continuous(limits = c(0, 1), labels = c(0, 0.25, 0.5, 0.75, 1)) +
     ggtitle(title.plot) + xlab("Expected") + ylab("Predicted") +
-    stat_smooth(method = "lm", colour  = "darkblue",
-                alpha = 0.8, size = 0.8, na.rm = TRUE) +
-    guides(colour = guide_legend(override.aes = list(size = 1.5))) +
+    stat_smooth(
+      method = "lm", colour = "darkblue", alpha = 0.8, size = 0.8, na.rm = TRUE
+    ) + guides(colour = guide_legend(override.aes = list(size = 1.5))) +
     DigitalDLSorterTheme()
   if (!is.null(facet.by)) {
     if (!facet.by %in% c("nCellTypes", "CellType")) {
-      stop("'facet.by' provided is not valid. Options available are: 'nCellTypes', ",
-           "'CellType' or 'NULL'")
+      stop("'facet.by' provided is not valid. Available options are: 'nCellTypes', ",
+           "'CellType' or NULL")
     }
     plot <- plot + facet_wrap(as.formula(paste("~", facet.by)),
                               nrow = nrow, ncol = ncol, ...)
     size.ann <- 3
     if (corr == "ccc") {
       labels <- .labelsCCCFacet(amd, facet.by, filter.sc)
-      plot <- plot + geom_text(x = pos.x.label, y = pos.y.label,
-                               aes(label = .data[["ccc"]]),
-                               data = labels, hjust = 0,
-                               size = size.ann)
+      plot <- plot + geom_text(
+        x = pos.x.label, y = pos.y.label,
+        aes(label = .data[["ccc"]]),
+        data = labels, hjust = 0,
+        size = size.ann
+      )
     } else if (corr == "pearson") {
       plot <- plot + stat_cor(
         method = "pearson",
@@ -635,7 +654,7 @@ corrExpPredPlot <- function(
         size = size.ann
       )
     } else {
-      stop("Argument corr invalid. Only supported 'pearson' and 'ccc'")
+      stop("Argument corr invalid. Only supported 'pearson', 'ccc' and 'both'")
     }
   } else {
     size.ann <- 4
@@ -727,13 +746,13 @@ corrExpPredPlot <- function(
 #'   \code{\link{distErrorPlot}} \code{\link{barErrorPlot}}
 #'
 #' @examples
-#' ## Bland-Altman plot by cell type
+#' # Bland-Altman plot by cell type
 #' blandAltmanLehPlot(
 #'   object = DDLSChungComp,
 #'   facet.by = "CellType",
 #'   color.by = "CellType"
 #' )
-#' ## Bland-Altman plot of all samples mixed
+#' # Bland-Altman plot of all samples mixed
 #' blandAltmanLehPlot(
 #'   object = DDLSChungComp,
 #'   facet.by = NULL,
@@ -744,7 +763,7 @@ corrExpPredPlot <- function(
 blandAltmanLehPlot <- function(
   object,
   colors,
-  color.by,
+  color.by = "CellType",
   facet.by = NULL,
   log.2 = FALSE,
   filter.sc = TRUE,
@@ -763,12 +782,12 @@ blandAltmanLehPlot <- function(
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@test.deconv.metrics)) {
     stop("Provided object does not have evaluation metrics. Use ",
-         "'calculateEvalMetrics'")
+         "'calculateEvalMetrics' function")
   } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
-    stop("Evaluation metrics are not correctly built, use 'calculateEvalMetrics'")
+    stop("Evaluation metrics are not correctly built, use 'calculateEvalMetrics' function")
   } else if (!is.null(color.by)) {
     if (!color.by %in% c("nCellTypes", "CellType")) {
-      stop("'color.by' provided is not valid. Options available are: 'nCellTypes', 'CellType'")
+      stop("'color.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' or NULL")
     }
   }
   amd <- trained.model(object)@test.deconv.metrics[[1]]
@@ -797,10 +816,10 @@ blandAltmanLehPlot <- function(
     title.plot <- paste("Bland-Altman Agreement Plot", add.title)
   else
     title.plot <- title
+  if (missing(colors)) colors <- default.colors()
   if (!is.null(color.by)) {
-    if (missing(colors)) colors <- color.list()
     if (length(colors) < length(unique(amd[[color.by]]))) {
-      stop("Colors provided are not enought")
+      stop("Number of provided colors is not enough")
     }
     plot <- ggplot(amd, aes(x = .data[["Mean"]], y = .data[["Diff"]], 
                             colour = .data[[color.by]])) +
@@ -808,16 +827,12 @@ blandAltmanLehPlot <- function(
       scale_color_manual(values = colors, name = color.by) +
       guides(colour = guide_legend(override.aes = list(size = 1.5)))
   } else {
-    if (missing(colors)) {
-      colors <- color.list()
-      colors <- colors[1]
-    }
     plot <- ggplot(amd, aes(x = .data[["Mean"]], y = .data[["Diff"]])) +
-      geom_point(size = size.point, color = colors, alpha = alpha.point)
+      geom_point(size = size.point, color = colors[1], alpha = alpha.point)
   }
   if (!is.null(facet.by)) {
     if (!facet.by %in% c("nCellTypes", "CellType")) {
-      stop("'facet.by' provided is not valid. Options available are: nCellTypes, CellType")
+      stop("'facet.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' or NULL")
     }
     plot <- plot + facet_wrap(as.formula(paste("~", facet.by)),
                               nrow = nrow, ncol = ncol, ...)
@@ -887,8 +902,8 @@ blandAltmanLehPlot <- function(
 #' )
 barErrorPlot <- function(
   object,
-  error,
-  by,
+  error = "MSE",
+  by = "CellType",
   dispersion = "se",
   filter.sc = TRUE,
   title = NULL,
@@ -896,26 +911,26 @@ barErrorPlot <- function(
   theme = NULL
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
+    stop("Provided object is not of DigitalDLSorter class")
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@test.deconv.metrics)) {
-    stop("The provided object does not have evaluation metrics. Use ",
-         "'calculateEvalMetrics'")
+    stop("Provided object does not have evaluation metrics. Use ",
+         "'calculateEvalMetrics' function")
   } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
-    stop("Evaluation metrics are not well built, use 'calculateEvalMetrics'")
+    stop("Evaluation metrics are not well built, use 'calculateEvalMetrics' function")
   } else if (!by %in% c("nCellTypes", "CellType")) {
-    stop("'by' provided is not valid. Options available are: 'nCellTypes', 'CellType'")
+    stop("'by' provided is not valid. Available options are: 'nCellTypes', 'CellType'")
   } else if (!error %in% c("MAE", "MSE")) {
-    stop("Error provided is not valid. Errors available are: 'MAE', 'MSE'")
+    stop("'error' provided is not valid. Available errors are: 'MAE', 'MSE'")
   } else if (!dispersion %in% c("se", "sd")) {
-    stop("Dispersion provided is not valid. Options available are: sd (standard",
+    stop("'dispersion' provided is not valid. Available options are: sd (standard",
          " deviation) or se (standard error)")
   }
   if (is.null(title))
     title.plot <- paste0("Bar error plot by ", by, " (",error, ")")
   else
     title.plot <- title
-  ## filter sc data
+  # filter sc data
   if (!filter.sc) index.stats <- 2
   else index.stats <- 3
   if (is.null(angle)) {
@@ -933,15 +948,17 @@ barErrorPlot <- function(
   err.mean <- paste0(error, ".mean")
   err.dis <- paste0(error, ".", dispersion)
 
-  plot <- ggplot(data, aes(
-    x = .data[[by]], y = .data[[err.mean]],
-    ymin = .data[[err.mean]] - .data[[err.dis]],
-    ymax = .data[[err.mean]] + .data[[err.dis]])
-  ) +
-    theme + geom_errorbar(width = 0.2) + geom_point(size = 1.5) +
+  plot <- ggplot(
+    data, 
+    aes(
+      x = .data[[by]], y = .data[[err.mean]],
+      ymin = .data[[err.mean]] - .data[[err.dis]],
+      ymax = .data[[err.mean]] + .data[[err.dis]]
+    )
+  ) + theme + geom_errorbar(width = 0.2) + geom_point(size = 1.5) +
     xlab(by) + ylab(error) + ggtitle(title.plot) +
-    theme(axis.text.x = element_text(size = 8, angle = angle, 
-                                     hjust = hjust, vjust = 0.5)) + 
-    DigitalDLSorterTheme()
+    theme(axis.text.x = element_text(
+      size = 8, angle = angle, hjust = hjust, vjust = 0.5
+    )) + DigitalDLSorterTheme()
   return(plot)
 }

@@ -9,7 +9,7 @@ simSCProfiles(
   cell.ID.column,
   cell.type.column,
   n.cells,
-  sufix.names = "_Simul",
+  suffix.names = "_Simul",
   cell.types = NULL,
   file.backend = NULL,
   name.dataset.backend = NULL,
@@ -34,9 +34,9 @@ of each cell in cells metadata.}
 have 10 different cell types in your dataset, if \code{n.cells = 100}, then
 1000 cell profiles will be simulated).}
 
-\item{sufix.names}{Sufix used in simulated cells. This sufix must be unique
-in simulated cells, so ensure that this sufix does not appear in real cell
-names.}
+\item{suffix.names}{Suffix used in simulated cells. This suffix must be
+unique in simulated cells, so ensure that this suffix does not appear in
+real cell names.}
 
 \item{cell.types}{Vector indicating which cell types you want to simulate. If
 \code{NULL} (by default), \code{n.cells} single-cell profiles for all cell

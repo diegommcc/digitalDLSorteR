@@ -39,7 +39,7 @@ test_that("Wrong parameters in estimateZinbwaveParams", {
       threads = 1,
       verbose = TRUE
     ), 
-    regexp = "non_existent_column column is not present in cells.metadata"
+    regexp = "non_existent_column column is not present in genes.metadata"
   )
   # variable with less than two levels
   sce <- single.cell.real(DDLSLiMod) 
@@ -79,6 +79,7 @@ test_that("Wrong parameters in estimateZinbwaveParams", {
   # an object with less than two cell types
   DDLSLiMod <- DDLSLi
   single.cell.real(DDLSLiMod) <- single.cell.real(DDLSLiMod)[, c(1, 2, 4, 5)]
+  zinb.params(DDLSLiMod) <- NULL
   expect_error(
     estimateZinbwaveParams(
       object = DDLSLiMod,
@@ -96,6 +97,7 @@ test_that("Wrong parameters in estimateZinbwaveParams", {
   # an object with less than two cell types
   DDLSLiMod <- DDLSLi
   single.cell.real(DDLSLiMod) <- single.cell.real(DDLSLiMod)[, c(1, 2, 4, 5)]
+  zinb.params(DDLSLiMod) <- NULL
   expect_error(
     estimateZinbwaveParams(
       object = DDLSLiMod,
@@ -111,9 +113,11 @@ test_that("Wrong parameters in estimateZinbwaveParams", {
     regexp = "'cell.type.column' must have 2 or more unique elements"
   )
   # incorrect set.type
+  DDLSLiMod <- DDLSLi
+  zinb.params(DDLSLiMod) <- NULL
   expect_error(
     estimateZinbwaveParams(
-      object = DDLSLi,
+      object = DDLSLiMod,
       cell.ID.column = "Cell_ID",
       gene.ID.column = "external_gene_name",
       cell.type.column = "Cell_Type",
@@ -123,22 +127,22 @@ test_that("Wrong parameters in estimateZinbwaveParams", {
       threads = 1,
       verbose = TRUE
     ), 
-    regexp = "Cell type(s) provided in 'set.type' argument not found"
+    regexp = "provided in 'set.type' argument not found"
   )
   # set.type with less than two levels
   expect_error(
     estimateZinbwaveParams(
-      object = DDLSLi,
+      object = DDLSLiMod,
       cell.ID.column = "Cell_ID",
       gene.ID.column = "external_gene_name",
       cell.type.column = "Cell_Type",
       cell.cov.columns = "Patient",
       gene.cov.columns = "gene_length",
-      set.type = c("Fb", "M"),
+      set.type = c("Fb", "CD8Gn"),
       threads = 1,
       verbose = TRUE
     ), 
-    regexp = "Cell type(s) provided in 'set.type' argument not found"
+    regexp = "'set.type' must contain more than two different cell types in order"
   )
 })
 
@@ -152,28 +156,28 @@ test_that("Functions to subset data in estimateZinwaveParams function (.reduceDa
   )
   # incorrect object
   expect_error(
-    sce_red <- .reduceDataset(
-      subset.cells = 13,
+    .reduceDataset(
+      subset.cells = 100,
       list.data = list.data,
       cell.type.column = "Cell_Type", 
       cell.ID.column = "Cell_ID", 
       gene.ID.column = "external_gene_name",
       proportional = FALSE,
-      verbose = TRUE
+      verbose = FALSE
     ), 
     regexp = "'subset.cells' must be less than the total number of cells"
   )
   expect_error(
-    sce_red <- .reduceDataset(
+    .reduceDataset(
       subset.cells = 9,
       list.data = list.data,
       cell.type.column = "Cell_Type", 
       cell.ID.column = "Cell_ID", 
       gene.ID.column = "external_gene_name",
       proportional = FALSE,
-      verbose = TRUE
+      verbose = FALSE
     ), 
-    regexp = "'subset.cells' must be greater than the number of cell types "
+    regexp = "'subset.cells' must be greater than the number of cell types"
   )
 })
 
@@ -187,6 +191,7 @@ test_that("Wrong parameters in simSCProfiles", {
   # incorrect object
   DDLSLiBad <- DDLSLi
   zinb.params(DDLSLiBad) <- NULL
+  single.cell.simul(DDLSLi) <- NULL
   expect_error(
     simSCProfiles(
       object = DDLSLiBad,
@@ -233,13 +238,14 @@ test_that("Wrong parameters in simSCProfiles", {
       suffix.names = "_Simul",
       verbose = TRUE
     ), 
-    regexp = "Cell type(s) provided in 'cell.types' not found in ZINB-WaVE model"
+    regexp = "provided in 'cell.types' not found in ZINB-WaVE model"
   )
 })
 
 # simSCProfiles: check if parameters work as expected
 test_that("Parameters working as expected in simSCProfiles", {
   # suffix.names 
+  single.cell.simul(DDLSLi) <- NULL
   DDLSLi <- simSCProfiles(
     object = DDLSLi,
     cell.ID.column = "Cell_ID",
@@ -254,6 +260,7 @@ test_that("Parameters working as expected in simSCProfiles", {
   expect_true(any(colnames(colData(single.cell.simul(DDLSLi))) == "suffix"))
   # warning if suffix column in cells metadata is going to be overwritten
   colData(single.cell.real(DDLSLi))$suffix <- 1
+  single.cell.simul(DDLSLi) <- NULL
   expect_warning(
     simSCProfiles(
       object = DDLSLi,
@@ -265,6 +272,8 @@ test_that("Parameters working as expected in simSCProfiles", {
     )
   )
   # correct number of cells
+  single.cell.simul(DDLSLi) <- NULL
+  colData(single.cell.real(DDLSLi))$suffix <- NULL
   DDLSLi <- simSCProfiles(
     object = DDLSLi,
     cell.ID.column = "Cell_ID",
@@ -275,6 +284,7 @@ test_that("Parameters working as expected in simSCProfiles", {
   )
   expect_equal(dim(single.cell.simul(DDLSLi))[2], 14 * 10)
   # only CD4 and M cells
+  single.cell.simul(DDLSLi) <- NULL
   DDLSLi <- simSCProfiles(
     object = DDLSLi,
     cell.ID.column = "Cell_ID",
@@ -303,6 +313,7 @@ if (requireNamespace("DelayedArray", quietly = TRUE) ||
           "DelayedArray and HDF5Array packages are installed"), 
     {
       # check if HDF5 file exists and if it is correct
+      single.cell.simul(DDLSLi) <- NULL
       file <- tempfile()
       expect_message(
         DDLSLi <- simSCProfiles(
@@ -319,6 +330,7 @@ if (requireNamespace("DelayedArray", quietly = TRUE) ||
       expect_true(file.exists(file))
       expect_s4_class(object = counts(single.cell.simul(DDLSLi)), class = "HDF5Array")
       # check if name.dataset.backend changes the name of dataset used
+      single.cell.simul(DDLSLi) <- NULL
       DDLSLi <- simSCProfiles(
         object = DDLSLi,
         cell.ID.column = "Cell_ID",
@@ -330,6 +342,7 @@ if (requireNamespace("DelayedArray", quietly = TRUE) ||
       )
       expect_true("new.dataset" %in% rhdf5::h5ls(file)[, "name"])
       # cannot be used the same dataset in the same HDF5 file
+      single.cell.simul(DDLSLi) <- NULL
       expect_error(
         simSCProfiles(
           object = DDLSLi,
@@ -342,6 +355,7 @@ if (requireNamespace("DelayedArray", quietly = TRUE) ||
         )
       )
       # check if block.processing works
+      single.cell.simul(DDLSLi) <- NULL
       expect_message(
         DDLSLi <- simSCProfiles(
           object = DDLSLi,
@@ -358,5 +372,3 @@ if (requireNamespace("DelayedArray", quietly = TRUE) ||
     }
   )
 } 
-
-

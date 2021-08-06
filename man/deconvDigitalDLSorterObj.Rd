@@ -59,21 +59,21 @@ using their own single-cell RNAseq data. If you want to use a pre-trained
 model, see \code{?\link{deconvDigitalDLSorter}}.
 }
 \examples{
-## to ensure compatibility
+# to ensure compatibility
 \dontrun{
 tensorflow::tf$compat$v1$disable_eager_execution()
-## simplify arguments
+# simplify arguments
 simplify <- list(Tumor = c("ER+", "HER2+", "ER+ and HER2+", "TNBC"),
                  Bcells = c("Bmem", "BGC"))
 
-## all results are stored in DigitalDLSorter object
+# all results are stored in DigitalDLSorter object
 TCGA.se <- SummarizedExperiment::SummarizedExperiment(
   assays = list(counts = TCGA.breast.small),
   rowData = data.frame(rownames(TCGA.breast.small)),
   colData = data.frame(colnames(TCGA.breast.small)),
 )
-DDLSChungComp <- loadDeconvDataFromSummarizedExperiment(
-  object = DDLSChungComp, se.object = TCGA.se,
+DDLSChungComp <- loadDeconvData(
+  object = DDLSChungComp, data = TCGA.se,
   name.data = "TCGA.breast"
 )
 DDLSChungComp <- deconvDigitalDLSorterObj(

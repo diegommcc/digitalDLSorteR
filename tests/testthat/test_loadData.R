@@ -5,7 +5,7 @@ context("Loading scRNA-seq data into DigitalDLSorter object")
 ################################################################################
 sceLiSmall <- single.cell.real(DDLSLi)
 
-## errors related with wrong columns metadata
+# errors related with wrong columns metadata
 test_that("Wrong metadata columns return errors", {
   expect_error(loadSCProfiles(
     single.cell.data = sceLiSmall,
@@ -30,7 +30,7 @@ test_that("Wrong metadata columns return errors", {
 })
 
 
-## errors related to remove cells or genes (min.cells and min.counts)
+# errors related to remove cells or genes (min.cells and min.counts)
 test_that("Catch errors related to min.counts and min.cells", {
   expect_error(loadSCProfiles(
     single.cell.data = sceLiSmall,
@@ -100,13 +100,13 @@ test_that("Check if counts matrix is a sparse matrix object", {
 })
 
 
-## errors related to SingleCellExperiment: data not provided in some slot,
-## data provided in other slots, count matrix does not have row and column
-## names
+# errors related to SingleCellExperiment: data not provided in some slot,
+# data provided in other slots, count matrix does not have row and column
+# names
 test_that("Wrong SingleCellExperiment object", {
   counts <- single.cell.real(DDLSLi) %>% assay
 
-  ## 1 - no rownames neither rowData: genes
+  # 1 - no rownames neither rowData: genes
   countsNoGenes <- single.cell.real(DDLSLi) %>% assay
   rownames(countsNoGenes) <- NULL
   sceLiNoGenes <- SingleCellExperiment(
@@ -121,7 +121,7 @@ test_that("Wrong SingleCellExperiment object", {
     min.cells = 0
   ), regexp = "Count matrix must have rownames")
 
-  ## 2 - no colnames neither colData: cells
+  # 2 - no colnames neither colData: cells
   countsNoCells <- assay(single.cell.real(DDLSLi))
   colnames(countsNoCells) <- NULL
   sceLiNoCells <- SingleCellExperiment(
@@ -136,7 +136,7 @@ test_that("Wrong SingleCellExperiment object", {
     min.cells = 0
   ), regexp = "No data provided in colData slot")
 
-  ## 3 - no rowData: genes
+  # 3 - no rowData: genes
   sceLiRNoRowData <- SingleCellExperiment(
     assay = list(counts = single.cell.real(DDLSLi) %>% assay),
     colData = colData(single.cell.real(DDLSLi))
@@ -149,7 +149,7 @@ test_that("Wrong SingleCellExperiment object", {
     min.cells = 0
   ), regexp = "No data provided in rowData slot")
 
-  ## 4 - no colnames: cells in matrix
+  # 4 - no colnames: cells in matrix
   dfCellsMetadata <- colData(single.cell.real(DDLSLi))
   rownames(dfCellsMetadata) <- NULL
   sceLiNoColNames <- SingleCellExperiment(
@@ -165,7 +165,7 @@ test_that("Wrong SingleCellExperiment object", {
     min.cells = 0
   ), regexp = "Count matrix must have")
 
-  ## 5 - No matrix counts
+  # 5 - No matrix counts
   sceLiNoCounts <- SingleCellExperiment(
     colData = colData(single.cell.real(DDLSLi)),
     rowData = rowData(single.cell.real(DDLSLi))
@@ -178,7 +178,7 @@ test_that("Wrong SingleCellExperiment object", {
     min.cells = 0
   ), regexp = "No count data in SingleCellExperiment object provided")
 
-  ## 6 - More than one assay in SingleCellExperiment: warning, no error
+  # 6 - More than one assay in SingleCellExperiment: warning, no error
   sceLiMoreThanOne <- SingleCellExperiment(
     assay = list(counts = counts, log = log2(counts  + 1)),
     colData = colData(single.cell.real(DDLSLi)),
@@ -194,8 +194,8 @@ test_that("Wrong SingleCellExperiment object", {
 })
 
 
-## loadFinalSCProfiles core is the same as loadSCProfiles, so its behavior
-## is the same. However, the slot updated is other
+# loadFinalSCProfiles core is the same as loadSCProfiles, so its behavior
+# is the same. However, the slot updated is other
 test_that("Check if loadSCProfiles works as expected", {
   DDLS <- loadSCProfiles(
     single.cell.data = sceLiSmall,
@@ -213,8 +213,8 @@ test_that("Check if loadSCProfiles works as expected", {
 ##################### From files: tsv and sparse matrices ######################
 ################################################################################
 
-## core functions are the same for files and SCE objects, so the behavior
-## should be the same
+# core functions are the same for files and SCE objects, so the behavior
+# should be the same
 
 file.tests <- "../testdata"
 files.tsv <- c("counts.tsv", "cellsMetadata.tsv", "genesMetadata.tsv")
@@ -326,10 +326,10 @@ test_that("Check if objects from different files are equivalent", {
     min.counts = 0,
     min.cells = 12
   )
-  ## DDLS objects
+  # DDLS objects
   expect_equal(DDLS.tsv, DDLS.tsv.gz)
   expect_equal(DDLS.tsv, DDLS.sparse)
-  ## Matrices counts
+  # Matrices counts
   expect_equal(assay(single.cell.real(DDLS.tsv)),
                assay(single.cell.real(DDLS.tsv.gz)))
   expect_equal(assay(single.cell.real(DDLS.tsv)),
@@ -337,7 +337,7 @@ test_that("Check if objects from different files are equivalent", {
 })
 
 
-## Behavior functions with bad built files
+# Behavior functions with bad built files
 test_that("Check if loading data from sparse files works as expected", {
   files.tsv.gz.bad.1 <- c(
     "counts.bad.tsv.gz", "cellsMetadata.bad.tsv.gz", "genesMetadata.bad.tsv.gz"
@@ -381,8 +381,8 @@ test_that("Check if loading data from sparse files works as expected", {
   ))
 })
 
-## check removing duplicates
+# check removing duplicates
 
-## check aggregate functions
+# check aggregate functions
 
-## check use of HDF5 files
+# check use of HDF5 files

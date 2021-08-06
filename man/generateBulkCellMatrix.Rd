@@ -13,9 +13,9 @@ generateBulkCellMatrix(
   n.cells = 100,
   train.freq.cells = 2/3,
   train.freq.bulk = 2/3,
-  proportions.train = c(10, 5, 20, 15, 50),
-  proportions.test = c(10, 5, 20, 15, 50),
-  prob.zero = c(0.5, 0.5, 0.5, 0.5, 0.5),
+  proportions.train = c(10, 5, 20, 15, 35, 15),
+  proportions.test = c(10, 5, 20, 15, 35, 15),
+  prob.zero = c(0.5, 0.5, 0.5, 0.5, 0.5, 0.5),
   balanced.type.cells = FALSE,
   verbose = TRUE
 )
@@ -128,7 +128,7 @@ each method during the process, they can be shown by
 \code{\link{showProbPlot}} function (see Documentation).
 }
 \examples{
-## generate a data.frame with frequency ranges of each cell type
+# generate a data.frame with frequency ranges of each cell type
 probMatrix <- data.frame(
   Cell_type = c("ER+", "HER2+", "ER+ and HER2+", "TNBC",
                 "Stromal", "Monocyte", "Tme", "BGC",

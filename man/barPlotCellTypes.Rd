@@ -8,7 +8,7 @@
 \usage{
 barPlotCellTypes(
   data,
-  colors,
+  colors = NULL,
   simplify = NULL,
   color.line = NA,
   x.label = "Bulk samples",
@@ -23,7 +23,6 @@ barPlotCellTypes(
 \S4method{barPlotCellTypes}{DigitalDLSorter}(
   data,
   colors = NULL,
-  name.data = NULL,
   simplify = NULL,
   color.line = NA,
   x.label = "Bulk samples",
@@ -31,7 +30,8 @@ barPlotCellTypes(
   title = "Results of deconvolution",
   legend.title = "Cell types",
   angle = 90,
-  theme = NULL
+  theme = NULL,
+  name.data = NULL
 )
 
 \S4method{barPlotCellTypes}{ANY}(
@@ -82,10 +82,10 @@ This function allows to plot a bar plot with the deconvoluted cell type
 proportions of a given bulk RNA-seq sample using ggplot2.
 }
 \examples{
-## Using a matrix
+# Using a matrix
 \dontrun{barPlotCellTypes(deconvResults)}
 
-## Using a DigitalDLSorter object
+# Using a DigitalDLSorter object
 \dontrun{
   barPlotCellTypes(DDLSChung, name.data = "TCGA.breast")
 }

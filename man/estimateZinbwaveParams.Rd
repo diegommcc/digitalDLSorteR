@@ -40,11 +40,11 @@ used, set it empty or \code{NULL}).}
 be used as covariates during the fitting of the model (if no covariates are
 used, set it empty or \code{NULL}).}
 
-\item{subset.cells}{Number of cells used to fit ZINB-WaVE model. It is useful
+\item{subset.cells}{Number of cells to fit ZINB-WaVE model. It is useful
 when original data sets are too large to fit the model. Set a value
 according to original data set and available resources in your computer. If
 \code{NULL} (by default), all cells will be used. It must be an integer
-greater than or equal to the number of cell types considered and lesser
+greater than or equal to the number of cell types considered and less
 than or equal to the total cells.}
 
 \item{proportional}{If \code{TRUE}, original cell type proportions in the

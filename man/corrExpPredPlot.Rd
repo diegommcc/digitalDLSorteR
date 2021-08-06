@@ -41,7 +41,7 @@ are \code{nCellTypes} (by number of different cell types) and
 \item{color.by}{Variable used to color data. The options are
 \code{nCellTypes} and \code{CellType}.}
 
-\item{corr}{Correlation value displayed as annotation. The available metrics
+\item{corr}{Correlation value displayed as annotation. Available metrics
 are Pearson's correlation coefficient (\code{'pearson'}) and concordance
 correlation coefficient (\code{'ccc'}). The argument can be equal to
 \code{'pearson'}, \code{'ccc'} or \code{'both'} (by default).}
@@ -84,14 +84,14 @@ more information. Moreover, a correlation value selected by user is displayed
 as annotation on the plots. See \code{corr} argument for details.
 }
 \examples{
-## correlations by cell type
+# correlations by cell type
 corrExpPredPlot(
   object = DDLSChungComp,
   facet.by = "CellType",
   color.by = "CellType",
   corr = "both"
 )
-## correlations of all samples mixed
+# correlations of all samples mixed
 corrExpPredPlot(
   object = DDLSChungComp,
   facet.by = NULL,

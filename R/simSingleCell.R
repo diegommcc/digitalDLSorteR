@@ -170,7 +170,7 @@ estimateZinbwaveParams <- function(
     )
   }
   
-  ## if gene.cov.columns is provided, check if everything is correct
+  # if gene.cov.columns is provided, check if everything is correct
   if (!(missing(gene.cov.columns) || is.null(gene.cov.columns))) {
     lapply(
       X = gene.cov.columns, 
@@ -191,7 +191,7 @@ estimateZinbwaveParams <- function(
       }
     )
   }
-  ## check if gene.ID.column is correct
+  # check if gene.ID.column is correct
   lapply(
     X = gene.ID.column, 
     FUN = function(x) {
@@ -270,7 +270,7 @@ estimateZinbwaveParams <- function(
       stop("Cell type(s) provided in 'set.type' argument not found")
     # check if set.type contains at least two or more cell types
     if (length(set.type) <= 2) {
-      stop("'set.type' must contain two or more different cell types in order 
+      stop("'set.type' must contain more than two different cell types in order 
            to estimate the parameters of the model") 
     }
     # formula with only specific cell types
@@ -930,7 +930,7 @@ simSCProfiles <- function(
     # pointers for hdf5 file and zinb-wave parameters
     r.i <- 0
     r.j <- 0
-    ## iteration over cells 
+    # iteration over cells 
     for (iter in seq(ceiling(n / block.size))) {
       if ((block.size * iter) - n > 0) { # && dif < block.size
         dif <- (block.size * iter) - n

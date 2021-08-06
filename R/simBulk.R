@@ -105,7 +105,7 @@ NULL
 #'   \code{\linkS4class{ProbMatrixCellTypes}}
 #'
 #' @examples
-#' ## generate a data.frame with frequency ranges of each cell type
+#' # generate a data.frame with frequency ranges of each cell type
 #' probMatrix <- data.frame(
 #'   Cell_type = c("ER+", "HER2+", "ER+ and HER2+", "TNBC",
 #'                 "Stromal", "Monocyte", "Tme", "BGC",
@@ -167,8 +167,9 @@ generateBulkCellMatrix <- function(
       "'to': frequency up to which the cell type can appear", 
       sep = "\n   - ")
     )
-  } else if (sum(proportions.train) != 100 ||
-             sum(proportions.test) != 100) {
+  } else if (any(proportions.train < 0) || any(proportions.test < 0)) {
+    stop("Proportions cannot be less than zero")
+  } else if (sum(proportions.train) != 100 || sum(proportions.test) != 100) {
     stop("Proportions provided must add up to 100")
   } else if (length(proportions.train) != 6 || length(proportions.test) != 6) {
     stop("Proportions must be a vector of 6 elements")
@@ -178,9 +179,7 @@ generateBulkCellMatrix <- function(
     stop("'prob.zero' must be a vector whose elements must be between 0 and 1")
   } else if (missing(num.bulk.samples) || is.null(num.bulk.samples)) {
     stop("'num.bulk.samples' argument must be provided")
-  } else if (any(proportions.train < 0) || any(proportions.test < 0)) {
-    stop("Proportions cannot be less than zero")
-  }
+  } 
   if (!is.null(prob.cell.types(object)) || !length(prob.cell.types(object)) == 0) {
     warning("'prob.cell.types' slot already has probability matrices. ", 
             "Note that this object will be overwritten\n\n",
@@ -255,7 +254,7 @@ generateBulkCellMatrix <- function(
     stop("The sum between the 'from' and 'to' entries must not be greater than", 
          " 100")
   }
-  ## check if n.cells is invalid
+  # check if n.cells is invalid
   if (n.cells <= 0) {
     stop("'n.cells' must be greater than zero")
   } else if (n.cells < length(unique(cells.metadata[, cell.type.column]))) {
@@ -287,7 +286,10 @@ generateBulkCellMatrix <- function(
   # balanced.type.cells == FALSE --> completely random
   if (!balanced.type.cells) {
     train.set <- sample(cells, size = round(nrow(cells.metadata) * train.freq.cells))
-    if (length(unique(names(train.set))) != length(unique(names(cells)))) {
+    # check if we have all cell types in train and test data
+    test.set.tmp <- cells[!cells %in% train.set]
+    if (length(unique(names(train.set))) != length(unique(names(cells))) ||
+        length(unique(names(test.set.tmp))) != length(unique(names(cells)))) {
       train.set <- lapply(
         X = as.list(unique(names(cells))), 
         FUN = function(x, cells, train.freq.cells) {
@@ -341,6 +343,19 @@ generateBulkCellMatrix <- function(
   for (ts in cell.type.test) {
     test.set.list[[ts]] <- test.set[test.types == ts]
   }
+  # check if we have all the cell types in test data
+  if (length(unique(names(test.set))) != length(unique(names(cells)))) {
+    stop(
+      paste(
+        "Not all cell types consireded in DigitalDLSorter object are in test",
+        "data. digitalDLSorteR needs to have al cell types in both subsets",
+        "(training and test). Please, provide a bigger single-cell experiment",
+        "or consider simulate new single-cell profiles with", 
+        "'estimateZinbwaveParams' and 'simSCProfiles' functions"
+      )
+    )
+  }
+  
   # check if all cell types are present in train and test data
   if (verbose) {
     message("\n=== Training set cells by type:")
@@ -464,7 +479,7 @@ generateBulkCellMatrix <- function(
                   dim(test.prob.matrix),
                   collapse = "\n"), "\n")
   }
-  # GENERATE PROBS MATRIX NAMES ------------------------------------------------
+  # GENERATE PROBS MATRIX NAMES
   train.prob.matrix.names <- t(apply(
     X = train.prob.matrix,
     MARGIN = 1,
@@ -571,7 +586,7 @@ generateBulkCellMatrix <- function(
 }
 
 
-## there is something wrong
+# there is something wrong
 setCount <- function(
   x, 
   setList, 
@@ -689,7 +704,7 @@ setCount <- function(
 }
 
 
-## generate index.ex variable for each sample using prob.zero
+# generate index.ex variable for each sample using prob.zero
 .generateExcludedTypes <- function(
   num,
   s.cells,
@@ -1016,14 +1031,14 @@ setCount <- function(
 #'   \code{\link{trainDigitalDLSorterModel}}
 #'
 #' @examples
-#' ## loading all data in memory
+#' # loading all data in memory
 #' DDLSChungComp <- simBulkProfiles(
 #'   DDLSChungComp,
 #'   type.data = "both"
 #' )
 #'
 #' \dontrun{
-#' ## using HDF5 as backend
+#' # using HDF5 as backend
 #' DDLSChungComp <- simBulkProfiles(
 #'   DDLSChungComp,
 #'   threads = 2,
@@ -1055,9 +1070,8 @@ simBulkProfiles <- function(
 ) {
   if (!is(object, "DigitalDLSorter")) {
     stop("The object provided is not of DigitalDLSorter class")
-  } else if (is.null(single.cell.simul(object)) && 
-             is.null(single.cell.real(object))) {
-    stop("There are no single-cell profiles in DigitalDLSorter object")
+  } else if (is.null(single.cell.real(object))) {
+    stop("There are no real single-cell profiles in DigitalDLSorter object")
   } else if (is.null(prob.cell.types(object))) {
     stop("'prob.cell.types' slot is empty")
   } else if (!any(type.data == c("train", "test", "both"))) {

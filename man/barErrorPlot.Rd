@@ -3,12 +3,12 @@
 \name{barErrorPlot}
 \alias{barErrorPlot}
 \title{Generate bar error plot and its dispersion by cell types or by number of
-different cell types in test bulk samples.}
+different cell types in test bulk samples}
 \usage{
 barErrorPlot(
   object,
-  error,
-  by,
+  error = "MSE",
+  by = "CellType",
   dispersion = "se",
   filter.sc = TRUE,
   title = NULL,

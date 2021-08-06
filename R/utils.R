@@ -23,7 +23,11 @@ getProbMatrix <- function(object, type.data) {
     stop("Provided object is not a DigitalDLSorter object")
   } else if (!any(type.data == c("train", "test"))) {
     stop("'type.data' argument must be 'train' or 'test'")
-  }
+  } else if (is.null(prob.cell.types(object))) {
+    stop("'prob.cell.types' slot is empty")
+  } else if (is.null(prob.cell.types(object, type.data))) {
+    stop(paste("No", type.data, "data in 'prob.cell.types' slot"))
+  } 
   return(prob.cell.types(object, type.data)@prob.matrix)
 }
 
@@ -46,7 +50,7 @@ getProbMatrix <- function(object, type.data) {
 #'   \code{prob.cell.types} slot with \code{plot} slot.
 #' @param type.data Subset of data to show: \code{train} or \code{test}.
 #' @param set Integer determining which of the 6 different subsets is to be
-#'   shown. Note that 1 and 2 follow the same distribution.
+#'   shown.
 #' @param type.plot Character determining which type of visualization is to be
 #'   shown. It can be \code{boxplot}, \code{violinplot}, \code{linesplot} or
 #'   \code{ncelltypes}. See Description for more information.
@@ -59,11 +63,13 @@ getProbMatrix <- function(object, type.data) {
 #'
 #' @examples
 #' lapply(
-#'   1:5, function(x) {
-#'     showProbPlot(DDLSChungComp,
-#'                  type.data = "train",
-#'                  set = x,
-#'                  type.plot = "boxplot")
+#'   X = 1:6, FUN = function(x) {
+#'     showProbPlot(
+#'       DDLSChungComp,
+#'       type.data = "train",
+#'       set = x,
+#'       type.plot = "boxplot"
+#'     )
 #'   }
 #' )
 #' 
@@ -81,9 +87,9 @@ showProbPlot <- function(
   } else if (!any(type.data == c("train", "test"))) {
     stop("'type.data' argument must be 'train' or 'test'")
   } else if (length(object@prob.cell.types[[type.data]]) == 0) {
-    stop("ProbMatrixCellTypes object does not present plots")
+    stop(paste0("ProbMatrixCellTypes object does not have plots (", type.data, " data)"))
   } else if (set < 1 || set > 6) {
-    stop("'set' argument must be a number from 1 to 6")
+    stop("'set' argument must be an integer between 1 and 6")
   } else if (!any(type.plot == c("violinplot", "boxplot", "linesplot", "ncelltypes"))) {
     stop("'type.plot' argument must be one of the next options: 'violinplot', ", 
          "'boxplot', 'linesplot' or 'ncelltypes'")
@@ -117,25 +123,22 @@ showProbPlot <- function(
 #'
 #' @seealso \code{\link{saveRDS}} \code{\link{saveTrainedModelAsH5}}
 #'   
-preparingToSave <- function(object) {
-  if (!is(object, "DigitalDLSorter") || !is(object, "DigitalDLSorterDNN")) {
+preparingToSave <- function(
+  object
+) {
+  if (!is(object, "DigitalDLSorter") && !is(object, "DigitalDLSorterDNN")) {
     stop("Provided object is not a DigitalDLSorter object")
   }
   if (is.null(trained.model(object))) {
-    message("Provided object has not a DigitalDLSorterDNN object. It is not necessary ",
-            "to prepare the object for saving to disk")
-    return(object)
-  } else if (is.null(trained.model(object)@model)) {
-    message("Provided object has not a trained DNN model. It is not necessary ",
-            "to prepare the object for saving to disk")
-    return(object)
+    stop("Provided object has not a DigitalDLSorterDNN object. It is not necessary ",
+            "to prepare this object to save it to disk")
+  } else if (length(trained.model(object)@model) == 0) {
+    stop("Provided object has not a trained DNN model. It is not necessary ",
+            "to prepare the object to save it to disk")
   }
-  if (is(trained.model(object)@model, "list")) return(object)
-  else {
-    trained.model.mod <- .saveModelToJSON(trained.model(object))
-    trained.model(object) <- trained.model.mod
-    return(object)
-  }
+  if (!is(trained.model(object)@model, "list")) 
+    trained.model(object) <- .saveModelToJSON(trained.model(object))
+  return(object)
 }
 
 # core of barplots of deconvolution results
@@ -156,11 +159,11 @@ preparingToSave <- function(object) {
       x = .data[["Var1"]], y = .data[["Proportion"]], fill = .data[["Var2"]]
     )
   ) + geom_bar(stat = "identity", color = color.line) + theme
-  if (!missing(colors)) {
+  if (!missing(colors) && !is.null(colors)) {
     if (length(colors) < length(unique(df.res$Var2)))
-      stop("Number of colors introduced is not enough to the number of cell types")
+      stop("Number of provided colors is not enough for the number of cell types")
   } else {
-    colors <- color.list()
+    colors <- default.colors()
   }
   p <- p + scale_fill_manual(values = colors)
   if (is.null(x.label)) {
@@ -211,37 +214,42 @@ saveTrainedModelAsH5 <- function(
     stop("Provided object is not a DigitalDLSorter object")
   } else if (is.null(trained.model(object))) {
     stop("'trained.model' slot is empty")
-  } else if (is.null(trained.model(object)@model)) {
+  } else if (length(trained.model(object)@model) == 0) {
     stop("There is not a model to save on disk. First, train a model with ",
-         "trainDigitalDLSorterModel function")
+         "'trainDigitalDLSorterModel' function")
   }
   if (file.exists(file.path)) {
     if (overwrite) {
-      message(paste(file.path, "file exists. Since 'overwrite' argument is",
+      message(paste(file.path, "file already exists. Since 'overwrite' argument is",
                     "TRUE, it will be overwritten"))
     } else {
-      stop(paste(file.path, "file exists"))
+      stop(paste(file.path, "file already exists"))
     }
   }
   if (is(trained.model(object)@model, "list")) {
-    warning(paste("Trained model is not a keras object, but a R list with",
-                  "architecture of network and weights. The R object will be",
-                  "compiled and saved as HDF5 file, but the optimizer state",
-                  "will not be saved\n\n"))
+    warning(paste(
+      "Trained model is not a keras object, but a R list with",
+      "architecture of network and weights. The R object will be",
+      "compiled and saved as HDF5 file, but the optimizer state",
+      "will not be saved\n\n"
+    ))
     model <- .loadModelFromJSON(trained.model(object))
     model <- model(model)
   } else {
     model <- trained.model(object)@model
   }
-  tryCatch({
-    save_model_hdf5(object = model,
-                    filepath = file.path,
-                    overwrite = overwrite,
-                    include_optimizer = TRUE)
-  }, error = function(cond) {
-    message(paste("\nProblem during saving", file.path))
-    stop(cond)
-  })
+  tryCatch(
+    expr = {
+      save_model_hdf5(
+        object = model, filepath = file.path,
+        overwrite = overwrite, include_optimizer = TRUE
+      )
+    }, 
+    error = function(cond) {
+      message(paste("\nProblem during saving", file.path))
+      stop(cond)
+    }
+  )
 }
 
 #' Load from HDF5 file a trained DigitalDLSorter Deep Neural Network model
@@ -281,18 +289,21 @@ loadTrainedModelFromH5 <- function(
     if (reset.slot) {
       message("  'reset.slot' is TRUE, 'trained.model' slot will be restart")
     } else {
-      message("  'reset.slot' is FALSE, only 'model' slot of DigitalDLSorterDNN",
+      message("  'reset.slot' is FALSE, just 'model' slot of DigitalDLSorterDNN",
               "object will be overwritten")
     }
   } else {
     slot.exists <- FALSE
   }
-  tryCatch({
-    loaded.model <- load_model_hdf5(filepath = file.path, compile = TRUE)
-  }, error = function(cond) {
-    message(paste("\n", file.path, "file provided is not a valid Keras model:"))
-    stop(cond)
-  })
+  tryCatch(
+    expr = {
+      loaded.model <- load_model_hdf5(filepath = file.path, compile = FALSE)
+    }, 
+    error = function(cond) {
+      message(paste("\n", file.path, "file provided is not a valid Keras model:"))
+      stop(cond)
+    }
+  )
   if (!slot.exists) {
     model <- new(Class = "DigitalDLSorterDNN",
                  model = loaded.model)
@@ -335,136 +346,20 @@ plotTrainingHistory <- function(
   } else if (is.null(trained.model(object))) {
     stop("'trained.model' slot is empty")
   } else if (is.null(trained.model(object)@training.history)) {
-    stop("There is not training history in the provided object")
+    stop("There is no training history in provided object")
   }
   if (!is.null(metrics)) {
     if (!all(metrics %in% names(trained.model(object)@training.history$metrics))) {
-      stop("Some of the given metrics are not present in the provided object")
+      stop("None of the given metrics are in the provided object")
     }
   }
   plot(
     trained.model(object)@training.history,
     metrics = metrics, method = "ggplot2"
-  ) + ggtitle(title)
+  ) + ggtitle(title) + DigitalDLSorterTheme()
 }
 
-
-#' Load data to deconvolute from a tabulated text file
-#'
-#' Load data to deconvolute from a tabulated text file. Accepted formats are tsv
-#' and tsv.gz. You must specify the correct extension.
-#'
-#' @param object \code{\linkS4class{DigitalDLSorter}} object with
-#'   \code{trained.model} slot.
-#' @param file.path File path where data is stored.
-#' @param name.data Name with which the data is stored in
-#'   \code{\linkS4class{DigitalDLSorter}} object. If \code{name.data} is not
-#'   provided, base name of file is used.
-#'
-#' @return \code{\linkS4class{DigitalDLSorter}} object with \code{deconv.data}
-#'   slot with the new bulk-RNAseq samples loaded
-#'
-#' @export
-#'
-#' @seealso \code{\link{trainDigitalDLSorterModel}}
-#'   \code{\link{deconvDigitalDLSorterObj}}
-#'   
-loadDeconvDataFromFile <- function(
-  object,
-  file.path,
-  name.data = NULL
-) {
-  if (!is(object, "DigitalDLSorter")) {
-    stop("Provided object is not of DigitalDLSorter class")
-  }
-  counts <- .readTabFiles(file = file.path)
-  se.object <- SummarizedExperiment::SummarizedExperiment(
-    assays = list(counts = counts),
-    rowData = data.frame(rownames(counts)),
-    colData = data.frame(colnames(counts)),
-  )
-  # generate name for data if is not provided
-  if (is.null(name.data)) {
-    name.data <- tools::file_path_sans_ext(basename(file.path))
-  }
-  # create or not a new list
-  if (is.null(object@deconv.data)) list.data <- list()
-  else list.data <- object@deconv.data
-  # check if name.data exists
-  if (name.data %in% names(list.data)) {
-    stop(paste(name.data, "data already exists in 'deconv.data' slot"))
-  }
-  list.data[[name.data]] <- se.object
-  object@deconv.data <- list.data
-  
-  return(object)
-}
-
-
-## check si la matriz tiene colnames y rownames
-## hacer genérica y que funcione de forma diferente en función de si es
-## SummarizedExperiment o matrix
-
-
-#' Load data to deconvolute from a \code{\linkS4class{SummarizedExperiment}}
-#' object
-#'
-#' Load data in \code{\linkS4class{DigitalDLSorter}} object to deconvolute from
-#' \code{\linkS4class{SummarizedExperiment}} object.
-#'
-#' @param object \code{\linkS4class{DigitalDLSorter}} object with
-#'   \code{trained.model} slot.
-#' @param se.object \code{\linkS4class{SummarizedExperiment}} object.
-#' @param name.data Name with which the data is stored in
-#'   \code{\linkS4class{DigitalDLSorter}} object.
-#'
-#' @return \code{\linkS4class{DigitalDLSorter}} object with \code{deconv.data}
-#'   slot with the new bulk-RNAseq samples loaded
-#'
-#' @export
-#'
-#' @seealso \code{\link{trainDigitalDLSorterModel}}
-#'   \code{\link{deconvDigitalDLSorterObj}}
-#'   
-loadDeconvDataFromSummarizedExperiment <- function(
-  object,
-  se.object,
-  name.data = NULL
-) {
-  if (!is(object, "DigitalDLSorter")) {
-    stop("The provided object is not of DigitalDLSorter class")
-  } else if (!is(se.object, "SummarizedExperiment")) {
-    stop("The provided object is not of SummarizedExperiment class")
-  }
-  if (length(assays(se.object)) == 0) {
-    stop("assay slot of SummarizedExperiment object is empty")
-  } else if (length(assays(se.object)) > 1) {
-    warning(paste("There are more than one assays in SummarizedExperiment object,",
-                  "only the first assay will be considered. Remember that it is", "
-                  recommended that the provided data be of the same nature as",
-                  "the data with which the model has been trained (e.g. TPMs)"))
-  }
-  # generate name for data if is not provided
-  if (is.null(name.data)) {
-    if (is.null(deconv.data(object))) {
-      name.data <- "deconv_1"
-    } else {
-      name.data <- paste0("decon_", length(deconv.data(object)) + 1)
-    }
-  }
-  # create or not a new list
-  if (is.null(deconv.data(object))) list.data <- list()
-  else list.data <- deconv.data(object)
-  # check if name.data exists
-  if (name.data %in% names(list.data)) {
-    stop(paste(name.data, "data already exists in deconv.data slot"))
-  }
-  list.data[[name.data]] <- se.object
-  deconv.data(object) <- list.data
-  
-  return(object)
-}
-
+# custom ggplot2 theme
 DigitalDLSorterTheme <- function() {
   digitalTheme <- ggplot2::theme_bw() + theme(
     plot.title = element_text(face = "bold", hjust = 0.5),

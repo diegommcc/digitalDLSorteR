@@ -114,14 +114,14 @@ generated 'on the fly' during the neural network training. See
 \code{?\link{trainDigitalDLSorterModel}} for details.
 }
 \examples{
-## loading all data in memory
+# loading all data in memory
 DDLSChungComp <- simBulkProfiles(
   DDLSChungComp,
   type.data = "both"
 )
 
 \dontrun{
-## using HDF5 as backend
+# using HDF5 as backend
 DDLSChungComp <- simBulkProfiles(
   DDLSChungComp,
   threads = 2,
@@ -135,7 +135,7 @@ DDLSChungComp <- simBulkProfiles(
 Fischer B, Smith M and Pau, G (2020). rhdf5: R Interface to HDF5.
 R package version 2.34.0.
 
-Pagès H, Hickey wcfP and Lun A (2020). DelayedArray: A unified framework
+Pagès H, Hickey P and Lun A (2020). DelayedArray: A unified framework
 for working transparently with on-disk and in-memory array-like datasets. R
 package version 0.16.0.
 
