@@ -344,7 +344,7 @@ distErrorPlot <- function(
   object,
   error,
   colors,
-  x.by = "CellType",
+  x.by = "pBin",
   facet.by = NULL,
   color.by = "nCellTypes",
   filter.sc = TRUE,
@@ -407,8 +407,10 @@ distErrorPlot <- function(
       stop("'facet.by' provided is not valid. Available options are: 'nCellTypes', ",
            "'CellType' or NULL")
     }
-    plot <- plot + facet_wrap(as.formula(paste("~", facet.by)),
-                              nrow = nrow, ncol = ncol, ...)
+    plot <- plot + facet_wrap(
+      as.formula(paste("~", facet.by)),
+      nrow = nrow, ncol = ncol, ...
+    )
     if (error.label) {
       labels <- .labelsErrorFacet(object, error, facet.by, filter.sc)
       plot <- plot + geom_text(x = pos.x.label, y = pos.y.label,
@@ -448,9 +450,9 @@ distErrorPlot <- function(
     plot <- plot + geom_boxplot(fill = NA, outlier.shape = NA)
   plot <- plot + scale_color_manual(values = colors, name = color.by) +
     ggtitle(title.plot) + xlab(x.by) + ylab(error) +
+    DigitalDLSorterTheme() + 
     guides(colour = guide_legend(override.aes = list(size = 1.5))) +
-    theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1)) + 
-    DigitalDLSorterTheme()
+    theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1)) 
   if (!is.null(ylimit)) plot <- plot + ggplot2::ylim(0, ylimit)
 
   return(plot)

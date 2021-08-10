@@ -1,5 +1,13 @@
 context("Evaluation and metrics")
 
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  stop("digitalLDSorteR package is needed to use pre-trained models and tests")
+}
+# loading data    
+library(digitalDLSorteRdata)
+data(DDLSLi)
+data(DDLSLiComp)
+
 # calculateEvalMetrics
 test_that(
   desc = "calculateEvalMetrics function", 

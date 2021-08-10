@@ -1,5 +1,12 @@
 context("Utils: helper functions")
 
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  stop("digitalLDSorteR package is needed to use pre-trained models and tests")
+}
+# loading data    
+library(digitalDLSorteRdata)
+data(DDLSLi)
+
 # getProbMatrix
 test_that(
   desc = "getProbMatrix function", 

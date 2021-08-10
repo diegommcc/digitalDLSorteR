@@ -4,6 +4,13 @@ context("Test of functions from simBulk.R file")
 ######################## generateBulkCellMatrix function #######################
 ################################################################################
 
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  stop("digitalLDSorteR package is needed to use pre-trained models and tests")
+}
+# loading data    
+library(digitalDLSorteRdata)
+data(DDLSLi)
+
 # set object with all information needed for generating prob matrix
 single.cell.simul(DDLSLi) <- NULL
 DDLSLi <- simSCProfiles(
@@ -149,7 +156,6 @@ test_that(
       ), 
       regexp = "Proportions provided must add up to 100"
     )
-    
     # not add 100
     expect_error(
       generateBulkCellMatrix(
@@ -163,7 +169,6 @@ test_that(
       ), 
       regexp = "Proportions provided must add up to 100"
     )
-    
     # negative numbers
     expect_error(
       generateBulkCellMatrix(
@@ -177,7 +182,6 @@ test_that(
       ), 
       regexp = "Proportions cannot be less than zero"
     )
-    
     # not add 100
     expect_error(
       generateBulkCellMatrix(

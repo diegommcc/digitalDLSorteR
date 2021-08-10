@@ -4,6 +4,13 @@ context("Simulation of single-cell RNA-Seq profiles")
 ####################### estimateZinbwaveParams function ########################
 ################################################################################
 
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  stop("digitalLDSorteR package is needed to use pre-trained models and tests")
+}
+# loading data    
+library(digitalDLSorteRdata)
+data(DDLSLi)
+
 # estimateZinbwaveParams: check if the function detects errors in parameters
 test_that("Wrong parameters in estimateZinbwaveParams", {
   # incorrect object

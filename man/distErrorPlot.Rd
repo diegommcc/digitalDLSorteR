@@ -8,7 +8,7 @@ distErrorPlot(
   object,
   error,
   colors,
-  x.by = "CellType",
+  x.by = "pBin",
   facet.by = NULL,
   color.by = "nCellTypes",
   filter.sc = TRUE,

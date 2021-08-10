@@ -1,0 +1,144 @@
+---
+title: "Performance of a real model: deconvolution of colorectal cancer samples"
+author: "Diego Mañanes"
+date: "`r paste0(Sys.Date())`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+geometry: margin=3cm
+fontsize: 12pt
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Performance of a real model: deconvolution of colorectal cancer samples
+
+In "Building new deconvolution models" was shown the workflow needed to build new deconvolution models. However, it weas done using a 'toy' example in order to avoid long execution times. In this vignette, the performance of the real model trained with the full dataset is shown to provide a guide for new users that want to build new models. 
+
+## Loading and inspection of the model
+
+Model is going to be loaded from _digitalDLSorteRdata_ package. It is a `DigitalDLSorter` object with `prob.cell.matrix` and `trained.model` slots:
+
+```{r}
+library(digitalDLSorteRdata)
+library(digitalDLSorteR)
+data(DDLSLiComp)
+
+DDLSLiComp
+```
+
+As it is shown above, the model was trained 30 epochs with a total of 20,000 pseudo-bulk samples (13,334 for training and 6,666 for test). Now, evaluation metrics are going to be calculated by `calculateEvalMetrics` function.
+
+```{r}
+DDLSLiComp <- calculateEvalMetrics(DDLSLiComp)
+```
+
+And then, evaluation plots can be displayed:
+
+```{r distErr1}
+distErrorPlot(
+  DDLSLiComp,
+  error = "AbsErr",
+  x.by = "CellType",
+  color.by = "CellType", 
+  error.labels = FALSE, 
+  type = "boxplot",
+  size.point = 0.5
+)
+```
+
+
+```{r distErr2}
+distErrorPlot(
+  DDLSLiComp,
+  x.by = "pBin",
+  error = "AbsErr",
+  facet.by = "CellType",
+  color.by = "nCellTypes", 
+  type = "violinplot",
+  size.point = 0.5
+)
+```
+
+
+```{r distErr3}
+distErrorPlot(
+  DDLSLiComp,
+  error = "AbsErr",
+  color.by = "CellType", 
+  facet.by = "nCellTypes",
+  type = "boxplot",
+  size.point = 1
+)s
+```
+
+
+```{r barError}
+barErrorPlot(DDLSLiComp, error = "MAE", by = "CellType")
+```
+
+
+
+
+
+```{r corr1}
+corrExpPredPlot(
+  DDLSLiComp,
+  color.by = "CellType",
+  size.point = 1,
+  corr = "both"
+)
+```
+
+
+```{r corr2}
+corrExpPredPlot(
+  DDLSLiComp,
+  color.by = "CellType",
+  facet.by = "CellType",
+  size.point = 0.5, 
+  filter.sc = F,
+  corr = "both"
+)
+```
+
+```{r corr3}
+corrExpPredPlot(
+  DDLSLiComp,
+  color.by = "CellType",
+  facet.by = "nCellTypes",
+  size.point = 1,
+  corr = "both"
+)
+```
+
+
+
+
+```{r bland1}
+blandAltmanLehPlot(
+  DDLSLiComp, 
+  color.by = "CellType",
+  log.2 = FALSE,
+  size.point = 1,
+  filter.sc = TRUE,
+  density = TRUE,
+)
+```
+
+
+```{r bland2}
+blandAltmanLehPlot(
+  DDLSLiComp, 
+  color.by = "nCellTypes",
+  facet.by = "nCellTypes",
+  log.2 = FALSE,
+  size.point = 1,
+  filter.sc = TRUE,
+  density = TRUE
+)
+```

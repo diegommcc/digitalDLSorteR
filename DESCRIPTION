@@ -19,6 +19,7 @@ Depends:
     R (>= 4.0.0)
 Imports:
     rlang,
+    digitalDLSorteRdata,
     Matrix,
     Matrix.utils,
     methods,
@@ -55,7 +56,6 @@ Roxygen: list(markdown = TRUE)
 Collate: 
     'AllClasses.R'
     'AllGenerics.R'
-    'data.R'
     'digitalDLSorteR.R'
     'dnnModel.R'
     'evalMetrics.R'

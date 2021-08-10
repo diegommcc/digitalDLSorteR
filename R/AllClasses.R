@@ -95,28 +95,31 @@ setMethod(
   }
 )
 
+setValidity(
+  Class = "ProbMatrixCellTypes",
+  method = function(object) {
+    if (all(object@type.data != c("train", "test"))) {
+      return(FALSE)
+    } else {
+      return(TRUE)
+    }
+  }
+)
 
-setValidity(Class = "ProbMatrixCellTypes",
-            method = function(object) {
-              if (all(object@type.data != c("train", "test"))) {
-                return(FALSE)
-              } else {
-                return(TRUE)
-              }
-            })
-
-setMethod(f = "show",
-          signature = "ProbMatrixCellTypes",
-          definition = function(object) {
-            # cat("An object of class", class(object), "\n")
-            if (is.null(object@prob.matrix)) {
-              cat("ProbMatrixCellTypes object empty")
-            } else {
-              cat(paste0("  Cell type matrix for ", object@type.data, "data: "))
-              cat(paste(dim(object@prob.matrix), 
-                        c("bulk samples and", "cell types"), collapse = " "))
-            }
-          })
+setMethod(
+  f = "show",
+  signature = "ProbMatrixCellTypes",
+  definition = function(object) {
+    # cat("An object of class", class(object), "\n")
+    if (is.null(object@prob.matrix)) {
+      cat("ProbMatrixCellTypes object empty")
+    } else {
+      cat(paste0("  Cell type matrix for ", object@type.data, "data: "))
+      cat(paste(dim(object@prob.matrix), 
+                c("bulk samples and", "cell types"), collapse = " "))
+    }
+  }
+)
 
 ################################################################################
 ######################### DigitalDLSorterDNN class #############################

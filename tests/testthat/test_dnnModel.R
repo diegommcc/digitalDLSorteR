@@ -6,6 +6,15 @@ tensorflow::tf$compat$v1$disable_eager_execution()
 ################################################################################
 ###################### trainDigitalDLSorterModel function ######################
 ################################################################################
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  stop("digitalLDSorteR package is needed to use pre-trained models and tests")
+}
+# loading data    
+library(digitalDLSorteRdata)
+data(DDLSLi)
+data(breast.chung.generic)
+data(breast.chung.specific)
+data(TCGA.breast.small)
 
 DDLSLi <- simSCProfiles(
   object = DDLSLi,
@@ -554,18 +563,18 @@ test_that(
         model = "no.existent.model",
         verbose = FALSE
       ), 
-      regexp = "Model provided does not exist"
+      regexp = "'model' is not an object of DigitalDLSorterDNN class"
     )
     # generate results
     resultsBreastGen <- deconvDigitalDLSorter(
       data = TCGA.breast.small,
-      model = "breast.chung.generic",
+      model = breast.chung.generic,
       verbose = FALSE
     )
     expect_true(ncol(resultsBreastGen) == 7)
     resultsBreastSpe <- deconvDigitalDLSorter(
       data = TCGA.breast.small,
-      model = "breast.chung.specific",
+      model = breast.chung.specific,
       verbose = FALSE
     )
     expect_true(ncol(resultsBreastGen) == 7)
@@ -575,7 +584,7 @@ test_that(
     expect_error(
       deconvDigitalDLSorter(
         data = TCGA.breast.small,
-        model = "breast.chung.specific",
+        model = breast.chung.specific,
         simplify.majority = list(c("Macrophage", "Monocyte")),
         simplify.set = list(
           Mcs = c("Mc", "M"), 
@@ -587,7 +596,7 @@ test_that(
     # simplify.set
     resBreastSimSet <- deconvDigitalDLSorter(
       data = TCGA.breast.small,
-      model = "breast.chung.specific",
+      model = breast.chung.specific,
       simplify.set = list(
         Mcs = c("Monocyte", "Macrophage"), 
         Cancer = c("ER+", "HER2+", "ER+/HER2+", "TNBC")
@@ -599,7 +608,7 @@ test_that(
     # simplify.majority
     resBreastSimMaj <- deconvDigitalDLSorter(
       data = TCGA.breast.small,
-      model = "breast.chung.specific",
+      model = breast.chung.specific,
       simplify.majority = list(c("Macrophage", "Monocyte")),
       verbose = FALSE
     )
@@ -719,7 +728,7 @@ test_that(
   {
     resultsBreastGen <- deconvDigitalDLSorter(
       data = TCGA.breast.small,
-      model = "breast.chung.generic",
+      model = breast.chung.generic,
       verbose = FALSE
     )
     # function does not need name.data argument with matrix/data.frame

@@ -872,91 +872,90 @@ trainDigitalDLSorterModel <- function(
 ##################### Deconvolution of new bulk samples ########################
 ################################################################################
 
-#' Deconvolute bulk RNAseq samples using a pre-trained DigitalDLSorter model
+#'Deconvolute bulk RNAseq samples using a pre-trained DigitalDLSorter model
 #'
-#' Deconvolute bulk gene expression samples (bulk RNA-Seq) to enumerate and
-#' quantify the proportion of cell types present in a bulk sample using Deep
-#' Neural Network models. This function is intended for users who want to use
-#' pre-trained models integrated in the package. So far, the available models
-#' allow to deconvolute the immune infiltration of breast cancer (Chung et al.,
-#' 2017) and the immune infiltration of colorectal cancer (Li et al., 2017).
-#' Regarding the former, there are two available models at two different levels
-#' of specificity: specific cell types (\code{'breast.chung.specific'}) and
-#' generic cell types (\code{'breast.chung.generic'}). See
-#' \code{\link{breast.chung.generic}}, \code{\link{breast.chung.specific}}, and
-#' \code{\link{colorectal.li}} documentation for details.
+#'Deconvolute bulk gene expression samples (bulk RNA-Seq) to enumerate and
+#'quantify the proportion of cell types present in a bulk sample using Deep
+#'Neural Network models. This function is intended for users who want to use
+#'pre-trained models integrated in the package. So far, the available models
+#'allow to deconvolute the immune infiltration of breast cancer (Chung et al.,
+#'2017) and the immune infiltration of colorectal cancer (Li et al., 2017).
+#'Regarding the former, there are two available models at two different levels
+#'of specificity: specific cell types (\code{'breast.chung.specific'}) and
+#'generic cell types (\code{'breast.chung.generic'}). See
+#'\code{\link{breast.chung.generic}}, \code{\link{breast.chung.specific}}, and
+#'\code{\link{colorectal.li}} documentation for details.
 #'
-#' This function is intended for users who want to use \pkg{digitalDLSorteR} for
-#' deconvoluting their bulk RNA-Seq samples using pre-trained models. For users
-#' who want to build their own models from scRNA-seq, see
-#' \code{?\link{loadSCProfiles}} and \code{?\link{deconvDigitalDLSorterObj}}.
+#'This function is intended for users who want to use \pkg{digitalDLSorteR} for
+#'deconvoluting their bulk RNA-Seq samples using pre-trained models. For users
+#'who want to build their own models from scRNA-seq, see
+#'\code{?\link{loadSCProfiles}} and \code{?\link{deconvDigitalDLSorterObj}}.
 #'
-#' @param data Matrix or data frame with bulk-RNAseq samples. Rows must be genes
-#'   in SYMBOL notation and columns must be samples.
-#' @param model Pre-trained DNN model to use to deconvolve \code{data}. Up to
-#'   now, the available models are aimed at deconvolving samples of breast
-#'   cancer (\code{\link{breast.chung.generic}} and
-#'   \code{\link{breast.chung.specific}}) and colorectal cancer
-#'   \code{\link{colorectal.li}}.
-#' @param batch.size Number of samples loaded in RAM memory each time during the
-#'   deconvolution process. If unspecified, \code{batch.size} will set to 128.
-#' @param normalize Normalize data before deconvolution (\code{TRUE} by
-#'   default).
-#' @param simplify.set List specifying which cell types should be compressed
-#'   into a new label whose name will be the list name item. See examples for
-#'   details.
-#' @param simplify.majority List specifying which cell types should be
-#'   compressed into the cell type with greater proportions in each sample.
-#'   Unlike \code{simplify.set}, it allows to maintain the complexity of the
-#'   results while compressing the information, since it is not created a new
-#'   label.
-#' @param verbose Show informative messages during the execution.
+#'@param data Matrix or data frame with bulk-RNAseq samples. Rows must be genes
+#'  in SYMBOL notation and columns must be samples.
+#'@param model Pre-trained DNN model to use to deconvolve \code{data}. Up to
+#'  now, the available models are aimed at deconvolving samples of breast cancer
+#'  (\code{\link{breast.chung.generic}} and \code{\link{breast.chung.specific}})
+#'  and colorectal cancer \code{\link{colorectal.li}}. These pre-trained models
+#'  are stored in \pkg{digitalDLSorteRdata} package, so it must be installed
+#'  together with \pkg{digitalDLSorteR}.
+#'@param batch.size Number of samples loaded in RAM memory each time during the
+#'  deconvolution process. If unspecified, \code{batch.size} will set to 128.
+#'@param normalize Normalize data before deconvolution (\code{TRUE} by default).
+#'@param simplify.set List specifying which cell types should be compressed into
+#'  a new label whose name will be the list name item. See examples for details.
+#'@param simplify.majority List specifying which cell types should be compressed
+#'  into the cell type with greater proportions in each sample. Unlike
+#'  \code{simplify.set}, it allows to maintain the complexity of the results
+#'  while compressing the information, since it is not created a new label.
+#'@param verbose Show informative messages during the execution.
 #'
-#' @return A data frame with samples (\eqn{i}) as rows and cell types (\eqn{j})
-#'   as columns. Each entry represents the predicted proportion of \eqn{j} cell
-#'   type in \eqn{i} sample.
+#'@return A data frame with samples (\eqn{i}) as rows and cell types (\eqn{j})
+#'  as columns. Each entry represents the predicted proportion of \eqn{j} cell
+#'  type in \eqn{i} sample.
 #'
-#' @export
+#'@export
 #'
-#' @seealso \code{\link{deconvDigitalDLSorterObj}}
+#'@seealso \code{\link{deconvDigitalDLSorterObj}}
 #'
 #' @examples
 #' # to ensure compatibility
 #' tensorflow::tf$compat$v1$disable_eager_execution()
-#' results1 <- deconvDigitalDLSorter(
-#'   data = TCGA.breast.small,
-#'   model = "breast.chung.specific",
-#'   normalize = TRUE
-#' )
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(breast.chung.specific)
+#'   results1 <- deconvDigitalDLSorter(
+#'     data = TCGA.breast.small,
+#'     model = breast.chung.specific,
+#'     normalize = TRUE
+#'   )
+#'   # simplify arguments
+#'   simplify <- list(Tumor = c("ER+", "HER2+", "ER+/HER2+", "TNBC"),
+#'                    Bcells = c("Bmem", "BGC"))
+#'   # in this case names from list will be the new labels
+#'   results2 <- deconvDigitalDLSorter(
+#'     TCGA.breast.small,
+#'     model = breast.chung.specific,
+#'     normalize = TRUE,
+#'     simplify.set = simplify
+#'   )
+#'   # in this case the cell type with greatest proportion will be the new label
+#'   # the rest of proportion cell types will be added to the greatest
+#'   results3 <- deconvDigitalDLSorter(
+#'     TCGA.breast.small,
+#'     model = "breast.chung.specific",
+#'     normalize = TRUE,
+#'     simplify.majority = simplify)
+#' }
 #'
-#' # simplify arguments
-#' simplify <- list(Tumor = c("ER+", "HER2+", "ER+/HER2+", "TNBC"),
-#'                  Bcells = c("Bmem", "BGC"))
-#'
-#' # in this case names from list will be the new labels
-#' results2 <- deconvDigitalDLSorter(
-#'   TCGA.breast.small,
-#'   model = "breast.chung.specific",
-#'   normalize = TRUE,
-#'   simplify.set = simplify
-#' )
-#'
-#' # in this case the cell type with greatest proportion will be the new label
-#' # the rest of proportion cell types will be added to the greatest
-#' results3 <- deconvDigitalDLSorter(
-#'   TCGA.breast.small,
-#'   model = "breast.chung.specific",
-#'   normalize = TRUE,
-#'   simplify.majority = simplify)
-#'
-#' @references Chung, W., Eum, H. H., Lee, H. O., Lee, K. M., Lee, H. B., Kim,
-#'   K. T., et al. (2017). Single-cell RNA-seq enables comprehensive tumour and
-#'   immune cell profiling in primary breast cancer. Nat. Commun. 8 (1), 15081.
-#'   doi: \href{https://doi.org/10.1038/ncomms15081}{10.1038/ncomms15081}.
-#'   
+#'@references Chung, W., Eum, H. H., Lee, H. O., Lee, K. M., Lee, H. B., Kim, K.
+#'  T., et al. (2017). Single-cell RNA-seq enables comprehensive tumour and
+#'  immune cell profiling in primary breast cancer. Nat. Commun. 8 (1), 15081.
+#'  doi: \href{https://doi.org/10.1038/ncomms15081}{10.1038/ncomms15081}.
+#'  
 deconvDigitalDLSorter <- function(
   data,
-  model = "breast.chung.generic",
+  model = NULL,
   batch.size = 128,
   normalize = TRUE,
   simplify.set = NULL,
@@ -966,17 +965,17 @@ deconvDigitalDLSorter <- function(
   if (!is.matrix(data) && !is.data.frame(data)) {
     stop("'data' must be a matrix or data.frame")
   }
-  if (model == "breast.chung.specific") {
-    model.dnn <- digitalDLSorteR::breast.chung.specific
-  } else if (model == "breast.chung.generic") {
-    model.dnn <- digitalDLSorteR::breast.chung.generic
-  } else if (model == "colorectal.li") {
-    model.dnn <- digitalDLSorteR::colorectal.li
+  if (is.null(model)) {
+    stop("Model cannot be NULL. Please see available models in ", 
+         "digitalDLSorteRdata package and ?deconvDigitalDLSorter")
   } else {
-    stop("Model provided does not exist. See documentation to see available models")
+    if (!is(object = model, class2 = "DigitalDLSorterDNN")) {
+      stop("'model' is not an object of DigitalDLSorterDNN class. Please ",
+           "see available models in digitalDLSorteRdata package and ?deconvDigitalDLSorter")
+    } 
+    model.dnn <- model
   }
   model.dnn <- .loadModelFromJSON(model.dnn)
-
   # check data --> check if there are duplicated genes and aggregate
   results <- .deconvCore(
     deconv.counts = data,

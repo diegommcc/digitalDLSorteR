@@ -1,0 +1,491 @@
+---
+title: "Building new deconvolution models"
+author: "Diego Mañanes"
+date: "`r paste0(Sys.Date())`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+geometry: margin=3cm
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Building new deconvolution models from scRNA-Seq data
+
+_digitalDLSorteR_ implements all the tools needed to build new context-specific deconvolution models from scRNA-Seq data previously characterized. The idea is to generate different specific models for each environment since cells in each environment present particular transcriptional features. From our point of view, it opens the door for more accurate and specific models instead of using generic transcriptional profiles as reference as in case of peripheral blood mononuclear cell (PBMC) to estimate proportions of tumor-infiltrating lymphocytes in cancer environments. In this vignette, this workflow is going to be shown using a 'toy' example with data from _digitalDLSorteRdata_ package.
+
+**Note:** this workflow is more computationally expensive than using pre-trained models, so we recommend building new models if you want to deconvolve samples from a not available model or in case you think your scRNA-Seq data provides a better picture of this environment than those already used. In any case, _digitalDLSorteR_ provides with a set of functionalities that makes this process easier and computationally cheaper in terms of RAM usage: batch processing of data and the use of `r Biocpkg("HDF5Array")` and `r Biocpkg("DelayedArray")` packages. Moreover, all the steps are centralized in `DigitalDLSorter` S4-class, the core of _digitalDLSorteR_, in order to provide a good user-experience and keep ordered all the generated information.
+
+The main steps needed to build new models are as follows, although you can see a visual summary in Figure 1.
+
+**Figure 1**
+
+**Like a table of contents**
+
+1. Loading data in a `DigitalDLSOrter` object
+2. Oversampling of single-cell profiles (optional)
+  1. Estimating of ZINB-WaVE model parameters to simulate new single-cell profiles
+  2. Simulating new single-cell profiles from estimated parameters
+4. Generating cell composition matrix of pseudo-bulk RNA-Seq samples
+5. Simulating pseudo-bulk RNA-Seq samples with known cell composition
+6. Training and evaluation of Deep Neural Network
+7. Evaluation of deconvolution model on test data: visualization of results
+  1. `distErrorPlot` and `barErrorPlot`
+  2. `corrExpPredPlot`
+  3. `blandAltmanLehPlot`
+8. Loading and deconvolution of new bulk RNA-Seq samples
+9. Saving `DigitalDLSorter` object and trained models
+
+### Loading data in a `DigitalDLSorter` object
+
+First, we have to load scRNA-Seq data into a `DigitalDLSorter` object. This S4 class contains all slots needed to store the different data generated during the process. The information that must be provided consists of three elements: 
+
+* Matrix counts: a matrix with genes as rows and cells as columns.
+* Cells metadata: a table with annotations (columns) for each cell (rows). The information expected in this dataframe are metadata that could be used as covariates in the following steps (gender, type of sample...), one column with the ID used for each cell and one column with the corresponding cell types.
+* Genes metadata with annotations (columns) for each gene (rows). As cells metadata, this dataframe must contain the notation used for each gene in counts matrix and others covariates such as gene length, GC content, etc. 
+
+This information can be provided from a pre-loaded `SingleCellExperiment` object or from files stored on disk. Regarding the latter, tsv, tsv-gz and sparse matrices (mtx) formats are accepted. Finally, data will be stored as a `SingleCellExperiment` object in `single.cell.real` slot of the new `DigitalDLSorter` object. To do so, `loadSCProfiles` function is used as follows: 
+
+```{r}
+## loading packages
+library(digitalDLSorteR)
+library(digitalDLSorteRdata)
+## loading data
+data(DDLSLi)
+## take SingleCellExperiment object
+sceObj <- single.cell.real(DDLSLi)
+sceObj
+```
+
+```{r loadData}
+DDLSToy <- loadSCProfiles(
+  single.cell = sceObj, # SingleCellExperiment object
+  cell.ID.column = "Cell_ID",
+  gene.ID.column = "external_gene_name",
+  min.cells = 0,
+  min.counts = 0,
+  project = "ToyExampleCRC"
+)
+DDLSToy
+```
+
+In this case, we are loading single-cell profiles from a `SingleCellExperiment` object, but it could be done using directly files as follows: 
+
+```{r loadFromFile, eval=FALSE}
+## this code will not be run
+toyFiles <- c("countsMatrix.tsv.gz", 
+                "cellsMetadata.tsv.gz",
+                "genesMetadata.tsv.gz")
+
+DDLSToy <- loadSCProfiles(
+  single.cell = toyFiles, cell.ID.column = "Cell_ID",
+  gene.ID.column = "external_gene_name",
+  min.cells = 0, min.counts = 0,
+  project = "ToyExampleCRC"
+)
+```
+
+In documentation, you can see all the parameters that `loadSCProfiles` offers to pre-process loaded data, such as `min.counts` and `min.cells`, `fun.aggregate`, etc. Moreover, in case of using very big scRNA-Seq datasets as input, _digitalDLSorteR_ allows to use HDF5 files as a back-end to handle with data that don't fit in RAM by using `r Biocpkg("HDF5Array")` and `r Biocpkg("DelayedArray")` packages. We only recommend its use in real cases of too big datasets. HDF5 files, although useful to deal with RAM problems, make processes much slower. As an example, the following chunk would create an HDF5 file where these single-cell data would be stored, allowing to work on them without loading all in RAM. See documentation for more details.
+
+```{r, eval = FALSE}
+DDLSToy <- loadSCProfiles(
+  single.cell = toyFiles, cell.ID.column = "Cell_ID",
+  gene.ID.column = "external_gene_name",
+  min.cells = 0, min.counts = 0,
+  file.backend = "singlecell_data.h5",
+  project = "ToyExampleCRC"
+)
+```
+
+
+### Oversampling of single-cell profiles
+
+_digitalDLSorteR_ provides with the possibility of simulating new single-cell profiles from the real ones in order to increase the signal and variability in small datasets or under-represented cell types. This step is optional but recommended in case of having one of the two previous situations. To do so, `estimateZinbwaveParams` and `simSCProfiles` functions are used. 
+
+#### Estimating of ZINB-WaVE model parameters to simulate new single-cell profiles
+
+The first step is to estimate a set of parameters that fits the real single-cell data in order to simulate realistic new single-cell profiles. We selected the ZINB-WaVE framework (Risso et al., 2018) that estimates the parameters of a ZINB (zero-inflated negative binomial) distribution. It was chosen because of its ability to accommodate not only the variability within a particular cell type but also the variability within the whole experiment. 
+
+This process is performed by `estimateZinbwaveParams` function, that makes use of the `r Biocpkg("splatter")` package, a wrapper of the original `r Biocpkg("zinbwave")` package. You must specify the column that corresponds with cell types in cells metadata and you can be added other cell/gene covariates based on your experimental design such as patient, gender or gene length. This process may take a few minutes to run because it is not very optimized in the original packages, so be patient. For this vignette, ZINB-WaVE model has been pre-loaded from _digitalDLSorteRdata_ package in order to avoid execution times. In any case, you can adjust the number of used threads in some steps 
+during the estimation with `threads` argument by `r Biocpkg("BiocParallel")` package.
+
+```{r, eval = FALSE}
+## this code is not going to be run
+DDLSToy <- estimateZinbwaveParams(
+  object = DDLSToy,
+  cell.ID.column = "Cell_ID",
+  gene.ID.column = "external_gene_name",
+  cell.type.column = "Cell_Type",
+  cell.cov.columns = "Patient",
+  gene.cov.columns = "gene_length",
+  threads = 1,
+  verbose = TRUE
+)
+```
+
+```{r, echo = FALSE}
+DDLSToy <- DDLSLi
+project(DDLSToy) <- "ToyExampleCRC"
+```
+
+```{r}
+DDLSToy
+```
+
+In case of big datasets with some underrepresented cell types, `subset.cells` allows to make a subset of cells in order to make the estimation faster. 
+
+#### Simulating new single-cell profiles from estimated parameters
+
+Once ZINB-WaVE parameters are estimated, `simSCProfiles` function uses them to simulate new single-cell profiles based on the real ones. It is done by randomly sampling from a negative binomial distribution with estimated ZINB parameters ($\mu$ and $\theta$) and introducing dropouts by sampling from a binomial distribution with estimated $\pi$ probability. You must specify the number of cell profiles per cell type that will be generated (`n.cells`). For example, if your data set is composed of 10 cell types and `n.cells` is equal to 10, the number of simulated profiles will be 100. 
+
+```{r}
+DDLSToy <- simSCProfiles(
+  object = DDLSToy,
+  cell.ID.column = "Cell_ID",
+  cell.type.column = "Cell_Type",
+  n.cells = 10,
+  suffix.names = "_Simul",
+  verbose = TRUE
+)
+```
+
+These simulated single-cell profiles are stored in `single.cell.simul` slot to be used to simulate new bulk RNA-Seq profiles with known cell composition.
+
+
+```{r}
+DDLSToy
+```
+
+Here, it is also possible to store the new simulated single-cell profiles in a HDF5 file. Indeed, they can be simulated by batch, avoiding to load all data in RAM and then write them on disk. The code would be as follows: 
+
+```{r, eval = FALSE}
+DDLSToy <- simSCProfiles(
+  object = DDLSToy,
+  cell.ID.column = "Cell_ID",
+  cell.type.column = "Cell_Type",
+  n.cells = 10,
+  suffix.names = "_Simul",
+  file.backend = "simulated_singlecell_data.h5",
+  block.processing = TRUE,
+  block.size = 1000, # number of single-cell profiles simulated per batch
+  verbose = TRUE
+)
+```
+
+
+
+### Generating cell composition matrix of pseudo-bulk RNA-Seq samples
+
+To simulate pseudo-bulk samples with known cell composition, the generation of a cell composition matrix which determines the proportion of each cell type in each sample is needed. It is carried out by `generateBulkCellMatrix` function that stores these results in `prob.cell.types` slot as a `ProbMatrixCellTypes` object.
+
+This process starts with single-cell profiles being split in train and test data (see `train.freq.cells` argument). Each subset will be used to generate each subset of bulk samples (training and test) in order to avoid any distortion of results during the model's evaluation. Then, proportions are generated by six different methods in order to avoid biases during training due to the cell composition of simulated bulk RNA-Seq samples:
+
+1. Cell proportions are randomly sampled from a truncated uniform distribution with predefined limits according to _a priori_ knowledge of the abundance of each cell type (see `prob.design` argument). This information can be inferred from the single cell analysis it-self or from the literature.
+2. A second set is generated by randomly permuting cell type labels from a distribution generated by the previous method.
+3. Cell proportions are randomly sampled as by method 1 without replacement.
+4. Using the last method to generate proportions, cell types labels are randomly sampled.
+5. Cell proportions are randomly sampled from a Dirichlet distribution.
+6. Pseudo-bulk RNA-Seq samples composed of the same cell type are generated in order to provide 'pure' pseudo-bulk samples.
+
+Te proportion of each type of sample in the total of samples can be modified by `proportion.train` and `proportion.test` arguments. Moreover, `prob.zero` controls the number of zeros (number of cell types which will be zero in each sample) in each method. This parameter was introduced because of otherwise cell compositions that are strongly biased toward a certain cell type or are missing specific cell types would be rare in training subset. To account for this, `prob.zero` generate sparse compositions depending on the probability introduced for each method. 
+
+Finally, another important parameter is `n.cells` that determines the number of cells that will composed each pseudo-bulk sample, and `num.bulk.samples`, which defines the total number f pseudo-bulk samples generated (training + test subsets). The code would be as follows:
+
+```{r}
+## prior knowledge: for prob.design argument
+probMatrix <- data.frame(
+  Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M", 
+                "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
+  from = c(rep(1, 8), 1, 30),
+  to = c(rep(15, 8), 50, 70)
+)
+
+DDLSToy <- generateBulkCellMatrix(
+  object = DDLSToy,
+  cell.ID.column = "Cell_ID",
+  cell.type.column = "Cell_Type",
+  prob.design = probMatrix,
+  num.bulk.samples = 250,
+  n.cells = 100,
+  verbose = TRUE
+)
+```
+
+```{r}
+DDLSToy
+```
+
+Remember that it is a 'toy' example. In real circumstances, depending on the number of single-cell profiles used at the begining and computational resources, about 30.000 samples would be recommended.
+
+You can inspect the cell composition matrix created in this step:
+
+```{r}
+head(getProbMatrix(DDLSToy, type.data = "train"))
+tail(getProbMatrix(DDLSToy, type.data = "train"))
+```
+
+Moreover, generated distributions can be graphically represented using `showProbPlot` function:
+
+```{r showProbPlot}
+lapply(
+  1:6, function(x) {
+    showProbPlot(
+      DDLSToy, type.data = "train", set = x, type.plot = "boxplot"
+    )
+  }
+)
+```
+
+### Simulating pseudo-bulk RNA-Seq samples with known cell composition
+
+Now, simulated cell proportions are used to simulate the pseudo-bulk samples. They are simulated by aggregation single-cell profiles from each cell type depending on these proportions. The idea is to pretend a real bulk RNA-Seq data where gene expression levels from each cell are aggregated into one sample. Hence, this matrix expression will be generated according the Equation \#eq:bulk:
+
+\begin{equation}
+  T_{ij} = \sum_{k = 1}^{K} \sum_{z = 1}^Z C_{izk} 
+  (\#eq:bulk)
+\end{equation}
+
+\begin{equation*}
+  \textrm{such as} \left\{
+\begin{array}{l}
+  i = 1 \ldots M;\\
+  j = 1 \ldots N \\
+  Z = 1 \ldots 100 \cdot P_{kj} \\
+  \sum_{k = 1}^K Z \cdot P_{kj} = 100
+\end{array}
+\right.  
+\end{equation*}
+
+where $T_{ij}$ is the expression level of $i$ gene in $j$ bulk sample; $C_{izk}$ is the expression level of $i$ gene in $z$ cell in $j$ bulk sample; and $P_{kj}$ is the proportion of $k$ cell type in $j$ bulk sample (the cell composition matrix generated in the previous step). $Z$ represents the number of cells that will compose the proportion of $k$ cell type in $j$ bulk sample and corresponds to `num.cells` parameter from `generateBulkCellMatrix` function. These cells are randomly sampled based on their cell type. This step is performed by `simBulkProfiles`:
+
+```{r simBulkProfiles}
+DDLSToy <- simBulkProfiles(object = DDLSToy, type.data = "both")
+```
+
+This samples are stored as an `SummarizedExperiment` object in `bulk.simul` slot where can be inspected at any moment:
+
+```{r}
+DDLSToy
+```
+
+
+Again, these pseudo-bulk samples can be stored as HDF5 file. This is the most recommended step where using this functionality, as this is the most computationally expensive part of _digitalDLSorteR_ and these samples only will be accessed during training and evaluation of the DNN model. As `simSCProfiles`, samples can be simulated by batch as follows: 
+
+```{r, eval = FALSE}
+DDLSToy <- simBulkProfiles(
+  object = DDLSToy, 
+  type.data = "both", 
+  file.backend = "pseudobulk_samples.h5",
+  block.processing = TRUE,
+  block.size = 1000
+)
+```
+
+
+### Training and evaluation of Deep Neural Network
+
+Once pseudo-bulk samples are generated, the DNN model can be trained and evaluated. `trainDigitalDLSorterModel` is the function in charge of both steps and uses `r CRANpkg("keras")` with `r CRANpkg("tensorflow")` as back-end. If you want more information about `r CRANpkg("keras")` or experiment any issue, please see "Keras/TensorFlow installation and configuration" vignette.
+
+Regarding the architecture and parameters of the model, `trainDigitalDLSorterModel` implements two hidden layers with 200 neurons each by default, although any of these parameters can be changed through `trainDigitalDLSorterModel` parameters. Moreover, for a more customized model, it is possible to provide a pre-built model in `custom.model` parameter. See documentation for more details. 
+
+The code with default parameters is as follows: 
+
+```{r}
+DDLSToy <- trainDigitalDLSorterModel(object = DDLSToy)
+```
+
+At the end, `DDLSToy` contains in `trained.model` slot a `DigitalDLSorterDNN` object with all the information associated with the model: a `keras.engine.sequential.Sequential` object with the trained model, history of metrics and loss function during training, prediction results on test data and final metrics on test data.
+
+```{r}
+DDLSToy
+```
+
+Since this is a 'toy' example, results are not very accurate. To see a real example of a trained model, see "Real example: deconvolution of colorectal cancer samples" vignette.
+
+### Evaluation of deconvolution model on test data: visualization of results
+
+Although metrics from prediction results on test data are informative about the performance of the model, a more exhaustive analysis must be done. For this task, _digitalDLSorteR_ offers a set of visualization functions to represent a variety of error metrics in different ways.
+
+First, `calculateEvalMetrics` is needed in order to calculate error metrics that will be represented. By default, absolute error (`AbsErr`), proportional absolute error (`ppAbsErr`), squared error (`SqrErr`) and proportional squared error (`ppSqrErr`) are calculated for each sample from test data. Furthermore, all of them are aggregated using their average values by three criteria: each cell type (`CellType`), proportions bins of 0.1 (`pBin`) and number of different cell types (`nCellTypes`).
+
+```{r}
+DDLSToy <- calculateEvalMetrics(object = DDLSToy)
+```
+
+Then, results can be ploted using the following functions.
+
+#### `distErrorPlot` and `barErrorPlot`: error distribution
+
+`distErrorPlot` function allows to represent the error distribution in different ways. Moreover, it allows to split charts in different panels representing how errors are distributed by a determined variable. The variables available are cell types (`CellType`) and number of cell types present in samples (`nCellTypes`). In the following example, we are going to represent the overall errors by cell types.
+
+```{r distErr1}
+distErrorPlot(
+  DDLSToy,
+  error = "AbsErr",
+  x.by = "CellType",
+  color.by = "CellType", 
+  error.labels = FALSE, 
+  type = "boxplot",
+  size.point = 1
+)
+```
+
+Now, if you want to know if there are some bias towards a specific cell type:
+
+```{r distErr2}
+distErrorPlot(
+  DDLSToy,
+  error = "AbsErr",
+  facet.by = "CellType",
+  color.by = "nCellTypes", 
+  error.labels = TRUE, 
+  type = "violinplot",
+  size.point = 1
+)
+```
+
+It is also possible to represent errors by number of different cell types in samples: 
+
+```{r distErr3}
+distErrorPlot(
+  DDLSToy,
+  error = "AbsErr",
+  color.by = "CellType", 
+  facet.by = "nCellTypes",
+  type = "boxplot",
+  size.point = 1
+)
+```
+
+Finally, with `barErrorPlot` the mean error values with their corresponding dispersion ranges can be represented:
+
+```{r barError}
+barErrorPlot(DDLSToy, error = "MAE", by = "CellType")
+```
+
+
+#### `corrExpPredPlot`: correlation plots between predicted and expected proportions
+
+Ideally, the model should provide predictions that fit linearly to the real proportions. Thus, you can generate correlations plots in order to evaluate how well the predictions fit the actual proportions. By default, Pearson's coefficient correlation ($R$) and concordance correlation coefficient (CCC) are shown as annotations in plots. The latter is a more realistic measure as it decreases as the points move away from the identity.
+
+
+```{r corr1}
+corrExpPredPlot(
+  DDLSToy,
+  color.by = "CellType",
+  size.point = 1,
+  corr = "both"
+)
+```
+
+As in the previous case, charts can be split according to different variables. Now, we are going to split results by `CellType` and by `nCellTypes`:
+
+```{r corr2}
+corrExpPredPlot(
+  DDLSToy,
+  color.by = "CellType",
+  facet.by = "CellType",
+  size.point = 1, 
+  filter.sc = F,
+  corr = "both"
+)
+```
+
+```{r corr3}
+corrExpPredPlot(
+  DDLSToy,
+  color.by = "CellType",
+  facet.by = "nCellTypes",
+  size.point = 1,
+  corr = "both"
+)
+```
+
+
+#### `blandAltmanLehPlot`: Bland-Altman agreement plots
+
+`blandAltmanLehPlot` allows to display Bland-Altman agreement plots. This is a kind of graphic method to compare the level of agreement between two different sets of values. The differences between predictions and actual proportions are plotted against the averages of this two values. The central dashed line represents the mean different, while the two red dashed lines are the limits of agreement, which are defined as the mean difference plus and minus 1.96 times the standard deviation of the differences. 95% of the differences are expected to fall between these two limits, so the wider margins, the worse performance. It is also possible show it in a $log_2$ space.
+
+```{r bland1}
+blandAltmanLehPlot(
+  DDLSToy, 
+  color.by = "CellType",
+  log.2 = FALSE,
+  size.point = 1,
+  filter.sc = TRUE,
+  density = TRUE,
+)
+```
+
+Moreover, this function has the same behavior as the previous ones:
+
+```{r bland2}
+blandAltmanLehPlot(
+  DDLSToy, 
+  color.by = "nCellTypes",
+  facet.by = "nCellTypes",
+  log.2 = FALSE,
+  size.point = 1,
+  filter.sc = TRUE,
+  density = TRUE,
+)
+```
+
+
+### Loading new bulk RNA-Seq samples to deconvolve them
+
+Once the model has been evaluated and trained model is located in `DigitalDLSorter` object, new bulk RNA-seq data into the object can be loaded in order to deconvolve them:
+
+```{r deconvolveNewBulk}
+library(SummarizedExperiment)
+se.TCGA <- SummarizedExperiment(assay = list(counts = TCGA.breast.small))
+
+DDLSToy <- loadDeconvData(
+  object = DDLSToy,
+  se.object = se.TCGA, 
+  name.data = "TCGA.breast"
+)
+```
+
+Then, with `deconvDigitalDLSorterObj` function, these new samples can be deconvolved into the cell types considered by the model and the predicted proportions can e represented by `barPlotCellTypes` function. The cell composition matrix is stored in `deconv.results` slot.
+
+```{r}
+DDLSToy <- deconvDigitalDLSorterObj(
+  object = DDLSToy, 
+  name.data = "TCGA.breast",
+  verbose = FALSE
+)
+barPlotCellTypes(DDLSToy, name.data = "TCGA.breast", rm.x.text = TRUE)
+```
+
+
+### Saving `DigitalDLSorter` object and trained models
+
+_digitalDLSorteR_ provides different ways to save models on-disk and to recover them into the `DigitalDLSorter`. First, you can save `DigitalDLSorter` objects as RDS and RDA file. In the case of RDS files, due to this type of files only accepts native R objects, they are not able to store complex data structures as `r CRANpkg("keras")` Python objects (`keras.engine.sequential.Sequential` class). In order to make it possible, _digitalDLSorteR_ implements a `saveRDS` generic function which converts keras model object into a list with the architecture of the network and the weights after training. These two pieces of information are the minimum necessary part to perform new predictions. When the model is going to be used, it is compiled back to a keras object. 
+
+```{r saveRDS, eval=FALSE}
+## this code will not be run
+saveRDS(object = DDLSToy, file = "valid/path")
+```
+
+However, the optimizer state is not saved in this way. In order to offer the possibility of saving the complete model, _digitalDLSorteR_ has `saveTrainedModelAsH5` function to save to disk and `loadTrainedModelFromH5` to re-load in `DigitalDLSorter` object. Note that only `r CRANpkg("keras")` model is being saved as HDF5 file in this way. 
+
+```{r saveHDF5Model, eval=FALSE}
+## this code will not be run
+saveTrainedModelAsH5(DDLSToy, file.path = "valid/path")
+DDLSToy <- loadTrainedModelFromH5(DDLSToy)
+```
+
+## References
+
+
+
+## Session info {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```

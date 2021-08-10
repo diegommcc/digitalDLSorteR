@@ -165,7 +165,7 @@ preparingToSave <- function(
   } else {
     colors <- default.colors()
   }
-  p <- p + scale_fill_manual(values = colors)
+  p <- p + scale_fill_manual(values = colors) + DigitalDLSorterTheme()
   if (is.null(x.label)) {
     p <- p + theme(axis.title.x = element_blank())
   } else {

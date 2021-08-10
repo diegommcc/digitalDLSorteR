@@ -276,7 +276,7 @@ generateBulkCellMatrix <- function(
   )
   if (verbose) {
     message(paste("\n=== The number of bulk RNA-seq samples that will be generated", 
-                  "has been fixed to", num.bulk.samples))  
+                  "is equal to", num.bulk.samples))  
   }
   # split data into training and test sets
   cells <- cells.metadata[, cell.ID.column]
