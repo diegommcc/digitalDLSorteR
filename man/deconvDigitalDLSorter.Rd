@@ -18,12 +18,13 @@ deconvDigitalDLSorter(
 \item{data}{Matrix or data frame with bulk-RNAseq samples. Rows must be genes
 in SYMBOL notation and columns must be samples.}
 
-\item{model}{Pre-trained DNN model to use to deconvolve \code{data}. Up to
-now, the available models are aimed at deconvolving samples of breast cancer
-(\code{\link{breast.chung.generic}} and \code{\link{breast.chung.specific}})
-and colorectal cancer \code{\link{colorectal.li}}. These pre-trained models
-are stored in \pkg{digitalDLSorteRdata} package, so it must be installed
-together with \pkg{digitalDLSorteR}.}
+\item{model}{Pre-trained DNN model to use to deconvolute \code{data}. Up to
+now, the available models are aimed to deconvoluting samples of breast
+cancer (\code{breast.chung.generic} and
+\code{breast.chung.specific}) and colorectal cancer
+\code{colorectal.li}. These pre-trained models are stored in
+\pkg{digitalDLSorteRdata} package, so it must be installed together with
+\pkg{digitalDLSorteR}.}
 
 \item{batch.size}{Number of samples loaded in RAM memory each time during the
 deconvolution process. If unspecified, \code{batch.size} will set to 128.}
@@ -53,10 +54,10 @@ pre-trained models integrated in the package. So far, the available models
 allow to deconvolute the immune infiltration of breast cancer (Chung et al.,
 2017) and the immune infiltration of colorectal cancer (Li et al., 2017).
 Regarding the former, there are two available models at two different levels
-of specificity: specific cell types (\code{'breast.chung.specific'}) and
-generic cell types (\code{'breast.chung.generic'}). See
-\code{\link{breast.chung.generic}}, \code{\link{breast.chung.specific}}, and
-\code{\link{colorectal.li}} documentation for details.
+of specificity: specific cell types (\code{breast.chung.specific}) and generic
+cell types (\code{breast.chung.generic}). See \code{breast.chung.generic},
+\code{breast.chung.specific}, and \code{colorectal.li} documentation
+from \pkg{digitalDLSorteRdata} package for details.
 }
 \details{
 This function is intended for users who want to use \pkg{digitalDLSorteR} for
@@ -65,11 +66,12 @@ who want to build their own models from scRNA-seq, see
 \code{?\link{loadSCProfiles}} and \code{?\link{deconvDigitalDLSorterObj}}.
 }
 \examples{
-# to ensure compatibility
-tensorflow::tf$compat$v1$disable_eager_execution()
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  # to ensure compatibility
+  tensorflow::tf$compat$v1$disable_eager_execution()
   library(digitalDLSorteRdata)
   data(breast.chung.specific)
+  data(TCGA.breast.small)
   results1 <- deconvDigitalDLSorter(
     data = TCGA.breast.small,
     model = breast.chung.specific,
@@ -89,9 +91,10 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   # the rest of proportion cell types will be added to the greatest
   results3 <- deconvDigitalDLSorter(
     TCGA.breast.small,
-    model = "breast.chung.specific",
+    model = breast.chung.specific,
     normalize = TRUE,
-    simplify.majority = simplify)
+    simplify.majority = simplify
+  )
 }
 
 }

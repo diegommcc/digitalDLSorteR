@@ -871,7 +871,7 @@ setMethod(f = "project<-",
 #' @docType methods
 #' @name saveRDS
 #' @rdname saveRDS
-#' @aliases saveRDS,DigitalDLSorter-method,DigitalDLSorterDNN-method
+#' @aliases saveRDS
 #' 
 #' @param object \code{\linkS4class{DigitalDLSorter}} or 
 #'    \code{\linkS4class{DigitalDLSorterDNN}} object to save

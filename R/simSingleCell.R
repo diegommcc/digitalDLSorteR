@@ -71,15 +71,19 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' DDLSChung <- estimateZinbwaveParams(
-#'   object = DDLSChung,
-#'   cell.ID.column = "Cell_ID",
-#'   gene.ID.column = "external_gene_name",
-#'   cell.type.column = "Cell_type",
-#'   cell.cov.columns = c("Patient", "Sample_type"),
-#'   gene.cov.columns = "gene_length",
-#'   verbose = TRUE
-#' )
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSChung)
+#'   DDLSChung <- estimateZinbwaveParams(
+#'     object = DDLSChung,
+#'     cell.ID.column = "Cell_ID",
+#'     gene.ID.column = "external_gene_name",
+#'     cell.type.column = "Cell_type",
+#'     cell.cov.columns = c("Patient", "Sample_type"),
+#'     gene.cov.columns = "gene_length",
+#'     verbose = TRUE
+#'   )
+#' }
 #' }
 #'
 #' @references Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
@@ -695,13 +699,17 @@ estimateZinbwaveParams <- function(
 #' @seealso \code{\link{estimateZinbwaveParams}}
 #'
 #' @examples
-#' DDLSChung <- simSCProfiles(
-#'   object = DDLSChung,
-#'   cell.ID.column = "Cell_ID",
-#'   cell.type.column = "Cell_type",
-#'   n.cells = 10,
-#'   verbose = TRUE
-#' )
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSChung)
+#'   DDLSChung <- simSCProfiles(
+#'     object = DDLSChung,
+#'     cell.ID.column = "Cell_ID",
+#'     cell.type.column = "Cell_type",
+#'     n.cells = 10,
+#'     verbose = TRUE
+#'   )
+#' }
 #'
 #' @references Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
 #'   and flexible method for signal extraction from single-cell RNA-seq data.

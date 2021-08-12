@@ -117,15 +117,20 @@ globalVariables(c(".dataForDNN"))
 #'   \code{\link{deconvDigitalDLSorter}} \code{\link{deconvDigitalDLSorterObj}}
 #'
 #' @examples
-#' # to ensure compatibility
-#' tensorflow::tf$compat$v1$disable_eager_execution()
-#' DDLSChungComp <- trainDigitalDLSorterModel(
-#'   object = DDLSChungComp,
-#'   on.the.fly = TRUE,
-#'   batch.size = 24,
-#'   num.epochs = 5 # 20
-#' )
-#'
+#' \dontrun{
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLiComp)
+#'   # to ensure compatibility
+#'   tensorflow::tf$compat$v1$disable_eager_execution()
+#'   DDLiComp <- trainDigitalDLSorterModel(
+#'     object = DDLiComp,
+#'     on.the.fly = TRUE,
+#'     batch.size = 24,
+#'     num.epochs = 5 # 20
+#'   )
+#' }
+#' }
 #' @references Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq
 #'   data. Frontiers in Genetics 10, 978. doi:
@@ -314,55 +319,6 @@ trainDigitalDLSorterModel <- function(
     # assign(.dataForDNN, .dataForDNN.file, inherits = TRUE, immediate = TRUE)
     .dataForDNN <<- .dataForDNN.file
   }
-  # training model --> code corresponding to validation subset: removed
-  # if (val) {
-  #   if (freq.val < 0.1 || freq.val > 0.5) {
-  #     stop("'freq.val' must be a float between 0.1 and 0.5")
-  #   }
-  #   # with validation subset. generator divide train set in two subsets
-  #   n.val <- ceiling(n.train * freq.val)
-  #   if (verbose) {
-  #     message(paste("\n=== Training DNN with", n.train - n.val,
-  #                   "samples and validating with",
-  #                   n.val, "samples:\n"))
-  #   }
-  #   gen.train <- .trainGenerator(
-  #     object = object, 
-  #     prob.matrix = prob.matrix.train,
-  #     type.data = "train",
-  #     batch.size = batch.size,
-  #     combine = combine,
-  #     shuffle = shuffle,
-  #     pattern = pattern,
-  #     min.index = n.val,
-  #     max.index = n.train,
-  #     threads = threads,
-  #     verbose = verbose
-  #   )
-  #   gen.val <- .trainGenerator(
-  #     object = object, 
-  #     prob.matrix = prob.matrix.train,
-  #     type.data = "train",
-  #     batch.size = batch.size,
-  #     combine = combine,
-  #     shuffle = FALSE,
-  #     pattern = pattern,
-  #     min.index = 0,
-  #     max.index = n.val,
-  #     threads = threads,
-  #     verbose = verbose
-  #   )
-  #   history <- model %>% fit_generator(
-  #     generator = gen.train,
-  #     steps_per_epoch = ceiling((n.train - n.val) / batch.size),
-  #     epochs = num.epochs,
-  #     validation_data = gen.val,
-  #     validation_steps = ceiling(n.val / batch.size),
-  #     verbose = verbose.model,
-  #     view_metrics = view.plot
-  #   )
-  # } else {
-    # without validation subset
   if (verbose) 
     message(paste("\n=== Training DNN with", n.train, "samples:\n"))
   gen.train <- .trainGenerator(
@@ -881,10 +837,10 @@ trainDigitalDLSorterModel <- function(
 #'allow to deconvolute the immune infiltration of breast cancer (Chung et al.,
 #'2017) and the immune infiltration of colorectal cancer (Li et al., 2017).
 #'Regarding the former, there are two available models at two different levels
-#'of specificity: specific cell types (\code{'breast.chung.specific'}) and
-#'generic cell types (\code{'breast.chung.generic'}). See
-#'\code{\link{breast.chung.generic}}, \code{\link{breast.chung.specific}}, and
-#'\code{\link{colorectal.li}} documentation for details.
+#'of specificity: specific cell types (\code{breast.chung.specific}) and generic
+#'cell types (\code{breast.chung.generic}). See \code{breast.chung.generic},
+#'\code{breast.chung.specific}, and \code{colorectal.li} documentation
+#'from \pkg{digitalDLSorteRdata} package for details.
 #'
 #'This function is intended for users who want to use \pkg{digitalDLSorteR} for
 #'deconvoluting their bulk RNA-Seq samples using pre-trained models. For users
@@ -893,12 +849,13 @@ trainDigitalDLSorterModel <- function(
 #'
 #'@param data Matrix or data frame with bulk-RNAseq samples. Rows must be genes
 #'  in SYMBOL notation and columns must be samples.
-#'@param model Pre-trained DNN model to use to deconvolve \code{data}. Up to
-#'  now, the available models are aimed at deconvolving samples of breast cancer
-#'  (\code{\link{breast.chung.generic}} and \code{\link{breast.chung.specific}})
-#'  and colorectal cancer \code{\link{colorectal.li}}. These pre-trained models
-#'  are stored in \pkg{digitalDLSorteRdata} package, so it must be installed
-#'  together with \pkg{digitalDLSorteR}.
+#'@param model Pre-trained DNN model to use to deconvolute \code{data}. Up to
+#'  now, the available models are aimed to deconvoluting samples of breast
+#'  cancer (\code{breast.chung.generic} and
+#'  \code{breast.chung.specific}) and colorectal cancer
+#'  \code{colorectal.li}. These pre-trained models are stored in
+#'  \pkg{digitalDLSorteRdata} package, so it must be installed together with
+#'  \pkg{digitalDLSorteR}.
 #'@param batch.size Number of samples loaded in RAM memory each time during the
 #'  deconvolution process. If unspecified, \code{batch.size} will set to 128.
 #'@param normalize Normalize data before deconvolution (\code{TRUE} by default).
@@ -919,11 +876,12 @@ trainDigitalDLSorterModel <- function(
 #'@seealso \code{\link{deconvDigitalDLSorterObj}}
 #'
 #' @examples
-#' # to ensure compatibility
-#' tensorflow::tf$compat$v1$disable_eager_execution()
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   # to ensure compatibility
+#'   tensorflow::tf$compat$v1$disable_eager_execution()
 #'   library(digitalDLSorteRdata)
 #'   data(breast.chung.specific)
+#'   data(TCGA.breast.small)
 #'   results1 <- deconvDigitalDLSorter(
 #'     data = TCGA.breast.small,
 #'     model = breast.chung.specific,
@@ -943,9 +901,10 @@ trainDigitalDLSorterModel <- function(
 #'   # the rest of proportion cell types will be added to the greatest
 #'   results3 <- deconvDigitalDLSorter(
 #'     TCGA.breast.small,
-#'     model = "breast.chung.specific",
+#'     model = breast.chung.specific,
 #'     normalize = TRUE,
-#'     simplify.majority = simplify)
+#'     simplify.majority = simplify
+#'   )
 #' }
 #'
 #'@references Chung, W., Eum, H. H., Lee, H. O., Lee, K. M., Lee, H. B., Kim, K.
@@ -1054,29 +1013,26 @@ deconvDigitalDLSorter <- function(
 #'   \code{\linkS4class{DigitalDLSorter}}
 #'
 #' @examples
-#' # to ensure compatibility
 #' \dontrun{
-#' tensorflow::tf$compat$v1$disable_eager_execution()
-#' # simplify arguments
-#' simplify <- list(Tumor = c("ER+", "HER2+", "ER+ and HER2+", "TNBC"),
-#'                  Bcells = c("Bmem", "BGC"))
-#'
-#' # all results are stored in DigitalDLSorter object
-#' TCGA.se <- SummarizedExperiment::SummarizedExperiment(
-#'   assays = list(counts = TCGA.breast.small),
-#'   rowData = data.frame(rownames(TCGA.breast.small)),
-#'   colData = data.frame(colnames(TCGA.breast.small)),
-#' )
-#' DDLSChungComp <- loadDeconvData(
-#'   object = DDLSChungComp, data = TCGA.se,
-#'   name.data = "TCGA.breast"
-#' )
-#' DDLSChungComp <- deconvDigitalDLSorterObj(
-#'   object = DDLSChungComp,
-#'   name.data = "TCGA.breast",
-#'   simplify.set = simplify,
-#'   simplify.majority = simplify
-#' )
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSLi)
+#'   data(TCGA.colon.se)
+#'   # to ensure compatibility
+#'   tensorflow::tf$compat$v1$disable_eager_execution()
+#'   # simplify arguments
+#'   simplify = list(Macrophages = c("Mc", "M"))
+#'   DDLSLi <- loadDeconvData(
+#'     object = DDLSLi, data = TCGA.colon.se,
+#'     name.data = "TCGA.colon"
+#'   )
+#'   DDLSLi <- deconvDigitalDLSorterObj(
+#'     object = DDLSLi,
+#'     name.data = "TCGA.colon",
+#'     simplify.set = simplify,
+#'     simplify.majority = simplify
+#'   )
+#' }
 #' }
 #' @references Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq

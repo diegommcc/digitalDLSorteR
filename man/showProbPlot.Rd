@@ -38,17 +38,20 @@ These plots are only for diagnostic purposes. This is the reason because they
 are generated without any parameter introduced by the user.
 }
 \examples{
-lapply(
-  X = 1:6, FUN = function(x) {
-    showProbPlot(
-      DDLSChungComp,
-      type.data = "train",
-      set = x,
-      type.plot = "boxplot"
-    )
-  }
-)
-
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSLiComp)
+  lapply(
+    X = 1:6, FUN = function(x) {
+      showProbPlot(
+        DDLSLiComp,
+        type.data = "train",
+        set = x,
+        type.plot = "boxplot"
+      )
+    }
+  )
+}
 }
 \seealso{
 \code{\link{generateBulkCellMatrix}}

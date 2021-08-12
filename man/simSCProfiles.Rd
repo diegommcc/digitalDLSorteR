@@ -116,13 +116,17 @@ simulated and written in HDF5 files by blocks of \code{block.size} size by
 setting \code{block.processing = TRUE}.
 }
 \examples{
-DDLSChung <- simSCProfiles(
-  object = DDLSChung,
-  cell.ID.column = "Cell_ID",
-  cell.type.column = "Cell_type",
-  n.cells = 10,
-  verbose = TRUE
-)
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSChung)
+  DDLSChung <- simSCProfiles(
+    object = DDLSChung,
+    cell.ID.column = "Cell_ID",
+    cell.type.column = "Cell_type",
+    n.cells = 10,
+    verbose = TRUE
+  )
+}
 
 }
 \references{

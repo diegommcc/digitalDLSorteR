@@ -11,6 +11,7 @@ setOldClass(Classes = "keras_training_history")
 
 setClassUnion(name = "MatrixOrNULL", members = c("matrix", "NULL"))
 setClassUnion(name = "ListOrNULL", members = c("list", "NULL"))
+setClassUnion(name = "ListNumericOrNULL", members = c("list", "numeric", "NULL"))
 setClassUnion(name = "CharacterOrNULL", members = c("character", "NULL"))
 setClassUnion(name = "SingleCellExperimentOrNULL", 
               members = c("SingleCellExperiment", "NULL"))
@@ -170,7 +171,7 @@ DigitalDLSorterDNN <- setClass(
   slots = c(
     model = "KerasOrList",
     training.history = "KerasTrainOrNULL",
-    test.metrics = "ListOrNULL",
+    test.metrics = "ListNumericOrNULL",
     test.pred = "MatrixOrNULL",
     cell.types = "character",
     features = "character",
@@ -242,16 +243,15 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #' The DigitalDLSorter object is the core of \code{digitalDLSorteR}. This object
 #' stores different intermediate data resulting from building new deconvolution
 #' models from single-cell data. It is only used in the case of building new
-#' deconvolution models. For deconvolving bulk samples using pre-trained models,
-#' see \code{\link{deconvDigitalDLSorter}} function.
+#' deconvolution models. For deconvoluting bulk samples using pre-trained
+#' models, see \code{\link{deconvDigitalDLSorter}} function.
 #'
 #' This object uses other classes to store the different types of data produced
 #' during the process: \itemize{ \item \code{\linkS4class{SingleCellExperiment}}
-#' class for single-cell RNA-seq data, using sparse matrix from the
-#' \pkg{Matrix} package (\code{\linkS4class{dgCMatrix}} class) or
-#' \code{HDF5Array} class in the case of using HDF5 files as
-#' back-end (see below for more information). \item
-#' \code{\linkS4class{ZINBParams}} class with estimated parameters for the
+#' class for single-cell RNA-seq data, using sparse matrix from the \pkg{Matrix}
+#' package (\code{\linkS4class{dgCMatrix}} class) or \code{HDF5Array} class in
+#' the case of using HDF5 files as back-end (see below for more information).
+#' \item \code{\linkS4class{ZINBParams}} class with estimated parameters for the
 #' simulation of new single-cell profiles. \item
 #' \code{\linkS4class{SummarizedExperiment}} class for storing bulk RNA-seq
 #' data. \item \code{\linkS4class{ProbMatrixCellTypes}} class for the
@@ -272,9 +272,9 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #'   cell composition matrices built for the simulation of bulk RNA-seq profiles
 #'   with known cell composition.
 #' @slot bulk.simul A list with train and test simulated bulk RNA-seq samples.
-#'   Each entry is a \code{\linkS4class{SummarizedExperiment}} object. The
-#'   count matrices can be stored as \code{HDF5Array} files using
-#'   HDF5 files as back-end in case of RAM memory limitations.
+#'   Each entry is a \code{\linkS4class{SummarizedExperiment}} object. The count
+#'   matrices can be stored as \code{HDF5Array} files using HDF5 files as
+#'   back-end in case of RAM memory limitations.
 #' @slot trained.model \code{\linkS4class{DigitalDLSorterDNN}} object with all
 #'   the information related to the trained model. See
 #'   \code{?\linkS4class{DigitalDLSorterDNN}} for more details.

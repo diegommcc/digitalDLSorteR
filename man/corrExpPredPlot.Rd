@@ -84,22 +84,29 @@ more information. Moreover, a correlation value selected by user is displayed
 as annotation on the plots. See \code{corr} argument for details.
 }
 \examples{
-# correlations by cell type
-corrExpPredPlot(
-  object = DDLSChungComp,
-  facet.by = "CellType",
-  color.by = "CellType",
-  corr = "both"
-)
-# correlations of all samples mixed
-corrExpPredPlot(
-  object = DDLSChungComp,
-  facet.by = NULL,
-  color.by = "CellType",
-  corr = "ccc",
-  pos.x.label = 0.2,
-  alpha.point = 0.3
-)
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSLiComp)
+  DDLSLiComp <- calculateEvalMetrics(
+    object = DDLSLiComp
+  )
+  # correlations by cell type
+  corrExpPredPlot(
+    object = DDLSLiComp,
+    facet.by = "CellType",
+    color.by = "CellType",
+    corr = "both"
+  )
+  # correlations of all samples mixed
+  corrExpPredPlot(
+    object = DDLSLiComp,
+    facet.by = NULL,
+    color.by = "CellType",
+    corr = "ccc",
+    pos.x.label = 0.2,
+    alpha.point = 0.3
+  )
+}
 }
 \seealso{
 \code{\link{calculateEvalMetrics}} \code{\link{distErrorPlot}}

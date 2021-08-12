@@ -62,17 +62,20 @@ getProbMatrix <- function(object, type.data) {
 #' @seealso \code{\link{generateBulkCellMatrix}}
 #'
 #' @examples
-#' lapply(
-#'   X = 1:6, FUN = function(x) {
-#'     showProbPlot(
-#'       DDLSChungComp,
-#'       type.data = "train",
-#'       set = x,
-#'       type.plot = "boxplot"
-#'     )
-#'   }
-#' )
-#' 
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSLiComp)
+#'   lapply(
+#'     X = 1:6, FUN = function(x) {
+#'       showProbPlot(
+#'         DDLSLiComp,
+#'         type.data = "train",
+#'         set = x,
+#'         type.plot = "boxplot"
+#'       )
+#'     }
+#'   )
+#' }
 showProbPlot <- function(
   object,
   type.data,

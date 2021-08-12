@@ -6,6 +6,10 @@ output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 3
+    vignette: >
+      %\VignetteIndexEntry{Using pre-trained context-specific deconvolution models}
+      %\VignetteEngine{knitr::rmarkdown}
+      %\VignetteEncoding{UTF-8}
 bibliography: references.bib
 geometry: margin=3cm
 fontsize: 12pt

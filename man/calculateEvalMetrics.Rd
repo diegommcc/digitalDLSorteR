@@ -34,10 +34,13 @@ object (\code{trained.model} slot of \code{\linkS4class{DigitalDLSorter}}
 object).
 }
 \examples{
-DDLSChungComp <- calculateEvalMetrics(
-  object = DDLSChungComp
-)
-
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSLiComp)
+  DDLSLiComp <- calculateEvalMetrics(
+    object = DDLSLiComp
+  )
+}
 }
 \seealso{
 \code{\link{distErrorPlot}} \code{\link{corrExpPredPlot}}

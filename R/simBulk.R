@@ -105,6 +105,7 @@ NULL
 #'   \code{\linkS4class{ProbMatrixCellTypes}}
 #'
 #' @examples
+#' \dontrun{
 #' # generate a data.frame with frequency ranges of each cell type
 #' probMatrix <- data.frame(
 #'   Cell_type = c("ER+", "HER2+", "ER+ and HER2+", "TNBC",
@@ -113,7 +114,9 @@ NULL
 #'   from = c(rep(30, 4), 1, rep(1, 8)),
 #'   to = c(rep(70, 4), 50, rep(15, 8))
 #' )
-#' \dontrun{
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSChung)
 #'   DDLSChung <- generateBulkCellMatrix(
 #'     object = DDLSChung,
 #'     cell.type.column = "Cell_type",
@@ -122,8 +125,9 @@ NULL
 #'     num.bulk.samples = 100,
 #'     verbose = TRUE
 #'   )
+#'   
 #' }
-#'
+#' }
 #' @references Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq
 #'   data. Frontiers in Genetics 10, 978. doi:
@@ -348,7 +352,7 @@ generateBulkCellMatrix <- function(
     stop(
       paste(
         "Not all cell types consireded in DigitalDLSorter object are in test",
-        "data. digitalDLSorteR needs to have al cell types in both subsets",
+        "data. digitalDLSorteR needs to have all cell types in both subsets",
         "(training and test). Please, provide a bigger single-cell experiment",
         "or consider simulate new single-cell profiles with", 
         "'estimateZinbwaveParams' and 'simSCProfiles' functions"
@@ -584,7 +588,6 @@ generateBulkCellMatrix <- function(
   names(plot.list) <- c("violinplot", "boxplot", "linesplot", "ncelltypes")
   return(plot.list)
 }
-
 
 # there is something wrong
 setCount <- function(
@@ -1031,19 +1034,36 @@ setCount <- function(
 #'   \code{\link{trainDigitalDLSorterModel}}
 #'
 #' @examples
-#' # loading all data in memory
-#' DDLSChungComp <- simBulkProfiles(
-#'   DDLSChungComp,
-#'   type.data = "both"
-#' )
-#'
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSLi)
+#'   probMatrix <- data.frame(
+#'     Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M", 
+#'                   "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
+#'     from = c(rep(1, 8), 1, 30),
+#'     to = c(rep(15, 8), 50, 70)
+#'   )
+#'   DDLSLi <- generateBulkCellMatrix(
+#'     object = DDLSLi,
+#'     cell.ID.column = "Cell_ID",
+#'     cell.type.column = "Cell_Type",
+#'     prob.design = probMatrix,
+#'     num.bulk.samples = 100,
+#'     verbose = TRUE
+#'   )
+#'   # loading all data in memory
+#'   DDLSLi <- simBulkProfiles(
+#'     DDLSLi,
+#'     type.data = "both"
+#'   )
+#' }
 #' \dontrun{
 #' # using HDF5 as backend
-#' DDLSChungComp <- simBulkProfiles(
-#'   DDLSChungComp,
+#' DDLSLi <- simBulkProfiles(
+#'   DDLSLi,
 #'   threads = 2,
 #'   type.data = "both",
-#'   file.backend = "DDLSChung.bulk.simul.h5"
+#'   file.backend = "DDLSLi.bulk.simul.h5"
 #' )
 #' }
 #'

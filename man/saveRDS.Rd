@@ -3,7 +3,6 @@
 \docType{methods}
 \name{saveRDS}
 \alias{saveRDS}
-\alias{saveRDS,DigitalDLSorter-method,DigitalDLSorterDNN-method}
 \title{Save \code{\linkS4class{DigitalDLSorter}} object as RDS file}
 \usage{
 saveRDS(

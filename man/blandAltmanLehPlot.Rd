@@ -76,20 +76,27 @@ of cell types present in the sample (\code{nCellTypes}). See \code{facet.by}
 argument and examples for more information.
 }
 \examples{
-# Bland-Altman plot by cell type
-blandAltmanLehPlot(
-  object = DDLSChungComp,
-  facet.by = "CellType",
-  color.by = "CellType"
-)
-# Bland-Altman plot of all samples mixed
-blandAltmanLehPlot(
-  object = DDLSChungComp,
-  facet.by = NULL,
-  color.by = "CellType",
-  alpha.point = 0.3,
-  log2 = TRUE
-)
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSLiComp)
+  DDLSLiComp <- calculateEvalMetrics(
+    object = DDLSLiComp
+  )
+  # Bland-Altman plot by cell type
+  blandAltmanLehPlot(
+    object = DDLSLiComp,
+    facet.by = "CellType",
+    color.by = "CellType"
+  )
+  # Bland-Altman plot of all samples mixed
+  blandAltmanLehPlot(
+    object = DDLSLiComp,
+    facet.by = NULL,
+    color.by = "CellType",
+    alpha.point = 0.3,
+    log2 = TRUE
+  )
+}
 }
 \seealso{
 \code{\link{calculateEvalMetrics}} \code{\link{corrExpPredPlot}}

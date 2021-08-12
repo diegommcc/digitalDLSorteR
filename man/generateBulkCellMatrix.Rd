@@ -128,6 +128,7 @@ each method during the process, they can be shown by
 \code{\link{showProbPlot}} function (see Documentation).
 }
 \examples{
+\dontrun{
 # generate a data.frame with frequency ranges of each cell type
 probMatrix <- data.frame(
   Cell_type = c("ER+", "HER2+", "ER+ and HER2+", "TNBC",
@@ -136,7 +137,9 @@ probMatrix <- data.frame(
   from = c(rep(30, 4), 1, rep(1, 8)),
   to = c(rep(70, 4), 50, rep(15, 8))
 )
-\dontrun{
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSChung)
   DDLSChung <- generateBulkCellMatrix(
     object = DDLSChung,
     cell.type.column = "Cell_type",
@@ -145,8 +148,9 @@ probMatrix <- data.frame(
     num.bulk.samples = 100,
     verbose = TRUE
   )
+  
 }
-
+}
 }
 \references{
 Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep

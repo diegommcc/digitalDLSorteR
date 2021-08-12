@@ -12,7 +12,7 @@ NULL
 #' The rationale of the method consists of a process that starts from scRNA-Seq
 #' data and, after a few steps, a Deep Neural Network (DNN) model is trained
 #' with simulated bulk RNA-seq samples whose cell composition is known. These
-#' trained models are able to deconvolve any bulk RNA-seq sample by determining
+#' trained models are able to deconvolute any bulk RNA-seq sample by determining
 #' the proportion of the different cell types present in them. The main
 #' advantage of this method is the possibility of building deconvolution models
 #' trained with real data which comes from certain biological environments. For
@@ -22,7 +22,7 @@ NULL
 #' methods, since stromal and immune cells change significantly their profiles
 #' depending on the tissue and disease context.
 #'
-#' The package can be used by two ways: for deconvolving bulk RNA-seq samples
+#' The package can be used by two ways: to deconvolute bulk RNA-seq samples
 #' using a pre-trained model provided by us or for building your own models
 #' trained from your own scRNA-seq samples. These new models may be published in
 #' order to make them available for other users that work with similar data

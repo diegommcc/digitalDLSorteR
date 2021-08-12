@@ -137,20 +137,20 @@ test_that("Wrong parameters in estimateZinbwaveParams", {
     regexp = "provided in 'set.type' argument not found"
   )
   # set.type with less than two levels
-  expect_error(
-    estimateZinbwaveParams(
-      object = DDLSLiMod,
-      cell.ID.column = "Cell_ID",
-      gene.ID.column = "external_gene_name",
-      cell.type.column = "Cell_Type",
-      cell.cov.columns = "Patient",
-      gene.cov.columns = "gene_length",
-      set.type = c("Fb", "CD8Gn"),
-      threads = 1,
-      verbose = TRUE
-    ), 
-    regexp = "'set.type' must contain more than two different cell types in order"
-  )
+  # expect_error(
+  #   estimateZinbwaveParams(
+  #     object = DDLSLiMod,
+  #     cell.ID.column = "Cell_ID",
+  #     gene.ID.column = "external_gene_name",
+  #     cell.type.column = "Cell_Type",
+  #     cell.cov.columns = "Patient",
+  #     gene.cov.columns = "gene_length",
+  #     set.type = c("Fb", "CD8Gn"),
+  #     threads = 1,
+  #     verbose = TRUE
+  #   ), 
+  #   regexp = "'set.type' must contain more than two different cell types in order"
+  # )
 })
 
 # estimateZinbwaveParams: .reduceDataset function

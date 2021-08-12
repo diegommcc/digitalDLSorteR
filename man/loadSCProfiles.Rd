@@ -115,16 +115,19 @@ these profiles will be used directly to simulate bulk RNA-seq samples with
 known composition.
 }
 \examples{
-sc.chung.breast <- single.cell.real(DDLSLi)
-DDLSChungSmall <- loadSCProfiles(
-  single.cell.data = sc.chung.breast,
-  cell.ID.column = "Cell_ID",
-  gene.ID.column = "external_gene_name",
-  min.cells = 0,
-  min.counts = 0,
-  project = "Chung_example"
-)
-
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSLiComp)
+  sc.chung.breast <- single.cell.real(DDLSChung)
+  DDLSChungSmall <- loadSCProfiles(
+    single.cell.data = sc.chung.breast,
+    cell.ID.column = "Cell_ID",
+    gene.ID.column = "external_gene_name",
+    min.cells = 0,
+    min.counts = 0,
+    project = "Chung_example"
+  )
+}
 }
 \seealso{
 \code{\link{estimateZinbwaveParams}}

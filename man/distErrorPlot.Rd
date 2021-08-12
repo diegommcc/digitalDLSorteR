@@ -97,23 +97,30 @@ cell type (\code{CellType}) or number of cell types present in the samples
 information.
 }
 \examples{
-distErrorPlot(
-  object = DDLSChungComp,
-  error = "AbsErr",
-  facet.by = "CellType",
-  color.by = "nCellTypes",
-  error.label = TRUE
-)
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSLiComp)
+  DDLSLiComp <- calculateEvalMetrics(
+    object = DDLSLiComp
+  )
+  distErrorPlot(
+    object = DDLSLiComp,
+    error = "AbsErr",
+    facet.by = "CellType",
+    color.by = "nCellTypes",
+    error.label = TRUE
+  )
 
-distErrorPlot(
-  object = DDLSChungComp,
-  error = "AbsErr",
-  x.by = "CellType",
-  facet.by = NULL,
-  filter.sc = FALSE,
-  color.by = "CellType",
-  error.label = TRUE
-)
+  distErrorPlot(
+    object = DDLSLiComp,
+    error = "AbsErr",
+    x.by = "CellType",
+    facet.by = NULL,
+    filter.sc = FALSE,
+    color.by = "CellType",
+    error.label = TRUE
+  )
+}
 }
 \seealso{
 \code{\link{calculateEvalMetrics}} \code{\link{corrExpPredPlot}}

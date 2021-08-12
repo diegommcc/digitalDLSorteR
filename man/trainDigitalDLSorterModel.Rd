@@ -138,15 +138,20 @@ features/genes and the number of output neurons is equal to the number of
 considered cell types.
 }
 \examples{
-# to ensure compatibility
-tensorflow::tf$compat$v1$disable_eager_execution()
-DDLSChungComp <- trainDigitalDLSorterModel(
-  object = DDLSChungComp,
-  on.the.fly = TRUE,
-  batch.size = 24,
-  num.epochs = 5 # 20
-)
-
+\dontrun{
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLiComp)
+  # to ensure compatibility
+  tensorflow::tf$compat$v1$disable_eager_execution()
+  DDLiComp <- trainDigitalDLSorterModel(
+    object = DDLiComp,
+    on.the.fly = TRUE,
+    batch.size = 24,
+    num.epochs = 5 # 20
+  )
+}
+}
 }
 \references{
 Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep

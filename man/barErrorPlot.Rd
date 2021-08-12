@@ -43,17 +43,24 @@ Generate bar error plot and its dispersion by cell types (\code{CellType}) or
 by number of different cell types (\code{nCellTypes}) in test bulk samples.
 }
 \examples{
-barErrorPlot(
-  object = DDLSChungComp,
-  error = "MSE",
-  by = "CellType"
-)
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSLiComp)
+  DDLSLiComp <- calculateEvalMetrics(
+    object = DDLSLiComp
+  )
+  barErrorPlot(
+    object = DDLSLiComp,
+    error = "MSE",
+    by = "CellType"
+  )
 
-barErrorPlot(
-  object = DDLSChungComp,
-  error = "MAE",
-  by = "nCellTypes"
-)
+  barErrorPlot(
+    object = DDLSLiComp,
+    error = "MAE",
+    by = "nCellTypes"
+  )
+}
 }
 \seealso{
 \code{\link{calculateEvalMetrics}} \code{\link{corrExpPredPlot}}

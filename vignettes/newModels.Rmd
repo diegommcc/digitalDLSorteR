@@ -6,6 +6,10 @@ output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 3
+    vignette: >
+      %\VignetteIndexEntry{Building new deconvolution models}
+      %\VignetteEngine{knitr::rmarkdown}
+      %\VignetteEncoding{UTF-8}
 bibliography: references.bib
 geometry: margin=3cm
 fontsize: 12pt
@@ -19,12 +23,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 _digitalDLSorteR_ implements all the necessary tools to build new context-specific deconvolution models from  previously characterized scRNA-Seq data. Taking into account the variability of some cell types depending on the context in which they are found, we aim to generate different specific models for each environment. From our point of view, this opens a door to more accurate and specific models instead of using generic transcriptional profiles as a reference as in the case of peripheral blood mononuclear cell (PBMC) to estimate the proportions of tumor-infiltrating lymphocytes in cancer settings. In this vignette, this workflow is going to be shown using a 'toy' example with data from _digitalDLSorteRdata_ package, but the performance of a real model can be explored in [Performance of a real model: deconvolution of colorectal cancer samples](realModelExample.html) vignette.
 
-**Note:** this workflow is more computationally expensive than using pre-trained models, so we recommend building new models if you want to deconvolute samples from an unavailable model or in case you think your scRNA-Seq data provide a better picture of this environment than the ones already used in this package. In any case, _digitalDLSorteR_ provides a set of functionalities that make this process easier and computationally cheaper in terms of RAM usage: batch processing of data and the use of the `r Biocpkg("HDF5Array")` and `r Biocpkg("DelayedArray")` packages (see [HDF5 files as a back-end](hdf5Backend.html) vignette for more information). Furthermore, all steps are centralized in the `DigitalDLSorter` S4-class, the core of _digitalDLSorteR_, to provide a good user-experience and keep all the generated information tidy in the same object.
+**Note:** this workflow is more computationally expensive than using pre-trained models, so we recommend building new models if you want to deconvolute samples from an unavailable model or in case you think your scRNA-Seq data provide a better picture of this environment than the ones already used in this package. In any case, _digitalDLSorteR_ provides a set of functionalities that make this process easier and computationally cheaper in terms of RAM usage: batch processing of data and the use of the [_HDF5Array_](https://bioconductor.org/packages/release/bioc/html/HDF5Array.html) and [_DelayedArray_](https://bioconductor.org/packages/release/bioc/html/DelayedArray.html) packages (see [HDF5 files as a back-end](hdf5Backend.html) vignette for more information). Furthermore, all steps are centralized in the `DigitalDLSorter` S4-class, the core of _digitalDLSorteR_, to provide a good user-experience and keep all the generated information tidy in the same object.
 
 ```{r}
 ## loading packages
-library(digitalDLSorteR)
-library(digitalDLSorteRdata)
+library(digitalDLSorteR, quietly = TRUE)
+library(digitalDLSorteRdata, quietly = TRUE)
 ## loading data for examples
 data(DDLSChung)
 ## take SingleCellExperiment object from DigitalDLSorter object
@@ -89,7 +93,7 @@ DDLSToy <- loadSCProfiles(
 )
 ```
 
-In the documentation, you can see all the parameters that `loadSCProfiles` offers to preprocess loaded data, such as `min.counts` and `min.cells`, `fun.aggregate`, etc. In addition, in the case of using very large scRNA-Seq datasets as input, _digitalDLSorteR_ allows using HDF5 files as back-end to handle data that don't fit in RAM using the `r Biocpkg("HDF5Array")` and `r Biocpkg("DelayedArray")` packages. We only recommend their use in actual cases of very large datasets. HDF5 files, in spite of being very useful for dealing with RAM problems, make processes much slower. As an example, the following code chunk would create an HDF5 file in which these single-cell data would be stored, allowing you to work on them without loading them all into RAM. See the documentation for more details.
+In the documentation, you can see all the parameters that `loadSCProfiles` offers to preprocess loaded data, such as `min.counts` and `min.cells`, `fun.aggregate`, etc. In addition, in the case of using very large scRNA-Seq datasets as input, _digitalDLSorteR_ allows using HDF5 files as back-end to handle data that don't fit in RAM using the [_HDF5Array_](https://bioconductor.org/packages/release/bioc/html/HDF5Array.html) and [_DelayedArray_](https://bioconductor.org/packages/release/bioc/html/DelayedArray.html) packages. We only recommend their use in actual cases of very large datasets. HDF5 files, in spite of being very useful for dealing with RAM problems, make processes much slower. As an example, the following code chunk would create an HDF5 file in which these single-cell data would be stored, allowing you to work on them without loading them all into RAM. See the documentation for more details.
 
 ```{r, eval = FALSE}
 DDLSToy <- loadSCProfiles(
@@ -110,7 +114,7 @@ _digitalDLSorteR_ offers the possibility to simulate new single-cell profiles fr
 
 The first step is to estimate a set of parameters that fits the real single-cell data in order to simulate new realistic single-cell profiles. We selected the ZINB-WaVE framework [@Risso2018] that estimates the parameters of a ZINB (zero-inflated negative binomial) distribution. It was chosen because of its ability to accommodate not only the variability within a particular cell type but also the variability within the whole experiment. 
 
-This process is performed by the `estimateZinbwaveParams` function, which makes use of the `r Biocpkg("splatter")` package, a wrapper of the original `r Biocpkg("zinbwave")` package. You must specify the column corresponding to cell types in cells metadata, other cell/gene covariates can be added based on your experimental design such as patient, gender or gene length. This process can take a few minutes to run because it is not highly optimized in the original packages, so be patient. For this vignette, the ZINB-WaVE model has been pre-loaded from the _digitalDLSorteRdata_ package to avoid run times. In any case, you can adjust the number of threads used in some steps during the estimation with `threads` argument (`r Biocpkg("BiocParallel")` package).
+This process is performed by the `estimateZinbwaveParams` function, which makes use of the [_splatter_](https://bioconductor.org/packages/release/bioc/html/splatter.html) package, a wrapper of the original [_zinbwave_](https://bioconductor.org/packages/release/bioc/html/zinbwave.html) package. You must specify the column corresponding to cell types in cells metadata, other cell/gene covariates can be added based on your experimental design such as patient, gender or gene length. This process can take a few minutes to run because it is not highly optimized in the original packages, so be patient. For this vignette, the ZINB-WaVE model has been pre-loaded from the _digitalDLSorteRdata_ package to avoid run times. In any case, you can adjust the number of threads used in some steps during the estimation with `threads` argument ([_BiocParallel_](https://www.bioconductor.org/packages/release/bioc/html/BiocParallel.html) package).
 
 ```{r, eval = FALSE}
 ## this code is not going to be run
@@ -283,7 +287,7 @@ DDLSToy <- simBulkProfiles(
 
 ### Training and evaluation of the Deep Neural Network {#dnn}
 
-Once the pseudo-bulk samples have been generated, the DNN model can be trained and evaluated. `trainDigitalDLSorterModel` is the function in charge of both steps and uses the `r CRANpkg("keras")` package with `r CRANpkg("tensorflow")` as back-end. If you want more information about `r CRANpkg("keras")` or experience any problems during its installation, please see [Keras/TensorFlow installation and configuration](kerasIssues.html) vignette.
+Once the pseudo-bulk samples have been generated, the DNN model can be trained and evaluated. `trainDigitalDLSorterModel` is the function in charge of both steps and uses the [_keras_](https://cran.r-project.org/web/packages/keras/index.html) package with [_tensorflow_](https://cran.r-project.org/web/packages/tensorflow/index.html) as back-end. If you want more information about [_keras_](https://cran.r-project.org/web/packages/keras/index.html) or experience any problems during its installation, please see [Keras/TensorFlow installation and configuration](kerasIssues.html) vignette.
 
 In terms of architecture and model parameters, `trainDigitalDLSorterModel` implements two hidden layers with 200 neurons each by default, although any of these parameters can be changed through the `trainDigitalDLSorterModel` parameters. Moreover, for a more customized model, it is possible to provide a pre-built model in the `custom.model` parameter. See the documentation for more details. 
 
@@ -300,6 +304,14 @@ DDLSToy
 ```
 
 As this is a 'toy' example, results are not very accurate. For a real example of a trained model, see the [Performance of a real model: deconvolution of colorectal cancer samples](realModelExample.html) vignette.
+
+#### `on.the.fly` argument
+
+`trainDigitalDLSorterModel` has the `on.the.fly` argument that allows to generate pseudo-bulk samples used for training and testing 'on the fly'. This means that it is possible to skip the `simBulkProfiles` function and create samples at the same time as the DNN model is being trained. Of course, the run times during training may increase, but in this way data is not neither loaded into RAM and nor stored in large HDF5 files. To use this functionality, it is only necessary to set `on.the.fly = TRUE` as follows:
+
+```{r, eval = FALSE}
+DDLSToy <- trainDigitalDLSorterModel(object = DDLSToy, on.the.fly = TRUE)
+```
 
 ### Evaluation of the deconvolution model on test data: visualization of results {#eval}
 
@@ -335,7 +347,6 @@ distErrorPlot(
   error = "AbsErr",
   facet.by = "CellType",
   color.by = "nCellTypes", 
-  error.labels = TRUE, 
   type = "violinplot",
   size.point = 1
 )
@@ -424,7 +435,7 @@ blandAltmanLehPlot(
   log.2 = FALSE,
   size.point = 1,
   filter.sc = TRUE,
-  density = TRUE,
+  density = FALSE
 )
 ```
 
@@ -434,7 +445,7 @@ blandAltmanLehPlot(
 Once the model has been evaluated, new bulk RNA-seq data can be loaded into the object to deconvolute:
 
 ```{r deconvoluteNewBulk}
-library(SummarizedExperiment)
+library(SummarizedExperiment, quietly = TRUE)
 se.TCGA <- SummarizedExperiment(assay = list(counts = TCGA.breast.small))
 
 DDLSToy <- loadDeconvData(
@@ -458,14 +469,14 @@ barPlotCellTypes(DDLSToy, name.data = "TCGA.breast", rm.x.text = TRUE)
 
 ### Saving `DigitalDLSorter` object and trained models {#save}
 
-_digitalDLSorteR_ provides different ways to save models to disk and to retrieve them in the `DigitalDLSorter` object. First, you can save `DigitalDLSorter` objects as RDS files. Due to this type of files only accepts native R objects, they are not able to store complex data structures such as `r CRANpkg("keras")` Python objects (`keras.engine.sequential.Sequential` class). To make it possible, _digitalDLSorteR_ implements a `saveRDS` generic function that converts the keras model object into a list with the network achitecture and the weights after training. These two pieces of information are the minimal part needed to perform new predictions. When the model is to be used, it is compiled back to a `keras.engine.sequential.Sequential` object. 
+_digitalDLSorteR_ provides different ways to save models to disk and to retrieve them in the `DigitalDLSorter` object. First, you can save `DigitalDLSorter` objects as RDS files. Due to this type of files only accepts native R objects, they are not able to store complex data structures such as keras Python objects (`keras.engine.sequential.Sequential` class). To make it possible, _digitalDLSorteR_ implements a `saveRDS` generic function that converts the keras model object into a list with the network achitecture and the weights after training. These two pieces of information are the minimal part needed to perform new predictions. When the model is to be used, it is compiled back to a `keras.engine.sequential.Sequential` object. 
 
 ```{r saveRDS, eval=FALSE}
 ## this code will not be run
 saveRDS(object = DDLSToy, file = "valid/path")
 ```
 
-However, the optimizer state is not saved in this way. To offer the possibility to save the complete model, _digitalDLSorteR_ has the `saveTrainedModelAsH5` function to save to disk and `loadTrainedModelFromH5` to load ack models into `DigitalDLSorter` objects. Note that only `r CRANpkg("keras")` model is saved as an HDF5 file in this way. 
+However, the optimizer state is not saved in this way. To offer the possibility to save the complete model, _digitalDLSorteR_ has the `saveTrainedModelAsH5` function to save to disk and `loadTrainedModelFromH5` to load ack models into `DigitalDLSorter` objects. Note that only keras model is saved as an HDF5 file in this way. 
 
 ```{r saveHDF5Model, eval=FALSE}
 ## this code will not be run
@@ -474,7 +485,6 @@ DDLSToy <- loadTrainedModelFromH5(DDLSToy)
 ```
 
 ## References
-
 
 
 <!-- ## Session info {.unnumbered} -->

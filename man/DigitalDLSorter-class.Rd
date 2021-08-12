@@ -9,17 +9,16 @@
 The DigitalDLSorter object is the core of \code{digitalDLSorteR}. This object
 stores different intermediate data resulting from building new deconvolution
 models from single-cell data. It is only used in the case of building new
-deconvolution models. For deconvolving bulk samples using pre-trained models,
-see \code{\link{deconvDigitalDLSorter}} function.
+deconvolution models. For deconvoluting bulk samples using pre-trained
+models, see \code{\link{deconvDigitalDLSorter}} function.
 }
 \details{
 This object uses other classes to store the different types of data produced
 during the process: \itemize{ \item \code{\linkS4class{SingleCellExperiment}}
-class for single-cell RNA-seq data, using sparse matrix from the
-\pkg{Matrix} package (\code{\linkS4class{dgCMatrix}} class) or
-\code{HDF5Array} class in the case of using HDF5 files as
-back-end (see below for more information). \item
-\code{\linkS4class{ZINBParams}} class with estimated parameters for the
+class for single-cell RNA-seq data, using sparse matrix from the \pkg{Matrix}
+package (\code{\linkS4class{dgCMatrix}} class) or \code{HDF5Array} class in
+the case of using HDF5 files as back-end (see below for more information).
+\item \code{\linkS4class{ZINBParams}} class with estimated parameters for the
 simulation of new single-cell profiles. \item
 \code{\linkS4class{SummarizedExperiment}} class for storing bulk RNA-seq
 data. \item \code{\linkS4class{ProbMatrixCellTypes}} class for the
@@ -47,9 +46,9 @@ cell composition matrices built for the simulation of bulk RNA-seq profiles
 with known cell composition.}
 
 \item{\code{bulk.simul}}{A list with train and test simulated bulk RNA-seq samples.
-Each entry is a \code{\linkS4class{SummarizedExperiment}} object. The
-count matrices can be stored as \code{HDF5Array} files using
-HDF5 files as back-end in case of RAM memory limitations.}
+Each entry is a \code{\linkS4class{SummarizedExperiment}} object. The count
+matrices can be stored as \code{HDF5Array} files using HDF5 files as
+back-end in case of RAM memory limitations.}
 
 \item{\code{trained.model}}{\code{\linkS4class{DigitalDLSorterDNN}} object with all
 the information related to the trained model. See

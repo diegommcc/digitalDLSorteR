@@ -59,10 +59,13 @@ default.colors <- function() {
 #'   \code{\link{blandAltmanLehPlot}} \code{\link{barErrorPlot}}
 #'
 #' @examples
-#' DDLSChungComp <- calculateEvalMetrics(
-#'   object = DDLSChungComp
-#' )
-#' 
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSLiComp)
+#'   DDLSLiComp <- calculateEvalMetrics(
+#'     object = DDLSLiComp
+#'   )
+#' }
 calculateEvalMetrics <- function(
   object,
   metrics = c("MAE", "MSE")
@@ -323,23 +326,30 @@ se <- function(x) sqrt(var(x)/length(x))
 #'   \code{\link{blandAltmanLehPlot}} \code{\link{barErrorPlot}}
 #'
 #' @examples
-#' distErrorPlot(
-#'   object = DDLSChungComp,
-#'   error = "AbsErr",
-#'   facet.by = "CellType",
-#'   color.by = "nCellTypes",
-#'   error.label = TRUE
-#' )
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSLiComp)
+#'   DDLSLiComp <- calculateEvalMetrics(
+#'     object = DDLSLiComp
+#'   )
+#'   distErrorPlot(
+#'     object = DDLSLiComp,
+#'     error = "AbsErr",
+#'     facet.by = "CellType",
+#'     color.by = "nCellTypes",
+#'     error.label = TRUE
+#'   )
 #'
-#' distErrorPlot(
-#'   object = DDLSChungComp,
-#'   error = "AbsErr",
-#'   x.by = "CellType",
-#'   facet.by = NULL,
-#'   filter.sc = FALSE,
-#'   color.by = "CellType",
-#'   error.label = TRUE
-#' )
+#'   distErrorPlot(
+#'     object = DDLSLiComp,
+#'     error = "AbsErr",
+#'     x.by = "CellType",
+#'     facet.by = NULL,
+#'     filter.sc = FALSE,
+#'     color.by = "CellType",
+#'     error.label = TRUE
+#'   )
+#' }
 distErrorPlot <- function(
   object,
   error,
@@ -536,22 +546,29 @@ distErrorPlot <- function(
 #'   \code{\link{blandAltmanLehPlot}} \code{\link{barErrorPlot}}
 #'
 #' @examples
-#' # correlations by cell type
-#' corrExpPredPlot(
-#'   object = DDLSChungComp,
-#'   facet.by = "CellType",
-#'   color.by = "CellType",
-#'   corr = "both"
-#' )
-#' # correlations of all samples mixed
-#' corrExpPredPlot(
-#'   object = DDLSChungComp,
-#'   facet.by = NULL,
-#'   color.by = "CellType",
-#'   corr = "ccc",
-#'   pos.x.label = 0.2,
-#'   alpha.point = 0.3
-#' )
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSLiComp)
+#'   DDLSLiComp <- calculateEvalMetrics(
+#'     object = DDLSLiComp
+#'   )
+#'   # correlations by cell type
+#'   corrExpPredPlot(
+#'     object = DDLSLiComp,
+#'     facet.by = "CellType",
+#'     color.by = "CellType",
+#'     corr = "both"
+#'   )
+#'   # correlations of all samples mixed
+#'   corrExpPredPlot(
+#'     object = DDLSLiComp,
+#'     facet.by = NULL,
+#'     color.by = "CellType",
+#'     corr = "ccc",
+#'     pos.x.label = 0.2,
+#'     alpha.point = 0.3
+#'   )
+#' }
 corrExpPredPlot <- function(
   object,
   colors,
@@ -748,20 +765,27 @@ corrExpPredPlot <- function(
 #'   \code{\link{distErrorPlot}} \code{\link{barErrorPlot}}
 #'
 #' @examples
-#' # Bland-Altman plot by cell type
-#' blandAltmanLehPlot(
-#'   object = DDLSChungComp,
-#'   facet.by = "CellType",
-#'   color.by = "CellType"
-#' )
-#' # Bland-Altman plot of all samples mixed
-#' blandAltmanLehPlot(
-#'   object = DDLSChungComp,
-#'   facet.by = NULL,
-#'   color.by = "CellType",
-#'   alpha.point = 0.3,
-#'   log2 = TRUE
-#' )
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSLiComp)
+#'   DDLSLiComp <- calculateEvalMetrics(
+#'     object = DDLSLiComp
+#'   )
+#'   # Bland-Altman plot by cell type
+#'   blandAltmanLehPlot(
+#'     object = DDLSLiComp,
+#'     facet.by = "CellType",
+#'     color.by = "CellType"
+#'   )
+#'   # Bland-Altman plot of all samples mixed
+#'   blandAltmanLehPlot(
+#'     object = DDLSLiComp,
+#'     facet.by = NULL,
+#'     color.by = "CellType",
+#'     alpha.point = 0.3,
+#'     log2 = TRUE
+#'   )
+#' }
 blandAltmanLehPlot <- function(
   object,
   colors,
@@ -891,17 +915,24 @@ blandAltmanLehPlot <- function(
 #'   \code{\link{distErrorPlot}} \code{\link{blandAltmanLehPlot}}
 #'
 #' @examples
-#' barErrorPlot(
-#'   object = DDLSChungComp,
-#'   error = "MSE",
-#'   by = "CellType"
-#' )
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSLiComp)
+#'   DDLSLiComp <- calculateEvalMetrics(
+#'     object = DDLSLiComp
+#'   )
+#'   barErrorPlot(
+#'     object = DDLSLiComp,
+#'     error = "MSE",
+#'     by = "CellType"
+#'   )
 #'
-#' barErrorPlot(
-#'   object = DDLSChungComp,
-#'   error = "MAE",
-#'   by = "nCellTypes"
-#' )
+#'   barErrorPlot(
+#'     object = DDLSLiComp,
+#'     error = "MAE",
+#'     by = "nCellTypes"
+#'   )
+#' }
 barErrorPlot <- function(
   object,
   error = "MSE",

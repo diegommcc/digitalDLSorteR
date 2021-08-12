@@ -6,6 +6,7 @@ if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 # loading data    
 library(digitalDLSorteRdata)
 data(DDLSLi)
+data(DDLSLiComp)
 
 # getProbMatrix
 test_that(

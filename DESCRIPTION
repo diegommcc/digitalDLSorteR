@@ -1,7 +1,7 @@
 Package: digitalDLSorteR
 Type: Package
 Title: Deconvolution of bulk RNA-seq samples based on Deep Neural Networks
-Version: 1.1.0
+Version: 0.1.0
 Author: c(
   person(given = "Diego", family = "Mañanes", email = "dmananesc@cnic.es", role = "cre"),
   person(given = "Carlos", family = "Torroja", email = "ctorroja@cnic.es", role = "aut"),
@@ -19,7 +19,6 @@ Depends:
     R (>= 4.0.0)
 Imports:
     rlang,
-    digitalDLSorteRdata,
     Matrix,
     Matrix.utils,
     methods,
@@ -44,12 +43,13 @@ Imports:
     ggpubr,
     RColorBrewer
 Suggests:
+    knitr,
+    rmarkdown,
+    digitalDLSorteRdata,
     rhdf5,
     DelayedArray,
     DelayedMatrixStats,
     HDF5Array,
-    knitr,
-    rmarkdown,
     testthat
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)

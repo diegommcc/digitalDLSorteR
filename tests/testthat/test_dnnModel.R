@@ -504,12 +504,12 @@ test_that(
       cell.ID.column = "Cell_ID",
       cell.type.column = "Cell_Type",
       prob.design = probMatrixValid,
-      num.bulk.samples = 100,
+      num.bulk.samples = 120,
       verbose = FALSE
     )
     DDLSLi <- simBulkProfiles(DDLSLi, verbose = FALSE)
     DDLSLi <- trainDigitalDLSorterModel(
-      object = DDLSLi, batch.size = 20, verbose = FALSE
+      object = DDLSLi, batch.size = 28, verbose = FALSE
     )
     # save DDLS object as RDS object: transform Python object into a JSON-like character object
     fileTMP <- tempfile()

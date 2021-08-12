@@ -6,6 +6,10 @@ output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 3
+    vignette: >
+      %\VignetteIndexEntry{HDF5 files as back-end}
+      %\VignetteEngine{knitr::rmarkdown}
+      %\VignetteEncoding{UTF-8}
 geometry: margin=3cm
 fontsize: 12pt
 ---
@@ -22,7 +26,7 @@ The Hierarchical Data Format version 5 (HDF5), is an open source file format tha
 * `simSCProfiles`: when new single-cell profiles are simulated. Moreover, this function allows to create those profiles by batch without creating large matrices that don't fit in memory and then writing them to disk.
 * `simBulkProfiles`: this is the most delicated step where HDF5 files can be very useful. As `simSCProfiles`, this function is able to create the simulated pseudo-bulk profiles without loading all of them into RAM. 
 
-To use this format, _digitalDLSorteR_ uses mainly the `Biocpkg("HDF5Array")` and `r Biocpkg("DelayedArray")` packages, slthough some functionalities have been implemented using directly `Biocpkg("rhdf5")`. For more information about this packages, we recommend their corresponding vignettes and this workshop by Peter Hickey [Effectively using the DelayedArray framework to support the analysis of large datasets](https://petehaitch.github.io/BioC2020_DelayedArray_workshop/articles/Effectively_using_the_DelayedArray_framework_for_users.html).
+To use this format, _digitalDLSorteR_ uses mainly the [_HDF5Array_](https://bioconductor.org/packages/release/bioc/html/HDF5Array.html) and [_DelayedArray_](https://bioconductor.org/packages/release/bioc/html/DelayedArray.html) packages, slthough some functionalities have been implemented using directly [_rhdf5_](https://www.bioconductor.org/packages/release/bioc/html/rhdf5.html). For more information about this packages, we recommend their corresponding vignettes and this workshop by Peter Hickey [Effectively using the DelayedArray framework to support the analysis of large datasets](https://petehaitch.github.io/BioC2020_DelayedArray_workshop/articles/Effectively_using_the_DelayedArray_framework_for_users.html).
 
 ## General usage
 
@@ -39,4 +43,4 @@ The simplest way to use it is by setting oonly the `file.backend` parameter as i
 
 ## Disclaimer
 
-HDF5 files are a very useful tool that allows to work with large datasets that in other way would not be possible. However, it is important to keep in mind that run times can be longer when they are used, as to access data from RAM is always faster than from disk. Therefore, we recommend using this functionality only in the case of having very large datasets and limited computational resources. As the `Biocpkg("HDF5Array")` and `r Biocpkg("DelayedArray")` authors point: **If you can load your data into memory and still compute on it, then you’re always going to have a better time doing it that way.**
+HDF5 files are a very useful tool that allows to work with large datasets that in other way would not be possible. However, it is important to keep in mind that run times can be longer when they are used, as to access data from RAM is always faster than from disk. Therefore, we recommend using this functionality only in the case of having very large datasets and limited computational resources. As the [_HDF5Array_](https://bioconductor.org/packages/release/bioc/html/HDF5Array.html) and [_DelayedArray_](https://bioconductor.org/packages/release/bioc/html/DelayedArray.html) authors point: **If you can load your data into memory and still compute on it, then you’re always going to have a better time doing it that way.**

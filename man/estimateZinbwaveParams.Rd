@@ -92,15 +92,19 @@ about the model, see Risso et al., 2018.
 }
 \examples{
 \dontrun{
-DDLSChung <- estimateZinbwaveParams(
-  object = DDLSChung,
-  cell.ID.column = "Cell_ID",
-  gene.ID.column = "external_gene_name",
-  cell.type.column = "Cell_type",
-  cell.cov.columns = c("Patient", "Sample_type"),
-  gene.cov.columns = "gene_length",
-  verbose = TRUE
-)
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSChung)
+  DDLSChung <- estimateZinbwaveParams(
+    object = DDLSChung,
+    cell.ID.column = "Cell_ID",
+    gene.ID.column = "external_gene_name",
+    cell.type.column = "Cell_type",
+    cell.cov.columns = c("Patient", "Sample_type"),
+    gene.cov.columns = "gene_length",
+    verbose = TRUE
+  )
+}
 }
 
 }

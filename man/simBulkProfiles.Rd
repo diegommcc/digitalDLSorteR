@@ -114,19 +114,36 @@ generated 'on the fly' during the neural network training. See
 \code{?\link{trainDigitalDLSorterModel}} for details.
 }
 \examples{
-# loading all data in memory
-DDLSChungComp <- simBulkProfiles(
-  DDLSChungComp,
-  type.data = "both"
-)
-
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSLi)
+  probMatrix <- data.frame(
+    Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M", 
+                  "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
+    from = c(rep(1, 8), 1, 30),
+    to = c(rep(15, 8), 50, 70)
+  )
+  DDLSLi <- generateBulkCellMatrix(
+    object = DDLSLi,
+    cell.ID.column = "Cell_ID",
+    cell.type.column = "Cell_Type",
+    prob.design = probMatrix,
+    num.bulk.samples = 100,
+    verbose = TRUE
+  )
+  # loading all data in memory
+  DDLSLi <- simBulkProfiles(
+    DDLSLi,
+    type.data = "both"
+  )
+}
 \dontrun{
 # using HDF5 as backend
-DDLSChungComp <- simBulkProfiles(
-  DDLSChungComp,
+DDLSLi <- simBulkProfiles(
+  DDLSLi,
   threads = 2,
   type.data = "both",
-  file.backend = "DDLSChung.bulk.simul.h5"
+  file.backend = "DDLSLi.bulk.simul.h5"
 )
 }
 

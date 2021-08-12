@@ -6,6 +6,10 @@ output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 3
+    vignette: >
+      %\VignetteIndexEntry{Performance of a real model: deconvolution of colorectal cancer samples}
+      %\VignetteEngine{knitr::rmarkdown}
+      %\VignetteEncoding{UTF-8}
 bibliography: references.bib
 geometry: margin=3cm
 fontsize: 12pt
