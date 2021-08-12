@@ -6,20 +6,18 @@ output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 3
+bibliography: references.bib
 geometry: margin=3cm
 fontsize: 12pt
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  echo = TRUE,
-  eval = FALSE
-)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
 ## Installation
 
-_digitalDLSorteR_ is based on DNN models. It uses [Keras](https://cloud.r-project.org/web/packages/keras/index.html) package available from CRAN, a high-level neural networks API implemented in Python. Keras R version works as an interface between these two languages by using [reticulate](https://cran.r-project.org/web/packages/reticulate/index.html) package. Therefore, Keras requires a Python interpreter to work. We recommend using conda environments to provide a Python interpreter with all its dependencies covered. If you have a conda environment compatible with Keras requirements, the package will find it automatically during the installation. Otherwise, Keras package will create a new environment named `r-reticulate` with all dependencies covered. There are other methods to install a functionally back-end, see <https://keras.rstudio.com/reference/install_keras.html> for more details.
+_digitalDLSorteR_ is based on Deep Neural Networks (DNN) models. To use them, it uses `r CRANpkg("keras")` package (available from CRAN), a high-level neural networks API implemented in Python. `r CRANpkg("keras")` R version works as an interface between these two languages by using `r CRANpkg("reticulate")` package. Therefore, `r CRANpkg("keras")` requires a Python interpreter to work. We recommend using conda environments to provide a Python interpreter with all its dependencies covered. If you have a conda environment compatible with `r CRANpkg("keras")` requirements, the package will find it automatically during the installation. Otherwise, `r CRANpkg("keras")` will create a new environment named `r-reticulate` with all these dependencies covered. There are other methods to install a functionally back-end, see <https://keras.rstudio.com/reference/install_keras.html> for more details.
 
 ```{r, eval = FALSE}
 install.packages("keras")
@@ -27,34 +25,40 @@ library(keras)
 install_keras(method = "conda") # other options are available
 ```
 
-This is the default CPU-based installation, but it is possible a more customized installation. See <https://tensorflow.rstudio.com/installation/> and <https://keras.rstudio.com/reference/install_keras.html>.
+This is the default CPU-based installation, but it is possible a more customized installation. See <https://tensorflow.rstudio.com/installation/> and <https://keras.rstudio.com/reference/install_keras.html> for more details.
 
 ## Common errors in Keras
 
-### Eager execution
-
-Depending on Tensorflow version used as a back-end, you are likely to experiment an error related to eager execution. Eager execution is an imperative, define-by-run interface where operations are executed immediately as they are called. However, it is only available on Tensorflow versions later than 1.9. You can disable this option by the following line of code or change your Tensorflow version used as a back-end.
-
-```{r, eval = FALSE}
-tensorflow::tf$compat$v1$disable_eager_execution()
-```
-
 ### Keras package does not find any functional Python environment
 
-If you experiment errors related to its installation and/or Keras is not able to find a functional Python environment although it was installed, follow these steps:
+If you experiment errors related to its installation and/or `r CRANpkg("keras")` is not able to find a functional Python environment, follow these steps:
 
-First, create a Python interpreter with TensorFlow using the following code from any R console. We use conda as environment-manager, but other possibilities are available (see <https://keras.rstudio.com/reference/install_keras.html>)
+Instead of using `keras::install_keras()` function, run the following code chunk installing `r CRANpkg("tensorflow")` R package. This code will create a Python interpreter with `r CRANpkg("tensorflow")` with all its dependencies covered.
 
 ```{r, eval = FALSE}
 tensorflow::install_tensorflow(
-  method = 'conda', envname = 'r-reticulate-tensorflow', version = '2.4.0-cpu'
+  method = 'conda', envname = 'r-reticulate-tensorflow', version = '2.1.0-cpu'
 )
 ```
 
-Finally, in a new Rsession, set this new environment as the selected Python environment:
+If this code chunk raises an error, create manually a conda environment from any terminal:
+
+```{bash}
+conda create --name r-tensorflow-21 python tensorflow=2.1
+```
+
+Then, run the above chunk code setting the `envname` parameter equal to the name of the newly created conda environment name. 
+
+Finally, problems still happen, set this new environment as the selected Python environment:
 
 ```{r}
 tensorflow::use_condaenv("r-reticulate-tensorflow")
 ```
 
-If problems still happening, contact us and we'll try to help you!
+### Eager execution
+
+Depending on `r CRANpkg("tensorflow")` version used as back-end, you are likely to experiment an error related to eager execution. Eager execution is an imperative, define-by-run interface where operations are executed immediately as they are called. However, it is only available on `r CRANpkg("tensorflow")` versions later than 1.9. You can disable this option by the following line of code or change your `r CRANpkg("tensorflow")` version used as back-end.
+
+```{r}
+tensorflow::tf$compat$v1$disable_eager_execution()
+```

@@ -1,5 +1,5 @@
 ---
-title: "HDF5 files as a back-end"
+title: "HDF5 files as back-end"
 author: "Diego Mañanes"
 date: "`r paste0(Sys.Date())`"
 output: 
@@ -11,25 +11,32 @@ fontsize: 12pt
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
-## R Markdown
+## HDF5 files as back-end
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+The Hierarchical Data Format version 5 (HDF5), is an open source file format that supports large, complex, heterogeneous data. This format has different advantages that make it very suitable for storing large datasets together with their metadata in a way that allows to access fastly all the information. As _digitalDLSorteR_ needs to simulate large amounts of pseudo-bulk samples to reach a good training and uses as input single-cell RNA-Seq datasets whose size is getting much bigger, it implements a set of functionalities that offer the possibility to use HDF5 files as back-end for each step where large data are required:
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+* `loadSCProfiles`: when single-cell data is loaded. It allows to keep large datasets that does not fit in RAM.
+* `simSCProfiles`: when new single-cell profiles are simulated. Moreover, this function allows to create those profiles by batch without creating large matrices that don't fit in memory and then writing them to disk.
+* `simBulkProfiles`: this is the most delicated step where HDF5 files can be very useful. As `simSCProfiles`, this function is able to create the simulated pseudo-bulk profiles without loading all of them into RAM. 
 
-```{r cars}
-summary(cars)
-```
+To use this format, _digitalDLSorteR_ uses mainly the `Biocpkg("HDF5Array")` and `r Biocpkg("DelayedArray")` packages, slthough some functionalities have been implemented using directly `Biocpkg("rhdf5")`. For more information about this packages, we recommend their corresponding vignettes and this workshop by Peter Hickey [Effectively using the DelayedArray framework to support the analysis of large datasets](https://petehaitch.github.io/BioC2020_DelayedArray_workshop/articles/Effectively_using_the_DelayedArray_framework_for_users.html).
 
-## Including Plots
+## General usage
 
-You can also embed plots, for example:
+In [Building new deconvolution models](newModels.html), some examples of its usage are shown. On the whole, the important parameters that must be considered are the following ones:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+* `file.backend`: it is the file path in which the HDF5 file will be stored.
+* `name.dataset.backend`: as HDF5 files use a "file directory" like structure, it is possible to sote more than one dataset in one file. To do so, it is needed to change the name of the dataset. If it is not provided, a random dataset name will be used. 
+* `compression.level`: it allows to change the level of compression that HDF5 file will have. It is an integer value between 0 and 9. Note that the greater the compression level, the slower the processes. 
+* `chunk.dims`: HDF5 files are created as chunks. This parameter specifies the dimensions that they will have, 
+* `block.processing`: when it is available, this parameter allows to indicate if data should be treated as blocks in order to avoid loading all data into RAM. 
+* `block.size`: if available, set the number of samples that will be simulated in each iteration during the process. 
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+The simplest way to use it is by setting oonly the `file.backend` parameter as in the examples provided in [Building new deconvolution models](newModels.html). 
+
+## Disclaimer
+
+HDF5 files are a very useful tool that allows to work with large datasets that in other way would not be possible. However, it is important to keep in mind that run times can be longer when they are used, as to access data from RAM is always faster than from disk. Therefore, we recommend using this functionality only in the case of having very large datasets and limited computational resources. As the `Biocpkg("HDF5Array")` and `r Biocpkg("DelayedArray")` authors point: **If you can load your data into memory and still compute on it, then you’re always going to have a better time doing it that way.**

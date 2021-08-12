@@ -6,6 +6,7 @@ output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 3
+bibliography: references.bib
 geometry: margin=3cm
 fontsize: 12pt
 ---
@@ -17,27 +18,29 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Performance of a real model: deconvolution of colorectal cancer samples
 
-In "Building new deconvolution models" was shown the workflow needed to build new deconvolution models. However, it weas done using a 'toy' example in order to avoid long execution times. In this vignette, the performance of the real model trained with the full dataset is shown to provide a guide for new users that want to build new models. 
+In [Building new deconvolution models](newModels.html) was shown the workflow necessary to build new deconvolution models. However, a 'toy' example was used in order to avoid long run times. In this vignette, the performance of a real model is shown in order to serve as a guide on how to assess whether a model has been trained correctly and can e used to deconvolute new bulk RNA-Seq samples.
 
 ## Loading and inspection of the model
 
-Model is going to be loaded from _digitalDLSorteRdata_ package. It is a `DigitalDLSorter` object with `prob.cell.matrix` and `trained.model` slots:
+The model to be shown has been built with data from @Li2017 ([GSE81861](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861)), so it can be used to deconvolute samples from colorectal cancer. It is loaded from _digitalDLSorteRdata_ package, and it is a `DigitalDLSorter` object with `prob.cell.matrix` and `trained.model` slots.
 
 ```{r}
-library(digitalDLSorteRdata)
+library(ggplot2)
 library(digitalDLSorteR)
+library(digitalDLSorteRdata)
 data(DDLSLiComp)
-
 DDLSLiComp
 ```
 
-As it is shown above, the model was trained 30 epochs with a total of 20,000 pseudo-bulk samples (13,334 for training and 6,666 for test). Now, evaluation metrics are going to be calculated by `calculateEvalMetrics` function.
+As shown above, the model was trained 30 epochs with a total of 20,000 pseudo-bulk samples (13,334 for training and 6,666 for testing). Now, evaluation metrics will be calculated by the `calculateEvalMetrics` function in test data to explore its performance in depth.
 
 ```{r}
 DDLSLiComp <- calculateEvalMetrics(DDLSLiComp)
 ```
 
-And then, evaluation plots can be displayed:
+### How errors are distributed
+
+With `distErrorPlot`, we can plot in different ways how errors are distributed. In this case, we can see the absolute error (`AbsErr`) by cell type (`CellType`). CD4 T cells are predicted worse than the other cell types, but still have a median error closse to zero. 
 
 ```{r distErr1}
 distErrorPlot(
@@ -51,49 +54,52 @@ distErrorPlot(
 )
 ```
 
+In order to see mean error values, we can check it with `barErrorPlot`:
+
+```{r}
+barErrorPlot(DDLSLiComp, error = "MAE", by = "CellType")
+```
+
+
+Now, we can see in what proportions the model is failing more by changing the `x.by` argument to `"pBin"` and optionally setting `facet.by = "CellType"`:
 
 ```{r distErr2}
 distErrorPlot(
   DDLSLiComp,
   x.by = "pBin",
   error = "AbsErr",
-  facet.by = "CellType",
-  color.by = "nCellTypes", 
-  type = "violinplot",
+  color.by = "CellType", 
+  type = "boxplot",
   size.point = 0.5
+)
+distErrorPlot(
+  DDLSLiComp,
+  x.by = "pBin",
+  error = "AbsErr",
+  facet.by = "CellType",
+  color.by = "CellType", 
+  error.label = TRUE,
+  type = "boxplot"
 )
 ```
 
+As can be seen, most of the failures in CD4 T cell proportions occur at high proportions (between 0.5 and 1), although the mean absolute errors (`MAbsErr`) shown as annotations are very low in all cases.
 
-```{r distErr3}
-distErrorPlot(
-  DDLSLiComp,
-  error = "AbsErr",
-  color.by = "CellType", 
-  facet.by = "nCellTypes",
-  type = "boxplot",
-  size.point = 1
-)s
-```
+### Correlation between actual and expected proportions
 
-
-```{r barError}
-barErrorPlot(DDLSLiComp, error = "MAE", by = "CellType")
-```
-
-
-
-
+Another way to visualize how the model works is to use the `corrExpPredPlot` function. Like `distErrorPlot`, we can see how the proportions are correlated by different variables. Here, we can see the same trend observed above: the model performs worse estimating CD4 T cell proportions with the lowest concordance correlation and Pearson's coefficients ($R = 0.95$ and $CCC = 0.794$, respectively), although it performs well. In fact, we can observe that the model tends to under-estimate these proportions. As for the rest of cell types, the results show a very good performance with high coefficients (between 0.97 and 0.99).
 
 ```{r corr1}
 corrExpPredPlot(
   DDLSLiComp,
   color.by = "CellType",
-  size.point = 1,
-  corr = "both"
+  facet.by = "CellType",
+  corr = "both", 
+  size.point = 0.5
 )
 ```
 
+It is very important to note that these results only show the estimated proportions of pseudo-bulk samples. If we don't filter out single-cell profiles, the results improve in general, showing that the model is able to deal with pure samples as well.
 
 ```{r corr2}
 corrExpPredPlot(
@@ -101,35 +107,40 @@ corrExpPredPlot(
   color.by = "CellType",
   facet.by = "CellType",
   size.point = 0.5, 
-  filter.sc = F,
+  filter.sc = FALSE,
   corr = "both"
 )
 ```
+
+
+In the end, we can see the overall results without splitting the graph. As can be seen, both coefficients present high values when all proportions are considered.
 
 ```{r corr3}
 corrExpPredPlot(
   DDLSLiComp,
   color.by = "CellType",
-  facet.by = "nCellTypes",
-  size.point = 1,
+  size.point = 0.5,
   corr = "both"
 )
 ```
 
 
+### Bland-Altman agreement plots
+
+The last way to graphically represent results is to use `blandAltmanLehPlot`. It generates a Bland-Altman agreement plot, a method for analyzing the level of agreement between two variables, in that case expected vs predicted cell proportions. As shown, most of the proportions fall close to zero (note the blue density lines), although we can observe the aforementioned problem in the estimate of T CD4 cell proportions. 
 
 
 ```{r bland1}
 blandAltmanLehPlot(
   DDLSLiComp, 
   color.by = "CellType",
-  log.2 = FALSE,
-  size.point = 1,
+  size.point = 0.5,
   filter.sc = TRUE,
-  density = TRUE,
+  density = TRUE
 )
 ```
 
+Finally, we can generate the same plot but spli the information by the number of different cell types present in each pseudo-bulk sample. The smaller the number of cell types, the larger the error made by the model. In any case, considering the results from `distErrorPlot` and `corrExpPredPlot`, we can conclude that the model performs well on the test data.
 
 ```{r bland2}
 blandAltmanLehPlot(
@@ -137,8 +148,75 @@ blandAltmanLehPlot(
   color.by = "nCellTypes",
   facet.by = "nCellTypes",
   log.2 = FALSE,
-  size.point = 1,
+  size.point = 0.5,
   filter.sc = TRUE,
-  density = TRUE
+  density = FALSE
 )
 ```
+
+
+## _digitalDLSorteR_ dealing with real data from TCGA project
+
+Now, to show the performance of this model on real data, colorectal cancer samples from The Cancer Genome Atlas (TCGA) project [@Koboldt2012; @Ciriello2015] will be used. This dataset consists of 521 samples inclusing different types of tumors and healthy samples. 
+
+```{r}
+data(TCGA.colon.se)
+TCGA.colon.se
+```
+
+As shown in [Building new deconvolution models](newModels.html), we can load the data into the `DigitalDLSorter` object as follows:
+
+```{r}
+DDLSLiComp <- loadDeconvData(
+  object = DDLSLiComp,
+  data = TCGA.colon.se, 
+  name.data = "TCGA.colon"
+)
+```
+
+Then, with the `deconvDigitalDLSorterObj` function, these new samples can be deconvoluted into the cell types considered by the model and the predicted proportions can be represented by the `barPlotCellTypes` function. 
+
+```{r}
+DDLSLiComp <- deconvDigitalDLSorterObj(
+  object = DDLSLiComp, 
+  name.data = "TCGA.colon",
+  verbose = FALSE
+)
+barPlotCellTypes(DDLSLiComp,  name.data = "TCGA.colon", rm.x.text = TRUE)
+```
+
+As the total of samples is too high, we can see the results of some samples by taking the matrix with the proportions and ploting 20 random samples with `barPlotCellTypes`:
+
+```{r}
+set.seed(12345)
+resDeconvTCGA <- deconv.results(DDLSLiComp, "TCGA.colon")
+barPlotCellTypes(
+  resDeconvTCGA[sample(1:521, size = 20), ], rm.x.text = TRUE,
+  title = "Results of deconvolution (20 random samples)"
+)
+```
+
+Finally, to check whether the predicted estimates make sense with the type of sample they come from (metastatic, normal, primary and recurrent), we will inspect the predicted proportions of tumor cells, epithelial cells and fibroblasts.
+
+```{r, fig.width=10, fig.height=4}
+dfProp <- data.frame(
+  Sample = rownames(resDeconvTCGA),
+  CRC = resDeconvTCGA[, "CRC"],
+  Ep = resDeconvTCGA[, "Ep"],
+  Fb = resDeconvTCGA[, "Fb"],
+  TypeSample = TCGA.colon.se@colData$Tumor_Type
+)
+dfProp <- reshape2::melt(dfProp)
+
+ggplot(dfProp, aes(x = TypeSample, y = value, fill = TypeSample)) +
+  geom_boxplot() + facet_wrap(~ variable) + ylab("Estimated proportion") + 
+  ggtitle("Estimated proportions in TCGA data") + theme_bw() + 
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.title = element_text(face = "bold")
+  )
+```
+
+_digitalDLSorteR_ correctly estimates the proportion of tumor cells (`CRC`) and epithelial/fibroblast cells (`Ep` and `Fb`) according to sample type. Further analysis can be performed to better understand and evaluate the performance of the model on these data (correlation analysis between estimated cell proportions, comparisons with other published tools, etc.).
+
+## References

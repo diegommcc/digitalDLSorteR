@@ -6,50 +6,52 @@ output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 3
+bibliography: references.bib
 geometry: margin=3cm
 fontsize: 12pt
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::include_graphics("workflow_pretrained_models.png")
 ```
 
 ## Using pre-trained models
 
-_digitalDLSorteR_ offers the possibility of using pre-trained context-specific deconvolution models included in _digitalDLSorteRdata_ (<https://github.com/diegommcc/digitalDLSorteRdata>) to deconvolve new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use _digitalDLSorteR_ and only requires to load a raw bulk RNA-Seq matrix with genes as rows (annotated as _SYMBOL_) and samples as columns, and select the wanted model. It is done using `deconvDigitalDLSorter` function that by default normalize the samples to counts per million (CPMs), so this matrix should be raw counts.
+_digitalDLSorteR_ offers the possibility to use pre-trained context-specific deconvolution models included in _digitalDLSorteRdata_ package (<https://github.com/diegommcc/digitalDLSorteRdata>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use _digitalDLSorteR_ and only requires loading into R a raw bulk RNA-Seq matrix with genes as rows (annotated as _SYMBOL_) and samples as columns, and selecting the desired model. This is done by the `deconvDigitalDLSorter` function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. After the process, estimated cell composition of each sample can be explored as a bar chart using the `barPlotCellTypes` function (\@ref(fig:workflow)).
 
-**Figure 1**
+![(#fig:workflow) Workflow to use pre-trained models](workflow_pretrained_models.png)
 
 ## Available models
 
-So far, the available models just cover two possible biological environments: breast cancer and colorectal cancer. These models are able to accurately deconvolve new samples from their same environment as they have been trained with transcriptional profiles from these specific contexts. 
+So far, available models just cover two possible biological environments: breast cancer and colorectal cancer. These models are able to accurately deconvolute new samples from the same environment as they have been trained with transcriptional profiles from these specific contexts. 
 
 ### Breast cancer models
 
-There are two different deconvolution models for breast cancer samples differing in the level of specificity. Both of them have been trained using data from [Chung et al., 2017](https://www.nature.com/articles/ncomms15081) ([GSE75688](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688)).
+There are two different deconvolution models for breast cancer samples that differ in the level of specificity. Both have been trained using data from @Chung2017 ([GSE75688](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688)).
 
 * `breast.chung.generic`: this model considers 13 cell types, four of them being the intrinsic molecular subtypes of breast cancer (`ER+`, `HER2+`, `ER+/HER2+` and `TNBC`) and the rest immune and stromal cells (`Stromal`, `Monocyte`, `TCD4mem` (memory CD4+ T cells), `BGC` (germinal center B cells), `Bmem` (memory B cells), `DC` (dendritic cells), `Macrophage`, `TCD8` (CD8+ T cells) and `TCD4reg` (regulatory CD4+ T cells)).
-* `breast.chung.generic`: this model considers 7 cell types. They are generic groups of the cell types considered by the specific version: B cells (`Bcell`), T CD4+ cells (`TcellCD4`), T CD8+ cells (`TcellCD8`), monocytes (`Monocyte`), dendritic cells (`DCs`), stromal cells (`Stromal`) and tumor cells (`Tumor`).
+* `breast.chung.generic`: this model considers 7 cell types, being generic groups of the cell types considered by the specific version: B cells (`Bcell`), T CD4+ cells (`TcellCD4`), T CD8+ cells (`TcellCD8`), monocytes (`Monocyte`), dendritic cells (`DCs`), stromal cells (`Stromal`) and tumor cells (`Tumor`).
 
 ### Colorectal cancer model
 
-This model was created with data from [Li et al., 2017](https://www.nature.com/articles/ng.3818) ([GSE81861](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861)). It is called `colorectal.li'  and considers 10 cell types: cancer cells (`CRC`), epithelial (`Ep`), monocytes (`M`), macrophages (`Mc`), fibroblasts (`Fb`), CD4 T cells (`CD4`), CD8 T cells (`CD8Gp`), CD8 T cells (`CD8Gn`), germinal center B cells (`gB`) and mature B cells (`pB`).
+This model was created with data from @Li2017 ([GSE81861](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861)). It is called `colorectal.li` and considers 10 cell types: cancer cells (`CRC`), epithelial (`Ep`), monocytes (`M`), macrophages (`Mc`), fibroblasts (`Fb`), CD4 T cells (`CD4`), CD8 T cells (`CD8Gp`), CD8 T cells (`CD8Gn`), germinal center B cells (`gB`) and mature B cells (`pB`).
 
-## Example using TCGA breast cancer samples
+## Example using breast cancer samples from TCGA project
 
-The following chunk shows an example using `breast.chung.generic` model and a small portion of TCGA data loaded from `digitalDLSorteRdata`:
+The following code chunk shows an example using `breast.chung.generic` model and a small portion of data from The Cancer Genome Atlas (TCGA) project [@Koboldt2012; @Ciriello2015] loaded from `digitalDLSorteRdata`:
 
-```{r deconvolvingTCGA, message=FALSE}
+```{r deconvolutingTCGA, message=FALSE}
 library(digitalDLSorteR)
 library(digitalDLSorteRdata)
-# disable eager execution, compatibility issues
+# disable eager execution for compatibility issues
 tensorflow::tf$compat$v1$disable_eager_execution()
 # loading model and example data from digitalDLSorteRdata
 data(breast.chung.generic)
 data(TCGA.breast.small)
 ```
 
-`breast.chung.generic` is a `DigitalDLSorterDNN` object which can be inspected in order to check which cell types are considered by the model, the performance that it had on test data, etc.
+`breast.chung.generic` is a `DigitalDLSorterDNN` object that can be inspected to check which cell types are considered by the model, how well it performed on test data, etc.
 
 ```{r}
 breast.chung.generic
@@ -59,7 +61,7 @@ breast.chung.generic
 cell.types(breast.chung.generic)
 ```
 
-Now, we can use it to deconvolve `TCGA.breast.small` samples as follows:
+Now, we can use it to deconvolute `TCGA.breast.small` samples as follows:
 
 ```{r}
 # deconvolution
@@ -72,8 +74,7 @@ rownames(deconvResults) <- paste("Sample", seq(nrow(deconvResults)), sep = "_")
 head(deconvResults)
 ```
 
-
-`deconvDigitalDLSorter` returns a data frame with samples as rows ($k$) and cell types considered by the model as columns ($j$). Each entry corresponds with the proportion of $k$ cell type in $i$ sample. In order to evaluate visually these results by a bar plot, you can use `barplotCellTypes` function as follows:
+`deconvDigitalDLSorter` returns a data frame with the samples as rows ($k$) and the cell types considered by the model as columns ($j$). Each entry corresponds to the proportion of cell type $k$ in sample $i$. To visually evaluate these results using a bar chart, you can use the `barplotCellTypes` function as follows:
 
 ```{r resultsDeconvTCGA}
 barPlotCellTypes(
@@ -83,7 +84,7 @@ barPlotCellTypes(
 )
 ```
 
-`deconvDigitalDLSorterObj` also offers some parameters that can be used in the case of simplify your results by adding up cell proportions from similar cell types: `simplify.set` and simplify.majority`. For instance, we can summarize dendritic cells (DCs) and monocytes into mononuclear phagocyte system (MPS) using `simplify.set` as follows:
+Finally, `deconvDigitalDLSorterObj` also offers two parameters in the case you want to simplify the results by aggregating the cell proportions of similar cell types: `simplify.set` and `simplify.majority`. For instance, we can summarize dendritic cells (DCs) and monocytes in the new class mononuclear phagocyte system (MPS) using `simplify.set` as follows:
 
 ```{r}
 # deconvolution
@@ -102,20 +103,18 @@ barPlotCellTypes(
 )
 ```
 
-On the other hand, `simplify.majority` does not create new classes but adds up the proportions of the most abundant cell type in each sample from those provided. Look at the documentation and examples for more details.
+On the other hand, `simplify.majority` does not create new classes but sums the proportions of the most abundant cell type in each sample from those provided. See the documentation and examples for more details.
 
+## Contribute your own models
 
-## Contribute with your own models
-
-New models are thought to be published coming soon, but you can contribute with your own models making them available by contacting us.
+New models are planned to be published soon, but you can contribute your own models by making them available to other users. Please do not hesitate to contact us!
 
 ## References
 
 
 
-## Session info {.unnumbered}
+<!-- ## Session info {.unnumbered} -->
 
-```{r sessionInfo, echo=FALSE}
-sessionInfo()
-```
-
+<!-- ```{r sessionInfo, echo=FALSE} -->
+<!-- sessionInfo() -->
+<!-- ``` -->
