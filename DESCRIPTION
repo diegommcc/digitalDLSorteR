@@ -19,7 +19,7 @@ Depends:
     R (>= 4.0.0)
 Imports:
     rlang,
-    digitalDLSorteRdata
+    digitalDLSorteRdata,
     Matrix,
     Matrix.utils,
     methods,
