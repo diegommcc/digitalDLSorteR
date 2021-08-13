@@ -1,6 +1,5 @@
 #' @importFrom dplyr mutate as_tibble left_join inner_join filter
 #' @importFrom tidyr gather
-#' @importFrom yardstick ccc
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom ggpubr stat_cor
 #' @importFrom stats aggregate as.formula sd var
@@ -468,6 +467,20 @@ distErrorPlot <- function(
   return(plot)
 }
 
+# code from yardstick package (MIT license)
+.cccCalculation <- function(
+  truth, 
+  estimate
+) {
+  me <- mean(estimate)
+  mt <- mean(truth)
+  ve <- var(estimate)
+  vt <- var(truth)
+  cross <- scale(truth, scale = FALSE) * scale(estimate, scale = FALSE)
+  cross <- mean(cross)
+  return(2 * cross / (ve + vt + (me - mt) ^ 2))
+}
+
 .labelsCCCFacet <- function(
   amd, 
   facet.by, 
@@ -480,7 +493,7 @@ distErrorPlot <- function(
       X = unique.facet,
       FUN = function(x) {
         amd.fil <- amd[amd[[facet.by]] == x, c("Prob", "Pred")]
-        ccc <- yardstick::ccc(amd.fil, .data[["Prob"]], .data[["Pred"]])$.estimate
+        ccc <- .cccCalculation(amd.fil[["Prob"]], amd.fil[["Pred"]])
         return(paste("CCC =", round(ccc, 3)))
       }
     ))
@@ -678,7 +691,7 @@ corrExpPredPlot <- function(
   } else {
     size.ann <- 4
     if (corr == "ccc") {
-      label <- yardstick::ccc(amd, .data[["Prob"]], .data[["Pred"]])$.estimate
+      label <- .cccCalculation(amd[["Prob"]], amd[["Pred"]])
       plot <- plot + annotate(
         "text", hjust = 0,
         x = pos.x.label,
@@ -694,7 +707,7 @@ corrExpPredPlot <- function(
         size = size.ann
       )
     } else if (corr == "both") {
-      label <- yardstick::ccc(amd, .data[["Prob"]], .data[["Pred"]])$.estimate
+      label <- .cccCalculation(amd[["Prob"]], amd[["Pred"]])
       plot <- plot + stat_cor(
         method = "pearson",
         label.x = pos.x.label,

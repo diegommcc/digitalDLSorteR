@@ -209,23 +209,27 @@ estimateZinbwaveParams <- function(
   )
   # set configuration of parallel computations 
   if (threads <= 0) threads <- 1
-  if (verbose) {
-    message("=== Set parallel environment to ", threads, " thread(s)\n")
+  if (threads > 1 && !requireNamespace("BiocParallel", quietly = TRUE)) {
+    message("=== Set parallel environment to ", threads, " thread(s). BiocParallel package is not available\n")
+  } else {
+    if (verbose) {
+      message("=== Set parallel environment to ", threads, " thread(s)\n")
+    }  
+    switch(
+      Sys.info()[['sysname']],
+      Windows= {
+        parallelEnv <- BiocParallel::SnowParam(
+          workers = threads, type = "SOCK"
+        )
+      },
+      Linux  = {
+        parallelEnv <- BiocParallel::MulticoreParam(workers = threads)
+      },
+      Darwin = {
+        parallelEnv <- BiocParallel::MulticoreParam(workers = threads)
+      }
+    )
   }
-  switch(
-    Sys.info()[['sysname']],
-    Windows= {
-      parallelEnv <- BiocParallel::SnowParam(
-        workers = threads, type = "SOCK"
-      )
-    },
-    Linux  = {
-      parallelEnv <- BiocParallel::MulticoreParam(workers = threads)
-    },
-    Darwin = {
-      parallelEnv <- BiocParallel::MulticoreParam(workers = threads)
-    }
-  )
   # set cell types that will be estimated
   if (set.type == "All" || "All" %in% set.type) {
     if (missing(cell.cov.columns) || is.null(cell.cov.columns)) {

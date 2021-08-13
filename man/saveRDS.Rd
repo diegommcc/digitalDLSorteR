@@ -3,9 +3,30 @@
 \docType{methods}
 \name{saveRDS}
 \alias{saveRDS}
+\alias{saveRDS,saveRDS-method}
+\alias{saveRDS,DigitalDLSorterDNN-method}
+\alias{saveRDS,DigitalDLSorter-method}
 \title{Save \code{\linkS4class{DigitalDLSorter}} object as RDS file}
 \usage{
 saveRDS(
+  object,
+  file,
+  ascii = FALSE,
+  version = NULL,
+  compress = TRUE,
+  refhook = NULL
+)
+
+\S4method{saveRDS}{DigitalDLSorterDNN}(
+  object,
+  file,
+  ascii = FALSE,
+  version = NULL,
+  compress = TRUE,
+  refhook = NULL
+)
+
+\S4method{saveRDS}{DigitalDLSorter}(
   object,
   file,
   ascii = FALSE,
@@ -37,10 +58,8 @@ saveRDS(
 }
 \description{
 Save \code{\linkS4class{DigitalDLSorter}} and
-\code{\linkS4class{DigitalDLSorterDNN}} objects as RDS files. We developed
-this generic function with the aim of changing the behavior of the base
-function and saving the structure and weights of Deep Neural Network model as
-R native objects. This is because \pkg{keras} models are not able to be
+\code{\linkS4class{DigitalDLSorterDNN}} objects as RDS files.
+\pkg{keras} models are not able to be
 stored natively as R objects (e.g. RData or RDS files). By saving the
 structure as a JSON-like character object and weights as a list, it is
 possible to recover the model and to perform predictions. If
@@ -53,13 +72,8 @@ architecture and weights. It is possible to save completely the model as HDF5
 file with \code{\link{saveTrainedModelAsH5}} function and to load into a
 \code{\linkS4class{DigitalDLSorter}} object with
 \code{\link{loadTrainedModelFromH5}} function. See documentation for details.
-
-Moreover, if you want to save the object as RDA file, it is possible by
-converting the model to an allowed R object with
-\code{\link{preparingToSave}} function. See \code{?\link{preparingToSave}}
-for details.
 }
 \seealso{
 \code{\linkS4class{DigitalDLSorter}}
-\code{\link{saveTrainedModelAsH5}} \code{\link{preparingToSave}}
+\code{\link{saveTrainedModelAsH5}}
 }

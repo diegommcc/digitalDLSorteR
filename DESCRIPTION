@@ -2,10 +2,10 @@ Package: digitalDLSorteR
 Type: Package
 Title: Deconvolution of bulk RNA-seq samples based on Deep Neural Networks
 Version: 0.1.0
-Author: c(
-  person(given = "Diego", family = "Mañanes", email = "dmananesc@cnic.es", role = "cre"),
-  person(given = "Carlos", family = "Torroja", email = "ctorroja@cnic.es", role = "aut"),
-  person(given = "Fatima", family = "Sanchez-Cabo", email = "fscabo@cnic.es", role = "aut"))
+Authors@R: c(
+  person(given = "Diego", family = "Mañanes", email = "dmananesc@cnic.es", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7247-6794")),
+  person(given = "Carlos", family = "Torroja", email = "ctorroja@cnic.es", role = "aut", comment = c(ORCID = "0000-0001-8914-3400")),
+  person(given = "Fatima", family = "Sanchez-Cabo", email = "fscabo@cnic.es", role = "aut", comment = c(ORCID = "0000-0003-1881-1664")))
 Maintainer: <dmananesc@cnic.es>
 Description: digitalDLSorteR is an R package that implements a Deep Learning 
     based method to enumerate and quantify the cell type composition of bulk 
@@ -25,11 +25,9 @@ Imports:
     tidyr,
     SingleCellExperiment,
     SummarizedExperiment,
-    BiocParallel,
     splatter,
     zinbwave,
     stats,
-    yardstick,
     pbapply,
     S4Vectors,
     dplyr,
@@ -46,6 +44,7 @@ Suggests:
     knitr,
     rmarkdown,
     digitalDLSorteRdata,
+    BiocParallel,
     rhdf5,
     DelayedArray,
     DelayedMatrixStats,

@@ -847,10 +847,8 @@ setMethod(f = "project<-",
 #' Save \code{\linkS4class{DigitalDLSorter}} object as RDS file
 #'
 #' Save \code{\linkS4class{DigitalDLSorter}} and
-#' \code{\linkS4class{DigitalDLSorterDNN}} objects as RDS files. We developed
-#' this generic function with the aim of changing the behavior of the base
-#' function and saving the structure and weights of Deep Neural Network model as
-#' R native objects. This is because \pkg{keras} models are not able to be
+#' \code{\linkS4class{DigitalDLSorterDNN}} objects as RDS files. 
+#' \pkg{keras} models are not able to be
 #' stored natively as R objects (e.g. RData or RDS files). By saving the
 #' structure as a JSON-like character object and weights as a list, it is
 #' possible to recover the model and to perform predictions. If
@@ -863,15 +861,10 @@ setMethod(f = "project<-",
 #' \code{\linkS4class{DigitalDLSorter}} object with
 #' \code{\link{loadTrainedModelFromH5}} function. See documentation for details.
 #'
-#' Moreover, if you want to save the object as RDA file, it is possible by
-#' converting the model to an allowed R object with
-#' \code{\link{preparingToSave}} function. See \code{?\link{preparingToSave}}
-#' for details.
-#' 
 #' @docType methods
 #' @name saveRDS
 #' @rdname saveRDS
-#' @aliases saveRDS
+#' @aliases saveRDS,saveRDS-method
 #' 
 #' @param object \code{\linkS4class{DigitalDLSorter}} or 
 #'    \code{\linkS4class{DigitalDLSorterDNN}} object to save
@@ -881,7 +874,7 @@ setMethod(f = "project<-",
 #' @export
 #'
 #' @seealso \code{\linkS4class{DigitalDLSorter}}
-#'   \code{\link{saveTrainedModelAsH5}} \code{\link{preparingToSave}}
+#'   \code{\link{saveTrainedModelAsH5}}
 #'   
 setGeneric(
   "saveRDS", function(
@@ -896,6 +889,9 @@ setGeneric(
   }
 )
 
+#' @export
+#'
+#' @rdname saveRDS
 setMethod(
   "saveRDS", "DigitalDLSorterDNN", definition = function(
     object,
@@ -930,6 +926,9 @@ setMethod(
   }
 )
 
+#' @export
+#'
+#' @rdname saveRDS
 setMethod(
   "saveRDS", "DigitalDLSorter", definition = function(
     object,

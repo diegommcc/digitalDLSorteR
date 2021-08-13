@@ -1,7 +1,5 @@
 ---
 title: "Using pre-trained context-specific deconvolution models"
-author: "Diego Mañanes"
-date: "`r paste0(Sys.Date())`"
 output: 
   rmarkdown::html_vignette:
     toc: true
@@ -17,18 +15,20 @@ fontsize: 12pt
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+**digitalDLSorteR** offers the possibility to use pre-trained context-specific deconvolution models included in **digitalDLSorteRdata** package (<https://github.com/diegommcc/digitalDLSorteRdata>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use **digitalDLSorteR** and only requires loading into R a raw bulk RNA-Seq matrix with genes as rows (annotated as _SYMBOL_) and samples as columns, and selecting the desired model. This is done by the `deconvDigitalDLSorter` function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. After the process, estimated cell composition of each sample can be explored as a bar chart using the `barPlotCellTypes` function (workflow summarized in the figure below).
+
+```{r workflow, fig.cap = "**Workflow to use pre-trained models**", echo = FALSE}
 knitr::include_graphics("workflow_pretrained_models.png")
 ```
 
-## Using pre-trained models
-
-_digitalDLSorteR_ offers the possibility to use pre-trained context-specific deconvolution models included in _digitalDLSorteRdata_ package (<https://github.com/diegommcc/digitalDLSorteRdata>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use _digitalDLSorteR_ and only requires loading into R a raw bulk RNA-Seq matrix with genes as rows (annotated as _SYMBOL_) and samples as columns, and selecting the desired model. This is done by the `deconvDigitalDLSorter` function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. After the process, estimated cell composition of each sample can be explored as a bar chart using the `barPlotCellTypes` function (\@ref(fig:workflow)).
-
-![(#fig:workflow) Workflow to use pre-trained models](workflow_pretrained_models.png)
+<!-- ![(#fig:workflow) Workflow to use pre-trained models](workflow_pretrained_models.png) -->
 
 ## Available models
 
-So far, available models just cover two possible biological environments: breast cancer and colorectal cancer. These models are able to accurately deconvolute new samples from the same environment as they have been trained with transcriptional profiles from these specific contexts. 
+So far, available models just cover two possible biological environments: breast cancer and colorectal cancer. These models are able to accurately deconvolute new samples from the same environment as they have been trained (with transcriptional profiles from these specific contexts). 
 
 ### Breast cancer models
 
@@ -46,8 +46,8 @@ This model was created with data from @Li2017 ([GSE81861](https://www.ncbi.nlm.n
 The following code chunk shows an example using `breast.chung.generic` model and a small portion of data from The Cancer Genome Atlas (TCGA) project [@Koboldt2012; @Ciriello2015] loaded from `digitalDLSorteRdata`:
 
 ```{r deconvolutingTCGA, message=FALSE}
-library(digitalDLSorteR)
-library(digitalDLSorteRdata)
+suppressMessages(library(digitalDLSorteR))
+suppressMessages(library(digitalDLSorteRdata))
 # disable eager execution for compatibility issues
 tensorflow::tf$compat$v1$disable_eager_execution()
 # loading model and example data from digitalDLSorteRdata
@@ -67,7 +67,7 @@ cell.types(breast.chung.generic)
 
 Now, we can use it to deconvolute `TCGA.breast.small` samples as follows:
 
-```{r}
+```{r, warning=FALSE}
 # deconvolution
 deconvResults <- deconvDigitalDLSorter(
   data = TCGA.breast.small,
@@ -88,9 +88,9 @@ barPlotCellTypes(
 )
 ```
 
-Finally, `deconvDigitalDLSorterObj` also offers two parameters in the case you want to simplify the results by aggregating the cell proportions of similar cell types: `simplify.set` and `simplify.majority`. For instance, we can summarize dendritic cells (DCs) and monocytes in the new class mononuclear phagocyte system (MPS) using `simplify.set` as follows:
+Finally, `deconvDigitalDLSorterObj` also offers two parameters in case you want to simplify the results by aggregating cell proportions of similar cell types: `simplify.set` and `simplify.majority`. For instance, we can summarize dendritic cells (DCs) and monocytes in the new class mononuclear phagocyte system (MPS) using `simplify.set` as follows:
 
-```{r}
+```{r, warning=FALSE}
 # deconvolution
 deconvResultsSum <- deconvDigitalDLSorter(
   data = TCGA.breast.small,
@@ -107,11 +107,11 @@ barPlotCellTypes(
 )
 ```
 
-On the other hand, `simplify.majority` does not create new classes but sums the proportions of the most abundant cell type in each sample from those provided. See the documentation and examples for more details.
+On the other hand, `simplify.majority` does not create new classes but sums the proportions to the most abundant cell type from those provided in each sample. See the documentation and examples for more details.
 
 ## Contribute your own models
 
-New models are planned to be published soon, but you can contribute your own models by making them available to other users. Please do not hesitate to contact us!
+New models are planned to be published soon, but you can contribute your own models by making them available to other users. Please do not hesitate to contact us! We'll check the models and include them in the **digitalDLSorteRdata** package.
 
 ## References
 
