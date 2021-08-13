@@ -19,6 +19,7 @@ Depends:
     R (>= 4.0.0)
 Imports:
     rlang,
+    digitalDLSorteRdata
     Matrix,
     Matrix.utils,
     methods,
@@ -43,7 +44,6 @@ Imports:
 Suggests:
     knitr,
     rmarkdown,
-    digitalDLSorteRdata,
     BiocParallel,
     rhdf5,
     DelayedArray,
