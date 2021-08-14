@@ -46,10 +46,10 @@ Suggests:
     HDF5Array,
     testthat
 Depends:
-  BiocGenerics
+  BiocGenerics,
   digitalDLSorteRdata
 Remotes:
-  bioc::BiocGenerics
+  bioc::BiocGenerics,
   digitalDLSorteRdata
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
