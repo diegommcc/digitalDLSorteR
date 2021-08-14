@@ -199,12 +199,33 @@ jobs:
           remotes::install_github("diegommcc/digitalDLSorteRdata")
         shell: Rscript {0}
 
-      - name: Install TensorFlow environment
+      - name: Create a conda environment
+        run: |
+          $CONDA/bin/conda create --name r-reticulate python tensorflow=2.5
+
+      - name: Install TensorFlow environment (Ubuntu and macOS)
+        if: runner.os != 'Windows'
+        run: |
+          # reticulate::use_condaenv("/your/path/to/miniconda3-4.7.12/")
+          # reticulate::conda_create(envname = "r-reticulate")
+          # reticulate::use_condaenv("/your/path/to/miniconda3-4.7.12/envs/r-reticulate")
+
+          # Verify if it was properly selected
+          reticulate::py_config()
+          ## python:         /your/path/to/miniconda3-4.7.12/envs/r-reticulate/bin/python
+          ## ... 
+
+          # tensorflow::install_tensorflow(version = "gpu")
+          ## tensorflow in python
+          tensorflow::install_tensorflow(method = "conda")
+        shell: Rscript {0}
+      
+      - name: Install TensorFlow environment (Windows)
+        if: runner.os == 'Windows'
         run: |
           ## tensorflow in python
           tensorflow::install_tensorflow()
         shell: Rscript {0}
-      
 
       - name: Install dependencies pass 2
         run: |
