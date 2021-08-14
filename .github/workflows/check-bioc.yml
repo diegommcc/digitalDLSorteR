@@ -260,23 +260,23 @@ jobs:
         if:  env.has_testthat == 'true'
         run: find . -name testthat.Rout -exec cat '{}' ';'
 
-      - name: Run RUnit tests
-        if:  env.has_RUnit == 'true'
-        run: |
-          BiocGenerics:::testPackage()
-        shell: Rscript {0}
+      # - name: Run RUnit tests
+      #   if:  env.has_RUnit == 'true'
+      #   run: |
+      #     BiocGenerics:::testPackage()
+      #   shell: Rscript {0}
 
-      - name: Run BiocCheck
-        env:
-          DISPLAY: 99.0
-        run: |
-          BiocCheck::BiocCheck(
-              dir('check', 'tar.gz$', full.names = TRUE),
-              `quit-with-status` = TRUE,
-              `no-check-R-ver` = TRUE,
-              `no-check-bioc-help` = TRUE
-          )
-        shell: Rscript {0}
+      # - name: Run BiocCheck
+      #   env:
+      #     DISPLAY: 99.0
+      #   run: |
+      #     BiocCheck::BiocCheck(
+      #         dir('check', 'tar.gz$', full.names = TRUE),
+      #         `quit-with-status` = TRUE,
+      #         `no-check-R-ver` = TRUE,
+      #         `no-check-bioc-help` = TRUE
+      #     )
+      #   shell: Rscript {0}
 
       - name: Test coverage
         if: github.ref == 'refs/heads/master' && env.run_covr == 'true' && runner.os == 'Linux'
