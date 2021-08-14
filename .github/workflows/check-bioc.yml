@@ -180,8 +180,6 @@ jobs:
           ## For running the checks
           message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
           install.packages(c("rcmdcheck", "BiocCheck"), repos = gha_repos)
-          ## data digitalDLSorteRdata
-          remotes::install_github("diegommcc/digitalDLSorteRdata")
 
           ## Pass #1 at installing dependencies
           ## This pass uses AnVIL-powered fast binaries

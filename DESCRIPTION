@@ -46,11 +46,9 @@ Suggests:
     HDF5Array,
     testthat
 Depends:
-  BiocGenerics,
-  digitalDLSorteRdata
+  BiocGenerics
 Remotes:
-  bioc::BiocGenerics,
-  digitalDLSorteRdata
+  bioc::BiocGenerics
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Collate: 
