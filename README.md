@@ -12,7 +12,7 @@ The **digitalDLSorteR** R package provides a set of tools to deconvolve and infe
 
 ## Installation
 
-**digitalDLSorteR** has been tested on Linux (Ubuntu 20.04 and CentOS 7.1) and macOS (Big Sur 11.4). So far, it can be installed from GitHub, although it will be available at CRAN coming soon.
+**digitalDLSorteR** can be installed from GitHub, although it will be available at CRAN coming soon.
 
 ```r
 if (!requireNamespace("devtools", quietly = TRUE))
