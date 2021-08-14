@@ -201,6 +201,13 @@ jobs:
           remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE, upgrade = TRUE, force = TRUE)
         shell: Rscript {0}
 
+      - name: Install digitalDLSorteRdata
+        if:  env.has_RUnit == 'true'
+        run: |
+          ## data digitalDLSorteRdata
+          remotes::install_github("diegommcc/digitalDLSorteRdata")
+        shell: Rscript {0}
+
       - name: Install BiocGenerics
         if:  env.has_RUnit == 'true'
         run: |
