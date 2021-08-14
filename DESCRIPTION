@@ -15,6 +15,7 @@ Depends:
     R (>= 4.0.0)
 Imports:
     rlang,
+    digitalDLSorteRdata,
     Matrix,
     Matrix.utils,
     methods,
@@ -45,10 +46,6 @@ Suggests:
     DelayedMatrixStats,
     HDF5Array,
     testthat
-Depends:
-  BiocGenerics
-Remotes:
-  bioc::BiocGenerics
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Collate: 
