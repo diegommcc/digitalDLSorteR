@@ -191,7 +191,6 @@ jobs:
         shell: Rscript {0}
 
       - name: Install digitalDLSorteRdata
-        if:  env.has_RUnit == 'true'
         run: |
           ## data digitalDLSorteRdata
           remotes::install_github("diegommcc/digitalDLSorteRdata")
