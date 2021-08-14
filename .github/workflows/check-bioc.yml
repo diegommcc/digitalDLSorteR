@@ -196,6 +196,13 @@ jobs:
           remotes::install_github("diegommcc/digitalDLSorteRdata")
         shell: Rscript {0}
 
+      - name: Install TensorFlow environment
+        run: |
+          ## tensorflow in python
+          tensorflow::install_tensorflow(method = "conda", envname = 'r-reticulate-tensorflow')
+        shell: Rscript {0}
+      
+
       - name: Install dependencies pass 2
         run: |
           ## Pass #2 at installing dependencies
