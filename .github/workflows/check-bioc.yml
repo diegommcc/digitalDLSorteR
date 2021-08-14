@@ -44,7 +44,7 @@ env:
 jobs:
   build-check:
     runs-on: ${{ matrix.config.os }}
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }}) (${{ matrix.config.tf }})
     container: ${{ matrix.config.cont }}
     ## Environment variables unique to this job.
 
@@ -52,9 +52,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: ubuntu-latest, r: '4.1', bioc: '3.14', cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest", python: '3.8' }
-          - { os: macOS-latest, r: '4.1', bioc: '3.14', python: '3.8' }
-          - { os: windows-latest, r: '4.1', bioc: '3.14' }
+          - { os: ubuntu-latest, r: '4.1', bioc: '3.14', cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest", python: '3.8', tf: 'default' }
+          - { os: macOS-latest, r: '4.1', bioc: '3.14', python: '3.8', tf: 'default' }
+          - { os: windows-latest, r: '4.1', bioc: '3.14', tf: 'default' }
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
@@ -199,34 +199,12 @@ jobs:
           remotes::install_github("diegommcc/digitalDLSorteRdata")
         shell: Rscript {0}
 
-      - name: Create a conda environment
-        if: runner.os != 'Windows'
-        run: |
-          $CONDA/bin/conda config --append channels conda-forge
-          $CONDA/bin/conda create --name r-reticulate python tensorflow
-
-      - name: Install TensorFlow environment (Ubuntu and macOS)
-        if: runner.os != 'Windows'
-        run: |
-          # reticulate::use_condaenv("/your/path/to/miniconda3-4.7.12/")
-          # reticulate::conda_create(envname = "r-reticulate")
-          # reticulate::use_condaenv("/your/path/to/miniconda3-4.7.12/envs/r-reticulate")
-
-          # Verify if it was properly selected
-          reticulate::py_config()
-          ## python:         /your/path/to/miniconda3-4.7.12/envs/r-reticulate/bin/python
-          ## ... 
-
-          # tensorflow::install_tensorflow(version = "gpu")
-          ## tensorflow in python
-          tensorflow::install_tensorflow(method = "conda")
+      - name: Install Miniconda
+        run: reticulate::install_miniconda()
         shell: Rscript {0}
-      
-      - name: Install TensorFlow environment (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          ## tensorflow in python
-          tensorflow::install_tensorflow()
+
+      - name: Install TensorFlow
+        run: tensorflow::install_tensorflow(version = '${{ matrix.tf }}-cpu')
         shell: Rscript {0}
 
       - name: Install dependencies pass 2
