@@ -200,8 +200,10 @@ jobs:
         shell: Rscript {0}
 
       - name: Create a conda environment
+        if: runner.os != 'Windows'
         run: |
-          $CONDA/bin/conda create --name r-reticulate python tensorflow=2.5
+          $CONDA/bin/conda config --append channels conda-forge
+          $CONDA/bin/conda create --name r-reticulate python tensorflow
 
       - name: Install TensorFlow environment (Ubuntu and macOS)
         if: runner.os != 'Windows'
