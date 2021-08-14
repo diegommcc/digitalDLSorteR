@@ -199,7 +199,7 @@ jobs:
       - name: Install TensorFlow environment
         run: |
           ## tensorflow in python
-          tensorflow::install_tensorflow(method = "conda", envname = 'r-reticulate-tensorflow')
+          tensorflow::install_tensorflow(method = "auto")
         shell: Rscript {0}
       
 
