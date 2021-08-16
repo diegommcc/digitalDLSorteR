@@ -4,7 +4,7 @@ NULL
 #' Getter function for cell composition matrix
 #'
 #' Getter function for cell composition matrix. This function allows to access
-#' to the cell composition matrix of simulated training or test bulk RNA-seq
+#' to the cell composition matrix of simulated training or test bulk RNA-Seq
 #' data.
 #'
 #' @param object \code{\linkS4class{DigitalDLSorter}} object with

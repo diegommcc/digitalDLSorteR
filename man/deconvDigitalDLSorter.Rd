@@ -20,10 +20,9 @@ in SYMBOL notation and columns must be samples.}
 
 \item{model}{Pre-trained DNN model to use to deconvolute \code{data}. Up to
 now, the available models are aimed to deconvoluting samples of breast
-cancer (\code{breast.chung.generic} and
-\code{breast.chung.specific}) and colorectal cancer
-\code{colorectal.li}. These pre-trained models are stored in
-\pkg{digitalDLSorteRdata} package, so it must be installed together with
+cancer (\code{breast.chung.generic} and \code{breast.chung.specific}) and
+colorectal cancer \code{colorectal.li}. These pre-trained models are stored
+in \pkg{digitalDLSorteRdata} package, so it must be installed together with
 \pkg{digitalDLSorteR}.}
 
 \item{batch.size}{Number of samples loaded in RAM memory each time during the
@@ -56,8 +55,8 @@ allow to deconvolute the immune infiltration of breast cancer (Chung et al.,
 Regarding the former, there are two available models at two different levels
 of specificity: specific cell types (\code{breast.chung.specific}) and generic
 cell types (\code{breast.chung.generic}). See \code{breast.chung.generic},
-\code{breast.chung.specific}, and \code{colorectal.li} documentation
-from \pkg{digitalDLSorteRdata} package for details.
+\code{breast.chung.specific}, and \code{colorectal.li} documentation from
+\pkg{digitalDLSorteRdata} package for details.
 }
 \details{
 This function is intended for users who want to use \pkg{digitalDLSorteR} for
@@ -102,7 +101,7 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 Chung, W., Eum, H. H., Lee, H. O., Lee, K. M., Lee, H. B., Kim, K.
 T., et al. (2017). Single-cell RNA-seq enables comprehensive tumour and
 immune cell profiling in primary breast cancer. Nat. Commun. 8 (1), 15081.
-doi: \href{https://doi.org/10.1038/ncomms15081}{10.1038/ncomms15081}.
+doi: \doi{10.1038/ncomms15081}.
 }
 \seealso{
 \code{\link{deconvDigitalDLSorterObj}}

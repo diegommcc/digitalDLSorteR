@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 
 ## Installation
 
-**digitalDLSorteR** is based on Deep Neural Networks (DNN) models. To use them, [keras](https://cran.r-project.org/web/packages/keras/index.html) package (available from CRAN), a high-level neural networks API implemented in Python, is used. [keras](https://cran.r-project.org/web/packages/keras/index.html) R version works as an interface between these two languages by using [reticulate](https://cran.r-project.org/web/packages/reticulate/index.html) package. Therefore, [keras](https://cran.r-project.org/web/packages/keras/index.html) requires a Python interpreter to work. We recommend using conda environments to provide a Python interpreter with all its dependencies covered. If you already have a conda environment compatible with [keras](https://cran.r-project.org/web/packages/keras/index.html) requirements, the package will find it automatically during the installation. Otherwise, [keras](https://cran.r-project.org/web/packages/keras/index.html) will create a new environment named `r-reticulate` with all these dependencies covered. There are other methods to install a functionally back-end and it is possible more customized installations, see <https://keras.rstudio.com/reference/install_keras.html> and <https://tensorflow.rstudio.com/installation/> for more details.
+**digitalDLSorteR** is based on Deep Neural Networks (DNN) models. To use them, [keras](https://cran.r-project.org/package=keras) package (available from CRAN), a high-level neural networks API implemented in Python, is used. [keras](https://cran.r-project.org/package=keras) R version works as an interface between these two languages by using [reticulate](https://cran.r-project.org/package=reticulate) package. Therefore, [keras](https://cran.r-project.org/package=keras) requires a Python interpreter to work. We recommend using conda environments to provide a Python interpreter with all its dependencies covered. If you already have a conda environment compatible with [keras](https://cran.r-project.org/package=keras) requirements, the package will find it automatically during the installation. Otherwise, [keras](https://cran.r-project.org/package=keras) will create a new environment named `r-reticulate` with all these dependencies covered. There are other methods to install a functionally back-end and it is possible more customized installations, see <https://keras.rstudio.com/reference/install_keras.html> and <https://tensorflow.rstudio.com/installation/> for more details.
 
 ```{r, eval = FALSE}
 install.packages("keras")
@@ -28,13 +28,13 @@ install_keras(method = "conda") # other options are available
 ```
 
 
-## Common errors with [keras](https://cran.r-project.org/web/packages/keras/index.html)
+## Common errors with [keras](https://cran.r-project.org/package=keras)
 
-### [keras](https://cran.r-project.org/web/packages/keras/index.html) package does not find any functional Python environment
+### [keras](https://cran.r-project.org/package=keras) package does not find any functional Python environment
 
-If you experiment errors related to its installation and/or [keras](https://cran.r-project.org/web/packages/keras/index.html) is not able to find a functional Python environment, follow these steps:
+If you experiment errors related to its installation and/or [keras](https://cran.r-project.org/package=keras) is not able to find a functional Python environment, follow these steps:
 
-Instead of using `keras::install_keras()` function, run the following code chunk installing [tensorflow](https://cran.r-project.org/web/packages/tensorflow/index.html) R package. This code will create a Python interpreter with [tensorflow](https://cran.r-project.org/web/packages/tensorflow/index.html) with all its dependencies covered.
+Instead of using `keras::install_keras()` function, run the following code chunk installing [tensorflow](https://cran.r-project.org/package=tensorflow) R package. This code will create a Python interpreter with [tensorflow](https://cran.r-project.org/package=tensorflow) with all its dependencies covered.
 
 ```{r, eval = FALSE}
 tensorflow::install_tensorflow(
@@ -54,11 +54,11 @@ Then, run the above chunk code setting the `envname` parameter equal to the name
 tensorflow::use_condaenv("r-reticulate-tensorflow")
 ```
 
-Finally, if Python-interpreter problems don't dissapear, it is possible to set manually the interpreter that will be used using [reticulate](https://cran.r-project.org/web/packages/reticulate/index.html). See the following guide: <https://rstudio.github.io/reticulate/articles/versions.html>. And of course, don't hesitate to tell us your problem and we'll try to help you!
+Finally, if Python-interpreter problems don't dissapear, it is possible to set manually the interpreter that will be used using [reticulate](https://cran.r-project.org/package=reticulate). See the following guide: <https://rstudio.github.io/reticulate/articles/versions.html>. And of course, don't hesitate to tell us your problem and we'll try to help you!
 
 ### Eager execution
 
-Depending on [tensorflow](https://cran.r-project.org/web/packages/tensorflow/index.html) version used as back-end, you are likely to experiment an error related to eager execution. Eager execution is an imperative, define-by-run interface where operations are executed immediately as they are called. However, it is only available in [tensorflow](https://cran.r-project.org/web/packages/tensorflow/index.html) versions later than 1.9. You can disable this option by the following line of code or change your [tensorflow](https://cran.r-project.org/web/packages/tensorflow/index.html) version used as back-end.
+Depending on [tensorflow](https://cran.r-project.org/package=tensorflow) version used as back-end, you are likely to experiment an error related to eager execution. Eager execution is an imperative, define-by-run interface where operations are executed immediately as they are called. However, it is only available in [tensorflow](https://cran.r-project.org/package=tensorflow) versions later than 1.9. You can disable this option by the following line of code or change your [tensorflow](https://cran.r-project.org/package=tensorflow) version used as back-end.
 
 ```{r}
 tensorflow::tf$compat$v1$disable_eager_execution()

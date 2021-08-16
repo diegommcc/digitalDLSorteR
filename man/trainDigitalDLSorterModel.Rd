@@ -79,8 +79,8 @@ architecture will be ignored.}
 default). Note that if \code{bulk.simul} is not \code{NULL}, data already
 has been shuffled and \code{shuffle} will be ignored.}
 
-\item{threads}{Number of threads used during simulation of bulk samples
-if \code{on.the.fly = TRUE} (1 by default).}
+\item{threads}{Number of threads used during simulation of bulk samples if
+\code{on.the.fly = TRUE} (1 by default).}
 
 \item{view.metrics.plot}{Boolean indicating if show progression plots of loss
 and metrics during training (\code{TRUE} by default). \pkg{keras} for R
@@ -156,8 +156,7 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 \references{
 Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 Learning algorithm to quantify immune cell populations based on scRNA-Seq
-data. Frontiers in Genetics 10, 978. doi:
-\href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
+data. Frontiers in Genetics 10, 978. doi: \doi{10.3389/fgene.2019.00978}
 }
 \seealso{
 \code{\link{plotTrainingHistory}}

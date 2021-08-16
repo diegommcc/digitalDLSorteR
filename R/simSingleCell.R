@@ -89,14 +89,14 @@ NULL
 #' @references Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
 #'   and flexible method for signal extraction from single-cell RNA-seq data.
 #'   Nat Commun 9, 284. doi:
-#'   \href{https://doi.org/10.1038/s41467-017-02554-5}{10.1038/s41467-017-02554-5}
+#'   \doi{10.1038/s41467-017-02554-5}
 #'    Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 #'   algorithm to quantify immune cell populations based on scRNA-Seq data.
 #'   Frontiers in Genetics 10, 978. doi:
-#'   \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
+#'   \doi{10.3389/fgene.2019.00978}
 #'   Zappia, L., Phipson, B. and Oshlack, A. Splatter: simulation of single-cell
 #'   RNA sequencing data. Genome Biol. 2017; 18: 174. doi:
-#'   \href{https://doi.org/10.1186/s13059-017-1305-0}{10.1186/s13059-017-1305-0}
+#'   \doi{10.1186/s13059-017-1305-0}
 #'   
 estimateZinbwaveParams <- function(
   object,
@@ -717,12 +717,11 @@ estimateZinbwaveParams <- function(
 #'
 #' @references Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
 #'   and flexible method for signal extraction from single-cell RNA-seq data.
-#'   Nat Commun 9, 284. doi:
-#'   \href{https://doi.org/10.1038/s41467-017-02554-5}{10.1038/s41467-017-02554-5}
-#'    Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
-#'   algorithm to quantify immune cell populations based on scRNA-Seq data.
-#'   Frontiers in Genetics 10, 978. doi:
-#'   \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
+#'   Nat Commun 9, 284. doi: \doi{10.1038/s41467-017-02554-5} 
+#'   
+#'   Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning 
+#'   algorithm to quantify immune cell populations based on scRNA-Seq data. 
+#'   Frontiers in Genetics 10, 978. doi: \doi{10.3389/fgene.2019.00978}
 #'   
 simSCProfiles <- function(
   object,

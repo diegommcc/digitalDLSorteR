@@ -70,19 +70,19 @@ calculateEvalMetrics <- function(
   metrics = c("MAE", "MSE")
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("Provided object is not of class DigitalDLSorter")
+    stop("The provided object is not of DigitalDLSorter class")
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@test.pred)) {
-    stop("Provided object does not have a trained model for evaluation")
+    stop("The provided object does not have a trained model for evaluation")
   } else if (is.null(prob.cell.types(object)) ||
              !"test" %in% names(prob.cell.types(object))) {
-    stop("Provided object does not contain actual cell proportions in ", 
+    stop("The provided object does not contain actual cell proportions in ", 
          "'prob.cell.types' slot")
   } 
   # validation metrics
   valid.met <- list(MAE = "MAE", MSE = "MSE")
   use.met <- valid.met[names(valid.met) %in% metrics]
-  if (length(use.met) == 0) stop("Provided metrics are not valid. Only MAE and/or MSE are accepted")
+  if (length(use.met) == 0) stop("The provided metrics are not valid. Only 'MAE' and/or 'MSE' are accepted")
   
   # extract information
   testProbsDeconv <- .targetForDNN(
@@ -371,23 +371,23 @@ distErrorPlot <- function(
   ...
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("Provided object is not of DigitalDLSorter class")
+    stop("The provided object is not of class DigitalDLSorter")
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@test.deconv.metrics)) {
-    stop("Provided object does not have evaluation metrics. Use ",
+    stop("The provided object does not have evaluation metrics. Use ",
          "'calculateEvalMetrics' function")
   } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
     stop("Evaluation metrics are incorrect. Please, use 'calculateEvalMetrics' function")
   } else if (!error %in% c("AbsErr", "ppAbsErr", "SqrErr", "ppSqrErr")) {
-    stop("'error' provided is not valid. Available errors are: 'AbsErr', ",
+    stop("'error' provided is not valid. The available errors are: 'AbsErr', ",
          "'ppAbsErr', 'SqrErr' and 'ppSqrErr'")
   } else if (!x.by %in% c("nCellTypes", "CellType", "pBin")) {
-    stop("'x.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' and 'pBin'")
+    stop("'x.by' provided is not valid. The available options are: 'nCellTypes', 'CellType' and 'pBin'")
   } else if (!type %in% c("violinplot", "boxplot")) {
-    stop("'type' provided is not valid. Available options are: 'violinplot' and 'boxplot'")
+    stop("'type' provided is not valid. The available options are: 'violinplot' and 'boxplot'")
   } else if (!is.null(color.by)) {
     if (!color.by %in% c("nCellTypes", "CellType")) {
-      stop("'color.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' and NULL")
+      stop("'color.by' provided is not valid. The available options are: 'nCellTypes', 'CellType' and NULL")
     }
   } 
   amd <- trained.model(object)@test.deconv.metrics[[1]]
@@ -397,7 +397,7 @@ distErrorPlot <- function(
   if (missing(colors)) colors <- default.colors()
   if (!is.null(color.by)) {
     if (length(colors) < length(unique(amd[[color.by]]))) 
-      stop("Number of provided colors is not enough")
+      stop("The number of provided colors is not enough")
   } 
   if (is.null(title))
     title.plot <- paste(error, "by", x.by)
@@ -601,16 +601,16 @@ corrExpPredPlot <- function(
   ...
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("Provided object is not of DigitalDLSorter class")
+    stop("The provided object is not of class DigitalDLSorter")
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@test.deconv.metrics)) {
-    stop("Provided object does not have evaluation metrics. Use ",
+    stop("The provided object does not have evaluation metrics. Use ",
          "'calculateEvalMetrics' function")
   } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
     stop("Evaluation metrics are not correct, use 'calculateEvalMetrics' function")
   } else if (!is.null(color.by)) {
     if (!color.by %in% c("nCellTypes", "CellType"))
-      stop("'color.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' or NULL")
+      stop("'color.by' provided is not valid. The available options are: 'nCellTypes', 'CellType' or NULL")
   }
   amd <- trained.model(object)@test.deconv.metrics[[1]]
   if (filter.sc) {
@@ -620,7 +620,7 @@ corrExpPredPlot <- function(
   
   if (!is.null(color.by)) {
     if (length(colors) < length(unique(amd[[color.by]]))) {
-      stop("Number of provided colors is not enough")
+      stop("The number of provided colors is not enough")
     }  
   }
   if (is.null(title))
@@ -651,7 +651,7 @@ corrExpPredPlot <- function(
     DigitalDLSorterTheme()
   if (!is.null(facet.by)) {
     if (!facet.by %in% c("nCellTypes", "CellType")) {
-      stop("'facet.by' provided is not valid. Available options are: 'nCellTypes', ",
+      stop("'facet.by' provided is not valid. The available options are: 'nCellTypes', ",
            "'CellType' or NULL")
     }
     plot <- plot + facet_wrap(as.formula(paste("~", facet.by)),
@@ -817,16 +817,16 @@ blandAltmanLehPlot <- function(
   ...
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("Provided object is not of DigitalDLSorter class")
+    stop("The provided object is not of class DigitalDLSorter")
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@test.deconv.metrics)) {
-    stop("Provided object does not have evaluation metrics. Use ",
+    stop("The provided object does not have evaluation metrics. Use ",
          "'calculateEvalMetrics' function")
   } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
     stop("Evaluation metrics are not correctly built, use 'calculateEvalMetrics' function")
   } else if (!is.null(color.by)) {
     if (!color.by %in% c("nCellTypes", "CellType")) {
-      stop("'color.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' or NULL")
+      stop("'color.by' provided is not valid. The available options are: 'nCellTypes', 'CellType' or NULL")
     }
   }
   amd <- trained.model(object)@test.deconv.metrics[[1]]
@@ -858,7 +858,7 @@ blandAltmanLehPlot <- function(
   if (missing(colors)) colors <- default.colors()
   if (!is.null(color.by)) {
     if (length(colors) < length(unique(amd[[color.by]]))) {
-      stop("Number of provided colors is not enough")
+      stop("The number of provided colors is not enough")
     }
     plot <- ggplot(amd, aes(x = .data[["Mean"]], y = .data[["Diff"]], 
                             colour = .data[[color.by]])) +
@@ -871,7 +871,7 @@ blandAltmanLehPlot <- function(
   }
   if (!is.null(facet.by)) {
     if (!facet.by %in% c("nCellTypes", "CellType")) {
-      stop("'facet.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' or NULL")
+      stop("'facet.by' provided is not valid. The available options are: 'nCellTypes', 'CellType' or NULL")
     }
     plot <- plot + facet_wrap(as.formula(paste("~", facet.by)),
                               nrow = nrow, ncol = ncol, ...)
@@ -902,21 +902,21 @@ blandAltmanLehPlot <- function(
 ############################### Bar error plot #################################
 ################################################################################
 
-#' Generate bar error plot and its dispersion by cell types or by number of
-#' different cell types in test bulk samples
+#' Generate bar error plot by cell type or by number of different cell types in
+#' test bulk samples
 #'
-#' Generate bar error plot and its dispersion by cell types (\code{CellType}) or
-#' by number of different cell types (\code{nCellTypes}) in test bulk samples.
+#' Generate bar error plot by cell types (\code{CellType}) or by number of
+#' different cell types (\code{nCellTypes}) in test pseudo-bulk samples.
 #'
 #' @param object \code{DigitalDLSorter} object with \code{trained.model} slot
 #'   containing metrics in \code{test.deconv.metrics} slot.
-#' @param error 'MAE' or 'MSE.
+#' @param error \code{'MAE'} or \code{'MSE'}.
 #' @param by Variable used to display errors. Available options are:
-#'   'nCellTypes', 'CellType'.
+#'   \code{'nCellTypes'}, \code{'CellType'}.
 #' @param dispersion Standard error (\code{'se'}) or standard deviation
-#'   (\code{'sd'}). The first by default.
-#' @param filter.sc Boolean indicating if filter single-cell profiles and only
-#'   display correlations of results associated with bulk samples (\code{TRUE}
+#'   (\code{'sd'}). The former is the default.
+#' @param filter.sc Boolean indicating whether single-cell profiles are filtered out and only
+#'   correlation of results associated with bulk samples are displayed (\code{TRUE}
 #'   by default).
 #' @param angle Angle of ticks.
 #' @param title Title of the plot.
@@ -957,20 +957,20 @@ barErrorPlot <- function(
   theme = NULL
 ) {
   if (!is(object, "DigitalDLSorter")) {
-    stop("Provided object is not of DigitalDLSorter class")
+    stop("The provided object is not of class DigitalDLSorter")
   } else if (is.null(trained.model(object)) ||
              is.null(trained.model(object)@test.deconv.metrics)) {
-    stop("Provided object does not have evaluation metrics. Use ",
+    stop("The provided object does not have evaluation metrics. Use ",
          "'calculateEvalMetrics' function")
   } else if (!is(trained.model(object)@test.deconv.metrics[[1]], "tbl_df")) {
     stop("Evaluation metrics are not well built, use 'calculateEvalMetrics' function")
   } else if (!by %in% c("nCellTypes", "CellType")) {
-    stop("'by' provided is not valid. Available options are: 'nCellTypes', 'CellType'")
+    stop("'by' provided is not valid. The available options are: 'nCellTypes', 'CellType'")
   } else if (!error %in% c("MAE", "MSE")) {
-    stop("'error' provided is not valid. Available errors are: 'MAE', 'MSE'")
+    stop("'error' provided is not valid. The available errors are: 'MAE', 'MSE'")
   } else if (!dispersion %in% c("se", "sd")) {
-    stop("'dispersion' provided is not valid. Available options are: sd (standard",
-         " deviation) or se (standard error)")
+    stop("'dispersion' provided is not valid. The available options are: 'sd' (standard",
+         " deviation) or 'se' (standard error)")
   }
   if (is.null(title))
     title.plot <- paste0("Bar error plot by ", by, " (",error, ")")

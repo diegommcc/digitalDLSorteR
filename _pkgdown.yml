@@ -18,7 +18,6 @@ home:
   - text: "digitalDLSorteRdata: data and objects for digitalDLSorteR"
     href: https://github.com/diegommcc/digitalDLSorteRdata
 
-
 navbar:
   left:
    - icon: fa-home fa-lg
@@ -47,5 +46,4 @@ repo:
     source: https://github.com/diegommcc/digitalDLSorteR/
     issue: https://github.com/diegommcc/digitalDLSorteR/issues
     user: https://github.com/diegommcc/
-
-      
+    

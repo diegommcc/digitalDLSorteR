@@ -96,8 +96,8 @@ globalVariables(c(".dataForDNN"))
 #' @param shuffle Boolean indicating if data will be shuffled (\code{TRUE} by
 #'   default). Note that if \code{bulk.simul} is not \code{NULL}, data already
 #'   has been shuffled and \code{shuffle} will be ignored.
-#' @param threads Number of threads used during simulation of bulk samples
-#'   if \code{on.the.fly = TRUE} (1 by default).
+#' @param threads Number of threads used during simulation of bulk samples if
+#'   \code{on.the.fly = TRUE} (1 by default).
 #' @param view.metrics.plot Boolean indicating if show progression plots of loss
 #'   and metrics during training (\code{TRUE} by default). \pkg{keras} for R
 #'   allows to see the progression of the model during training if you are
@@ -133,8 +133,7 @@ globalVariables(c(".dataForDNN"))
 #' }
 #' @references Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq
-#'   data. Frontiers in Genetics 10, 978. doi:
-#'   \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
+#'   data. Frontiers in Genetics 10, 978. doi: \doi{10.3389/fgene.2019.00978}
 #'   
 trainDigitalDLSorterModel <- function(
   object,
@@ -839,8 +838,8 @@ trainDigitalDLSorterModel <- function(
 #'Regarding the former, there are two available models at two different levels
 #'of specificity: specific cell types (\code{breast.chung.specific}) and generic
 #'cell types (\code{breast.chung.generic}). See \code{breast.chung.generic},
-#'\code{breast.chung.specific}, and \code{colorectal.li} documentation
-#'from \pkg{digitalDLSorteRdata} package for details.
+#'\code{breast.chung.specific}, and \code{colorectal.li} documentation from
+#'\pkg{digitalDLSorteRdata} package for details.
 #'
 #'This function is intended for users who want to use \pkg{digitalDLSorteR} for
 #'deconvoluting their bulk RNA-Seq samples using pre-trained models. For users
@@ -851,10 +850,9 @@ trainDigitalDLSorterModel <- function(
 #'  in SYMBOL notation and columns must be samples.
 #'@param model Pre-trained DNN model to use to deconvolute \code{data}. Up to
 #'  now, the available models are aimed to deconvoluting samples of breast
-#'  cancer (\code{breast.chung.generic} and
-#'  \code{breast.chung.specific}) and colorectal cancer
-#'  \code{colorectal.li}. These pre-trained models are stored in
-#'  \pkg{digitalDLSorteRdata} package, so it must be installed together with
+#'  cancer (\code{breast.chung.generic} and \code{breast.chung.specific}) and
+#'  colorectal cancer \code{colorectal.li}. These pre-trained models are stored
+#'  in \pkg{digitalDLSorteRdata} package, so it must be installed together with
 #'  \pkg{digitalDLSorteR}.
 #'@param batch.size Number of samples loaded in RAM memory each time during the
 #'  deconvolution process. If unspecified, \code{batch.size} will set to 128.
@@ -910,7 +908,7 @@ trainDigitalDLSorterModel <- function(
 #'@references Chung, W., Eum, H. H., Lee, H. O., Lee, K. M., Lee, H. B., Kim, K.
 #'  T., et al. (2017). Single-cell RNA-seq enables comprehensive tumour and
 #'  immune cell profiling in primary breast cancer. Nat. Commun. 8 (1), 15081.
-#'  doi: \href{https://doi.org/10.1038/ncomms15081}{10.1038/ncomms15081}.
+#'  doi: \doi{10.1038/ncomms15081}.
 #'  
 deconvDigitalDLSorter <- function(
   data,
@@ -928,6 +926,9 @@ deconvDigitalDLSorter <- function(
     stop("Model cannot be NULL. Please see available models in ", 
          "digitalDLSorteRdata package and ?deconvDigitalDLSorter")
   } else {
+    if (!is(object = model, class2 = "list")) {
+      model <- digitalDLSorteRdata::listToDDLSDNN(model)
+    } 
     if (!is(object = model, class2 = "DigitalDLSorterDNN")) {
       stop("'model' is not an object of DigitalDLSorterDNN class. Please ",
            "see available models in digitalDLSorteRdata package and ?deconvDigitalDLSorter")
@@ -1036,8 +1037,7 @@ deconvDigitalDLSorter <- function(
 #' }
 #' @references Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq
-#'   data. Frontiers in Genetics 10, 978. doi:
-#'   \href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
+#'   data. Frontiers in Genetics 10, 978. doi: \doi{10.3389/fgene.2019.00978}
 #'   
 deconvDigitalDLSorterObj <- function(
   object,

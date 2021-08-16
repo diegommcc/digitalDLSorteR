@@ -156,7 +156,7 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 Torroja, C. y Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 Learning algorithm to quantify immune cell populations based on scRNA-Seq
 data. Frontiers in Genetics 10, 978. doi:
-\href{https://doi.org/10.3389/fgene.2019.00978}{10.3389/fgene.2019.00978}
+\doi{10.3389/fgene.2019.00978}
 }
 \seealso{
 \code{\link{simBulkProfiles}}

@@ -955,27 +955,27 @@ setMethod(
   }
 )
 
-#' Bar plot with deconvoluted cell type proportions
+#' Bar plot for deconvoluted cell type proportions
 #'
-#' This function allows to plot a bar plot with the deconvoluted cell type
-#' proportions of a given bulk RNA-seq sample using ggplot2.
+#' This function allows to plot a bar plot for the deconvoluted cell type
+#' proportions of a given bulk RNA-Seq sample using \pkg{ggplot2}.
 #'
 #' @param data \code{\linkS4class{DigitalDLSorter}} object with
-#'   \code{deconv.results} slot or data frame/matrix with cell types as columns
-#'   and samples as rows.
+#'   \code{deconv.results} slot or a data.frame/matrix with cell types as
+#'   columns and samples as rows.
 #' @param colors Vector of colors that will be used.
-#' @param simplify Type of simplification performed during deconvolution. It can
+#' @param simplify Type of simplification performed during deconvolution. Can
 #'   be \code{simpli.set} or \code{simpli.maj} (\code{NULL} by default). It is
 #'   only for \code{\linkS4class{DigitalDLSorter}} objects.
 #' @param color.line Color of border bars.
-#' @param x.label Label of x axis.
-#' @param rm.x.text Logical value indicating if remove x axis ticks (name of
+#' @param x.label Label of x-axis.
+#' @param rm.x.text Logical value indicating whether to remove x-axis ticks (name of
 #'   samples).
 #' @param title Title of plot.
 #' @param legend.title Title of legend plot.
 #' @param angle Angle of text ticks.
 #' @param name.data If a \code{\linkS4class{DigitalDLSorter}} is given, name of
-#'   the element that stores the results in \code{deconv.results} slot.
+#'   the element that stores the results in the \code{deconv.results} slot.
 #' @param theme \pkg{ggplot2} theme.
 #' @param ... Other arguments for specific methods.
 #'
@@ -993,7 +993,7 @@ setMethod(
 #'
 #' @seealso \code{\link{deconvDigitalDLSorter}}
 #'   \code{\link{deconvDigitalDLSorterObj}}
-#'  
+#'   
 setGeneric("barPlotCellTypes", function(
   data,
   colors = NULL,
@@ -1127,7 +1127,7 @@ setMethod(
 #'   path and \code{name.data} is not provided, base name of file will be used.
 #'
 #' @return \code{\linkS4class{DigitalDLSorter}} object with \code{deconv.data}
-#'   slot with the new bulk-RNAseq samples loaded
+#'   slot with the new bulk-RNASeq samples loaded
 #'
 #' @export
 #'

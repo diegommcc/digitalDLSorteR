@@ -1,13 +1,13 @@
 Package: digitalDLSorteR
 Type: Package
-Title: Deconvolution of bulk RNA-seq data based on Deep Learning
+Title: Deconvolution of Bulk RNA-Seq Data Based on Deep Learning
 Version: 0.1.0
 Authors@R: c(
   person(given = "Diego", family = "Mañanes", email = "dmananesc@cnic.es", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7247-6794")),
   person(given = "Carlos", family = "Torroja", email = "ctorroja@cnic.es", role = "aut", comment = c(ORCID = "0000-0001-8914-3400")),
   person(given = "Fatima", family = "Sanchez-Cabo", email = "fscabo@cnic.es", role = "aut", comment = c(ORCID = "0000-0003-1881-1664")))
 Maintainer: Diego Mañanes <dmananesc@cnic.es>
-Description: digitalDLSorteR is an R package that allows building context-specific deconvolution models based on Deep Neural Networks using scRNA-Seq data as input. These models are able to make accurate estimates of the cell composition of bulk RNA-Seq samples from the same context using the advances provided by Deep Learning and the rich information provided by single-cell RNA-Seq data.
+Description: Deconvolution of bulk RNA-Seq data using context-specific deconvolution models based on Deep Neural Networks using scRNA-Seq data as input. These models are able to make accurate estimates of the cell composition of bulk RNA-Seq samples from the same context using the advances provided by Deep Learning and the rich information provided by single-cell RNA-Seq data.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
