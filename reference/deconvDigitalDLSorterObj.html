@@ -49,11 +49,11 @@
   
 
 <meta property="og:title" content="Deconvolute bulk gene expression samples (bulk RNA-Seq) — deconvDigitalDLSorterObj" />
-<meta property="og:description" content="Deconvolute bulk gene expression samples (bulk RNA-Seq) enumerating and
-quantifying the proportion of cell types present in a bulk sample. This
-function needs a DigitalDLSorter object with a trained Deep Neural
-Network model (trained.model slot) and the new bulk samples
-that will be deconvoluted in deconv.data slot." />
+<meta property="og:description" content="Deconvolute bulk gene expression samples (bulk RNA-Seq). This function
+requires a DigitalDLSorter object with a trained Deep Neural Network
+model (trained.model slot) and the new bulk RNA-Seq samples to
+be deconvoluted in the deconv.data slot. See
+?loadDeconvData for more details." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -160,11 +160,11 @@ that will be deconvoluted in deconv.data slot." />
     </div>
 
     <div class="ref-description">
-    <p>Deconvolute bulk gene expression samples (bulk RNA-Seq) enumerating and
-quantifying the proportion of cell types present in a bulk sample. This
-function needs a <code>DigitalDLSorter</code> object with a trained Deep Neural
-Network model (<code><a href='trained.model.html'>trained.model</a></code> slot) and the new bulk samples
-that will be deconvoluted in <code>deconv.data</code> slot.</p>
+    <p>Deconvolute bulk gene expression samples (bulk RNA-Seq). This function
+requires a <code>DigitalDLSorter</code> object with a trained Deep Neural Network
+model (<code><a href='trained.model.html'>trained.model</a></code> slot) and the new bulk RNA-Seq samples to
+be deconvoluted in the <code>deconv.data</code> slot. See
+<code>?<a href='loadDeconvData.html'>loadDeconvData</a></code> for more details.</p>
     </div>
 
     <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>deconvDigitalDLSorterObj</span><span class='op'>(</span>
@@ -187,17 +187,18 @@ that will be deconvoluted in <code>deconv.data</code> slot.</p>
     </tr>
     <tr>
       <th>name.data</th>
-      <td><p>Name of the data stored in <code>DigitalDLSorter</code> object. If
-it is not provided, the first data set will be used.</p></td>
+      <td><p>Name of the data stored in the <code>DigitalDLSorter</code>
+object. If not provided, the first data set will be used.</p></td>
     </tr>
     <tr>
       <th>batch.size</th>
-      <td><p>Number of samples per gradient update. If unspecified,
+      <td><p>Number of samples per gradient update. If not specified,
 <code>batch.size</code> will default to 128.</p></td>
     </tr>
     <tr>
       <th>normalize</th>
-      <td><p>Normalize data before deconvolution. <code>TRUE</code> by default.</p></td>
+      <td><p>Normalize data before deconvolution (<code>TRUE</code> by
+default).</p></td>
     </tr>
     <tr>
       <th>simplify.set</th>
@@ -209,11 +210,11 @@ details. If provided, results are stored in a list with 'raw' and
     <tr>
       <th>simplify.majority</th>
       <td><p>List specifying which cell types should be
-compressed into the cell type with greater proportion in each sample.
+compressed into the cell type with the highest proportion in each sample.
 Unlike <code>simplify.set</code>, it allows to maintain the complexity of the
-results while compressing the information, because it is not created a new
-label. If provided, the results are stored in a list with 'raw' and
-'simpli.majority' results (if provided).</p></td>
+results while compressing the information, as no new labels are created. If
+provided, the results are stored in a list with 'raw' and 'simpli.majority'
+results.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
@@ -226,18 +227,20 @@ label. If provided, the results are stored in a list with 'raw' and
     <p><code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object with
 <code>deconv.results</code> slot. The resulting information is a data frame with
 samples (\(i\)) as rows and cell types (\(j\)) as columns. Each entry
-represents the proportion of \(j\) cell type in \(i\) sample.</p>
+represents the proportion of \(j\) cell type in \(i\) sample. If
+<code>simplify.set</code> or/and <code>simpplify.majority</code> are provided, the
+<code>deconv.results</code> slot will contain a list with raw and simplified
+results.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function is intended for users who have built a devonvolution model
-using their own single-cell RNAseq data. If you want to use a pre-trained
-model, see <code>?<a href='deconvDigitalDLSorter.html'>deconvDigitalDLSorter</a></code>.</p>
+using their own single-cell RNA-Seq data. If you want to use a pre-trained
+model to deconvolute your samples, see <code>?<a href='deconvDigitalDLSorter.html'>deconvDigitalDLSorter</a></code>.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 Learning algorithm to quantify immune cell populations based on scRNA-Seq
-data. Frontiers in Genetics 10, 978. doi:
-<a href='https://doi.org/10.3389/fgene.2019.00978'>10.3389/fgene.2019.00978</a></p>
+data. Frontiers in Genetics 10, 978. doi: doi: <a href='https://doi.org/10.3389/fgene.2019.00978'>10.3389/fgene.2019.00978</a></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='trainDigitalDLSorterModel.html'>trainDigitalDLSorterModel</a></code>
@@ -246,8 +249,9 @@ data. Frontiers in Genetics 10, 978. doi:
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
 <span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"digitalDLSorteRdata"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata.git'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
-<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>DDLSLi</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>DDLSLi.list</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>DDLSLi</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/digitalDLSorteRdata/man/listToDDLS.html'>listToDDLS</a></span><span class='op'>(</span><span class='va'>DDLSLi.list</span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>TCGA.colon.se</span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='co'># to ensure compatibility</span></span>
 <span class='r-in'>  <span class='fu'>tensorflow</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span><span class='op'>$</span><span class='va'>compat</span><span class='op'>$</span><span class='va'>v1</span><span class='op'>$</span><span class='fu'>disable_eager_execution</span><span class='op'>(</span><span class='op'>)</span></span>

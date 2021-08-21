@@ -116,9 +116,10 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## loading packages</span>
 <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">digitalDLSorteR</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diegommcc/digitalDLSorteRdata.git" class="external-link">digitalDLSorteRdata</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diegommcc/digitalDLSorteRdata" class="external-link">digitalDLSorteRdata</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
 <span class="co">## loading data for examples</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">DDLSChung</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">DDLSChung.list</span><span class="op">)</span>
+<span class="va">DDLSChung</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/digitalDLSorteRdata/man/listToDDLS.html" class="external-link">listToDDLS</a></span><span class="op">(</span><span class="va">DDLSChung.list</span><span class="op">)</span>
 <span class="co">## take SingleCellExperiment object from DigitalDLSorter object</span>
 <span class="va">sceObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/single.cell.real.html">single.cell.real</a></span><span class="op">(</span><span class="va">DDLSChung</span><span class="op">)</span>
 <span class="va">sceObj</span></code></pre></div>
@@ -172,8 +173,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: RALA FAM83G ENKD1 ... ENKD1 IGHV1-3 CFAP45 RRP8 
-##   colnames: BC04_49 BC04_33 BC03LN_91 ... BC03LN_91 BC04_11 BC03_43 BC07_42 
+##   rownames: AP001178.3 TBC1D15 MTHFR ... MTHFR GLIPR2 AL357078.2 FKBP8 
+##   colnames: BC09_31 BC09_Re_62 BC03_43 ... BC03_43 BC04_11 BC03_11 BC04_07 
 ## Project: ToyExampleBreast</code></pre>
 <p>In this case, we are loading the single-cell profiles from a <code>SingleCellExperiment</code> object, but it could be done using files directly as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -225,8 +226,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: ZNF160 TRIB3 SEMA3F ... SEMA3F GPR12 AC138761.1 GMEB2 
-##   colnames: BC03LN_91 BC07LN_54 BC01_02 ... BC01_02 BC03_86 BC07_42 BC07LN_26 
+##   rownames: LINC01405 GLIPR1L1 THOC5 ... THOC5 ADNP PI4K2B PLEKHA1 
+##   colnames: BC09_42 BC03LN_62 BC03LN_91 ... BC03LN_91 BC03_92 BC01_02 BC03_11 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -277,8 +278,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: XPR1 AC022382.2 ARHGAP11A ... ARHGAP11A FBXL3 RNF212 PKP2 
-##   colnames: BC09_31 BC04_11 BC03_11 ... BC03_11 BC07_42 BC07LN_26 BC09_Re_07 
+##   rownames: SNRPN TPBG WDR41 ... WDR41 LMBR1 EIF3C METTL1 
+##   colnames: BC03LN_62 BC07_03 BC07LN_54 ... BC07LN_54 BC07LN_29 BC04_33 BC09_Re_07 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -286,8 +287,8 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Simulated single-cell profiles:
 ##   18751 features and 130 cells
-##   rownames: AC025580.2 UBIAD1 TAP1 ... TAP1 PILRA ATP11B NUDT16L1 
-##   colnames: Monocyte_Simul70 Stromal_Simul80 BGC_Simul130 ... BGC_Simul130 Stromal_Simul75 ER+ and HER2+_Simul34 TCD8_Simul84 
+##   rownames: COMMD10 HECA MAP3K19 ... MAP3K19 C11ORF98 ORAI1 ATPSCKMT 
+##   colnames: ER+_Simul28 Treg_Simul118 Bmem_Simul8 ... Bmem_Simul8 Tme_Simul96 TNBC_Simul102 ER+_Simul23 
 ## Project: ToyExampleBreast</code></pre>
 <p>In this step, it is also possible to store the new simulated single-cell profiles in a HDF5 file. Indeed, they can be simulated by batch, avoiding to load all data into RAM. The code would be as follows:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
@@ -338,41 +339,41 @@ Workflow to build new context-specific deconvolution models
   verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## 
-## === The number of bulk RNA-seq samples that will be generated is equal to 250</code></pre>
+## === The number of bulk RNA-Seq samples that will be generated is equal to 250</code></pre>
 <pre><code>## 
 ## === Training set cells by type:</code></pre>
-<pre><code>##     - Bmem: 6
-##     - DC: 9
-##     - ER+: 7
-##     - ER+ and HER2+: 8
-##     - HER2+: 8
-##     - Macrophage: 8
-##     - Monocyte: 7
+<pre><code>##     - Bmem: 8
+##     - DC: 7
+##     - ER+: 9
+##     - ER+ and HER2+: 6
+##     - HER2+: 9
+##     - Macrophage: 9
+##     - Monocyte: 6
 ##     - Stromal: 7
-##     - TCD8: 9
+##     - TCD8: 8
 ##     - Tme: 9
-##     - TNBC: 11
+##     - TNBC: 9
 ##     - Treg: 6
-##     - BGC: 6</code></pre>
+##     - BGC: 8</code></pre>
 <pre><code>## === Test set cells by type:</code></pre>
-<pre><code>##     - Bmem: 6
-##     - DC: 2
-##     - ER+: 4
-##     - ER+ and HER2+: 4
-##     - HER2+: 7
-##     - Macrophage: 3
-##     - Monocyte: 4
+<pre><code>##     - Bmem: 4
+##     - DC: 4
+##     - ER+: 2
+##     - ER+ and HER2+: 6
+##     - HER2+: 6
+##     - Macrophage: 2
+##     - Monocyte: 5
 ##     - Stromal: 4
-##     - TCD8: 2
+##     - TCD8: 3
 ##     - Tme: 3
-##     - TNBC: 2
+##     - TNBC: 4
 ##     - Treg: 5
-##     - BGC: 5</code></pre>
+##     - BGC: 3</code></pre>
 <pre><code>## === Probability matrix for training data:</code></pre>
-<pre><code>##     - Bulk RNA-seq samples: 167
+<pre><code>##     - Bulk RNA-Seq samples: 167
 ##     - Cell types: 13</code></pre>
 <pre><code>## === Probability matrix for test data:</code></pre>
-<pre><code>##     - Bulk RNA-seq samples: 83
+<pre><code>##     - Bulk RNA-Seq samples: 83
 ##     - Cell types: 13</code></pre>
 <pre><code>## DONE</code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
@@ -380,8 +381,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: AC105429.1 MKNK1 RAPH1 ... RAPH1 PDIK1L FBXO22 TIA1 
-##   colnames: BC03LN_62 BC03_11 BC07_18 ... BC07_18 BC05_84 BC04_33 BC03_92 
+##   rownames: PIGB AL133551.1 ATG4C ... ATG4C GATA2-AS1 UBXN4 TRIM14 
+##   colnames: BC07LN_54 BC04_49 BC09_Re_07 ... BC09_Re_07 BC04_33 BC07LN_29 BC04_07 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -389,8 +390,8 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Simulated single-cell profiles:
 ##   18751 features and 130 cells
-##   rownames: MRPL36 ACOT7 MORC4 ... MORC4 AC034154.1 ESF1 TXLNG 
-##   colnames: Monocyte_Simul61 Treg_Simul115 ER+ and HER2+_Simul36 ... ER+ and HER2+_Simul36 ER+ and HER2+_Simul32 Macrophage_Simul51 TCD8_Simul81 
+##   rownames: GFER AC130888.1 COL4A2 ... COL4A2 MFSD9 TIA1 MITF 
+##   colnames: TCD8_Simul81 Monocyte_Simul62 TNBC_Simul102 ... TNBC_Simul102 ER+_Simul28 BGC_Simul129 Monocyte_Simul63 
 ## Cell type composition matrices:
 ##   Cell type matrix for traindata: 167 bulk samples and 13 cell types 
 ##   Cell type matrix for testdata: 83 bulk samples and 13 cell types 
@@ -400,34 +401,34 @@ Workflow to build new context-specific deconvolution models
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##        Monocyte Tme Bmem TCD8 BGC Treg Macrophage DC Stromal TNBC HER2+
-## Bulk_1        0   0    0    0   0    0         34  4      62    0     0
-## Bulk_2        2   3    2    5   5    2          3  4       4   13    25
-## Bulk_3        4   4    4    0   0    0          4  1       8   22    20
-## Bulk_4        5   5    4    0   2    0          3  1       9   16    12
-## Bulk_5        7   0    2    6   3    0          4  0       0   28     0
-## Bulk_6        3   4    4    2   3    4          5  5       9   13    14
+## Bulk_1       57   0    0    0  43    0          0  0       0    0     0
+## Bulk_2        5   2    3    4   5    5          4  3       6   22    22
+## Bulk_3        2   4    5    4   4    0          3  3       0   23    17
+## Bulk_4        0   5    4    2   5    0          0  1       8   19    16
+## Bulk_5        0   9    0    0   5    7         15  0       0   32     0
+## Bulk_6        3   3    4    0   4    5          4  0       3   22    20
 ##        ER+ and HER2+ ER+
 ## Bulk_1             0   0
-## Bulk_2            11  21
-## Bulk_3            21  12
-## Bulk_4            23  20
-## Bulk_5            31  19
-## Bulk_6            23  11</code></pre>
+## Bulk_2            19   0
+## Bulk_3            15  20
+## Bulk_4            24  16
+## Bulk_5             0  32
+## Bulk_6            20  12</code></pre>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##          Monocyte Tme Bmem TCD8 BGC Treg Macrophage DC Stromal TNBC HER2+
-## Bulk_162        0   0    0    0   0    0          0  0       0    0   100
+## Bulk_162        0   0    0    0   0    0          0  0       0  100     0
 ## Bulk_163        0   0    0    0   0    0          0  0       0    0   100
-## Bulk_164        0   0    0    0   0    0          0  0       0    0     0
+## Bulk_164        0   0    0    0   0    0          0  0       0    0   100
 ## Bulk_165        0   0    0    0   0    0          0  0       0    0     0
 ## Bulk_166        0   0    0    0   0    0          0  0       0    0     0
 ## Bulk_167        0   0    0    0   0    0          0  0       0    0     0
 ##          ER+ and HER2+ ER+
 ## Bulk_162             0   0
 ## Bulk_163             0   0
-## Bulk_164           100   0
+## Bulk_164             0   0
 ## Bulk_165           100   0
-## Bulk_166             0 100
+## Bulk_166           100   0
 ## Bulk_167             0 100</code></pre>
 <p>Moreover, the generated distributions can be plotted using the <code>showProbPlot</code> function:</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
@@ -489,8 +490,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: ATG5 ZNF75A PJA1 ... PJA1 AC083862.3 GDPGP1 C6ORF132 
-##   colnames: BC03_11 BC09_31 BC07_18 ... BC07_18 BC03LN_91 BC09_42 BC04_07 
+##   rownames: CASC1 ISCA2 ERVK9-11 ... ERVK9-11 ST7L AC232271.3 DRC3 
+##   colnames: BC09_31 BC04_33 BC07LN_26 ... BC07LN_26 BC03LN_62 BC07_03 BC03_11 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -498,20 +499,20 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Simulated single-cell profiles:
 ##   18751 features and 130 cells
-##   rownames: STK24 RPP25L ARHGDIA ... ARHGDIA ADCY5 SLC25A45 SH3D21 
-##   colnames: TCD8_Simul90 ER+ and HER2+_Simul31 Macrophage_Simul52 ... Macrophage_Simul52 Treg_Simul119 TCD8_Simul89 TNBC_Simul107 
+##   rownames: AC093503.2 AL161449.2 ABCE1 ... ABCE1 AC027307.3 FKBP11 TRIM65 
+##   colnames: TCD8_Simul84 Macrophage_Simul54 Treg_Simul111 ... Treg_Simul111 Bmem_Simul2 Tme_Simul99 Stromal_Simul80 
 ## Cell type composition matrices:
 ##   Cell type matrix for traindata: 167 bulk samples and 13 cell types 
 ##   Cell type matrix for testdata: 83 bulk samples and 13 cell types 
 ## Simulated bulk samples:
 ##   train bulk samples:
 ##     18751 features and 167 samples
-##     rownames: TRPV2 GATA2-AS1 MPV17 ... MPV17 TMEM265 SSRP1 ARHGEF2 
-##     colnames: Bulk_129 Bulk_59 Bulk_118 ... Bulk_118 Bulk_32 Bulk_151 Bulk_57 
+##     rownames: BX640514.2 LYRM1 IL17RC ... IL17RC PRMT5 MROH8 AP000766.1 
+##     colnames: Bulk_138 Bulk_34 Bulk_122 ... Bulk_122 Bulk_139 Bulk_13 Bulk_11 
 ##   test bulk samples:
 ##     18751 features and 83 samples
-##     rownames: CD93 MEA1 GPR35 ... GPR35 MOSPD2 SCD AL138756.1 
-##     colnames: Bulk_50 Bulk_14 Bulk_64 ... Bulk_64 Bulk_27 Bulk_13 Bulk_10 
+##     rownames: LRRC37B RTTN LRIG2-DT ... LRIG2-DT DALRD3 NTN1 MFSD13A 
+##     colnames: Bulk_53 Bulk_40 Bulk_83 ... Bulk_83 Bulk_82 Bulk_10 Bulk_39 
 ## Project: ToyExampleBreast</code></pre>
 <p>Again, these pseudo-bulk samples can be stored as an HDF5 file. This is the most recommended step of <strong>digitalDLSorteR</strong> to use this functionality, as it is the most computationally expensive part of the package and these samples will only be accessed during training and evaluation of the Deep Neural Network (DNN) model. As in <code>simSCProfiles</code>, the samples can be simulated by batch and also a desired number of threads can be used:</p>
 <div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
@@ -527,7 +528,7 @@ Workflow to build new context-specific deconvolution models
 <div id="dnn" class="section level3">
 <h3 class="hasAnchor">
 <a href="#dnn" class="anchor" aria-hidden="true"></a>Training and evaluation of the Deep Neural Network</h3>
-<p>Once the pseudo-bulk samples have been generated, the DNN model can be trained and evaluated. <code>trainDigitalDLSorterModel</code> is the function in charge of both steps and uses the <a href="https://cran.r-project.org/web/packages/keras/index.html" class="external-link">keras</a> package with <a href="https://cran.r-project.org/web/packages/tensorflow/index.html" class="external-link">tensorflow</a> as back-end. If you want more information about <a href="https://cran.r-project.org/web/packages/keras/index.html" class="external-link">keras</a> or experience any problems during its installation, please see <a href="kerasIssues.html">Keras/TensorFlow installation and configuration</a> vignette.</p>
+<p>Once the pseudo-bulk samples have been generated, the DNN model can be trained and evaluated. <code>trainDigitalDLSorterModel</code> is the function in charge of both steps and uses the <a href="https://cran.r-project.org/package=keras" class="external-link">keras</a> package with <a href="https://cran.r-project.org/package=tensorflow" class="external-link">tensorflow</a> as back-end. If you want more information about <a href="https://cran.r-project.org/package=keras" class="external-link">keras</a> or experience any problems during its installation, please see <a href="kerasIssues.html">Keras/TensorFlow installation and configuration</a> vignette.</p>
 <p>In terms of architecture and model parameters, <code>trainDigitalDLSorterModel</code> implements two hidden layers with 200 neurons each by default, although any of these parameters can be changed through the <code>trainDigitalDLSorterModel</code> parameters. Moreover, for a more customized model, it is possible to provide a pre-built model in the <code>custom.model</code> parameter. See the documentation for more details.</p>
 <p>The code with the default parameters is as follows:</p>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
@@ -567,10 +568,10 @@ Workflow to build new context-specific deconvolution models
 ## === Training DNN with 268 samples:</code></pre>
 <pre><code>## 
 ## === Evaluating DNN in test data (134 samples)</code></pre>
-<pre><code>##    - loss: 0.7284
-##    - accuracy: 0.6343
-##    - mean_absolute_error: 0.0593
-##    - categorical_accuracy: 0.6343</code></pre>
+<pre><code>##    - loss: 0.4544
+##    - accuracy: 0.7612
+##    - mean_absolute_error: 0.0508
+##    - categorical_accuracy: 0.7612</code></pre>
 <pre><code>## 
 ## === Generating prediction results using test data</code></pre>
 <pre><code>## DONE</code></pre>
@@ -580,8 +581,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: AC093673.1 MFSD1 AL133352.1 ... AL133352.1 RARS2 AC012213.2 HOXD10 
-##   colnames: BC03LN_91 BC09_Re_62 BC04_33 ... BC04_33 BC03LN_62 BC07LN_26 BC09_42 
+##   rownames: AL023284.4 AC087286.4 DMKN ... DMKN GNPTG AL136317.2 ZNF284 
+##   colnames: BC04_33 BC09_31 BC09_Re_62 ... BC09_Re_62 BC07LN_26 BC03_86 BC01_02 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -589,31 +590,31 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Simulated single-cell profiles:
 ##   18751 features and 130 cells
-##   rownames: ATP5PO PANX1 PGGT1B ... PGGT1B POLR3GL CCDC30 DCTN1 
-##   colnames: Macrophage_Simul54 ER+ and HER2+_Simul34 HER2+_Simul47 ... HER2+_Simul47 Tme_Simul92 TCD8_Simul88 TNBC_Simul106 
+##   rownames: SCUBE2 RGS12 LINC02482 ... LINC02482 APOBEC3C FRMD6-AS1 MAGIX 
+##   colnames: Treg_Simul114 Bmem_Simul6 Monocyte_Simul64 ... Monocyte_Simul64 DC_Simul13 Treg_Simul117 ER+ and HER2+_Simul36 
 ## Cell type composition matrices:
 ##   Cell type matrix for traindata: 167 bulk samples and 13 cell types 
 ##   Cell type matrix for testdata: 83 bulk samples and 13 cell types 
 ## Simulated bulk samples:
 ##   train bulk samples:
 ##     18751 features and 167 samples
-##     rownames: AC022447.1 MFN1 C20ORF27 ... C20ORF27 Z83847.1 POLR2J3 DCPS 
-##     colnames: Bulk_127 Bulk_86 Bulk_65 ... Bulk_65 Bulk_51 Bulk_16 Bulk_59 
+##     rownames: HEBP2 LYPD6B PITX1 ... PITX1 FTSJ3 LINC02367 ATP6V0E2 
+##     colnames: Bulk_9 Bulk_35 Bulk_41 ... Bulk_41 Bulk_117 Bulk_143 Bulk_13 
 ##   test bulk samples:
 ##     18751 features and 83 samples
-##     rownames: CINP SLC25A30 AC063965.2 ... AC063965.2 FAM83D SEMA3C AC005726.4 
-##     colnames: Bulk_33 Bulk_20 Bulk_40 ... Bulk_40 Bulk_47 Bulk_74 Bulk_30 
+##     rownames: EZH1 MRPL19 IL12RB1 ... IL12RB1 SOD1 LMO1 AC103702.1 
+##     colnames: Bulk_42 Bulk_72 Bulk_27 ... Bulk_27 Bulk_76 Bulk_24 Bulk_46 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.32
-##     accuracy: 0.8469
-##     mean_absolute_error: 0.0411
-##     categorical_accuracy: 0.8469
+##     loss: 0.3258
+##     accuracy: 0.7969
+##     mean_absolute_error: 0.0417
+##     categorical_accuracy: 0.7969
 ##   Evaluation metrics on test data:
-##     loss: 0.7284
-##     accuracy: 0.6343
-##     mean_absolute_error: 0.0593
-##     categorical_accuracy: 0.6343 
+##     loss: 0.4544
+##     accuracy: 0.7612
+##     mean_absolute_error: 0.0508
+##     categorical_accuracy: 0.7612 
 ## Project: ToyExampleBreast</code></pre>
 <p>As this is a ‘toy’ example, results are not very accurate. For a real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a> vignette.</p>
 <div id="on-the-fly-argument" class="section level4">
@@ -708,15 +709,13 @@ Workflow to build new context-specific deconvolution models
   corr <span class="op">=</span> <span class="st">"both"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
-<pre><code>## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
-## -Inf</code></pre>
 <p><img src="newModels_files/figure-html/corr3-1.png" width="700"></p>
 </div>
 <div id="bland-err" class="section level4">
 <h4 class="hasAnchor">
 <a href="#bland-err" class="anchor" aria-hidden="true"></a><code>blandAltmanLehPlot</code>: Bland-Altman agreement plots</h4>
 <p>The <code>blandAltmanLehPlot</code> function allows to display Bland-Altman agreement plots. This is a kind of graphical method for comparing the level of agreement between two different sets of values. The differences between the predictions and the actual proportions are plotted against their means. The central dashed line represents the mean difference, while the two red dashed lines are the limits of agreement, which are defined as the mean difference plus and minus 1.96 times the standard deviation of the differences. 95% of the differences are expected to fall between these two limits, so the wider the margins, the worse the performance. It is also possible to show it in <span class="math inline">\(log_2\)</span> space.</p>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
   <span class="va">DDLSToy</span>, 
   color.by <span class="op">=</span> <span class="st">"CellType"</span>,
@@ -727,7 +726,7 @@ Workflow to build new context-specific deconvolution models
 <span class="op">)</span></code></pre></div>
 <p><img src="newModels_files/figure-html/bland1-1.png" width="700"></p>
 <p>In addition, this function has the same behaviour as the previous ones, as it is possible to split the plots:</p>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
   <span class="va">DDLSToy</span>, 
   color.by <span class="op">=</span> <span class="st">"nCellTypes"</span>,
@@ -744,7 +743,7 @@ Workflow to build new context-specific deconvolution models
 <h3 class="hasAnchor">
 <a href="#new-bulk" class="anchor" aria-hidden="true"></a>Loading new bulk RNA-Seq samples to deconvolute them</h3>
 <p>Once the model has been evaluated, new bulk RNA-seq data can be loaded into the object to be deconvoluted:</p>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
 <span class="va">se.TCGA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html" class="external-link">SummarizedExperiment</a></span><span class="op">(</span>assay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">TCGA.breast.small</span><span class="op">)</span><span class="op">)</span>
 
@@ -754,7 +753,7 @@ Workflow to build new context-specific deconvolution models
   name.data <span class="op">=</span> <span class="st">"TCGA.breast"</span>
 <span class="op">)</span></code></pre></div>
 <p>Then, with the <code>deconvDigitalDLSorterObj</code> function, these new samples can be deconvoluted into the cell types considered by the model and the predicted proportions can be represented by the <code>barPlotCellTypes</code> function. The cell composition matrix is stored in the <code>deconv.results</code> slot.</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDigitalDLSorterObj.html">deconvDigitalDLSorterObj</a></span><span class="op">(</span>
   object <span class="op">=</span> <span class="va">DDLSToy</span>, 
   name.data <span class="op">=</span> <span class="st">"TCGA.breast"</span>,
@@ -767,11 +766,11 @@ Workflow to build new context-specific deconvolution models
 <h3 class="hasAnchor">
 <a href="#save" class="anchor" aria-hidden="true"></a>Saving <code>DigitalDLSorter</code> object and trained models</h3>
 <p><strong>digitalDLSorteR</strong> provides different ways to save models to disk and to retrieve them in the <code>DigitalDLSorter</code> object. First, you can save <code>DigitalDLSorter</code> objects as RDS files. Since this type of files only accepts native R objects, they are not able to store complex data structures such as keras Python objects (<code>keras.engine.sequential.Sequential</code> class). To make it possible, <strong>digitalDLSorteR</strong> implements a <code>saveRDS</code> generic function that converts the keras model object into a list with the network achitecture and the weights after training. These two pieces of information are the minimal part needed to perform new predictions. When the model is to be used, it is compiled back to a <code>keras.engine.sequential.Sequential</code> object.</p>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## this code will not be run</span>
 <span class="fu"><a href="../reference/saveRDS.html">saveRDS</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, file <span class="op">=</span> <span class="st">"valid/path"</span><span class="op">)</span></code></pre></div>
 <p>However, the optimizer state is not saved in this way. To offer the possibility to save the complete model, <strong>digitalDLSorteR</strong> has the <code>saveTrainedModelAsH5</code> function to save to disk the DNN model, and <code>loadTrainedModelFromH5</code> to load-back models into <code>DigitalDLSorter</code> objects. Note that only the keras model is saved as an HDF5 file in this way.</p>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## this code will not be run</span>
 <span class="fu"><a href="../reference/saveTrainedModelAsH5.html">saveTrainedModelAsH5</a></span><span class="op">(</span><span class="va">DDLSToy</span>, file.path <span class="op">=</span> <span class="st">"valid/path"</span><span class="op">)</span>
 <span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadTrainedModelFromH5.html">loadTrainedModelFromH5</a></span><span class="op">(</span><span class="va">DDLSToy</span><span class="op">)</span></code></pre></div>

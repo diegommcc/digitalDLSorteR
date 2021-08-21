@@ -50,10 +50,11 @@
 
 <meta property="og:title" content="The DigitalDLSorter Class — DigitalDLSorter-class" />
 <meta property="og:description" content="The DigitalDLSorter object is the core of digitalDLSorteR. This object
-stores different intermediate data resulting from building new deconvolution
-models from single-cell data. It is only used in the case of building new
-deconvolution models. For deconvoluting bulk samples using pre-trained
-models, see deconvDigitalDLSorter function." />
+stores different intermediate data resulting from the creation of new
+context-specific deconvolution models from single-cell data. It is only used
+in the case of building new deconvolution models. To deconvolute bulk samples
+using pre-trained models, see deconvDigitalDLSorter function
+and the package digitalDLSorteRdata." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -161,10 +162,11 @@ models, see deconvDigitalDLSorter function." />
 
     <div class="ref-description">
     <p>The DigitalDLSorter object is the core of <code>digitalDLSorteR</code>. This object
-stores different intermediate data resulting from building new deconvolution
-models from single-cell data. It is only used in the case of building new
-deconvolution models. For deconvoluting bulk samples using pre-trained
-models, see <code><a href='deconvDigitalDLSorter.html'>deconvDigitalDLSorter</a></code> function.</p>
+stores different intermediate data resulting from the creation of new
+context-specific deconvolution models from single-cell data. It is only used
+in the case of building new deconvolution models. To deconvolute bulk samples
+using pre-trained models, see <code><a href='deconvDigitalDLSorter.html'>deconvDigitalDLSorter</a></code> function
+and the package <span class="pkg">digitalDLSorteRdata</span>.</p>
     </div>
 
 
@@ -174,21 +176,35 @@ models, see <code><a href='deconvDigitalDLSorter.html'>deconvDigitalDLSorter</a>
     <p>This object uses other classes to store the different types of data produced
 during the process:</p><ul>
 <li><p><code>SingleCellExperiment</code>
-class for single-cell RNA-seq data, using sparse matrix from the <span class="pkg">Matrix</span>
+class for single-cell RNA-Seq data, using sparse matrix from the <span class="pkg">Matrix</span>
 package (<code>dgCMatrix</code> class) or <code>HDF5Array</code> class in
 the case of using HDF5 files as back-end (see below for more information).</p></li>
 <li><p><code>ZINBParams</code> class with estimated parameters for the
 simulation of new single-cell profiles.</p></li>
-<li><p><code>SummarizedExperiment</code> class for storing bulk RNA-seq
-data.</p></li>
+<li><p><code>SummarizedExperiment</code> class for large bulk RNA-Seq data
+storage.</p></li>
 <li><p><code><a href='ProbMatrixCellTypes-class.html'>ProbMatrixCellTypes</a></code> class for the
-composition cell matrices built during the process. See
+compositional cell matrices constructed during the process. See
 <code>?<a href='ProbMatrixCellTypes-class.html'>ProbMatrixCellTypes</a></code> for details.</p></li>
 <li><p><code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> class to store the information
-related to Deep Neural Network. This step is performed using <code>keras</code>.
-See <code>?<a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> for details.</p></li>
+related to Deep Neural Network models. This step is performed using
+<code>keras</code>. See <code>?<a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> for details.</p></li>
 </ul>
 
+<p><span class="pkg">digitalDLSorteR</span> can be used in two ways: to build new deconvolution
+models from single-cell RNA-Seq data or to deconvolute bulk RNA-Seq samples
+using pre-trained models available at <span class="pkg">digitalDLSorteRdata</span> package. If
+you want to build new models, see <code><a href='loadSCProfiles.html'>loadSCProfiles</a></code> function. On
+the other hand, if you want to use pre-trained models, see
+<code><a href='deconvDigitalDLSorter.html'>deconvDigitalDLSorter</a></code> function.</p>
+<p>In order to provide a way to work with large amounts of data on
+RAM-constrained machines, we provide the possibility to use HDF5 files as
+back-end to store count matrices of both real/simulated single-cell and bulk
+RNA-Seq profiles. For this, the package uses the <code>HDF5Array</code> and
+<code>DelayedArray</code> classes from the homonymous packages.</p>
+<p>Once the Deep Neural Network model has been trained trained, it is possible
+to save it as RDS or HDF5 files. Please see
+<code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> for more details.</p>
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
 
     
@@ -201,45 +217,35 @@ See <code>?<a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code>
 <dt><code>zinb.params</code></dt><dd><p><code>ZINBParams</code> object with estimated
 parameters for the simulation of new single-cell expression profiles.</p></dd>
 
-<dt><code>single.cell.simul</code></dt><dd><p>Simulated single-cell expression profiles from
+<dt><code>single.cell.simul</code></dt><dd><p>Simulated single-cell expression profiles from the
 ZINB-WaVE model.</p></dd>
 
 <dt><code>prob.cell.types</code></dt><dd><p><code><a href='ProbMatrixCellTypes-class.html'>ProbMatrixCellTypes</a></code> class with
-cell composition matrices built for the simulation of bulk RNA-seq profiles
-with known cell composition.</p></dd>
+cell composition matrices built for the simulation of pseudo-bulk RNA-Seq
+profiles with known cell composition.</p></dd>
 
-<dt><code>bulk.simul</code></dt><dd><p>A list with train and test simulated bulk RNA-seq samples.
+<dt><code>bulk.simul</code></dt><dd><p>A list of simulated train and test bulk RNA-Seq samples.
 Each entry is a <code>SummarizedExperiment</code> object. The count
 matrices can be stored as <code>HDF5Array</code> files using HDF5 files as
-back-end in case of RAM memory limitations.</p></dd>
+back-end in case of RAM limitations.</p></dd>
 
 <dt><code>trained.model</code></dt><dd><p><code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> object with all
 the information related to the trained model. See
 <code>?<a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> for more details.</p></dd>
 
 <dt><code>deconv.data</code></dt><dd><p>List of <code>SummarizedExperiment</code> objects
-where it is possible to store new bulk RNA-seq experiments for their
-deconvolution. The name of the entries corresponds to the name of provided
-data. See <code><a href='deconvDigitalDLSorterObj.html'>deconvDigitalDLSorterObj</a></code> for details.</p></dd>
+where it is possible to store new bulk RNA-Seq experiments for
+deconvolution. The name of the entries corresponds to the name of the data
+provided. See <code><a href='deconvDigitalDLSorterObj.html'>deconvDigitalDLSorterObj</a></code> for details.</p></dd>
 
-<dt><code>deconv.results</code></dt><dd><p>Slot containing the deconvolution results from applying
-the deconvolution model to data present in <code><a href='deconv.data.html'>deconv.data</a></code> slot.
-It is a list in which the names corresponds to the data from which they
-come.</p></dd>
+<dt><code>deconv.results</code></dt><dd><p>Slot containing the deconvolution results of applying
+the deconvolution model to the data present in the
+<code><a href='deconv.data.html'>deconv.data</a></code> slot. It is a list in which the names corresponds
+to the data from which they come.</p></dd>
 
 <dt><code>project</code></dt><dd><p>Name of the project.</p></dd>
 
-<dt><code>version</code></dt><dd><p>Version of DigitalDLSorteR this object was built under.The package can be used in two ways: to build new deconvolution models from
-single-cell RNA-seq data or to deconvolute bulk RNA-seq samples using
-pre-trained models integrated into the package. If you want to build new
-models, see <code><a href='loadSCProfiles.html'>loadSCProfiles</a></code> function. If you want to use
-pre-trained models, see <code><a href='deconvDigitalDLSorter.html'>deconvDigitalDLSorter</a></code> function.In order to provide a way of working with big amounts of data in machines
-with RAM limitations, we provide the possibility of using HDF5 files as
-back-end to store count matrices of both single-cell real/simulated and
-bulk RNAseq profiles. To do this, we use <code>HDF5Array</code> and
-<code>DelayedArray</code> classes from the homonymous packages.Once the neural network is trained, it is possible to save it as RDS, RDA
-and HDF5 files. Please, see <code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> for
-more details.</p></dd>
+<dt><code>version</code></dt><dd><p>Version of DigitalDLSorteR this object was built under.</p></dd>
 
 </dl>
 

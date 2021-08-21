@@ -50,8 +50,8 @@
 
 <meta property="og:title" content="The DigitalDLSorterDNN Class — DigitalDLSorterDNN-class" />
 <meta property="og:description" content="The DigitalDLSorterDNN object stores all the information related to Deep
-Neural Network model. It contains the trained model, the training history and
-the results of prediction on test data. After running
+Neural Network models. It contains the trained model, the training history
+and the results of prediction on test data. After running
 calculateEvalMetrics, it is possible to find the performance
 evaluation of the model on test data (see ?calculateEvalMetrics
 for details)." />
@@ -162,8 +162,8 @@ for details)." />
 
     <div class="ref-description">
     <p>The DigitalDLSorterDNN object stores all the information related to Deep
-Neural Network model. It contains the trained model, the training history and
-the results of prediction on test data. After running
+Neural Network models. It contains the trained model, the training history
+and the results of prediction on test data. After running
 <code><a href='calculateEvalMetrics.html'>calculateEvalMetrics</a></code>, it is possible to find the performance
 evaluation of the model on test data (see <code>?<a href='calculateEvalMetrics.html'>calculateEvalMetrics</a></code>
 for details).</p>
@@ -173,27 +173,27 @@ for details).</p>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The steps related to Deep Learning are carried out using <span class="pkg">keras</span> package
-which uses R6 classes. If you want to save the object as an RDS file,
-<code>digitalDLSorteR</code> provides a <code>saveRDS</code> generic function that
-transforms the model stored as an R6 object into a native valid R object.
-Specifically, the model is converted into a list with the architecture of the
-network and the weights learned during training. That is the minimum
-information needed to use the model as predictor. If you want to maintain the
-optimizer state, see <code>?<a href='saveTrainedModelAsH5.html'>saveTrainedModelAsH5</a></code>. If you want to
-store <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object as an RDA file, see
-<code>?<a href='preparingToSave.html'>preparingToSave</a></code>.</p>
+    <p>The steps related to Deep Learning are carried out using the <span class="pkg">keras</span>
+package which uses the R6 classes system. If you want to save the object as
+an RDS file, <code>digitalDLSorteR</code> provides a <code>saveRDS</code> generic
+function that transforms the model stored as an R6 object into a native valid
+R object. Specifically, the model is converted into a list with the
+architecture of the network and the weights learned during training. That is
+the minimum information needed to use the model as predictor. If you want to
+keep the optimizer state, see <code>?<a href='saveTrainedModelAsH5.html'>saveTrainedModelAsH5</a></code>. If you
+want to store <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object on disk as an RDA file,
+see <code>?<a href='preparingToSave.html'>preparingToSave</a></code>.</p>
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
 
     
 
 <dl>
-<dt><code>model</code></dt><dd><p>Trained Deep Neural Network. This slot can contain a R6
+<dt><code>model</code></dt><dd><p>Trained Deep Neural Network. This slot can contain an R6
 <code>keras.engine.sequential.Sequential</code> object or a list with two
 elements: the architecture of the model and the resulting weights after
 training.</p></dd>
 
-<dt><code>training.history</code></dt><dd><p>List with the evolution of selected metrics during
+<dt><code>training.history</code></dt><dd><p>List with the evolution of the selected metrics during
 training.</p></dd>
 
 <dt><code>test.metrics</code></dt><dd><p>Performance of the model on test data.</p></dd>
@@ -204,13 +204,14 @@ type in this sample.</p></dd>
 
 <dt><code>cell.types</code></dt><dd><p>Vector with cell types to deconvolute.</p></dd>
 
-<dt><code>features</code></dt><dd><p>Vector with features used during training. These features will
-be used in subsequent predictions (the nomenclature used must be the same).</p></dd>
+<dt><code>features</code></dt><dd><p>Vector with the features used during training. These features
+will be used in subsequent predictions (the nomenclature used in new bulk
+RNA-Seq samples must be the same).</p></dd>
 
-<dt><code>test.deconv.metrics</code></dt><dd><p>Model performance on each sample of test data
+<dt><code>test.deconv.metrics</code></dt><dd><p>Performance of the model on each sample of test data
 compared to known cell proportions. This slot is used after
-<code>?<a href='calculateEvalMetrics.html'>calculateEvalMetrics</a></code>, so see
-<code>?<a href='calculateEvalMetrics.html'>calculateEvalMetrics</a></code> for more details.</p></dd>
+<code><a href='calculateEvalMetrics.html'>calculateEvalMetrics</a></code> (see
+<code>?<a href='calculateEvalMetrics.html'>calculateEvalMetrics</a></code> for more details).</p></dd>
 
 </dl>
 

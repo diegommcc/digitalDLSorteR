@@ -52,24 +52,24 @@ data — loadSCProfiles • digitalDLSorteR</title>
 <meta property="og:title" content="Create a DigitalDLSorter object from single-cell RNA-seq
 data — loadSCProfiles" />
 <meta property="og:description" content="Create a DigitalDLSorter object from single-cell RNA-seq
-data using files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5)
-or using a SingleCellExperiment object. Data will be
-stored in single.cell.real slot. Provided data must be composed of
+data from files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5)
+or a SingleCellExperiment object. The data will be
+stored in single.cell.real slot. Tha data provided should consist of
 three pieces of information:
-Single-cell counts: genes in
-rows and cells in columns.
+Single-cell counts: genes as
+rows and cells as columns.
 Cells metadata: annotations (columns) for
 each cell (rows).
 Genes metadata: annotations (columns) for each gene
 (rows).
-If data is provided from files, single.cell.real argument
-must be a vector of three elements ordered so that the first file corresponds
-to count matrix, the second to cells metadata and the latter to genes
-metadata. On the other hand, if data is provided as
-SingleCellExperiment, the object must contain
-single-cell counts in assay slot, cells metadata in colData
-slot and genes metadata in rowData. Data must be provided without any
-transformation (e.g. log-transformation) and raw counts are preferred." />
+If the data is provided from files, single.cell.real
+argument must be a vector of three elements ordered so that the first file
+corresponds to the count matrix, the second to the cells metadata and the
+last to the genes metadata. On the other hand, if the data is provided as a
+SingleCellExperiment oject, it must contain single-cell
+counts in the assay slot, cells metadata in the colData slot
+and genes metadata in the rowData. The data must be provided without
+any transformation (e.g. log-transformation) and raw counts are preferred." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -178,24 +178,24 @@ data</h1>
 
     <div class="ref-description">
     <p>Create a <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object from single-cell RNA-seq
-data using files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5)
-or using a <code>SingleCellExperiment</code> object. Data will be
-stored in <code>single.cell.real</code> slot. Provided data must be composed of
+data from files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5)
+or a <code>SingleCellExperiment</code> object. The data will be
+stored in <code>single.cell.real</code> slot. Tha data provided should consist of
 three pieces of information:</p><ul>
-<li><p>Single-cell counts: genes in
-rows and cells in columns.</p></li>
+<li><p>Single-cell counts: genes as
+rows and cells as columns.</p></li>
 <li><p>Cells metadata: annotations (columns) for
 each cell (rows).</p></li>
 <li><p>Genes metadata: annotations (columns) for each gene
 (rows).</p></li>
-</ul><p>If data is provided from files, <code>single.cell.real</code> argument
-must be a vector of three elements ordered so that the first file corresponds
-to count matrix, the second to cells metadata and the latter to genes
-metadata. On the other hand, if data is provided as
-<code>SingleCellExperiment</code>, the object must contain
-single-cell counts in <code>assay</code> slot, cells metadata in <code>colData</code>
-slot and genes metadata in <code>rowData</code>. Data must be provided without any
-transformation (e.g. log-transformation) and raw counts are preferred.</p>
+</ul><p>If the data is provided from files, <code>single.cell.real</code>
+argument must be a vector of three elements ordered so that the first file
+corresponds to the count matrix, the second to the cells metadata and the
+last to the genes metadata. On the other hand, if the data is provided as a
+<code>SingleCellExperiment</code> oject, it must contain single-cell
+counts in the <code>assay</code> slot, cells metadata in the <code>colData</code> slot
+and genes metadata in the <code>rowData</code>. The data must be provided without
+any transformation (e.g. log-transformation) and raw counts are preferred.</p>
     </div>
 
     <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>loadSCProfiles</span><span class='op'>(</span>
@@ -221,25 +221,25 @@ transformation (e.g. log-transformation) and raw counts are preferred.</p>
     <tr>
       <th>single.cell.data</th>
       <td><p>If data is provided from files,
-<code>single.cell.real</code> must be a vector with file paths of three elements:
-single-cell counts, cells metadata and genes metadata. If data is provided
-from a <code>SingleCellExperiment</code> object, single-cell counts
-must be present in <code>assay</code> slot, cells metadata in <code>colData</code> slot
-and genes metadata in <code>rowData</code> slot.</p></td>
+<code>single.cell.real</code> must be a vector of three elements: single-cell
+counts, cells metadata and genes metadata. If data is provided from a
+<code>SingleCellExperiment</code> object, single-cell counts must
+be present in the <code>assay</code> slot, cells metadata in the <code>colData</code>
+slot and genes metadata in the <code>rowData</code> slot.</p></td>
     </tr>
     <tr>
       <th>cell.ID.column</th>
-      <td><p>Name or number of the column in cells metadata
+      <td><p>Name or number of the column in the cells metadata
 corresponding to cell names in expression matrix.</p></td>
     </tr>
     <tr>
       <th>gene.ID.column</th>
-      <td><p>Name or number of the column in genes metadata
+      <td><p>Name or number of the column in the genes metadata
 corresponding to the names used for features/genes.</p></td>
     </tr>
     <tr>
       <th>name.dataset.h5</th>
-      <td><p>Name of data set if HDF5 file is provided.</p></td>
+      <td><p>Name of the data set if HDF5 file is provided.</p></td>
     </tr>
     <tr>
       <th>min.counts</th>
@@ -247,38 +247,39 @@ corresponding to the names used for features/genes.</p></td>
     </tr>
     <tr>
       <th>min.cells</th>
-      <td><p>Minimum of cells with more than min.counts (0 by default).</p></td>
+      <td><p>Minimum of cells with more than <code>min.counts</code> (0 by
+default).</p></td>
     </tr>
     <tr>
       <th>fun.aggregate</th>
       <td><p>In case of duplicated genes, it is possible to set the
-function used for aggregating them. Allowed functions: <code>'sum'</code>,
+function used to aggregate them. Allowed functions: <code>'sum'</code>,
 <code>'mean'</code>, <code>'median'</code>. Note that this functionality only works
-when data are provided from a mtx file (sparse matrices) that allows
+when data are provided from an mtx file (sparse matrices) that allows
 duplicated rownames. Otherwise, R does not allow duplicated rownames.</p></td>
     </tr>
     <tr>
       <th>file.backend</th>
-      <td><p>Valid file path where to store loaded data as HDF5 file.
-If provided, data is stored in HDF5 files as back-end by using
-<span class="pkg">DelayedArray</span> and <span class="pkg">HDF5Array</span> packages instead of
-loaded in memory. This is suitable for situations where you have big
-amounts of data that cannot be allocated in memory. Note that operations on
-this data will be carried out by blocks (i.e subsets of determined size),
-which can lead to longer execution times. <code>NULL</code> by default.</p></td>
+      <td><p>Valid file path where to store the loaded data as HDF5
+file. If provided, data is stored in HDF5 files as back-end using
+<span class="pkg">DelayedArray</span> and <span class="pkg">HDF5Array</span> packages instead of being loaded
+into RAM. This is suitable for situations where you have large amounts of
+data that cannot be stored in memory. Note that operations on these data
+will be performed by blocks (i.e subsets of determined size), which may
+result in longer execution times. <code>NULL</code> by default.</p></td>
     </tr>
     <tr>
       <th>name.dataset.backend</th>
-      <td><p>Name of the dataset in the HDF5 file that will be
-used. Note that it cannot exist. If <code>NULL</code> (by default), a random
-datset name will be used.</p></td>
+      <td><p>Name of the dataset of the HDF5 file to be used.
+Note that it cannot exist. If <code>NULL</code> (by default), a random datset
+name will be used.</p></td>
     </tr>
     <tr>
       <th>compression.level</th>
       <td><p>The compression level used if <code>file.backend</code> is
 provided. It is an integer value between 0 (no compression) and 9 (highest
 and slowest compression). See
-<code>?<a href='https://rdrr.io/pkg/HDF5Array/man/dump-management.html'>getHDF5DumpCompressionLevel</a></code> from
+<code>?<a href='https://rdrr.io/pkg/HDF5Array/man/dump-management.html'>getHDF5DumpCompressionLevel</a></code> from the
 <span class="pkg">HDF5Array</span> package for more information.</p></td>
     </tr>
     <tr>
@@ -286,22 +287,22 @@ and slowest compression). See
       <td><p>Specifies dimensions that HDF5 chunk will have. If
 <code>NULL</code>, the default value is a vector of two items: the number of
 genes considered by <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object during the
-simulation and only one sample in order to increase the read times in the
-following steps. Greater number of columns written in each chunk can lead
+simulation, and only one sample in order to increase read times in the
+following steps. A larger number of columns written in each chunk may lead
 to longer read times.</p></td>
     </tr>
     <tr>
       <th>block.processing</th>
-      <td><p>Boolean indicating if data should be treated as
-blocks (only if data are provided as HDF5 file). <code>FALSE</code> by default.
-Note that to use this functionality is suitable for cases where is not
-possible to allocate data in memory and therefore execution times will be
+      <td><p>Boolean indicating whether data should be treated as
+blocks (only if data is provided as HDF5 file). <code>FALSE</code> by default.
+Note that using this functionality is suitable for cases where is not
+possible to load the data into RAM and therefore execution times will be
 longer.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Show informative messages during the execution. <code>TRUE</code> by
-default.</p></td>
+      <td><p>Show informative messages during the execution (<code>TRUE</code> by
+default).</p></td>
     </tr>
     <tr>
       <th>project</th>
@@ -312,16 +313,17 @@ object.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object with single-cell
-RNA-seq data provided loaded in single.cell.real slot</p>
+    <p>A <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object with the single-cell
+RNA-seq data provided loaded into the <code>single.cell.real</code> slot as a
+<code>SingleCellExperiment</code> object.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This data can be used to simulate new single-cell profiles using the
-ZINB-WaVE framework with <code><a href='estimateZinbwaveParams.html'>estimateZinbwaveParams</a></code> function. In
-this way it is possible to increase the signal of cell types which are
-underrepresented in the original data set. If this step is not neccesary,
-these profiles will be used directly to simulate bulk RNA-seq samples with
-known composition.</p>
+ZINB-WaVE framework with the <code><a href='estimateZinbwaveParams.html'>estimateZinbwaveParams</a></code> function.
+In this way, it is possible to increase the signal of cell types that are
+underrepresented in the original dataset. If this step is not neccesary,
+these profiles will be used directly to simulate pseudo-bulk RNA-seq samples
+with known cell composition.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='estimateZinbwaveParams.html'>estimateZinbwaveParams</a></code>
@@ -329,8 +331,9 @@ known composition.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"digitalDLSorteRdata"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata.git'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
-<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>DDLSLiComp</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>DDLSChung.list</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>DDLSChung</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/digitalDLSorteRdata/man/listToDDLS.html'>listToDDLS</a></span><span class='op'>(</span><span class='va'>DDLSChung.list</span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='va'>sc.chung.breast</span> <span class='op'>&lt;-</span> <span class='fu'><a href='single.cell.real.html'>single.cell.real</a></span><span class='op'>(</span><span class='va'>DDLSChung</span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='va'>DDLSChungSmall</span> <span class='op'>&lt;-</span> <span class='fu'>loadSCProfiles</span><span class='op'>(</span></span>
 <span class='r-in'>    single.cell.data <span class='op'>=</span> <span class='va'>sc.chung.breast</span>,</span>

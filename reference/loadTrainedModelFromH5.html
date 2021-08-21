@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Load from HDF5 file a trained DigitalDLSorter Deep Neural Network model — loadTrainedModelFromH5 • digitalDLSorteR</title>
+<title>Load from an HDF5 file a trained Deep Neural Network model into a
+DigitalDLSorter object — loadTrainedModelFromH5 • digitalDLSorteR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,10 +49,11 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Load from HDF5 file a trained DigitalDLSorter Deep Neural Network model — loadTrainedModelFromH5" />
-<meta property="og:description" content="Load from HDF5 file a trained  Deep Neural Network model into a
+<meta property="og:title" content="Load from an HDF5 file a trained Deep Neural Network model into a
+DigitalDLSorter object — loadTrainedModelFromH5" />
+<meta property="og:description" content="Load from an HDF5 file a trained Deep Neural Network model into a
 DigitalDLSorter object. Note that HDF5 file must be a
-keras valid trained model." />
+valid trained model (keras object)." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -152,15 +154,16 @@ keras valid trained model." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Load from HDF5 file a trained DigitalDLSorter Deep Neural Network model</h1>
+    <h1>Load from an HDF5 file a trained Deep Neural Network model into a
+<code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object</h1>
     <small class="dont-index">Source: <a href='https://github.com/diegommcc/digitalDLSorteR/R/utils.R'><code>R/utils.R</code></a></small>
     <div class="hidden name"><code>loadTrainedModelFromH5.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Load from HDF5 file a trained  Deep Neural Network model into a
+    <p>Load from an HDF5 file a trained Deep Neural Network model into a
 <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object. Note that HDF5 file must be a
-keras valid trained model.</p>
+valid trained model (<span class="pkg">keras</span> object).</p>
     </div>
 
     <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>loadTrainedModelFromH5</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>file.path</span>, reset.slot <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></code></pre></div>
@@ -175,12 +178,12 @@ keras valid trained model.</p>
     </tr>
     <tr>
       <th>file.path</th>
-      <td><p>Valid file path where model are stored.</p></td>
+      <td><p>Valid file path where the model are stored.</p></td>
     </tr>
     <tr>
       <th>reset.slot</th>
-      <td><p>Remove <code>trained.slot</code> if it already exists. A new
-<code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> object will be formed, but it will not
+      <td><p>Deletes <code>trained.slot</code> if it already exists. A new
+<code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> object will be formed, but will not
 contain other slots (<code>FALSE</code> by default).</p></td>
     </tr>
     </table>

@@ -6,8 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Estimate parameters of ZINB-WaVE model for simulating new single-cell
-expression profiles — estimateZinbwaveParams • digitalDLSorteR</title>
+<title>Estimate the parameters of the ZINB-WaVE model to simulate new single-cell
+RNA-Seq expression profiles — estimateZinbwaveParams • digitalDLSorteR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -49,15 +49,16 @@ expression profiles — estimateZinbwaveParams • digitalDLSorteR</title>
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Estimate parameters of ZINB-WaVE model for simulating new single-cell
-expression profiles — estimateZinbwaveParams" />
-<meta property="og:description" content="Estimate parameters of ZINB-WaVE model using a real single-cell data set to
-simulate new single-cell profiles and to increase the signal of
-underrepresented cell types. If this step is needed, its aim is to train the
-Deep Neural Network in a more balanced way. After this step,
-simSCProfiles function will use the estimated parameters to
-simulate new single-cell profiles. See ?simSCProfiles for more
-information." />
+<meta property="og:title" content="Estimate the parameters of the ZINB-WaVE model to simulate new single-cell
+RNA-Seq expression profiles — estimateZinbwaveParams" />
+<meta property="og:description" content="Estimate the parameters of the ZINB-WaVE model using a real single-cell
+RNA-Seq data set as reference to simulate new single-cell profiles and
+increase the signal of underrepresented cell types. This step is optional,
+only is needed if the size of you dataset is too small or there are
+underrepresented cell types in order to train the Deep Neural Network model
+in a more balanced way. After this step, the simSCProfiles
+function will use the estimated parameters to simulate new single-cell
+profiles. See ?simSCProfiles for more information." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -158,20 +159,21 @@ information." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Estimate parameters of ZINB-WaVE model for simulating new single-cell
-expression profiles</h1>
+    <h1>Estimate the parameters of the ZINB-WaVE model to simulate new single-cell
+RNA-Seq expression profiles</h1>
     <small class="dont-index">Source: <a href='https://github.com/diegommcc/digitalDLSorteR/R/simSingleCell.R'><code>R/simSingleCell.R</code></a></small>
     <div class="hidden name"><code>estimateZinbwaveParams.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Estimate parameters of ZINB-WaVE model using a real single-cell data set to
-simulate new single-cell profiles and to increase the signal of
-underrepresented cell types. If this step is needed, its aim is to train the
-Deep Neural Network in a more balanced way. After this step,
-<code><a href='simSCProfiles.html'>simSCProfiles</a></code> function will use the estimated parameters to
-simulate new single-cell profiles. See <code>?<a href='simSCProfiles.html'>simSCProfiles</a></code> for more
-information.</p>
+    <p>Estimate the parameters of the ZINB-WaVE model using a real single-cell
+RNA-Seq data set as reference to simulate new single-cell profiles and
+increase the signal of underrepresented cell types. This step is optional,
+only is needed if the size of you dataset is too small or there are
+underrepresented cell types in order to train the Deep Neural Network model
+in a more balanced way. After this step, the <code><a href='simSCProfiles.html'>simSCProfiles</a></code>
+function will use the estimated parameters to simulate new single-cell
+profiles. See <code>?<a href='simSCProfiles.html'>simSCProfiles</a></code> for more information.</p>
     </div>
 
     <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>estimateZinbwaveParams</span><span class='op'>(</span>
@@ -198,58 +200,59 @@ information.</p>
     </tr>
     <tr>
       <th>cell.type.column</th>
-      <td><p>Name or column number corresponding to cell type of
-each cell in cells metadata.</p></td>
+      <td><p>Name or column number corresponding to the cell type
+of each cell in cells metadata.</p></td>
     </tr>
     <tr>
       <th>cell.ID.column</th>
-      <td><p>Name or column number corresponding to cell names of
-expression matrix in cells metadata.</p></td>
+      <td><p>Name or column number corresponding to the cell names
+of expression matrix in cells metadata.</p></td>
     </tr>
     <tr>
       <th>gene.ID.column</th>
-      <td><p>Name or column number corresponding to notation used
-for features/genes in genes metadata.</p></td>
+      <td><p>Name or column number corresponding to the notation
+used for features/genes in genes metadata.</p></td>
     </tr>
     <tr>
       <th>cell.cov.columns</th>
-      <td><p>Name or column number(s) in cells metadata that will
-be used as covariates during the fitting of the model (if no covariates are
-used, set it empty or <code>NULL</code>).</p></td>
+      <td><p>Name or column number(s) in cells metadata to be used
+as covariates during model fitting (if no covariates are used, set to empty
+or <code>NULL</code>).</p></td>
     </tr>
     <tr>
       <th>gene.cov.columns</th>
       <td><p>Name or column number(s) in genes metadata that will
-be used as covariates during the fitting of the model (if no covariates are
-used, set it empty or <code>NULL</code>).</p></td>
+be used as covariates during model fitting (if no covariates are used, set
+to empty or <code>NULL</code>).</p></td>
     </tr>
     <tr>
       <th>subset.cells</th>
-      <td><p>Number of cells to fit ZINB-WaVE model. It is useful
-when original data sets are too large to fit the model. Set a value
-according to original data set and available resources in your computer. If
-<code>NULL</code> (by default), all cells will be used. It must be an integer
-greater than or equal to the number of cell types considered and less
-than or equal to the total cells.</p></td>
+      <td><p>Number of cells to fit the ZINB-WaVE model. Useful when
+the original data set is too large to fit the model. Set a value according
+to the original data set and the resources available on your computer. If
+<code>NULL</code> (by default), all cells will be used. Must be an integer
+greater than or equal to the number of cell types considered and less than
+or equal to the total number of cells.</p></td>
     </tr>
     <tr>
       <th>proportional</th>
-      <td><p>If <code>TRUE</code>, original cell type proportions in the
-subset of cells generated by <code>subset.cells</code> argument will not be
-altered as far as possible. If <code>FALSE</code>, all cell types will have the
-same number of cells as far as possible (<code>TRUE</code> by default).</p></td>
+      <td><p>If <code>TRUE</code>, the original cell type proportions in the
+subset of cells generated by <code>subset.cells</code> will not be altered as far
+as possible. If <code>FALSE</code>, all cell types will have the same number of
+cells as far as possible (<code>TRUE</code> by default).</p></td>
     </tr>
     <tr>
       <th>set.type</th>
-      <td><p>Cell type(s) to evaluate (<code>'All'</code> by default). We
-recommend fitting the model to all cell types instead of just using a
-subset of them in order to capture the total variability present in the
-original experiment even though only a subset of cell types is simulated.</p></td>
+      <td><p>Cell type(s) to evaluate (<code>'All'</code> by default). It is
+recommended fitting the model to all cell types rather than using only a
+subset of them to capture the total variability present in the original
+experiment even if only a subset of cell types is simulated.</p></td>
     </tr>
     <tr>
       <th>threads</th>
-      <td><p>Number of threads used for the estimation (1 by default). For
-setting the parallel environment, <span class="pkg">BiocParallel</span> package is used.</p></td>
+      <td><p>Number of threads used for estimation (1 by default). To set
+up the parallel environment, the <span class="pkg">BiocParallel</span> package must be
+installed.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
@@ -262,7 +265,8 @@ default).</p></td>
 
     <p>A <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object with <code>zinb.params</code>
 slot containing a <code>ZINBParams</code> object. This object
-contains the estimated ZINB-WaVE parameters from real single-cell data.</p>
+contains the estimated ZINB-WaVE parameters from the real single-cell
+RNA-Se`q data.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>ZINB-WaVE is a flexible model for zero-inflated count data. This function
@@ -271,24 +275,25 @@ count of feature \(j\) for sample \(i\)) as a random variable following a
 zero-inflated negative binomial (ZINB) distribution. The estimated parameters
 will be used for the simulation of new single-cell expression profiles by
 sampling a negative binomial distribution and inserting dropouts from a
-binomial distribution. To do it, <span class="pkg">digitalDLSorteR</span> uses
-<code><a href='https://rdrr.io/pkg/splatter/man/zinbEstimate.html'>zinbEstimate</a></code> function from <span class="pkg">splatter</span> package
-(Zappia et al., 2017), a wrapper around <code><a href='https://rdrr.io/pkg/zinbwave/man/zinbFit.html'>zinbFit</a></code>
-function from <span class="pkg">zinbwave</span> package (Risso et al., 2018). For more details
-about the model, see Risso et al., 2018.</p>
+binomial distribution. To do so, <span class="pkg">digitalDLSorteR</span> uses the
+<code><a href='https://rdrr.io/pkg/splatter/man/zinbEstimate.html'>zinbEstimate</a></code> function from the <span class="pkg">splatter</span> package
+(Zappia et al., 2017), a wrapper around the <code><a href='https://rdrr.io/pkg/zinbwave/man/zinbFit.html'>zinbFit</a></code>
+function from the <span class="pkg">zinbwave</span> package (Risso et al., 2018). For more
+details about the model, see Risso et al., 2018.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
 and flexible method for signal extraction from single-cell RNA-seq data.
-Nat Commun 9, 284. doi:
-<a href='https://doi.org/10.1038/s41467-017-02554-5'>10.1038/s41467-017-02554-5</a>
-Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
+Nat Commun 9, 284. doi: doi: <a href='https://doi.org/10.1038/s41467-017-02554-5'>10.1038/s41467-017-02554-5</a>
+.</p>
+<p>Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 algorithm to quantify immune cell populations based on scRNA-Seq data.
-Frontiers in Genetics 10, 978. doi:
-<a href='https://doi.org/10.3389/fgene.2019.00978'>10.3389/fgene.2019.00978</a>
-Zappia, L., Phipson, B. and Oshlack, A. Splatter: simulation of single-cell
+Frontiers in Genetics 10, 978. doi: doi: <a href='https://doi.org/10.3389/fgene.2019.00978'>10.3389/fgene.2019.00978</a>
+.</p>
+<p>Zappia, L., Phipson, B. and Oshlack, A. Splatter: simulation of single-cell
 RNA sequencing data. Genome Biol. 2017; 18: 174. doi:
-<a href='https://doi.org/10.1186/s13059-017-1305-0'>10.1186/s13059-017-1305-0</a></p>
+doi: <a href='https://doi.org/10.1186/s13059-017-1305-0'>10.1186/s13059-017-1305-0</a>
+.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='simSCProfiles.html'>simSCProfiles</a></code></p></div>
@@ -296,8 +301,9 @@ RNA sequencing data. Genome Biol. 2017; 18: 174. doi:
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
 <span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"digitalDLSorteRdata"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata.git'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
-<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>DDLSChung</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>DDLSChung.list</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>DDLSChung</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/digitalDLSorteRdata/man/listToDDLS.html'>listToDDLS</a></span><span class='op'>(</span><span class='va'>DDLSChung.list</span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='va'>DDLSChung</span> <span class='op'>&lt;-</span> <span class='fu'>estimateZinbwaveParams</span><span class='op'>(</span></span>
 <span class='r-in'>    object <span class='op'>=</span> <span class='va'>DDLSChung</span>,</span>
 <span class='r-in'>    cell.ID.column <span class='op'>=</span> <span class='st'>"Cell_ID"</span>,</span>

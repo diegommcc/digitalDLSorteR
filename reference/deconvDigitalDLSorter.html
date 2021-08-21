@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Deconvolute bulk RNAseq samples using a pre-trained DigitalDLSorter model — deconvDigitalDLSorter • digitalDLSorteR</title>
+<title>Deconvolute bulk RNA-Seq samples using a pre-trained DigitalDLSorter model — deconvDigitalDLSorter • digitalDLSorteR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,18 +48,19 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Deconvolute bulk RNAseq samples using a pre-trained DigitalDLSorter model — deconvDigitalDLSorter" />
+<meta property="og:title" content="Deconvolute bulk RNA-Seq samples using a pre-trained DigitalDLSorter model — deconvDigitalDLSorter" />
 <meta property="og:description" content="Deconvolute bulk gene expression samples (bulk RNA-Seq) to enumerate and
 quantify the proportion of cell types present in a bulk sample using Deep
 Neural Network models. This function is intended for users who want to use
 pre-trained models integrated in the package. So far, the available models
-allow to deconvolute the immune infiltration of breast cancer (Chung et al.,
-2017) and the immune infiltration of colorectal cancer (Li et al., 2017).
-Regarding the former, there are two available models at two different levels
-of specificity: specific cell types (breast.chung.specific) and generic
-cell types (breast.chung.generic). See breast.chung.generic,
-breast.chung.specific, and colorectal.li documentation
-from digitalDLSorteRdata package for details." />
+allow to deconvolute the immune infiltration of breast cancer (using data from
+Chung et al., 2017) and the immune infiltration of colorectal cancer (using
+data from Li et al., 2017) samples. For the former, two models are available
+at two different levels of specificity: specific cell types
+(breast.chung.specific) and generic cell types
+(breast.chung.generic). See breast.chung.generic,
+breast.chung.specific, and colorectal.li documentation from the
+digitalDLSorteRdata package for more details." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -160,7 +161,7 @@ from digitalDLSorteRdata package for details." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Deconvolute bulk RNAseq samples using a pre-trained DigitalDLSorter model</h1>
+    <h1>Deconvolute bulk RNA-Seq samples using a pre-trained DigitalDLSorter model</h1>
     <small class="dont-index">Source: <a href='https://github.com/diegommcc/digitalDLSorteR/R/dnnModel.R'><code>R/dnnModel.R</code></a></small>
     <div class="hidden name"><code>deconvDigitalDLSorter.Rd</code></div>
     </div>
@@ -170,13 +171,14 @@ from digitalDLSorteRdata package for details." />
 quantify the proportion of cell types present in a bulk sample using Deep
 Neural Network models. This function is intended for users who want to use
 pre-trained models integrated in the package. So far, the available models
-allow to deconvolute the immune infiltration of breast cancer (Chung et al.,
-2017) and the immune infiltration of colorectal cancer (Li et al., 2017).
-Regarding the former, there are two available models at two different levels
-of specificity: specific cell types (<code>breast.chung.specific</code>) and generic
-cell types (<code>breast.chung.generic</code>). See <code>breast.chung.generic</code>,
-<code>breast.chung.specific</code>, and <code>colorectal.li</code> documentation
-from <span class="pkg">digitalDLSorteRdata</span> package for details.</p>
+allow to deconvolute the immune infiltration of breast cancer (using data from
+Chung et al., 2017) and the immune infiltration of colorectal cancer (using
+data from Li et al., 2017) samples. For the former, two models are available
+at two different levels of specificity: specific cell types
+(<code>breast.chung.specific</code>) and generic cell types
+(<code>breast.chung.generic</code>). See <code>breast.chung.generic</code>,
+<code>breast.chung.specific</code>, and <code>colorectal.li</code> documentation from the
+<span class="pkg">digitalDLSorteRdata</span> package for more details.</p>
     </div>
 
     <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>deconvDigitalDLSorter</span><span class='op'>(</span>
@@ -194,23 +196,23 @@ from <span class="pkg">digitalDLSorteRdata</span> package for details.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>Matrix or data frame with bulk-RNAseq samples. Rows must be genes
-in SYMBOL notation and columns must be samples.</p></td>
+      <td><p>Matrix or data frame with bulk RNA-Seq samples with genes as rows
+in SYMBOL notation and samples as columns.</p></td>
     </tr>
     <tr>
       <th>model</th>
       <td><p>Pre-trained DNN model to use to deconvolute <code>data</code>. Up to
-now, the available models are aimed to deconvoluting samples of breast
-cancer (<code>breast.chung.generic</code> and
-<code>breast.chung.specific</code>) and colorectal cancer
-<code>colorectal.li</code>. These pre-trained models are stored in
-<span class="pkg">digitalDLSorteRdata</span> package, so it must be installed together with
-<span class="pkg">digitalDLSorteR</span>.</p></td>
+now, the available models are intended to deconvolute samples from breast
+cancer (<code>breast.chung.generic</code> and <code>breast.chung.specific</code>) and
+colorectal cancer (<code>colorectal.li</code>). These pre-trained models are
+stored in the <span class="pkg">digitalDLSorteRdata</span> package, so it must be installed
+together with <span class="pkg">digitalDLSorteR</span> to use this function.</p></td>
     </tr>
     <tr>
       <th>batch.size</th>
-      <td><p>Number of samples loaded in RAM memory each time during the
-deconvolution process. If unspecified, <code>batch.size</code> will set to 128.</p></td>
+      <td><p>Number of samples loaded into RAM each time during the
+deconvolution process. If not specified, <code>batch.size</code> will be set to
+128.</p></td>
     </tr>
     <tr>
       <th>normalize</th>
@@ -219,38 +221,41 @@ deconvolution process. If unspecified, <code>batch.size</code> will set to 128.<
     <tr>
       <th>simplify.set</th>
       <td><p>List specifying which cell types should be compressed into
-a new label whose name will be the list name item. See examples for details.</p></td>
+a new label whose name will be the list name item. See examples and
+vignettes for details.</p></td>
     </tr>
     <tr>
       <th>simplify.majority</th>
       <td><p>List specifying which cell types should be compressed
-into the cell type with greater proportions in each sample. Unlike
-<code>simplify.set</code>, it allows to maintain the complexity of the results
-while compressing the information, since it is not created a new label.</p></td>
+into the cell type with the highest proportion in each sample. Unlike
+<code>simplify.set</code>, this argument allows to maintain the complexity of the
+results while compressing the information, as no new labels are created.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Show informative messages during the execution.</p></td>
+      <td><p>Show informative messages during execution.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A data frame with samples (\(i\)) as rows and cell types (\(j\))
-as columns. Each entry represents the predicted proportion of \(j\) cell
-type in \(i\) sample.</p>
+as columns. Each entry represents the predicted proportion of cell type
+\(j\) in sample \(i\).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function is intended for users who want to use <span class="pkg">digitalDLSorteR</span> for
-deconvoluting their bulk RNA-Seq samples using pre-trained models. For users
-who want to build their own models from scRNA-seq, see
-<code>?<a href='loadSCProfiles.html'>loadSCProfiles</a></code> and <code>?<a href='deconvDigitalDLSorterObj.html'>deconvDigitalDLSorterObj</a></code>.</p>
+    <p>This function is intended for users who want to use <span class="pkg">digitalDLSorteR</span> to
+deconvolute their bulk RNA-Seq samples using pre-trained models. For users who
+want to build their own models from other scRNA-Seq datasets, see the
+<code><a href='loadSCProfiles.html'>loadSCProfiles</a></code> and <code><a href='deconvDigitalDLSorterObj.html'>deconvDigitalDLSorterObj</a></code>
+functions.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Chung, W., Eum, H. H., Lee, H. O., Lee, K. M., Lee, H. B., Kim, K.
 T., et al. (2017). Single-cell RNA-seq enables comprehensive tumour and
 immune cell profiling in primary breast cancer. Nat. Commun. 8 (1), 15081.
-doi: <a href='https://doi.org/10.1038/ncomms15081'>10.1038/ncomms15081</a>.</p>
+doi: doi: <a href='https://doi.org/10.1038/ncomms15081'>10.1038/ncomms15081</a>
+.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='deconvDigitalDLSorterObj.html'>deconvDigitalDLSorterObj</a></code></p></div>
@@ -259,7 +264,7 @@ doi: <a href='https://doi.org/10.1038/ncomms15081'>10.1038/ncomms15081</a>.</p>
     <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"digitalDLSorteRdata"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
 <span class='r-in'>  <span class='co'># to ensure compatibility</span></span>
 <span class='r-in'>  <span class='fu'>tensorflow</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span><span class='op'>$</span><span class='va'>compat</span><span class='op'>$</span><span class='va'>v1</span><span class='op'>$</span><span class='fu'>disable_eager_execution</span><span class='op'>(</span><span class='op'>)</span></span>
-<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata.git'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>breast.chung.specific</span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>TCGA.breast.small</span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='va'>results1</span> <span class='op'>&lt;-</span> <span class='fu'>deconvDigitalDLSorter</span><span class='op'>(</span></span>
@@ -270,15 +275,14 @@ doi: <a href='https://doi.org/10.1038/ncomms15081'>10.1038/ncomms15081</a>.</p>
 <span class='r-in'>  <span class='co'># simplify arguments</span></span>
 <span class='r-in'>  <span class='va'>simplify</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>Tumor <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ER+"</span>, <span class='st'>"HER2+"</span>, <span class='st'>"ER+/HER2+"</span>, <span class='st'>"TNBC"</span><span class='op'>)</span>,</span>
 <span class='r-in'>                   Bcells <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Bmem"</span>, <span class='st'>"BGC"</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-in'>  <span class='co'># in this case names from list will be the new labels</span></span>
+<span class='r-in'>  <span class='co'># in this case the names of the list will be the new labels</span></span>
 <span class='r-in'>  <span class='va'>results2</span> <span class='op'>&lt;-</span> <span class='fu'>deconvDigitalDLSorter</span><span class='op'>(</span></span>
 <span class='r-in'>    <span class='va'>TCGA.breast.small</span>,</span>
 <span class='r-in'>    model <span class='op'>=</span> <span class='va'>breast.chung.specific</span>,</span>
 <span class='r-in'>    normalize <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
 <span class='r-in'>    simplify.set <span class='op'>=</span> <span class='va'>simplify</span></span>
 <span class='r-in'>  <span class='op'>)</span></span>
-<span class='r-in'>  <span class='co'># in this case the cell type with greatest proportion will be the new label</span></span>
-<span class='r-in'>  <span class='co'># the rest of proportion cell types will be added to the greatest</span></span>
+<span class='r-in'>  <span class='co'># in this case the cell type with the highest proportion will be the new label</span></span>
 <span class='r-in'>  <span class='va'>results3</span> <span class='op'>&lt;-</span> <span class='fu'>deconvDigitalDLSorter</span><span class='op'>(</span></span>
 <span class='r-in'>    <span class='va'>TCGA.breast.small</span>,</span>
 <span class='r-in'>    model <span class='op'>=</span> <span class='va'>breast.chung.specific</span>,</span>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate evaluation metrics for bulk RNA-seq samples from test data. — calculateEvalMetrics • digitalDLSorteR</title>
+<title>Calculate evaluation metrics for bulk RNA-Seq samples from test data — calculateEvalMetrics • digitalDLSorteR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,19 +48,20 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Calculate evaluation metrics for bulk RNA-seq samples from test data. — calculateEvalMetrics" />
-<meta property="og:description" content="Calculate evaluation metrics for bulk RNA-seq samples from test data in order
-to know the performance of the model. By default, absolute error (AbsErr),
-proportional absolute error (ppAbsErr), squared error (SqrErr) and
-proportional squared error (ppSqrErr) are calculated for each test sample.
-Moreover, each one of these metrics is aggregated using their mean values by
-three criteria: each cell type (CellType), probability bins in ranges
-of 0.1 (pBin) and number of different cell types present in the sample
-. Finally, the process is repeated only for bulk samples, removing
-single-cell profiles from the evaluation. Evaluation metrics are available in
-test.deconv.metrics slot of DigitalDLSorterDNN
-object (trained.model slot of DigitalDLSorter
-object)." />
+<meta property="og:title" content="Calculate evaluation metrics for bulk RNA-Seq samples from test data — calculateEvalMetrics" />
+<meta property="og:description" content="Calculate evaluation metrics for bulk RNA-seq samples from test data to
+understand model performance. By default, absolute error (AbsErr),
+proportional absolute error (ppAbsErr), squared error (SqrErr)
+and proportional squared error (ppSqrErr) are calculated for each test
+sample. In addition, each of these metrics is aggregated using their mean
+values according to three criteria: each cell type (CellType),
+probability bins in ranges of 0.1 (pBin) and number of different cell
+types present in the sample nCellTypes. Finally, the process is
+repeated only considering bulk samples (filtering out single-cell profiles
+from the evaluation). The evaluation metrics will be available in the
+test.deconv.metrics slot of the
+DigitalDLSorterDNN object (trained.model slot of
+the DigitalDLSorter object)." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -161,24 +162,25 @@ object)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate evaluation metrics for bulk RNA-seq samples from test data.</h1>
+    <h1>Calculate evaluation metrics for bulk RNA-Seq samples from test data</h1>
     <small class="dont-index">Source: <a href='https://github.com/diegommcc/digitalDLSorteR/R/evalMetrics.R'><code>R/evalMetrics.R</code></a></small>
     <div class="hidden name"><code>calculateEvalMetrics.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculate evaluation metrics for bulk RNA-seq samples from test data in order
-to know the performance of the model. By default, absolute error (AbsErr),
-proportional absolute error (ppAbsErr), squared error (SqrErr) and
-proportional squared error (ppSqrErr) are calculated for each test sample.
-Moreover, each one of these metrics is aggregated using their mean values by
-three criteria: each cell type (<code>CellType</code>), probability bins in ranges
-of 0.1 (<code>pBin</code>) and number of different cell types present in the sample
-<code></code>. Finally, the process is repeated only for bulk samples, removing
-single-cell profiles from the evaluation. Evaluation metrics are available in
-<code>test.deconv.metrics</code> slot of <code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code>
-object (<code>trained.model</code> slot of <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code>
-object).</p>
+    <p>Calculate evaluation metrics for bulk RNA-seq samples from test data to
+understand model performance. By default, absolute error (<code>AbsErr</code>),
+proportional absolute error (<code>ppAbsErr</code>), squared error (<code>SqrErr</code>)
+and proportional squared error (<code>ppSqrErr</code>) are calculated for each test
+sample. In addition, each of these metrics is aggregated using their mean
+values according to three criteria: each cell type (<code>CellType</code>),
+probability bins in ranges of 0.1 (<code>pBin</code>) and number of different cell
+types present in the sample <code>nCellTypes</code>. Finally, the process is
+repeated only considering bulk samples (filtering out single-cell profiles
+from the evaluation). The evaluation metrics will be available in the
+<code>test.deconv.metrics</code> slot of the
+<code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> object (<code>trained.model</code> slot of
+the <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object).</p>
     </div>
 
     <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>calculateEvalMetrics</span><span class='op'>(</span><span class='va'>object</span>, metrics <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"MAE"</span>, <span class='st'>"MSE"</span><span class='op'>)</span><span class='op'>)</span></code></pre></div>
@@ -188,21 +190,22 @@ object).</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p><code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object with
-<code>single.cell.final</code> and <code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> slots.</p></td>
+      <td><p><code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object with a trained
+model in the <code>trained.model</code> slot and the actual cell proportions of
+pseudo-bulk samples in <code>prob.cell.matrix</code> slot.</p></td>
     </tr>
     <tr>
       <th>metrics</th>
-      <td><p>Metrics used for evaluating the performance of the model. Mean
-absolute error (MAE) and mean squared error (MSE) by default.</p></td>
+      <td><p>Metrics used to evaluate the model performance. Mean absolute
+error (<code>"MAE"</code>) and mean squared error (<code>"MSE"</code>) by default.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> object with
+    <p>A <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object with the
 <code>trained.model</code> slot containing a
-<code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> object with
+<code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> object with the
 <code>test.deconv.metrics</code> slot.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
@@ -211,8 +214,9 @@ absolute error (MAE) and mean squared error (MSE) by default.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"digitalDLSorteRdata"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata.git'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
-<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>DDLSLiComp</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>DDLSLiComp.list</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>DDLSLiComp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/digitalDLSorteRdata/man/listToDDLS.html'>listToDDLS</a></span><span class='op'>(</span><span class='va'>DDLSLiComp.list</span><span class='op'>)</span> <span class='co'># list to DigitalDLSorter obj</span></span>
 <span class='r-in'>  <span class='va'>DDLSLiComp</span> <span class='op'>&lt;-</span> <span class='fu'>calculateEvalMetrics</span><span class='op'>(</span></span>
 <span class='r-in'>    object <span class='op'>=</span> <span class='va'>DDLSLiComp</span></span>
 <span class='r-in'>  <span class='op'>)</span></span>

@@ -49,14 +49,14 @@
   
 
 <meta property="og:title" content="Train Deep Neural Network model — trainDigitalDLSorterModel" />
-<meta property="og:description" content="Train Deep Neural Network model using training data from
-DigitalDLSorter object. In addition, trained model is
-evaluated on test data and prediction results are produced in order to
-determine its performance (see ?calculateEvalMetrics). Training
-and evaluation can be performed by using simulated profiles stored in
-DigitalDLSorter object or 'on the fly' by simulating
-bulk profiles at the same time as training/evaluation takes place (see
-Details)." />
+<meta property="og:description" content="Train a Deep Neural Network model using the training data from
+DigitalDLSorter object. In addition, the trained model
+is evaluated with test data and prediction results are otained to determine
+its performance (see ?calculateEvalMetrics). Training and
+evaluation can be performed using simulated profiles stored in the
+DigitalDLSorter object or 'on the fly' by simulating the
+pseudo-bulk profiles at the same time as the training/evaluation is performed
+(see Details)." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -163,14 +163,14 @@ Details)." />
     </div>
 
     <div class="ref-description">
-    <p>Train Deep Neural Network model using training data from
-<code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object. In addition, trained model is
-evaluated on test data and prediction results are produced in order to
-determine its performance (see <code>?<a href='calculateEvalMetrics.html'>calculateEvalMetrics</a></code>). Training
-and evaluation can be performed by using simulated profiles stored in
-<code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object or 'on the fly' by simulating
-bulk profiles at the same time as training/evaluation takes place (see
-Details).</p>
+    <p>Train a Deep Neural Network model using the training data from
+<code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object. In addition, the trained model
+is evaluated with test data and prediction results are otained to determine
+its performance (see <code>?<a href='calculateEvalMetrics.html'>calculateEvalMetrics</a></code>). Training and
+evaluation can be performed using simulated profiles stored in the
+<code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object or 'on the fly' by simulating the
+pseudo-bulk profiles at the same time as the training/evaluation is performed
+(see Details).</p>
     </div>
 
     <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>trainDigitalDLSorterModel</span><span class='op'>(</span>
@@ -199,22 +199,22 @@ Details).</p>
       <th>object</th>
       <td><p><code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object with
 <code>single.cell.real</code>/<code>single.cell.simul</code>, <code>prob.cell.matrix</code>
-and optionally <code>bulk.simul</code> slots.</p></td>
+and <code>bulk.simul</code> slots.</p></td>
     </tr>
     <tr>
       <th>on.the.fly</th>
-      <td><p>Boolean indicating if data will be generated on the fly
-during training (<code>FALSE</code> by default).</p></td>
+      <td><p>Boolean indicating whether data will be generated 'on the
+fly' during training (<code>FALSE</code> by default).</p></td>
     </tr>
     <tr>
       <th>combine</th>
-      <td><p>Type of profiles which will be used for training. It can be
+      <td><p>Type of profiles to be used for training. Can be
 <code>'both'</code>, <code>'single-cell'</code> or <code>'bulk'</code> (<code>'both'</code> by
 default). For test data, both types of profiles will be used.</p></td>
     </tr>
     <tr>
       <th>batch.size</th>
-      <td><p>Number of samples per gradient update. If unspecified,
+      <td><p>Number of samples per gradient update. If not specified,
 <code>batch.size</code> will default to 64.</p></td>
     </tr>
     <tr>
@@ -223,7 +223,7 @@ default). For test data, both types of profiles will be used.</p></td>
     </tr>
     <tr>
       <th>num.hidden.layers</th>
-      <td><p>Number of hidden layers of neural network (2 by
+      <td><p>Number of hidden layers of the neural network (2 by
 default). This number must be equal to the length of <code>num.units</code>
 argument.</p></td>
     </tr>
@@ -236,7 +236,7 @@ argument.</p></td>
     <tr>
       <th>activation.fun</th>
       <td><p>Activation function to use (<code>'relu'</code> by default).
-Look at
+See the
 <a href='https://keras.rstudio.com/reference/activation_relu.html'>keras
 documentation</a> to know available activation functions.</p></td>
     </tr>
@@ -248,51 +248,50 @@ input neurons to drop in layer dropouts (0.25 by default). By default,
     </tr>
     <tr>
       <th>loss</th>
-      <td><p>Character indicating loss function selected for training the
-model (<code>'kullback_leibler_divergence'</code> by default). Look at
+      <td><p>Character indicating loss function selected for model training
+(<code>'kullback_leibler_divergence'</code> by default). See the
 <a href='https://keras.rstudio.com/reference/loss_mean_squared_error.html'>keras
 documentation</a> to know available loss functions.</p></td>
     </tr>
     <tr>
       <th>metrics</th>
-      <td><p>Vector of metrics used to evaluate the performance of the
-model during training and evaluation (<code>c("accuracy",
-  "mean_absolute_error", "categorical_accuracy")</code> by default). Look at
+      <td><p>Vector of metrics used to assess model performance during
+training and evaluation (<code>c("accuracy", "mean_absolute_error",
+  "categorical_accuracy")</code> by default). See the
 <a href='https://keras.rstudio.com/reference/metric_binary_accuracy.html'>keras
 documentation</a> to know available performance metrics.</p></td>
     </tr>
     <tr>
       <th>custom.model</th>
-      <td><p>Allows to use customized neural network. It must be a
-<code>keras.engine.sequential.Sequential</code> where the number of input neurons
-is equal to the number of considered features/genes and the number of
-output neurons is equal to the number of considered cell types (<code>NULL</code>
-by default). If provided, the arguments related to neural network
-architecture will be ignored.</p></td>
+      <td><p>Allows to use a custom neural network. It must be a
+<code>keras.engine.sequential.Sequential</code> object in which the number of
+input neurons is equal to the number of considered features/genes, and the
+number of output neurons is equal to the number of cell types considered
+(<code>NULL</code> by default). If provided, the arguments related to the neural
+network architecture will be ignored.</p></td>
     </tr>
     <tr>
       <th>shuffle</th>
-      <td><p>Boolean indicating if data will be shuffled (<code>TRUE</code> by
-default). Note that if <code>bulk.simul</code> is not <code>NULL</code>, data already
-has been shuffled and <code>shuffle</code> will be ignored.</p></td>
+      <td><p>Boolean indicating whether data will be shuffled (<code>TRUE</code>
+by default). Note that if <code>bulk.simul</code> is not <code>NULL</code>, the data
+already has been shuffled and <code>shuffle</code> will be ignored.</p></td>
     </tr>
     <tr>
       <th>threads</th>
-      <td><p>Number of threads used during simulation of bulk samples
-if <code>on.the.fly = TRUE</code> (1 by default).</p></td>
+      <td><p>Number of threads used during simulation of pseudo-bulk
+samples if <code>on.the.fly = TRUE</code> (1 by default).</p></td>
     </tr>
     <tr>
       <th>view.metrics.plot</th>
-      <td><p>Boolean indicating if show progression plots of loss
-and metrics during training (<code>TRUE</code> by default). <span class="pkg">keras</span> for R
-allows to see the progression of the model during training if you are
-working on RStudio.</p></td>
+      <td><p>Boolean indicating whether to show plots of loss and
+metrics progression during training (<code>TRUE</code> by default). <span class="pkg">keras</span>
+for R allows to see the progression of the model during training if you are
+working in RStudio.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Boolean indicating if show the progression of the model during
-training and information about the architecture of the model (<code>TRUE</code>
-by default).</p></td>
+      <td><p>Boolean indicating whether to display model progression during
+training and model architecture information (<code>TRUE</code> by default).</p></td>
     </tr>
     </table>
 
@@ -304,25 +303,26 @@ by default).</p></td>
 the structure of this class, see <code>?<a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><strong><span class="pkg">keras</span>/<span class="pkg">tensorflow</span> environment</strong></p>
-<p>All steps related to Deep Learning in <span class="pkg">digitalDLSorteR</span> package are
-performed by using <span class="pkg">keras</span> package, an API in R for <span class="pkg">keras</span> in Python
-available from CRAN. We recommend using the guide of installation available
+    <p><strong>Keras/Tensorflow environment</strong></p>
+<p>All Deep Learning related steps in the <span class="pkg">digitalDLSorteR</span> package are
+performed by using the <span class="pkg">keras</span> package, an API in R for <span class="pkg">keras</span> in
+Python available on CRAN. We recommend using the installation guide available
 at <a href='https://keras.rstudio.com/'>https://keras.rstudio.com/</a> in order to set a more customized
 configuration.</p>
-<p><strong>Simulation of bulk RNA-seq profiles 'on the fly'</strong></p>
-<p><code>trainDigitalDLSorterModel</code> allows to avoid storing bulk RNA-seq
+<p><strong>Simulation of bulk RNA-Seq profiles 'on the fly'</strong></p>
+<p><code>trainDigitalDLSorterModel</code> allows to avoid storing bulk RNA-Seq
 profiles by using <code>on.the.fly</code> argument. This functionality aims to
-avoid exexcution times and memory usage from <code>simBulkProfiles</code>, since
-simulated bulk profiles are built in each batch during training/evaluation.</p>
+avoid exexcution times and memory usage of the <code>simBulkProfiles</code>
+function, as the simulated pseudo-bulk profiles are built in each batch
+during training/evaluation.</p>
 <p><strong>Neural network architecture</strong></p>
-<p>By default, <code>trainDigitalDLSorterModel</code> implements the selected
-architecture in Torroja and Sánchez-Cabo, 2019. However, because of it is
-possible that the default architecture does not produce good results, it is
+<p>By default, <code>trainDigitalDLSorterModel</code> implements the
+architecture selected in Torroja and Sánchez-Cabo, 2019. However, as
+the default architecture may not produce good results depending on the dataset, it is
 possible to change its parameters by using the corresponding argument: number
 of hidden layers, number of neurons for each hidden layer, dropout rate,
 activation function and loss function. For more customized models, it is
-possible to provide a pre-built model in <code>custom.model</code> argument (a
+possible to provide a pre-built model in the <code>custom.model</code> argument (a
 <code>keras.engine.sequential.Sequential</code> object) where it is necessary that
 the number of input neurons is equal to the number of considered
 features/genes and the number of output neurons is equal to the number of
@@ -331,8 +331,7 @@ considered cell types.</p>
 
     <p>Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 Learning algorithm to quantify immune cell populations based on scRNA-Seq
-data. Frontiers in Genetics 10, 978. doi:
-<a href='https://doi.org/10.3389/fgene.2019.00978'>10.3389/fgene.2019.00978</a></p>
+data. Frontiers in Genetics 10, 978. doi: doi: <a href='https://doi.org/10.3389/fgene.2019.00978'>10.3389/fgene.2019.00978</a></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='plotTrainingHistory.html'>plotTrainingHistory</a></code>
@@ -341,8 +340,9 @@ data. Frontiers in Genetics 10, 978. doi:
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
 <span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"digitalDLSorteRdata"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata.git'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
-<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>DDLiComp</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>DDLiComp.list</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>DDLiComp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/digitalDLSorteRdata/man/listToDDLS.html'>listToDDLS</a></span><span class='op'>(</span><span class='va'>DDLiComp.list</span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='co'># to ensure compatibility</span></span>
 <span class='r-in'>  <span class='fu'>tensorflow</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span><span class='op'>$</span><span class='va'>compat</span><span class='op'>$</span><span class='va'>v1</span><span class='op'>$</span><span class='fu'>disable_eager_execution</span><span class='op'>(</span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='va'>DDLiComp</span> <span class='op'>&lt;-</span> <span class='fu'>trainDigitalDLSorterModel</span><span class='op'>(</span></span>

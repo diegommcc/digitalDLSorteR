@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Save DigitalDLSorter object as RDS file — saveRDS • digitalDLSorteR</title>
+<title>Save DigitalDLSorter objects as RDS files — saveRDS • digitalDLSorteR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,15 +48,18 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Save DigitalDLSorter object as RDS file — saveRDS" />
+<meta property="og:title" content="Save DigitalDLSorter objects as RDS files — saveRDS" />
 <meta property="og:description" content="Save DigitalDLSorter and
-DigitalDLSorterDNN objects as RDS files.
-keras models are not able to be
-stored natively as R objects (e.g. RData or RDS files). By saving the
-structure as a JSON-like character object and weights as a list, it is
-possible to recover the model and to perform predictions. If
-trained.model slot is empty, the function will have the usual
-behavior." />
+DigitalDLSorterDNN objects as RDS files. keras
+models cannot be stored natively as R objects (e.g. RData or RDS files). By
+saving the structure as a JSON-like character object and the weights as a
+list, it is possible to retrieve the model and make predictions. If the
+trained.model slot is empty, the function will behave as usual.
+Note: with this option, the state of optimizer is not saved, only
+the architecture and weights. It is possible to save the entire model as an
+HDF5 file with the saveTrainedModelAsH5 function and to load it
+into a DigitalDLSorter object with the
+loadTrainedModelFromH5 function. See documentation for details." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -157,20 +160,23 @@ behavior." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Save <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object as RDS file</h1>
+    <h1>Save <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> objects as RDS files</h1>
     <small class="dont-index">Source: <a href='https://github.com/diegommcc/digitalDLSorteR/R/AllGenerics.R'><code>R/AllGenerics.R</code></a></small>
     <div class="hidden name"><code>saveRDS.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Save <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> and
-<code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> objects as RDS files.
-<span class="pkg">keras</span> models are not able to be
-stored natively as R objects (e.g. RData or RDS files). By saving the
-structure as a JSON-like character object and weights as a list, it is
-possible to recover the model and to perform predictions. If
-<code>trained.model</code> slot is empty, the function will have the usual
-behavior.</p>
+<code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> objects as RDS files. <span class="pkg">keras</span>
+models cannot be stored natively as R objects (e.g. RData or RDS files). By
+saving the structure as a JSON-like character object and the weights as a
+list, it is possible to retrieve the model and make predictions. If the
+<code>trained.model</code> slot is empty, the function will behave as usual.
+<strong>Note:</strong> with this option, the state of optimizer is not saved, only
+the architecture and weights. It is possible to save the entire model as an
+HDF5 file with the <code><a href='saveTrainedModelAsH5.html'>saveTrainedModelAsH5</a></code> function and to load it
+into a <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object with the
+<code><a href='loadTrainedModelFromH5.html'>loadTrainedModelFromH5</a></code> function. See documentation for details.</p>
     </div>
 
     <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>saveRDS</span><span class='op'>(</span>
@@ -208,7 +214,7 @@ behavior.</p>
     <tr>
       <th>object</th>
       <td><p><code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> or
-<code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> object to save</p></td>
+<code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> object to be saved</p></td>
     </tr>
     <tr>
       <th>file</th>
@@ -239,13 +245,6 @@ behavior.</p>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Note: with this option, the state of optimizer is not saved, only
-architecture and weights. It is possible to save completely the model as HDF5
-file with <code><a href='saveTrainedModelAsH5.html'>saveTrainedModelAsH5</a></code> function and to load into a
-<code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object with
-<code><a href='loadTrainedModelFromH5.html'>loadTrainedModelFromH5</a></code> function. See documentation for details.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code>

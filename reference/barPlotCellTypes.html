@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bar plot with deconvoluted cell type proportions — barPlotCellTypes • digitalDLSorteR</title>
+<title>Bar plot of deconvoluted cell type proportions in bulk RNA-Seq samples — barPlotCellTypes • digitalDLSorteR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,9 +48,8 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Bar plot with deconvoluted cell type proportions — barPlotCellTypes" />
-<meta property="og:description" content="This function allows to plot a bar plot with the deconvoluted cell type
-proportions of a given bulk RNA-seq sample using ggplot2." />
+<meta property="og:title" content="Bar plot of deconvoluted cell type proportions in bulk RNA-Seq samples — barPlotCellTypes" />
+<meta property="og:description" content="Bar plot of deconvoluted cell type proportions in bulk RNA-Seq samples." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -151,14 +150,13 @@ proportions of a given bulk RNA-seq sample using ggplot2." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Bar plot with deconvoluted cell type proportions</h1>
+    <h1>Bar plot of deconvoluted cell type proportions in bulk RNA-Seq samples</h1>
     <small class="dont-index">Source: <a href='https://github.com/diegommcc/digitalDLSorteR/R/AllGenerics.R'><code>R/AllGenerics.R</code></a></small>
     <div class="hidden name"><code>barPlotCellTypes.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function allows to plot a bar plot with the deconvoluted cell type
-proportions of a given bulk RNA-seq sample using ggplot2.</p>
+    <p>Bar plot of deconvoluted cell type proportions in bulk RNA-Seq samples.</p>
     </div>
 
     <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>barPlotCellTypes</span><span class='op'>(</span>
@@ -209,39 +207,39 @@ proportions of a given bulk RNA-seq sample using ggplot2.</p>
     <tr>
       <th>data</th>
       <td><p><code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object with
-<code>deconv.results</code> slot or data frame/matrix with cell types as columns
-and samples as rows.</p></td>
+<code>deconv.results</code> slot or a data frame/matrix with cell types as
+columns and samples as rows.</p></td>
     </tr>
     <tr>
       <th>colors</th>
-      <td><p>Vector of colors that will be used.</p></td>
+      <td><p>Vector of colors to be used.</p></td>
     </tr>
     <tr>
       <th>simplify</th>
-      <td><p>Type of simplification performed during deconvolution. It can
-be <code>simpli.set</code> or <code>simpli.maj</code> (<code>NULL</code> by default). It is
-only for <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> objects.</p></td>
+      <td><p>Type of simplification performed during deconvolution. Can be
+<code>simpli.set</code> or <code>simpli.maj</code> (<code>NULL</code> by default). It is only
+for <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> objects.</p></td>
     </tr>
     <tr>
       <th>color.line</th>
-      <td><p>Color of border bars.</p></td>
+      <td><p>Color of the border bars.</p></td>
     </tr>
     <tr>
       <th>x.label</th>
-      <td><p>Label of x axis.</p></td>
+      <td><p>Label of x-axis.</p></td>
     </tr>
     <tr>
       <th>rm.x.text</th>
-      <td><p>Logical value indicating if remove x axis ticks (name of
-samples).</p></td>
+      <td><p>Logical value indicating whether to remove x-axis ticks
+(name of samples).</p></td>
     </tr>
     <tr>
       <th>title</th>
-      <td><p>Title of plot.</p></td>
+      <td><p>Title of the plot.</p></td>
     </tr>
     <tr>
       <th>legend.title</th>
-      <td><p>Title of legend plot.</p></td>
+      <td><p>Title of the legend plot.</p></td>
     </tr>
     <tr>
       <th>angle</th>
@@ -258,7 +256,7 @@ samples).</p></td>
     <tr>
       <th>name.data</th>
       <td><p>If a <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> is given, name of
-the element that stores the results in <code>deconv.results</code> slot.</p></td>
+the element that stores the results in the <code>deconv.results</code> slot.</p></td>
     </tr>
     </table>
 

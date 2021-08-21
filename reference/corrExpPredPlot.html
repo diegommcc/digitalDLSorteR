@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Generate correlation plots between predicted and expected cell type
-proportions of test data — corrExpPredPlot • digitalDLSorteR</title>
+proportions from test data — corrExpPredPlot • digitalDLSorteR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -50,13 +50,14 @@ proportions of test data — corrExpPredPlot • digitalDLSorteR</title>
   
 
 <meta property="og:title" content="Generate correlation plots between predicted and expected cell type
-proportions of test data — corrExpPredPlot" />
+proportions from test data — corrExpPredPlot" />
 <meta property="og:description" content="Generate correlation plot between predicted and expected cell type
-proportions of test data The correlation plots can be displayed all mixed or
-splited by cell type (CellType) or number of cell types present in the
-samples (nCellTypes). See facet.by argument and examples for
-more information. Moreover, a correlation value selected by user is displayed
-as annotation on the plots. See corr argument for details." />
+proportions from test data. Correlation plots can be displayed all mixed or
+split by cell type (CellType) or number of cell types present in the
+samples (nCellTypes). See the facet.by argument and examples
+for more information. Moreover, a user-selected correlation value is
+displayed as an annotation on the plots. See the corr argument for
+details." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -158,18 +159,19 @@ as annotation on the plots. See corr argument for details." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Generate correlation plots between predicted and expected cell type
-proportions of test data</h1>
+proportions from test data</h1>
     <small class="dont-index">Source: <a href='https://github.com/diegommcc/digitalDLSorteR/R/evalMetrics.R'><code>R/evalMetrics.R</code></a></small>
     <div class="hidden name"><code>corrExpPredPlot.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Generate correlation plot between predicted and expected cell type
-proportions of test data The correlation plots can be displayed all mixed or
-splited by cell type (<code>CellType</code>) or number of cell types present in the
-samples (<code>nCellTypes</code>). See <code>facet.by</code> argument and examples for
-more information. Moreover, a correlation value selected by user is displayed
-as annotation on the plots. See <code>corr</code> argument for details.</p>
+proportions from test data. Correlation plots can be displayed all mixed or
+split by cell type (<code>CellType</code>) or number of cell types present in the
+samples (<code>nCellTypes</code>). See the <code>facet.by</code> argument and examples
+for more information. Moreover, a user-selected correlation value is
+displayed as an annotation on the plots. See the <code>corr</code> argument for
+details.</p>
     </div>
 
     <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>corrExpPredPlot</span><span class='op'>(</span>
@@ -197,49 +199,50 @@ as annotation on the plots. See <code>corr</code> argument for details.</p>
     <tr>
       <th>object</th>
       <td><p><code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object with
-<code>trained.model</code> slot containing metrics in <code>test.deconv.metrics</code>
-slot of <code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> object.</p></td>
+<code>trained.model</code> slot containing metrics in the
+<code>test.deconv.metrics</code> slot of a
+<code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> object.</p></td>
     </tr>
     <tr>
       <th>colors</th>
-      <td><p>Vector of colors to use. Only vectors with a number of colors
-equal to or greater than the levels of <code>color.by</code> will be accepted. By
-default, a list of custom colors provided by the package is used.</p></td>
+      <td><p>Vector of colors to be used. Only vectors with a number of
+colors equal to or greater than the levels of <code>color.by</code> will be
+accepted. By default, a custom color list is used.</p></td>
     </tr>
     <tr>
       <th>facet.by</th>
-      <td><p>Variable used to display data in different panels. If it is
-<code>NULL</code>, the plot is not separated into different panels. The options
-are <code>nCellTypes</code> (by number of different cell types) and
-<code>CellType</code> (by cell type).</p></td>
+      <td><p>Variable used to display data in different panels. If
+<code>NULL</code>, the plot is not split into different panels. Options are
+<code>nCellTypes</code> (by number of different cell types) and <code>CellType</code>
+(by cell type).</p></td>
     </tr>
     <tr>
       <th>color.by</th>
-      <td><p>Variable used to color data. The options are
-<code>nCellTypes</code> and <code>CellType</code>.</p></td>
+      <td><p>Variable used to color data. Options are <code>nCellTypes</code>
+and <code>CellType</code>.</p></td>
     </tr>
     <tr>
       <th>corr</th>
-      <td><p>Correlation value displayed as annotation. Available metrics
-are Pearson's correlation coefficient (<code>'pearson'</code>) and concordance
-correlation coefficient (<code>'ccc'</code>). The argument can be equal to
+      <td><p>Correlation value displayed as an annotation on the plot.
+Available metrics are Pearson's correlation coefficient (<code>'pearson'</code>)
+and concordance correlation coefficient (<code>'ccc'</code>). The argument can be
 <code>'pearson'</code>, <code>'ccc'</code> or <code>'both'</code> (by default).</p></td>
     </tr>
     <tr>
       <th>filter.sc</th>
-      <td><p>Boolean indicating whether to filter single-cell profiles
-and only display errors associated with bulk samples (<code>TRUE</code> by
-default).</p></td>
+      <td><p>Boolean indicating whether single-cell profiles are filtered
+out and only errors associated with pseudo-bulk samples are displayed
+(<code>TRUE</code> by default).</p></td>
     </tr>
     <tr>
       <th>pos.x.label</th>
-      <td><p>Position on the X axis of the correlation annotations.
-0.95 by default.</p></td>
+      <td><p>X-axis position of correlation annotations (0.95 by
+default).</p></td>
     </tr>
     <tr>
       <th>pos.y.label</th>
-      <td><p>Position on the Y axis of the correlation annotations. 0.1
-by default.</p></td>
+      <td><p>Y-axis position of correlation annotations (0.1 by
+default).</p></td>
     </tr>
     <tr>
       <th>sep.labels</th>
@@ -256,8 +259,7 @@ by default.</p></td>
     </tr>
     <tr>
       <th>ncol</th>
-      <td><p>Number of columns if <code>facet.by</code> is different from
-<code>NULL</code>.</p></td>
+      <td><p>Number of columns if <code>facet.by</code> is other than <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>nrow</th>
@@ -273,8 +275,8 @@ by default.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional arguments for <a href='https://ggplot2.tidyverse.org/reference/facet_wrap.html'>facet_wrap</a> <span class="pkg">ggplot2</span>
-function if <code>facet.by</code> is not equal to <code>NULL</code>.</p></td>
+      <td><p>Additional arguments for the <a href='https://ggplot2.tidyverse.org/reference/facet_wrap.html'>facet_wrap</a> function
+from <span class="pkg">ggplot2</span> if <code>facet.by</code> is not <code>NULL</code>.</p></td>
     </tr>
     </table>
 
@@ -285,8 +287,9 @@ function if <code>facet.by</code> is not equal to <code>NULL</code>.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"digitalDLSorteRdata"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata.git'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
-<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>DDLSLiComp</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>DDLSLiComp.list</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>DDLSLiComp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/digitalDLSorteRdata/man/listToDDLS.html'>listToDDLS</a></span><span class='op'>(</span><span class='va'>DDLSLiComp.list</span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='va'>DDLSLiComp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='calculateEvalMetrics.html'>calculateEvalMetrics</a></span><span class='op'>(</span></span>
 <span class='r-in'>    object <span class='op'>=</span> <span class='va'>DDLSLiComp</span></span>
 <span class='r-in'>  <span class='op'>)</span></span>

@@ -195,21 +195,20 @@
         <td>
           <p><code><a href="barErrorPlot.html">barErrorPlot()</a></code> </p>
         </td>
-        <td><p>Generate bar error plot and its dispersion by cell types or by number of
-different cell types in test bulk samples</p></td>
+        <td><p>Generate bar error plots</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="barPlotCellTypes.html">barPlotCellTypes()</a></code> </p>
         </td>
-        <td><p>Bar plot with deconvoluted cell type proportions</p></td>
+        <td><p>Bar plot of deconvoluted cell type proportions in bulk RNA-Seq samples</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="blandAltmanLehPlot.html">blandAltmanLehPlot()</a></code> </p>
         </td>
         <td><p>Generate Bland-Altman agreement plots between predicted and expected cell
-type proportions from test data</p></td>
+type proportions from test data results</p></td>
       </tr><tr>
         
         <td>
@@ -222,7 +221,7 @@ type proportions from test data</p></td>
         <td>
           <p><code><a href="calculateEvalMetrics.html">calculateEvalMetrics()</a></code> </p>
         </td>
-        <td><p>Calculate evaluation metrics for bulk RNA-seq samples from test data.</p></td>
+        <td><p>Calculate evaluation metrics for bulk RNA-Seq samples from test data</p></td>
       </tr><tr>
         
         <td>
@@ -243,7 +242,7 @@ type proportions from test data</p></td>
           <p><code><a href="corrExpPredPlot.html">corrExpPredPlot()</a></code> </p>
         </td>
         <td><p>Generate correlation plots between predicted and expected cell type
-proportions of test data</p></td>
+proportions from test data</p></td>
       </tr><tr>
         
         <td>
@@ -263,7 +262,7 @@ proportions of test data</p></td>
         <td>
           <p><code><a href="deconvDigitalDLSorter.html">deconvDigitalDLSorter()</a></code> </p>
         </td>
-        <td><p>Deconvolute bulk RNAseq samples using a pre-trained DigitalDLSorter model</p></td>
+        <td><p>Deconvolute bulk RNA-Seq samples using a pre-trained DigitalDLSorter model</p></td>
       </tr><tr>
         
         <td>
@@ -275,21 +274,21 @@ proportions of test data</p></td>
         <td>
           <p><code><a href="digitalDLSorteR.html">digitalDLSorteR</a></code> </p>
         </td>
-        <td><p>digitalDLSorteR: R package for deconvolution of bulk RNA-Seq samples based on
-Deep Learning.</p></td>
+        <td><p>digitalDLSorteR: an R package to deconvolute of bulk RNA-Seq samples from
+scRNA-Seq data based on Deep Learning</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="distErrorPlot.html">distErrorPlot()</a></code> </p>
         </td>
-        <td><p>Generate box plot or violin plot to show how errors are distributed</p></td>
+        <td><p>Generate box plots or violin plots to show how the errors are distributed</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="estimateZinbwaveParams.html">estimateZinbwaveParams()</a></code> </p>
         </td>
-        <td><p>Estimate parameters of ZINB-WaVE model for simulating new single-cell
-expression profiles</p></td>
+        <td><p>Estimate the parameters of the ZINB-WaVE model to simulate new single-cell
+RNA-Seq expression profiles</p></td>
       </tr><tr>
         
         <td>
@@ -308,13 +307,13 @@ expression profiles</p></td>
         <td>
           <p><code><a href="getProbMatrix.html">getProbMatrix()</a></code> </p>
         </td>
-        <td><p>Getter function for cell composition matrix</p></td>
+        <td><p>Getter function for the cell composition matrix</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="loadDeconvData.html">loadDeconvData()</a></code> </p>
         </td>
-        <td><p>Load data to deconvolute into a DigitalDLSorter object</p></td>
+        <td><p>Load data to be deconvoluted into a DigitalDLSorter object</p></td>
       </tr><tr>
         
         <td>
@@ -327,7 +326,8 @@ data</p></td>
         <td>
           <p><code><a href="loadTrainedModelFromH5.html">loadTrainedModelFromH5()</a></code> </p>
         </td>
-        <td><p>Load from HDF5 file a trained DigitalDLSorter Deep Neural Network model</p></td>
+        <td><p>Load from an HDF5 file a trained Deep Neural Network model into a
+<code>DigitalDLSorter</code> object</p></td>
       </tr><tr>
         
         <td>
@@ -353,7 +353,8 @@ data</p></td>
         <td>
           <p><code><a href="preparingToSave.html">preparingToSave()</a></code> </p>
         </td>
-        <td><p>Prepare <code>DigitalDLSorter</code> object to be saved as RDA file</p></td>
+        <td><p>Prepare <code>DigitalDLSorter</code> object to be saved as an RDA
+file</p></td>
       </tr><tr>
         
         <td>
@@ -380,14 +381,14 @@ data</p></td>
         <td>
           <p><code><a href="saveRDS.html">saveRDS()</a></code> </p>
         </td>
-        <td><p>Save <code>DigitalDLSorter</code> object as RDS file</p></td>
+        <td><p>Save <code>DigitalDLSorter</code> objects as RDS files</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="saveTrainedModelAsH5.html">saveTrainedModelAsH5()</a></code> </p>
         </td>
-        <td><p>Save on disk trained <code>DigitalDLSorter</code> Deep Neural Network
-model as HDF5 file</p></td>
+        <td><p>Save a trained <code>DigitalDLSorter</code> Deep Neural Network model
+to disk as an HDF5 file</p></td>
       </tr><tr>
         
         <td>
@@ -407,20 +408,21 @@ model as HDF5 file</p></td>
         <td>
           <p><code><a href="showProbPlot.html">showProbPlot()</a></code> </p>
         </td>
-        <td><p>Show distribution plots of cell proportions generated by
+        <td><p>Show distribution plots of the cell proportions generated by
 <code>generateBulkCellMatrix</code></p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="simBulkProfiles.html">simBulkProfiles()</a></code> </p>
         </td>
-        <td><p>Simulate training and test bulk RNA-seq profiles</p></td>
+        <td><p>Simulate training and test pseudo-bulk RNA-Seq profiles</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="simSCProfiles.html">simSCProfiles()</a></code> </p>
         </td>
-        <td><p>Simulate new single-cell expression profiles using ZINB-WaVE model parameters</p></td>
+        <td><p>Simulate new single-cell RNA-Seq expression profiles using the ZINB-WaVE
+model parameters</p></td>
       </tr><tr>
         
         <td>

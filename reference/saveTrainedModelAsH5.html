@@ -6,8 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Save on disk trained DigitalDLSorter Deep Neural Network
-model as HDF5 file — saveTrainedModelAsH5 • digitalDLSorteR</title>
+<title>Save a trained DigitalDLSorter Deep Neural Network model
+to disk as an HDF5 file — saveTrainedModelAsH5 • digitalDLSorteR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -49,11 +49,14 @@ model as HDF5 file — saveTrainedModelAsH5 • digitalDLSorteR</title>
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Save on disk trained DigitalDLSorter Deep Neural Network
-model as HDF5 file — saveTrainedModelAsH5" />
-<meta property="og:description" content="Save on disk the trained model in HDF5 format. Note that this function does
-not save the DigitalDLSorterDNN object, but the trained
-keras model." />
+<meta property="og:title" content="Save a trained DigitalDLSorter Deep Neural Network model
+to disk as an HDF5 file — saveTrainedModelAsH5" />
+<meta property="og:description" content="Save a trained DigitalDLSorter Deep Neural Network model
+to disk as an HDF5 file. Note that this function does not save the
+DigitalDLSorterDNN object, but the trained keras model.
+This is the alternative to the saveRDS and
+preparingToSave functions if you want to keep the state of the
+optimizer." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -154,16 +157,19 @@ keras model." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Save on disk trained <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> Deep Neural Network
-model as HDF5 file</h1>
+    <h1>Save a trained <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> Deep Neural Network model
+to disk as an HDF5 file</h1>
     <small class="dont-index">Source: <a href='https://github.com/diegommcc/digitalDLSorteR/R/utils.R'><code>R/utils.R</code></a></small>
     <div class="hidden name"><code>saveTrainedModelAsH5.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Save on disk the trained model in HDF5 format. Note that this function does
-not save the <code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> object, but the trained
-keras model.</p>
+    <p>Save a trained <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> Deep Neural Network model
+to disk as an HDF5 file. Note that this function does not save the
+<code><a href='DigitalDLSorterDNN-class.html'>DigitalDLSorterDNN</a></code> object, but the trained keras model.
+This is the alternative to the <code><a href='saveRDS.html'>saveRDS</a></code> and
+<code><a href='preparingToSave.html'>preparingToSave</a></code> functions if you want to keep the state of the
+optimizer.</p>
     </div>
 
     <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>saveTrainedModelAsH5</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>file.path</span>, overwrite <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></code></pre></div>
@@ -178,7 +184,7 @@ keras model.</p>
     </tr>
     <tr>
       <th>file.path</th>
-      <td><p>Valid file path where to save the model.</p></td>
+      <td><p>Valid file path where to save the model to.</p></td>
     </tr>
     <tr>
       <th>overwrite</th>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Load data to deconvolute into a DigitalDLSorter object — loadDeconvData • digitalDLSorteR</title>
+<title>Load data to be deconvoluted into a DigitalDLSorter object — loadDeconvData • digitalDLSorteR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,8 +48,8 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Load data to deconvolute into a DigitalDLSorter object — loadDeconvData" />
-<meta property="og:description" content="Load data to deconvolute. Data can be provided from a file path of a
+<meta property="og:title" content="Load data to be deconvoluted into a DigitalDLSorter object — loadDeconvData" />
+<meta property="og:description" content="Load data to be deconvoluted. Data can be provided from a file path of a
 tabulated text file (tsv and tsv.gz formats are accepted) or a
 SummarizedExperiment object." />
 <meta property="og:image" content="/logo.png" />
@@ -152,13 +152,13 @@ SummarizedExperiment object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Load data to deconvolute into a DigitalDLSorter object</h1>
+    <h1>Load data to be deconvoluted into a DigitalDLSorter object</h1>
     <small class="dont-index">Source: <a href='https://github.com/diegommcc/digitalDLSorteR/R/AllGenerics.R'><code>R/AllGenerics.R</code></a></small>
     <div class="hidden name"><code>loadDeconvData.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Load data to deconvolute. Data can be provided from a file path of a
+    <p>Load data to be deconvoluted. Data can be provided from a file path of a
 tabulated text file (tsv and tsv.gz formats are accepted) or a
 <code>SummarizedExperiment</code> object.</p>
     </div>
@@ -181,21 +181,22 @@ tabulated text file (tsv and tsv.gz formats are accepted) or a
     </tr>
     <tr>
       <th>data</th>
-      <td><p>File path where data is stored or
+      <td><p>File path where the data is stored or a
 <code>SummarizedExperiment</code> object.</p></td>
     </tr>
     <tr>
       <th>name.data</th>
-      <td><p>Name with which data is stored in
+      <td><p>Name under which the data is stored in the
 <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object. When <code>data</code> is a file
-path and <code>name.data</code> is not provided, base name of file will be used.</p></td>
+path and <code>name.data</code> is not provided, the base name of file will be
+used.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p><code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object with <code>deconv.data</code>
-slot with the new bulk-RNAseq samples loaded</p>
+slot with the new bulk-RNA-Seq samples loaded.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='trainDigitalDLSorterModel.html'>trainDigitalDLSorterModel</a></code>
