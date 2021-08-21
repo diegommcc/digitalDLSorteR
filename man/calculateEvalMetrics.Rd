@@ -2,41 +2,44 @@
 % Please edit documentation in R/evalMetrics.R
 \name{calculateEvalMetrics}
 \alias{calculateEvalMetrics}
-\title{Calculate evaluation metrics for bulk RNA-seq samples from test data.}
+\title{Calculate evaluation metrics for bulk RNA-Seq samples from test data}
 \usage{
 calculateEvalMetrics(object, metrics = c("MAE", "MSE"))
 }
 \arguments{
-\item{object}{\code{\linkS4class{DigitalDLSorter}} object with
-\code{single.cell.final} and \code{\linkS4class{DigitalDLSorterDNN}} slots.}
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object with a trained
+model in the \code{trained.model} slot and the actual cell proportions of
+pseudo-bulk samples in \code{prob.cell.matrix} slot.}
 
-\item{metrics}{Metrics used for evaluating the performance of the model. Mean
-absolute error (MAE) and mean squared error (MSE) by default.}
+\item{metrics}{Metrics used to evaluate the model performance. Mean absolute
+error (\code{"MAE"}) and mean squared error (\code{"MSE"}) by default.}
 }
 \value{
-A \code{\linkS4class{DigitalDLSorterDNN}} object with
+A \code{\linkS4class{DigitalDLSorter}} object with the
 \code{trained.model} slot containing a
-\code{\linkS4class{DigitalDLSorterDNN}} object with
+\code{\linkS4class{DigitalDLSorterDNN}} object with the
 \code{test.deconv.metrics} slot.
 }
 \description{
-Calculate evaluation metrics for bulk RNA-seq samples from test data in order
-to know the performance of the model. By default, absolute error (AbsErr),
-proportional absolute error (ppAbsErr), squared error (SqrErr) and
-proportional squared error (ppSqrErr) are calculated for each test sample.
-Moreover, each one of these metrics is aggregated using their mean values by
-three criteria: each cell type (\code{CellType}), probability bins in ranges
-of 0.1 (\code{pBin}) and number of different cell types present in the sample
-\code{}. Finally, the process is repeated only for bulk samples, removing
-single-cell profiles from the evaluation. Evaluation metrics are available in
-\code{test.deconv.metrics} slot of \code{\linkS4class{DigitalDLSorterDNN}}
-object (\code{trained.model} slot of \code{\linkS4class{DigitalDLSorter}}
-object).
+Calculate evaluation metrics for bulk RNA-seq samples from test data to
+understand model performance. By default, absolute error (\code{AbsErr}),
+proportional absolute error (\code{ppAbsErr}), squared error (\code{SqrErr})
+and proportional squared error (\code{ppSqrErr}) are calculated for each test
+sample. In addition, each of these metrics is aggregated using their mean
+values according to three criteria: each cell type (\code{CellType}),
+probability bins in ranges of 0.1 (\code{pBin}) and number of different cell
+types present in the sample \code{nCellTypes}. Finally, the process is
+repeated only considering bulk samples (filtering out single-cell profiles
+from the evaluation). The evaluation metrics will be available in the
+\code{test.deconv.metrics} slot of the
+\code{\linkS4class{DigitalDLSorterDNN}} object (\code{trained.model} slot of
+the \code{\linkS4class{DigitalDLSorter}} object).
 }
 \examples{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
-  data(DDLSLiComp)
+  data(DDLSLiComp.list)
+  DDLSLiComp <- listToDDLS(DDLSLiComp.list) # list to DigitalDLSorter obj
   DDLSLiComp <- calculateEvalMetrics(
     object = DDLSLiComp
   )

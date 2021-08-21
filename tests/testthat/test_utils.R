@@ -5,8 +5,10 @@ if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 }
 # loading data    
 library(digitalDLSorteRdata)
-data(DDLSLi)
-data(DDLSLiComp)
+data(DDLSLi.list)
+DDLSLi <- listToDDLS(DDLSLi.list)
+data(DDLSLiComp.list)
+DDLSLiComp <- listToDDLS(DDLSLiComp.list)
 
 # getProbMatrix
 test_that(

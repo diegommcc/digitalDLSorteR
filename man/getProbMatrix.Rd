@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{getProbMatrix}
 \alias{getProbMatrix}
-\title{Getter function for cell composition matrix}
+\title{Getter function for the cell composition matrix}
 \usage{
 getProbMatrix(object, type.data)
 }
@@ -10,15 +10,15 @@ getProbMatrix(object, type.data)
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object with
 \code{prob.cell.types} slot.}
 
-\item{type.data}{Subset of data to show: \code{train} or \code{test}.}
+\item{type.data}{Subset of data to e shown: \code{train} or \code{test}.}
 }
 \value{
 A matrix object.
 }
 \description{
-Getter function for cell composition matrix. This function allows to access
-to the cell composition matrix of simulated training or test bulk RNA-seq
-data.
+Getter function for the cell composition matrix. This function allows to
+access to the cell composition matrix of simulated training or test
+pseudo-bulk RNA-Seq data.
 }
 \seealso{
 \code{\link{generateBulkCellMatrix}}

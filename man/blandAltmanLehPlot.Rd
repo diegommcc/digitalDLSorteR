@@ -3,7 +3,7 @@
 \name{blandAltmanLehPlot}
 \alias{blandAltmanLehPlot}
 \title{Generate Bland-Altman agreement plots between predicted and expected cell
-type proportions from test data}
+type proportions from test data results}
 \usage{
 blandAltmanLehPlot(
   object,
@@ -24,61 +24,62 @@ blandAltmanLehPlot(
 )
 }
 \arguments{
-\item{object}{\code{DigitalDLSorter} object with \code{trained.model} slot
-containing metrics in \code{test.deconv.metrics} slot.}
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object with
+\code{trained.model} slot containing metrics in \code{test.deconv.metrics}
+slot.}
 
-\item{colors}{Vector of colors to use. Only vectors with a number of colors
-equal to or greater than the levels of \code{color.by} will be accepted. By
-default it is used a list of custom colors provided by the package.}
+\item{colors}{Vector of colors to be used. Only vectors with a number of
+colors equal to or greater than the levels of \code{color.by} will be
+accepted. By default a custom color list is used.}
 
-\item{color.by}{Variable used to color data. The options are
-\code{nCellTypes} and \code{CellType}.}
+\item{color.by}{Variable used to color data. Options are \code{nCellTypes}
+and \code{CellType}.}
 
-\item{facet.by}{Variable used to display data in different panels. If it is
-\code{NULL}, the plot is not separated into different panels. The options
-are \code{nCellTypes} (by number of different cell types) and
-\code{CellType} (by cell type).}
+\item{facet.by}{Variable used to display the data in different panels. If
+\code{NULL}, the plot is not split into different panels. Options are
+\code{nCellTypes} (by number of different cell types) and \code{CellType}
+(by cell type).}
 
-\item{log.2}{If show  Bland-Altman agreement plot in log2 space (\code{FALSE}
-by default).}
+\item{log.2}{Whether to display the Bland-Altman agreement plot in log2 space
+(\code{FALSE} by default).}
 
-\item{filter.sc}{Boolean indicating if filter single-cell profiles and only
-display correlations of results associated with bulk samples (\code{TRUE}
-by default).}
+\item{filter.sc}{Boolean indicating whether single-cell profiles are filtered
+out and only correlations of results associated with bulk samples are
+displayed (\code{TRUE} by default).}
 
-\item{density}{Boolean indicating if show density lines (\code{TRUE} by
-default).}
+\item{density}{Boolean indicating whether density lines must be displayed
+(\code{TRUE} by default).}
 
-\item{color.density}{Color of density lines if \code{density} argument is
-equal to \code{TRUE}.}
+\item{color.density}{Color of density lines if the \code{density} argument is
+\code{TRUE}.}
 
-\item{size.point}{Size of points (0.1 by default).}
+\item{size.point}{Size of the points (0.1 by default).}
 
-\item{alpha.point}{Alpha of points (0.1 by default).}
+\item{alpha.point}{Alpha of the points (0.1 by default).}
 
-\item{ncol}{Number of columns if \code{facet.by} is different than
-\code{NULL}.}
+\item{ncol}{Number of columns if \code{facet.by} is used.}
 
-\item{nrow}{Number of rows if \code{facet.by} is different than \code{NULL}.}
+\item{nrow}{Number of rows if \code{facet.by} is used.}
 
 \item{title}{Title of the plot.}
 
-\item{theme}{ggplot theme.}
+\item{theme}{\pkg{ggplot2} theme.}
 
-\item{...}{Additional argument for \code{facet_wrap} ggplot function if
-\code{facet.by} is not equal to \code{NULL}.}
+\item{...}{Additional argument for the \code{facet_wrap} function from
+\pkg{ggplot2} if \code{facet.by} is not \code{NULL}.}
 }
 \description{
 Generate Bland-Altman agreement plots between predicted and expected cell
-type proportions from test data. The Bland-Altman agreement plots can be
-displayed all mixed or splited by cell type (\code{CellType}) or the number
-of cell types present in the sample (\code{nCellTypes}). See \code{facet.by}
+type proportions from test data results. The Bland-Altman agreement plots can
+be displayed all mixed or split by cell type (\code{CellType}) or the number
+of cell types present in samples (\code{nCellTypes}). See the \code{facet.by}
 argument and examples for more information.
 }
 \examples{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
-  data(DDLSLiComp)
+  data(DDLSLiComp.list)
+  DDLSLiComp <- listToDDLS(DDLSLiComp.list)
   DDLSLiComp <- calculateEvalMetrics(
     object = DDLSLiComp
   )

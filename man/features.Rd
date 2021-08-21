@@ -16,7 +16,7 @@ features(object) <- value
 \arguments{
 \item{object}{\code{\linkS4class{DigitalDLSorterDNN}} object.}
 
-\item{value}{Vector with features (genes) considered by Deep Neural
+\item{value}{Vector with features (genes) considered by the Deep Neural
 Network model.}
 }
 \description{

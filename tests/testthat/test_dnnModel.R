@@ -11,7 +11,8 @@ if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 }
 # loading data    
 library(digitalDLSorteRdata)
-data(DDLSLi)
+data(DDLSLi.list)
+DDLSLi <- listToDDLS(DDLSLi.list)
 data(breast.chung.generic)
 data(breast.chung.specific)
 data(TCGA.breast.small)
@@ -116,7 +117,6 @@ test_that(
         verbose = FALSE
       )
       DDLSLi <- simBulkProfiles(DDLSLi, verbose = FALSE)
-      
       # on.the.fly, batch.size and combine were done
       # change neural network architecture
       DDLSLi <- trainDigitalDLSorterModel(
@@ -504,12 +504,12 @@ test_that(
       cell.ID.column = "Cell_ID",
       cell.type.column = "Cell_Type",
       prob.design = probMatrixValid,
-      num.bulk.samples = 120,
+      num.bulk.samples = 100,
       verbose = FALSE
     )
     DDLSLi <- simBulkProfiles(DDLSLi, verbose = FALSE)
     DDLSLi <- trainDigitalDLSorterModel(
-      object = DDLSLi, batch.size = 28, verbose = FALSE
+      object = DDLSLi, batch.size = 25, verbose = FALSE
     )
     # save DDLS object as RDS object: transform Python object into a JSON-like character object
     fileTMP <- tempfile()
@@ -652,7 +652,6 @@ test_that(
     DDLSLi <- simBulkProfiles(DDLSLi, verbose = FALSE)
     DDLSLi <- trainDigitalDLSorterModel(
       object = DDLSLi,
-      batch.size = 30,
       verbose = FALSE
     )
     se <- SummarizedExperiment(TCGA.breast.small)

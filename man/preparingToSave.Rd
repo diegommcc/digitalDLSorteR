@@ -2,32 +2,32 @@
 % Please edit documentation in R/utils.R
 \name{preparingToSave}
 \alias{preparingToSave}
-\title{Prepare \code{\linkS4class{DigitalDLSorter}} object to be saved as RDA file}
+\title{Prepare \code{\linkS4class{DigitalDLSorter}} object to be saved as an RDA
+file}
 \usage{
 preparingToSave(object)
 }
 \arguments{
-\item{object}{\code{\linkS4class{DigitalDLSorter}} object with
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object with the
 \code{trained.data} slot.}
 }
 \description{
-Prepare a \code{\linkS4class{DigitalDLSorter}} object which has a
-\code{\linkS4class{DigitalDLSorterDNN}} object with trained DNN model.
-\code{keras} models are not able to be stored natively as R objects (e.g.
-RData or RDS files). By saving the structure as a JSON-like character object
-and weights as a list, it is possible to recover the model and to carry out
-predictions. \strong{Note:} With this option, the state of optimizer is not
-saved, only architecture and weights.
+Prepare a \code{\linkS4class{DigitalDLSorter}} object that has a
+\code{\linkS4class{DigitalDLSorterDNN}} object with a trained DNN model.
+\code{keras} models cannot be stored natively as R objects (e.g. RData or RDS
+files). By saving the structure as a JSON-like character object and the
+weights as a list, it is possible to retrieve the model and make predictions.
+\strong{Note:} with this option, the state of optimizer is not saved, only
+the architecture and weights.
 }
 \details{
-It is possible to save completely the model as HDF5 file with
-\code{\link{saveTrainedModelAsH5}} function and to load into
-\code{\linkS4class{DigitalDLSorter}} object with
+It is possible to save the entire model as an HDF5 file with the
+\code{\link{saveTrainedModelAsH5}} function and to load it into a
+\code{\linkS4class{DigitalDLSorter}} object with the
 \code{\link{loadTrainedModelFromH5}} function.
 
 It is also possible to save a \code{\linkS4class{DigitalDLSorter}} object as
-RDS file with \code{saveRDS} function without any type of previous
-preparation.
+an RDS file with the \code{saveRDS} function without any preparation.
 }
 \seealso{
 \code{\link{saveRDS}} \code{\link{saveTrainedModelAsH5}}

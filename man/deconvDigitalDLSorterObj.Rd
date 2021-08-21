@@ -18,13 +18,14 @@ deconvDigitalDLSorterObj(
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object with
 \code{trained.data} and \code{deconv.data} slots.}
 
-\item{name.data}{Name of the data stored in \code{DigitalDLSorter} object. If
-it is not provided, the first data set will be used.}
+\item{name.data}{Name of the data stored in the \code{DigitalDLSorter}
+object. If not provided, the first data set will be used.}
 
-\item{batch.size}{Number of samples per gradient update. If unspecified,
+\item{batch.size}{Number of samples per gradient update. If not specified,
 \code{batch.size} will default to 128.}
 
-\item{normalize}{Normalize data before deconvolution. \code{TRUE} by default.}
+\item{normalize}{Normalize data before deconvolution (\code{TRUE} by
+default).}
 
 \item{simplify.set}{List specifying which cell types should be compressed
 into a new label whose name will be the list item. See examples for
@@ -32,11 +33,11 @@ details. If provided, results are stored in a list with 'raw' and
 'simpli.set' results.}
 
 \item{simplify.majority}{List specifying which cell types should be
-compressed into the cell type with greater proportion in each sample.
+compressed into the cell type with the highest proportion in each sample.
 Unlike \code{simplify.set}, it allows to maintain the complexity of the
-results while compressing the information, because it is not created a new
-label. If provided, the results are stored in a list with 'raw' and
-'simpli.majority' results (if provided).}
+results while compressing the information, as no new labels are created. If
+provided, the results are stored in a list with 'raw' and 'simpli.majority'
+results.}
 
 \item{verbose}{Show informative messages during the execution.}
 }
@@ -44,25 +45,29 @@ label. If provided, the results are stored in a list with 'raw' and
 \code{\linkS4class{DigitalDLSorter}} object with
 \code{deconv.results} slot. The resulting information is a data frame with
 samples (\eqn{i}) as rows and cell types (\eqn{j}) as columns. Each entry
-represents the proportion of \eqn{j} cell type in \eqn{i} sample.
+represents the proportion of \eqn{j} cell type in \eqn{i} sample. If
+\code{simplify.set} or/and \code{simpplify.majority} are provided, the
+\code{deconv.results} slot will contain a list with raw and simplified
+results.
 }
 \description{
-Deconvolute bulk gene expression samples (bulk RNA-Seq) enumerating and
-quantifying the proportion of cell types present in a bulk sample. This
-function needs a \code{DigitalDLSorter} object with a trained Deep Neural
-Network model (\code{\link{trained.model}} slot) and the new bulk samples
-that will be deconvoluted in \code{deconv.data} slot.
+Deconvolute bulk gene expression samples (bulk RNA-Seq). This function
+requires a \code{DigitalDLSorter} object with a trained Deep Neural Network
+model (\code{\link{trained.model}} slot) and the new bulk RNA-Seq samples to
+be deconvoluted in the \code{deconv.data} slot. See
+\code{?\link{loadDeconvData}} for more details.
 }
 \details{
 This function is intended for users who have built a devonvolution model
-using their own single-cell RNAseq data. If you want to use a pre-trained
-model, see \code{?\link{deconvDigitalDLSorter}}.
+using their own single-cell RNA-Seq data. If you want to use a pre-trained
+model to deconvolute your samples, see \code{?\link{deconvDigitalDLSorter}}.
 }
 \examples{
 \dontrun{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
-  data(DDLSLi)
+  data(DDLSLi.list)
+  DDLSLi <- listToDDLS(DDLSLi.list)
   data(TCGA.colon.se)
   # to ensure compatibility
   tensorflow::tf$compat$v1$disable_eager_execution()

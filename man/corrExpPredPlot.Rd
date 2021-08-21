@@ -3,7 +3,7 @@
 \name{corrExpPredPlot}
 \alias{corrExpPredPlot}
 \title{Generate correlation plots between predicted and expected cell type
-proportions of test data}
+proportions from test data}
 \usage{
 corrExpPredPlot(
   object,
@@ -26,35 +26,36 @@ corrExpPredPlot(
 }
 \arguments{
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object with
-\code{trained.model} slot containing metrics in \code{test.deconv.metrics}
-slot of \code{\linkS4class{DigitalDLSorterDNN}} object.}
+\code{trained.model} slot containing metrics in the
+\code{test.deconv.metrics} slot of a
+\code{\linkS4class{DigitalDLSorterDNN}} object.}
 
-\item{colors}{Vector of colors to use. Only vectors with a number of colors
-equal to or greater than the levels of \code{color.by} will be accepted. By
-default, a list of custom colors provided by the package is used.}
+\item{colors}{Vector of colors to be used. Only vectors with a number of
+colors equal to or greater than the levels of \code{color.by} will be
+accepted. By default, a custom color list is used.}
 
-\item{facet.by}{Variable used to display data in different panels. If it is
-\code{NULL}, the plot is not separated into different panels. The options
-are \code{nCellTypes} (by number of different cell types) and
-\code{CellType} (by cell type).}
+\item{facet.by}{Variable used to display data in different panels. If
+\code{NULL}, the plot is not split into different panels. Options are
+\code{nCellTypes} (by number of different cell types) and \code{CellType}
+(by cell type).}
 
-\item{color.by}{Variable used to color data. The options are
-\code{nCellTypes} and \code{CellType}.}
+\item{color.by}{Variable used to color data. Options are \code{nCellTypes}
+and \code{CellType}.}
 
-\item{corr}{Correlation value displayed as annotation. Available metrics
-are Pearson's correlation coefficient (\code{'pearson'}) and concordance
-correlation coefficient (\code{'ccc'}). The argument can be equal to
+\item{corr}{Correlation value displayed as an annotation on the plot.
+Available metrics are Pearson's correlation coefficient (\code{'pearson'})
+and concordance correlation coefficient (\code{'ccc'}). The argument can be
 \code{'pearson'}, \code{'ccc'} or \code{'both'} (by default).}
 
-\item{filter.sc}{Boolean indicating whether to filter single-cell profiles
-and only display errors associated with bulk samples (\code{TRUE} by
+\item{filter.sc}{Boolean indicating whether single-cell profiles are filtered
+out and only errors associated with pseudo-bulk samples are displayed
+(\code{TRUE} by default).}
+
+\item{pos.x.label}{X-axis position of correlation annotations (0.95 by
 default).}
 
-\item{pos.x.label}{Position on the X axis of the correlation annotations.
-0.95 by default.}
-
-\item{pos.y.label}{Position on the Y axis of the correlation annotations. 0.1
-by default.}
+\item{pos.y.label}{Y-axis position of correlation annotations (0.1 by
+default).}
 
 \item{sep.labels}{Space separating annotations if \code{corr} is equal to
 \code{'both'} (0.15 by default).}
@@ -63,8 +64,7 @@ by default.}
 
 \item{alpha.point}{Alpha of points (0.1 by default).}
 
-\item{ncol}{Number of columns if \code{facet.by} is different from
-\code{NULL}.}
+\item{ncol}{Number of columns if \code{facet.by} is other than \code{NULL}.}
 
 \item{nrow}{Number of rows if \code{facet.by} is different from \code{NULL}.}
 
@@ -72,21 +72,23 @@ by default.}
 
 \item{theme}{\pkg{ggplot2} theme.}
 
-\item{...}{Additional arguments for \link[ggplot2]{facet_wrap} \pkg{ggplot2}
-function if \code{facet.by} is not equal to \code{NULL}.}
+\item{...}{Additional arguments for the \link[ggplot2]{facet_wrap} function
+from \pkg{ggplot2} if \code{facet.by} is not \code{NULL}.}
 }
 \description{
 Generate correlation plot between predicted and expected cell type
-proportions of test data The correlation plots can be displayed all mixed or
-splited by cell type (\code{CellType}) or number of cell types present in the
-samples (\code{nCellTypes}). See \code{facet.by} argument and examples for
-more information. Moreover, a correlation value selected by user is displayed
-as annotation on the plots. See \code{corr} argument for details.
+proportions from test data. Correlation plots can be displayed all mixed or
+split by cell type (\code{CellType}) or number of cell types present in the
+samples (\code{nCellTypes}). See the \code{facet.by} argument and examples
+for more information. Moreover, a user-selected correlation value is
+displayed as an annotation on the plots. See the \code{corr} argument for
+details.
 }
 \examples{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
-  data(DDLSLiComp)
+  data(DDLSLiComp.list)
+  DDLSLiComp <- listToDDLS(DDLSLiComp.list)
   DDLSLiComp <- calculateEvalMetrics(
     object = DDLSLiComp
   )

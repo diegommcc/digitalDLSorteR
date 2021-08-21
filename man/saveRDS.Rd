@@ -6,7 +6,7 @@
 \alias{saveRDS,saveRDS-method}
 \alias{saveRDS,DigitalDLSorterDNN-method}
 \alias{saveRDS,DigitalDLSorter-method}
-\title{Save \code{\linkS4class{DigitalDLSorter}} object as RDS file}
+\title{Save \code{\linkS4class{DigitalDLSorter}} objects as RDS files}
 \usage{
 saveRDS(
   object,
@@ -37,7 +37,7 @@ saveRDS(
 }
 \arguments{
 \item{object}{\code{\linkS4class{DigitalDLSorter}} or
-\code{\linkS4class{DigitalDLSorterDNN}} object to save}
+\code{\linkS4class{DigitalDLSorterDNN}} object to be saved}
 
 \item{file}{File path where the object will be saved}
 
@@ -58,19 +58,15 @@ saveRDS(
 }
 \description{
 Save \code{\linkS4class{DigitalDLSorter}} and
-\code{\linkS4class{DigitalDLSorterDNN}} objects as RDS files.
-\pkg{keras} models are not able to be
-stored natively as R objects (e.g. RData or RDS files). By saving the
-structure as a JSON-like character object and weights as a list, it is
-possible to recover the model and to perform predictions. If
-\code{trained.model} slot is empty, the function will have the usual
-behavior.
-}
-\details{
-Note: with this option, the state of optimizer is not saved, only
-architecture and weights. It is possible to save completely the model as HDF5
-file with \code{\link{saveTrainedModelAsH5}} function and to load into a
-\code{\linkS4class{DigitalDLSorter}} object with
+\code{\linkS4class{DigitalDLSorterDNN}} objects as RDS files. \pkg{keras}
+models cannot be stored natively as R objects (e.g. RData or RDS files). By
+saving the structure as a JSON-like character object and the weights as a
+list, it is possible to retrieve the model and make predictions. If the
+\code{trained.model} slot is empty, the function will behave as usual.
+\strong{Note:} with this option, the state of optimizer is not saved, only
+the architecture and weights. It is possible to save the entire model as an
+HDF5 file with the \code{\link{saveTrainedModelAsH5}} function and to load it
+into a \code{\linkS4class{DigitalDLSorter}} object with the
 \code{\link{loadTrainedModelFromH5}} function. See documentation for details.
 }
 \seealso{

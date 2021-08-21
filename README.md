@@ -8,7 +8,7 @@
 <br>
 
 
-The **digitalDLSorteR** R package provides a set of tools to deconvolve and infer cell type proportions of bulk RNA-seq data through the development of context-specific deconvolution models based on Deep Learning and single-cell RNA-Seq (scRNA-Seq) data. These models are able to accurately enumerate and quantify cell proportions of bulk RNA-Seq data from specific biological environments. For more details about the algorithm and the functionalities implemented in this package, see [Torroja and Sanchez-Cabo, 2019](https://www.frontiersin.org/articles/10.3389/fgene.2019.00978/full) and `vignette(digitalDLSorteR)`.
+The **digitalDLSorteR** R package provides a set of tools to deconvolve and infer cell type proportions of bulk RNA-seq data through the development of context-specific deconvolution models based on Deep Learning and single-cell RNA-Seq (scRNA-Seq) data. These models are able to accurately enumerate and quantify cell proportions of bulk RNA-Seq data from specific biological environments. For more details about the algorithm and the functionalities implemented in this package, see [Torroja and Sanchez-Cabo, 2019](https://www.frontiersin.org/articles/10.3389/fgene.2019.00978/full), `vignette(digitalDLSorteR)` and <https://diegommcc.github.io/digitalDLSorteR/>.
 
 ## Installation
 

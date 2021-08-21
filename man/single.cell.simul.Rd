@@ -16,8 +16,8 @@ single.cell.simul(object) <- value
 \arguments{
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object.}
 
-\item{value}{\code{\linkS4class{SingleCellExperiment}} object with real and
-simulated single-cell profiles.}
+\item{value}{\code{\linkS4class{SingleCellExperiment}} object with simulated
+single-cell profiles.}
 }
 \description{
 Get and set \code{single.cell.simul} slot in a

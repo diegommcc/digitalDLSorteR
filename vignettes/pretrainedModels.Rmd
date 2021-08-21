@@ -55,9 +55,10 @@ data(breast.chung.generic)
 data(TCGA.breast.small)
 ```
 
-`breast.chung.generic` is a `DigitalDLSorterDNN` object that can be inspected to check which cell types are considered by the model, how well it performed on test data, etc.
+`breast.chung.generic` is a DigitalDLSorterDNN-like list (list with the same structure as a `DigitalDLSorterDNN` object) that can be inspected to check which cell types are considered by the model, how well it performed on test data, etc. As the **digitalDLSorteRdata** package stores all these objects as DigitalDLSorterDNN-like lists in order to remove its dependency on **digitalDLSorteR**, if you want to inspect the models you have to transform these lists into actual `DigitalDLSorterDNN` objects. This is done with the `listToDDLSDNN` function of **digitalDLSorteRdata**.
 
 ```{r}
+breast.chung.generic <- listToDDLSDNN(breast.chung.generic)
 breast.chung.generic
 ```
 
@@ -67,7 +68,7 @@ cell.types(breast.chung.generic)
 
 Now, we can use it to deconvolute `TCGA.breast.small` samples as follows:
 
-```{r, warning=FALSE}
+```{r, warning = FALSE}
 # deconvolution
 deconvResults <- deconvDigitalDLSorter(
   data = TCGA.breast.small,
@@ -90,7 +91,7 @@ barPlotCellTypes(
 
 Finally, `deconvDigitalDLSorterObj` also offers two parameters in case you want to simplify the results by aggregating cell proportions of similar cell types: `simplify.set` and `simplify.majority`. For instance, we can summarize dendritic cells (DCs) and monocytes in the new class mononuclear phagocyte system (MPS) using `simplify.set` as follows:
 
-```{r, warning=FALSE}
+```{r, warning = FALSE}
 # deconvolution
 deconvResultsSum <- deconvDigitalDLSorter(
   data = TCGA.breast.small,

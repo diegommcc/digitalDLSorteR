@@ -2,8 +2,8 @@
 % Please edit documentation in R/utils.R
 \name{saveTrainedModelAsH5}
 \alias{saveTrainedModelAsH5}
-\title{Save on disk trained \code{\linkS4class{DigitalDLSorter}} Deep Neural Network
-model as HDF5 file}
+\title{Save a trained \code{\linkS4class{DigitalDLSorter}} Deep Neural Network model
+to disk as an HDF5 file}
 \usage{
 saveTrainedModelAsH5(object, file.path, overwrite = FALSE)
 }
@@ -11,14 +11,17 @@ saveTrainedModelAsH5(object, file.path, overwrite = FALSE)
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object with
 \code{trained.model} slot.}
 
-\item{file.path}{Valid file path where to save the model.}
+\item{file.path}{Valid file path where to save the model to.}
 
 \item{overwrite}{Overwrite file if it already exists.}
 }
 \description{
-Save on disk the trained model in HDF5 format. Note that this function does
-not save the \code{\linkS4class{DigitalDLSorterDNN}} object, but the trained
-keras model.
+Save a trained \code{\linkS4class{DigitalDLSorter}} Deep Neural Network model
+to disk as an HDF5 file. Note that this function does not save the
+\code{\linkS4class{DigitalDLSorterDNN}} object, but the trained keras model.
+This is the alternative to the \code{\link{saveRDS}} and
+\code{\link{preparingToSave}} functions if you want to keep the state of the
+optimizer.
 }
 \seealso{
 \code{\link{trainDigitalDLSorterModel}}

@@ -16,9 +16,9 @@ cell.names(object) <- value
 \arguments{
 \item{object}{\code{\linkS4class{ProbMatrixCellTypes}} object.}
 
-\item{value}{Matrix containing bulk samples as rows and cells that
-will be used for simulating these samples as columns (\code{n.cell}
-argument)}
+\item{value}{Matrix containing the name of the pseudo-bulk samples to be
+simulated as rows and the cells to be used to simulate them as columns
+(\code{n.cell} argument)}
 }
 \description{
 Get and set \code{cell.names} slot in a

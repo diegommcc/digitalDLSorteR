@@ -29,7 +29,8 @@ The model to be shown has been built with data from @Li2017 ([GSE81861](https://
 suppressMessages(library(ggplot2))
 suppressMessages(library(digitalDLSorteR))
 suppressMessages(library(digitalDLSorteRdata))
-data(DDLSLiComp)
+data(DDLSLiComp.list)
+DDLSLiComp <- listToDDLS(DDLSLiComp.list)
 DDLSLiComp
 ```
 

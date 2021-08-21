@@ -76,7 +76,8 @@ ProbMatrixCellTypes <- setClass(
 )
 
 setMethod(
-  f = "initialize", signature = "ProbMatrixCellTypes",
+  f = "initialize", 
+  signature = "ProbMatrixCellTypes",
   definition = function(
     .Object,
     prob.matrix = NULL,
@@ -181,7 +182,8 @@ DigitalDLSorterDNN <- setClass(
 )
 
 setMethod(
-  f = "initialize", signature = "DigitalDLSorterDNN",
+  f = "initialize", 
+  signature = "DigitalDLSorterDNN",
   definition = function(
     .Object,
     model = list(),
@@ -329,7 +331,8 @@ DigitalDLSorter <- setClass(
 )
 
 setMethod(
-  f = "initialize", signature = "DigitalDLSorter",
+  f = "initialize", 
+  signature = "DigitalDLSorter",
   definition = function(
     .Object,
     single.cell.real = NULL,
@@ -398,18 +401,22 @@ setMethod(
 }
 
 .zinbModelShow <- function(zinb.model) {
-  cat(paste0("ZinbParams object:\n",
-             "  ", zinbwave::nSamples(zinb.model), " samples; ",
-             "  ", zinbwave::nFeatures(zinb.model), " genes.\n",
-             "  ", NCOL(zinbwave::getX_mu(zinb.model)),
-             " sample-level covariate(s) (mu); ",
-             "  ", NCOL(zinbwave::getX_pi(zinb.model)),
-             " sample-level covariate(s) (pi);\n",
-             "  ", NCOL(zinbwave::getV_mu(zinb.model)),
-             " gene-level covariate(s) (mu); ",
-             "  ", NCOL(zinbwave::getV_pi(zinb.model)),
-             " gene-level covariate(s) (pi);\n",
-             "  ", zinbwave::nFactors(zinb.model), " latent factor(s).\n"))
+  cat(
+    paste0(
+      "ZinbParams object:\n",
+      "  ", zinbwave::nSamples(zinb.model), " samples; ",
+      "  ", zinbwave::nFeatures(zinb.model), " genes.\n",
+      "  ", NCOL(zinbwave::getX_mu(zinb.model)),
+      " sample-level covariate(s) (mu); ",
+      "  ", NCOL(zinbwave::getX_pi(zinb.model)),
+      " sample-level covariate(s) (pi);\n",
+      "  ", NCOL(zinbwave::getV_mu(zinb.model)),
+      " gene-level covariate(s) (mu); ",
+      "  ", NCOL(zinbwave::getV_pi(zinb.model)),
+      " gene-level covariate(s) (pi);\n",
+      "  ", zinbwave::nFactors(zinb.model), " latent factor(s).\n"
+    )
+  )
 }
 
 .allSlotsNull <- function(object) {
@@ -417,7 +424,11 @@ setMethod(
     "single.cell.real", "zinb.params", "single.cell.simul", "prob.cell.types",
     "bulk.simul", "trained.model", "deconv.data", "deconv.results"
   )
-  res <- all(unlist(lapply(list.slots, function(x) is.null(do.call("@", list(object, x))))))
+  res <- all(
+    unlist(
+      lapply(list.slots, function(x) is.null(do.call("@", list(object, x))))
+    )
+  )
   if (res) return(TRUE)
   else return(FALSE)
 }

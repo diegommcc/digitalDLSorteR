@@ -2,8 +2,7 @@
 % Please edit documentation in R/evalMetrics.R
 \name{barErrorPlot}
 \alias{barErrorPlot}
-\title{Generate bar error plot and its dispersion by cell types or by number of
-different cell types in test bulk samples}
+\title{Generate bar error plots}
 \usage{
 barErrorPlot(
   object,
@@ -20,32 +19,33 @@ barErrorPlot(
 \item{object}{\code{DigitalDLSorter} object with \code{trained.model} slot
 containing metrics in \code{test.deconv.metrics} slot.}
 
-\item{error}{'MAE' or 'MSE.}
+\item{error}{\code{'MAE'} or \code{'MSE'}.}
 
 \item{by}{Variable used to display errors. Available options are:
-'nCellTypes', 'CellType'.}
+\code{'nCellTypes'}, \code{'CellType'}.}
 
 \item{dispersion}{Standard error (\code{'se'}) or standard deviation
-(\code{'sd'}). The first by default.}
+(\code{'sd'}). The former is the default.}
 
-\item{filter.sc}{Boolean indicating if filter single-cell profiles and only
-display correlations of results associated with bulk samples (\code{TRUE}
-by default).}
+\item{filter.sc}{Boolean indicating whether single-cell profiles are filtered
+out and only correlation of results associated with bulk samples are
+displayed (\code{TRUE} by default).}
 
 \item{title}{Title of the plot.}
 
 \item{angle}{Angle of ticks.}
 
-\item{theme}{ggplot theme.}
+\item{theme}{\pkg{ggplot2} theme.}
 }
 \description{
-Generate bar error plot and its dispersion by cell types (\code{CellType}) or
-by number of different cell types (\code{nCellTypes}) in test bulk samples.
+Generate bar error plots by cell type (\code{CellType}) or by number of
+different cell types (\code{nCellTypes}) on test pseudo-bulk samples.
 }
 \examples{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
-  data(DDLSLiComp)
+  data(DDLSLiComp.list)
+  DDLSLiComp <- listToDDLS(DDLSLiComp.list)
   DDLSLiComp <- calculateEvalMetrics(
     object = DDLSLiComp
   )

@@ -18,8 +18,8 @@ test.deconv.metrics(object, metrics = "All") <- value
 
 \item{metrics}{Metrics to show (\code{'All'} by default)}
 
-\item{value}{List with evaluation metrics used for evaluating the
-performance of the model over each sample from test data.}
+\item{value}{List with evaluation metrics used to assess the
+performance of the model on each sample of test data.}
 }
 \description{
 Get and set \code{test.deconv.metrics} slot in a

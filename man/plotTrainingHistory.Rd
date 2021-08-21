@@ -16,8 +16,8 @@ plotTrainingHistory(
 
 \item{title}{Title of plot.}
 
-\item{metrics}{Which metrics to plot. If it is equal to \code{NULL} (by
-default), all metrics available on \code{\linkS4class{DigitalDLSorterDNN}}
+\item{metrics}{Metrics to be plotted. If \code{NULL} (by
+default), all metrics available in the \code{\linkS4class{DigitalDLSorterDNN}}
 object will be plotted.}
 }
 \description{

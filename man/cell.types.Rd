@@ -16,8 +16,8 @@ cell.types(object) <- value
 \arguments{
 \item{object}{\code{\linkS4class{DigitalDLSorterDNN}} object.}
 
-\item{value}{Vector with cell types considered by Deep Neural
-Network model.}
+\item{value}{Vector with cell types considered by the Deep Neural Network
+model.}
 }
 \description{
 Get and set \code{cell.types} slot in a

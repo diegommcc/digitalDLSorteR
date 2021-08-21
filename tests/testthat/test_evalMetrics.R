@@ -5,8 +5,10 @@ if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 }
 # loading data    
 library(digitalDLSorteRdata)
-data(DDLSLi)
-data(DDLSLiComp)
+data(DDLSLi.list)
+DDLSLi <- listToDDLS(DDLSLi.list)
+data(DDLSLiComp.list)
+DDLSLiComp <- listToDDLS(DDLSLiComp.list)
 
 # calculateEvalMetrics
 test_that(
@@ -15,19 +17,19 @@ test_that(
     # incorrect object: no trained object
     expect_error(
       calculateEvalMetrics(object = DDLSLi), 
-      regexp = "Provided object does not have a trained model for evaluation"
+      regexp = "The provided object does not have a trained model for evaluation"
     )
     # incorrect object: no prob.cell.types slot
     DDLSLiCompBad <- DDLSLiComp
     prob.cell.types(DDLSLiCompBad) <- NULL
     expect_error(
       calculateEvalMetrics(object = DDLSLiCompBad), 
-      regexp = "Provided object does not contain actual cell proportions in 'prob.cell.types' slot"
+      regexp = "The provided object does not contain actual cell proportions in 'prob.cell.types' slot"
     )
     # incorrect metrics parameter
     expect_error(
       calculateEvalMetrics(object = DDLSLiComp, metrics = c("incorrect")), 
-      regexp = "Provided metrics are not valid"
+      regexp = "The provided metrics are not valid"
     )
     
     # check if results are properly stored: only MAE
@@ -99,7 +101,7 @@ test_that(
     # incorrect object: no evaluation metrics
     expect_error(
       distErrorPlot(object = DDLSLi, error = "AbsErr"), 
-      regexp = "Provided object does not have evaluation metrics. Use 'calculateEvalMetrics' function"
+      regexp = "The provided object does not have evaluation metrics. Use 'calculateEvalMetrics' function"
     )
     # incorrect error parameter
     expect_error(
@@ -111,14 +113,14 @@ test_that(
       distErrorPlot(
         object = DDLSLiComp, error = "AbsErr", colors = c("red", "blue")
       ), 
-      regexp = "Number of provided colors is not enough"
+      regexp = "The number of provided colors is not enough"
     )
     # incorrect X variable (x.by parameter)
     expect_error(
       distErrorPlot(
         object = DDLSLiComp, error = "AbsErr", x.by = "no.variable"
       ), 
-      regexp = "'x.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' and 'pBin'"
+      regexp = "'x.by' provided is not valid. The available options are: 'nCellTypes', 'CellType' and 'pBin'"
     )
     # incorrect facet.by parameter
     expect_error(
@@ -132,14 +134,14 @@ test_that(
       distErrorPlot(
         object = DDLSLiComp, error = "AbsErr", color.by = "no.variable"
       ), 
-      regexp = "'color.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' and NULL"
+      regexp = "'color.by' provided is not valid. The available options are: 'nCellTypes', 'CellType' and NULL"
     )
     # incorrect type of plot
     expect_error(
       distErrorPlot(
         object = DDLSLiComp, error = "AbsErr", type = "no.type"
       ), 
-      regexp = "'type' provided is not valid. Available options are: 'violinplot' and 'boxplot'"
+      regexp = "'type' provided is not valid. The available options are: 'violinplot' and 'boxplot'"
     )
     # filtering of single-cell profiles
     p1 <- distErrorPlot(
@@ -161,28 +163,28 @@ test_that(
     # incorrect object: no evaluation metrics
     expect_error(
       corrExpPredPlot(object = DDLSLi), 
-      regexp = "Provided object does not have evaluation metrics. Use 'calculateEvalMetrics' function"
+      regexp = "The provided object does not have evaluation metrics. Use 'calculateEvalMetrics' function"
     )
     # incorrect number of colors
     expect_error(
       corrExpPredPlot(
         object = DDLSLiComp, colors = c("red", "blue")
       ), 
-      regexp = "Number of provided colors is not enough"
+      regexp = "The number of provided colors is not enough"
     )
     # incorrect facet.by parameter
     expect_error(
       corrExpPredPlot(
         object = DDLSLiComp, facet.by = "no.variable"
       ), 
-      regexp = "'facet.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' or NULL"
+      regexp = "'facet.by' provided is not valid. The available options are: 'nCellTypes', 'CellType' or NULL"
     )
     # incorrect color.by parameter
     expect_error(
       corrExpPredPlot(
         object = DDLSLiComp, color.by = "no.variable"
       ), 
-      regexp = "'color.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' or NULL"
+      regexp = "'color.by' provided is not valid. The available options are: 'nCellTypes', 'CellType' or NULL"
     )
     # incorrect correlation
     expect_error(
@@ -207,28 +209,28 @@ test_that(
     # incorrect object: no evaluation metrics
     expect_error(
       blandAltmanLehPlot(object = DDLSLi), 
-      regexp = "Provided object does not have evaluation metrics. Use 'calculateEvalMetrics' function"
+      regexp = "The provided object does not have evaluation metrics. Use 'calculateEvalMetrics' function"
     )
     # incorrect number of colors
     expect_error(
       blandAltmanLehPlot(
         object = DDLSLiComp, colors = c("red", "blue")
       ), 
-      regexp = "Number of provided colors is not enough"
+      regexp = "The number of provided colors is not enough"
     )
     # incorrect facet.by parameter
     expect_error(
       blandAltmanLehPlot(
         object = DDLSLiComp, facet.by = "no.variable"
       ), 
-      regexp = "'facet.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' or NULL"
+      regexp = "'facet.by' provided is not valid. The available options are: 'nCellTypes', 'CellType' or NULL"
     )
     # incorrect color.by parameter
     expect_error(
       blandAltmanLehPlot(
         object = DDLSLiComp, color.by = "no.variable"
       ), 
-      regexp = "'color.by' provided is not valid. Available options are: 'nCellTypes', 'CellType' or NULL"
+      regexp = "'color.by' provided is not valid. The available options are: 'nCellTypes', 'CellType' or NULL"
     )
     # filtering of single-cell profiles
     p1 <- blandAltmanLehPlot(object = DDLSLiComp, filter.sc = TRUE)
@@ -247,17 +249,17 @@ test_that(
     # incorrect object: no evaluation metrics
     expect_error(
       barErrorPlot(object = DDLSLi), 
-      regexp = "Provided object does not have evaluation metrics. Use 'calculateEvalMetrics' function"
+      regexp = "The provided object does not have evaluation metrics. Use 'calculateEvalMetrics' function"
     )
     # incorrect by parameter
     expect_error(
       barErrorPlot(object = DDLSLiComp, by = "no.variable"), 
-      regexp = "'by' provided is not valid. Available options are: 'nCellTypes', 'CellType'"
+      regexp = "'by' provided is not valid. The available options are: 'nCellTypes', 'CellType'"
     )
     # incorrect error parameter
     expect_error(
       barErrorPlot(object = DDLSLiComp, by = "CellType", error = "no.error"), 
-      regexp = "'error' provided is not valid. Available errors are: 'MAE', 'MSE'"
+      regexp = "'error' provided is not valid. The available errors are: 'MAE', 'MSE'"
     )
     # incorrect dispersion parameter
     expect_error(

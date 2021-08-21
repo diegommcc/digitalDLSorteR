@@ -27,7 +27,8 @@ This workflow is more computationally expensive than using pre-trained models, s
 suppressMessages(library(digitalDLSorteR, quietly = TRUE))
 suppressMessages(library(digitalDLSorteRdata, quietly = TRUE))
 ## loading data for examples
-data(DDLSChung)
+data(DDLSChung.list)
+DDLSChung <- listToDDLS(DDLSChung.list)
 ## take SingleCellExperiment object from DigitalDLSorter object
 sceObj <- single.cell.real(DDLSChung)
 sceObj
@@ -283,7 +284,7 @@ DDLSToy <- simBulkProfiles(
 
 ### Training and evaluation of the Deep Neural Network {#dnn}
 
-Once the pseudo-bulk samples have been generated, the DNN model can be trained and evaluated. `trainDigitalDLSorterModel` is the function in charge of both steps and uses the [keras](https://cran.r-project.org/web/packages/keras/index.html) package with [tensorflow](https://cran.r-project.org/web/packages/tensorflow/index.html) as back-end. If you want more information about [keras](https://cran.r-project.org/web/packages/keras/index.html) or experience any problems during its installation, please see [Keras/TensorFlow installation and configuration](kerasIssues.html) vignette.
+Once the pseudo-bulk samples have been generated, the DNN model can be trained and evaluated. `trainDigitalDLSorterModel` is the function in charge of both steps and uses the [keras](https://cran.r-project.org/package=keras) package with [tensorflow](https://cran.r-project.org/package=tensorflow) as back-end. If you want more information about [keras](https://cran.r-project.org/package=keras) or experience any problems during its installation, please see [Keras/TensorFlow installation and configuration](kerasIssues.html) vignette.
 
 In terms of architecture and model parameters, `trainDigitalDLSorterModel` implements two hidden layers with 200 neurons each by default, although any of these parameters can be changed through the `trainDigitalDLSorterModel` parameters. Moreover, for a more customized model, it is possible to provide a pre-built model in the `custom.model` parameter. See the documentation for more details. 
 

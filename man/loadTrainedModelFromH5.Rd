@@ -2,7 +2,8 @@
 % Please edit documentation in R/utils.R
 \name{loadTrainedModelFromH5}
 \alias{loadTrainedModelFromH5}
-\title{Load from HDF5 file a trained DigitalDLSorter Deep Neural Network model}
+\title{Load from an HDF5 file a trained Deep Neural Network model into a
+\code{\linkS4class{DigitalDLSorter}} object}
 \usage{
 loadTrainedModelFromH5(object, file.path, reset.slot = FALSE)
 }
@@ -10,10 +11,10 @@ loadTrainedModelFromH5(object, file.path, reset.slot = FALSE)
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object with
 \code{trained.model} slot.}
 
-\item{file.path}{Valid file path where model are stored.}
+\item{file.path}{Valid file path where the model are stored.}
 
-\item{reset.slot}{Remove \code{trained.slot} if it already exists. A new
-\code{\link{DigitalDLSorterDNN}} object will be formed, but it will not
+\item{reset.slot}{Deletes \code{trained.slot} if it already exists. A new
+\code{\link{DigitalDLSorterDNN}} object will be formed, but will not
 contain other slots (\code{FALSE} by default).}
 }
 \value{
@@ -21,9 +22,9 @@ contain other slots (\code{FALSE} by default).}
 slot with the new model loaded
 }
 \description{
-Load from HDF5 file a trained  Deep Neural Network model into a
+Load from an HDF5 file a trained Deep Neural Network model into a
 \code{\linkS4class{DigitalDLSorter}} object. Note that HDF5 file must be a
-keras valid trained model.
+valid trained model (\pkg{keras} object).
 }
 \seealso{
 \code{\link{trainDigitalDLSorterModel}}

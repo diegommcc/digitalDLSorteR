@@ -16,10 +16,10 @@ deconv.data(object, name.data = NULL) <- value
 \arguments{
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object.}
 
-\item{name.data}{Name of data. If it is \code{NULL} (by default), all
-data contained in \code{deconv.data} slot are returned.}
+\item{name.data}{Name of the data. If \code{NULL} (by default), all
+data contained in the \code{deconv.data} slot are returned.}
 
-\item{value}{List whose names are the reference of the data stored.}
+\item{value}{List whose names are the reference of the stored data.}
 }
 \description{
 Get and set \code{deconv.data} slot in a

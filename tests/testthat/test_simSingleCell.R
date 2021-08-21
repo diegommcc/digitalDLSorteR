@@ -9,7 +9,8 @@ if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 }
 # loading data    
 library(digitalDLSorteRdata)
-data(DDLSLi)
+data(DDLSLi.list)
+DDLSLi <- listToDDLS(DDLSLi.list)
 
 # estimateZinbwaveParams: check if the function detects errors in parameters
 test_that("Wrong parameters in estimateZinbwaveParams", {

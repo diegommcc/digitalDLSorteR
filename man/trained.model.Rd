@@ -16,7 +16,7 @@ trained.model(object) <- value
 \arguments{
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object.}
 
-\item{value}{\code{\linkS4class{DigitalDLSorter}} object.}
+\item{value}{\code{\linkS4class{DigitalDLSorterDNN}} object.}
 }
 \description{
 Get and set \code{trained.model} slot in a

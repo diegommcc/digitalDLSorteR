@@ -17,7 +17,7 @@ test.metrics(object) <- value
 \item{object}{\code{\linkS4class{DigitalDLSorterDNN}} object.}
 
 \item{value}{List object with the resulting metrics after prediction
-on test data with Deep Neural Network model.}
+on test data with the Deep Neural Network model.}
 }
 \description{
 Get and set \code{test.metrics} slot in a

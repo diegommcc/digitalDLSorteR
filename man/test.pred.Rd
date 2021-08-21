@@ -16,7 +16,7 @@ test.pred(object) <- value
 \arguments{
 \item{object}{\code{\linkS4class{DigitalDLSorterDNN}} object.}
 
-\item{value}{Matrix object with prediction results on test data.}
+\item{value}{Matrix object with the prediction results on test data.}
 }
 \description{
 Get and set \code{test.pred} slot in a

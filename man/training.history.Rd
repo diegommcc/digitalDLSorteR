@@ -16,8 +16,8 @@ training.history(object) <- value
 \arguments{
 \item{object}{\code{\linkS4class{DigitalDLSorterDNN}} object.}
 
-\item{value}{\code{keras_training_history} object with training history of
-Deep Neural Network model}
+\item{value}{\code{keras_training_history} object with the training history
+of the Deep Neural Network model}
 }
 \description{
 Get and set \code{training.history} slot in a

@@ -631,79 +631,81 @@ NULL
 #' data
 #'
 #' Create a \code{\linkS4class{DigitalDLSorter}} object from single-cell RNA-seq
-#' data using files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5)
-#' or using a \code{\linkS4class{SingleCellExperiment}} object. Data will be
-#' stored in \code{single.cell.real} slot. Provided data must be composed of
-#' three pieces of information: \itemize{ \item Single-cell counts: genes in
-#' rows and cells in columns. \item Cells metadata: annotations (columns) for
+#' data from files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5)
+#' or a \code{\linkS4class{SingleCellExperiment}} object. The data will be
+#' stored in \code{single.cell.real} slot. Tha data provided should consist of
+#' three pieces of information: \itemize{ \item Single-cell counts: genes as
+#' rows and cells as columns. \item Cells metadata: annotations (columns) for
 #' each cell (rows). \item Genes metadata: annotations (columns) for each gene
-#' (rows). } If data is provided from files, \code{single.cell.real} argument
-#' must be a vector of three elements ordered so that the first file corresponds
-#' to count matrix, the second to cells metadata and the latter to genes
-#' metadata. On the other hand, if data is provided as
-#' \code{\linkS4class{SingleCellExperiment}}, the object must contain
-#' single-cell counts in \code{assay} slot, cells metadata in \code{colData}
-#' slot and genes metadata in \code{rowData}. Data must be provided without any
-#' transformation (e.g. log-transformation) and raw counts are preferred.
+#' (rows). } If the data is provided from files, \code{single.cell.real}
+#' argument must be a vector of three elements ordered so that the first file
+#' corresponds to the count matrix, the second to the cells metadata and the
+#' last to the genes metadata. On the other hand, if the data is provided as a
+#' \code{\linkS4class{SingleCellExperiment}} oject, it must contain single-cell
+#' counts in the \code{assay} slot, cells metadata in the \code{colData} slot
+#' and genes metadata in the \code{rowData}. The data must be provided without
+#' any transformation (e.g. log-transformation) and raw counts are preferred.
 #'
 #' This data can be used to simulate new single-cell profiles using the
-#' ZINB-WaVE framework with \code{\link{estimateZinbwaveParams}} function. In
-#' this way it is possible to increase the signal of cell types which are
-#' underrepresented in the original data set. If this step is not neccesary,
-#' these profiles will be used directly to simulate bulk RNA-seq samples with
-#' known composition.
+#' ZINB-WaVE framework with the \code{\link{estimateZinbwaveParams}} function.
+#' In this way, it is possible to increase the signal of cell types that are
+#' underrepresented in the original dataset. If this step is not neccesary,
+#' these profiles will be used directly to simulate pseudo-bulk RNA-seq samples
+#' with known cell composition.
 #'
 #' @param single.cell.data If data is provided from files,
-#'   \code{single.cell.real} must be a vector with file paths of three elements:
-#'   single-cell counts, cells metadata and genes metadata. If data is provided
-#'   from a \code{\linkS4class{SingleCellExperiment}} object, single-cell counts
-#'   must be present in \code{assay} slot, cells metadata in \code{colData} slot
-#'   and genes metadata in \code{rowData} slot.
-#' @param cell.ID.column Name or number of the column in cells metadata
+#'   \code{single.cell.real} must be a vector of three elements: single-cell
+#'   counts, cells metadata and genes metadata. If data is provided from a
+#'   \code{\linkS4class{SingleCellExperiment}} object, single-cell counts must
+#'   be present in the \code{assay} slot, cells metadata in the \code{colData}
+#'   slot and genes metadata in the \code{rowData} slot.
+#' @param cell.ID.column Name or number of the column in the cells metadata
 #'   corresponding to cell names in expression matrix.
-#' @param gene.ID.column Name or number of the column in genes metadata
+#' @param gene.ID.column Name or number of the column in the genes metadata
 #'   corresponding to the names used for features/genes.
-#' @param name.dataset.h5 Name of data set if HDF5 file is provided.
+#' @param name.dataset.h5 Name of the data set if HDF5 file is provided.
 #' @param min.counts Minimum gene counts to filter (0 by default).
-#' @param min.cells Minimum of cells with more than min.counts (0 by default).
+#' @param min.cells Minimum of cells with more than \code{min.counts} (0 by
+#'   default).
 #' @param fun.aggregate In case of duplicated genes, it is possible to set the
-#'   function used for aggregating them. Allowed functions: \code{'sum'},
+#'   function used to aggregate them. Allowed functions: \code{'sum'},
 #'   \code{'mean'}, \code{'median'}. Note that this functionality only works
-#'   when data are provided from a mtx file (sparse matrices) that allows
+#'   when data are provided from an mtx file (sparse matrices) that allows
 #'   duplicated rownames. Otherwise, R does not allow duplicated rownames.
-#' @param file.backend Valid file path where to store loaded data as HDF5 file.
-#'   If provided, data is stored in HDF5 files as back-end by using
-#'   \pkg{DelayedArray} and \pkg{HDF5Array} packages instead of
-#'   loaded in memory. This is suitable for situations where you have big
-#'   amounts of data that cannot be allocated in memory. Note that operations on
-#'   this data will be carried out by blocks (i.e subsets of determined size),
-#'   which can lead to longer execution times. \code{NULL} by default.
-#' @param name.dataset.backend Name of the dataset in the HDF5 file that will be
-#'   used. Note that it cannot exist. If \code{NULL} (by default), a random
-#'   datset name will be used.
+#' @param file.backend Valid file path where to store the loaded data as HDF5
+#'   file. If provided, data is stored in HDF5 files as back-end using
+#'   \pkg{DelayedArray} and \pkg{HDF5Array} packages instead of being loaded
+#'   into RAM. This is suitable for situations where you have large amounts of
+#'   data that cannot be stored in memory. Note that operations on these data
+#'   will be performed by blocks (i.e subsets of determined size), which may
+#'   result in longer execution times. \code{NULL} by default.
+#' @param name.dataset.backend Name of the dataset of the HDF5 file to be used.
+#'   Note that it cannot exist. If \code{NULL} (by default), a random datset
+#'   name will be used.
 #' @param compression.level The compression level used if \code{file.backend} is
 #'   provided. It is an integer value between 0 (no compression) and 9 (highest
 #'   and slowest compression). See
-#'   \code{?\link[HDF5Array]{getHDF5DumpCompressionLevel}} from
+#'   \code{?\link[HDF5Array]{getHDF5DumpCompressionLevel}} from the
 #'   \pkg{HDF5Array} package for more information.
 #' @param chunk.dims Specifies dimensions that HDF5 chunk will have. If
 #'   \code{NULL}, the default value is a vector of two items: the number of
 #'   genes considered by \code{\linkS4class{DigitalDLSorter}} object during the
-#'   simulation and only one sample in order to increase the read times in the
-#'   following steps. Greater number of columns written in each chunk can lead
+#'   simulation, and only one sample in order to increase read times in the
+#'   following steps. A larger number of columns written in each chunk may lead
 #'   to longer read times.
-#' @param block.processing Boolean indicating if data should be treated as
-#'   blocks (only if data are provided as HDF5 file). \code{FALSE} by default.
-#'   Note that to use this functionality is suitable for cases where is not
-#'   possible to allocate data in memory and therefore execution times will be
+#' @param block.processing Boolean indicating whether data should be treated as
+#'   blocks (only if data is provided as HDF5 file). \code{FALSE} by default.
+#'   Note that using this functionality is suitable for cases where is not
+#'   possible to load the data into RAM and therefore execution times will be
 #'   longer.
-#' @param verbose Show informative messages during the execution. \code{TRUE} by
-#'   default.
+#' @param verbose Show informative messages during the execution (\code{TRUE} by
+#'   default).
 #' @param project Name of the project for \code{\linkS4class{DigitalDLSorter}}
 #'   object.
-#'   
-#' @return A \code{\linkS4class{DigitalDLSorter}} object with single-cell 
-#'   RNA-seq data provided loaded in single.cell.real slot
+#'
+#' @return A \code{\linkS4class{DigitalDLSorter}} object with the single-cell
+#'   RNA-seq data provided loaded into the \code{single.cell.real} slot as a
+#'   \code{\linkS4class{SingleCellExperiment}} object.
 #'
 #' @export
 #'
@@ -713,7 +715,8 @@ NULL
 #' @examples
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   library(digitalDLSorteRdata)
-#'   data(DDLSLiComp)
+#'   data(DDLSChung.list)
+#'   DDLSChung <- listToDDLS(DDLSChung.list)
 #'   sc.chung.breast <- single.cell.real(DDLSChung)
 #'   DDLSChungSmall <- loadSCProfiles(
 #'     single.cell.data = sc.chung.breast,

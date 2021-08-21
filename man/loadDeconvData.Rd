@@ -4,7 +4,7 @@
 \alias{loadDeconvData}
 \alias{loadDeconvData,DigitalDLSorter,character-method}
 \alias{loadDeconvData,DigitalDLSorter,SummarizedExperiment-method}
-\title{Load data to deconvolute into a DigitalDLSorter object}
+\title{Load data to be deconvoluted into a DigitalDLSorter object}
 \usage{
 loadDeconvData(object, data, name.data = NULL)
 
@@ -16,19 +16,20 @@ loadDeconvData(object, data, name.data = NULL)
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object with
 \code{trained.model} slot.}
 
-\item{data}{File path where data is stored or
+\item{data}{File path where the data is stored or a
 \code{\linkS4class{SummarizedExperiment}} object.}
 
-\item{name.data}{Name with which data is stored in
+\item{name.data}{Name under which the data is stored in the
 \code{\linkS4class{DigitalDLSorter}} object. When \code{data} is a file
-path and \code{name.data} is not provided, base name of file will be used.}
+path and \code{name.data} is not provided, the base name of file will be
+used.}
 }
 \value{
 \code{\linkS4class{DigitalDLSorter}} object with \code{deconv.data}
-slot with the new bulk-RNAseq samples loaded
+slot with the new bulk-RNA-Seq samples loaded.
 }
 \description{
-Load data to deconvolute. Data can be provided from a file path of a
+Load data to be deconvoluted. Data can be provided from a file path of a
 tabulated text file (tsv and tsv.gz formats are accepted) or a
 \code{\linkS4class{SummarizedExperiment}} object.
 }

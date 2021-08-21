@@ -5,7 +5,8 @@ if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 }
 # loading data    
 library(digitalDLSorteRdata)
-data(DDLSLi)
+data(DDLSLi.list)
+DDLSLi <- listToDDLS(DDLSLi.list)
 
 ################################################################################
 ##################### From a SingleCellExperiment object #######################
