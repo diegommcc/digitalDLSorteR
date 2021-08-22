@@ -173,8 +173,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: AP001178.3 TBC1D15 MTHFR ... MTHFR GLIPR2 AL357078.2 FKBP8 
-##   colnames: BC09_31 BC09_Re_62 BC03_43 ... BC03_43 BC04_11 BC03_11 BC04_07 
+##   rownames: RTKN ME2 PTCH2 ... PTCH2 AL512631.2 TMEM185B ZNF805 
+##   colnames: BC03LN_62 BC07LN_54 BC04_07 ... BC04_07 BC03_92 BC09_42 BC04_11 
 ## Project: ToyExampleBreast</code></pre>
 <p>In this case, we are loading the single-cell profiles from a <code>SingleCellExperiment</code> object, but it could be done using files directly as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -226,8 +226,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: LINC01405 GLIPR1L1 THOC5 ... THOC5 ADNP PI4K2B PLEKHA1 
-##   colnames: BC09_42 BC03LN_62 BC03LN_91 ... BC03LN_91 BC03_92 BC01_02 BC03_11 
+##   rownames: CAD KCND2 ESRRG ... ESRRG FOXP1-IT1 B3GNT9 MCM2 
+##   colnames: BC07LN_54 BC09_Re_07 BC07_42 ... BC07_42 BC09_42 BC03_11 BC05_84 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -278,8 +278,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: SNRPN TPBG WDR41 ... WDR41 LMBR1 EIF3C METTL1 
-##   colnames: BC03LN_62 BC07_03 BC07LN_54 ... BC07LN_54 BC07LN_29 BC04_33 BC09_Re_07 
+##   rownames: PGRMC1 FLAD1 PRPF39 ... PRPF39 CCNYL1 LIN7C ANKEF1 
+##   colnames: BC07_18 BC03LN_62 BC09_31 ... BC09_31 BC03_86 BC07_03 BC09_42 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -287,8 +287,8 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Simulated single-cell profiles:
 ##   18751 features and 130 cells
-##   rownames: COMMD10 HECA MAP3K19 ... MAP3K19 C11ORF98 ORAI1 ATPSCKMT 
-##   colnames: ER+_Simul28 Treg_Simul118 Bmem_Simul8 ... Bmem_Simul8 Tme_Simul96 TNBC_Simul102 ER+_Simul23 
+##   rownames: HIF1A-AS3 LZIC AGXT2 ... AGXT2 IMMP2L AC136424.2 AC012363.2 
+##   colnames: ER+_Simul29 ER+_Simul24 Stromal_Simul75 ... Stromal_Simul75 Stromal_Simul80 Stromal_Simul77 Tme_Simul92 
 ## Project: ToyExampleBreast</code></pre>
 <p>In this step, it is also possible to store the new simulated single-cell profiles in a HDF5 file. Indeed, they can be simulated by batch, avoiding to load all data into RAM. The code would be as follows:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
@@ -343,32 +343,32 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## 
 ## === Training set cells by type:</code></pre>
 <pre><code>##     - Bmem: 8
-##     - DC: 7
-##     - ER+: 9
-##     - ER+ and HER2+: 6
-##     - HER2+: 9
-##     - Macrophage: 9
-##     - Monocyte: 6
-##     - Stromal: 7
-##     - TCD8: 8
-##     - Tme: 9
+##     - DC: 8
+##     - ER+: 7
+##     - ER+ and HER2+: 9
+##     - HER2+: 11
+##     - Macrophage: 6
+##     - Monocyte: 8
+##     - Stromal: 8
+##     - TCD8: 5
+##     - Tme: 10
 ##     - TNBC: 9
-##     - Treg: 6
-##     - BGC: 8</code></pre>
+##     - Treg: 7
+##     - BGC: 5</code></pre>
 <pre><code>## === Test set cells by type:</code></pre>
 <pre><code>##     - Bmem: 4
-##     - DC: 4
-##     - ER+: 2
-##     - ER+ and HER2+: 6
-##     - HER2+: 6
-##     - Macrophage: 2
-##     - Monocyte: 5
-##     - Stromal: 4
-##     - TCD8: 3
-##     - Tme: 3
+##     - DC: 3
+##     - ER+: 4
+##     - ER+ and HER2+: 3
+##     - HER2+: 4
+##     - Macrophage: 5
+##     - Monocyte: 3
+##     - Stromal: 3
+##     - TCD8: 6
+##     - Tme: 2
 ##     - TNBC: 4
-##     - Treg: 5
-##     - BGC: 3</code></pre>
+##     - Treg: 4
+##     - BGC: 6</code></pre>
 <pre><code>## === Probability matrix for training data:</code></pre>
 <pre><code>##     - Bulk RNA-Seq samples: 167
 ##     - Cell types: 13</code></pre>
@@ -381,8 +381,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: PIGB AL133551.1 ATG4C ... ATG4C GATA2-AS1 UBXN4 TRIM14 
-##   colnames: BC07LN_54 BC04_49 BC09_Re_07 ... BC09_Re_07 BC04_33 BC07LN_29 BC04_07 
+##   rownames: AL162293.1 AC012291.3 HERC1 ... HERC1 AC098869.2 HNRNPH1 KLRB1 
+##   colnames: BC05_84 BC09_42 BC01_02 ... BC01_02 BC04_11 BC07LN_26 BC04_33 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -390,8 +390,8 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Simulated single-cell profiles:
 ##   18751 features and 130 cells
-##   rownames: GFER AC130888.1 COL4A2 ... COL4A2 MFSD9 TIA1 MITF 
-##   colnames: TCD8_Simul81 Monocyte_Simul62 TNBC_Simul102 ... TNBC_Simul102 ER+_Simul28 BGC_Simul129 Monocyte_Simul63 
+##   rownames: AC124016.3 TRIM24 AP000844.2 ... AP000844.2 AL391863.2 ABALON EID3 
+##   colnames: Bmem_Simul1 HER2+_Simul44 Macrophage_Simul59 ... Macrophage_Simul59 ER+ and HER2+_Simul37 HER2+_Simul45 BGC_Simul129 
 ## Cell type composition matrices:
 ##   Cell type matrix for traindata: 167 bulk samples and 13 cell types 
 ##   Cell type matrix for testdata: 83 bulk samples and 13 cell types 
@@ -401,34 +401,34 @@ Workflow to build new context-specific deconvolution models
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##        Monocyte Tme Bmem TCD8 BGC Treg Macrophage DC Stromal TNBC HER2+
-## Bulk_1       57   0    0    0  43    0          0  0       0    0     0
-## Bulk_2        5   2    3    4   5    5          4  3       6   22    22
-## Bulk_3        2   4    5    4   4    0          3  3       0   23    17
-## Bulk_4        0   5    4    2   5    0          0  1       8   19    16
-## Bulk_5        0   9    0    0   5    7         15  0       0   32     0
-## Bulk_6        3   3    4    0   4    5          4  0       3   22    20
+## Bulk_1        6   5    0    0   2    1          1  5      17   12    14
+## Bulk_2        3   2    0    3   1    4          3  3       9   12    18
+## Bulk_3        2   5    3    4   0    5          3  2      10   15    20
+## Bulk_4        4   5    2    1   3    3          1  2      16   12    13
+## Bulk_5        0   5    3    2   5    4          3  2       6   17    19
+## Bulk_6        0   7    7    5   0    0          0  2       8   34     0
 ##        ER+ and HER2+ ER+
-## Bulk_1             0   0
-## Bulk_2            19   0
-## Bulk_3            15  20
-## Bulk_4            24  16
-## Bulk_5             0  32
-## Bulk_6            20  12</code></pre>
+## Bulk_1            25  12
+## Bulk_2            21  21
+## Bulk_3            19  12
+## Bulk_4            14  24
+## Bulk_5            17  17
+## Bulk_6            22  15</code></pre>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##          Monocyte Tme Bmem TCD8 BGC Treg Macrophage DC Stromal TNBC HER2+
-## Bulk_162        0   0    0    0   0    0          0  0       0  100     0
+## Bulk_162        0   0    0    0   0    0          0  0       0    0   100
 ## Bulk_163        0   0    0    0   0    0          0  0       0    0   100
-## Bulk_164        0   0    0    0   0    0          0  0       0    0   100
+## Bulk_164        0   0    0    0   0    0          0  0       0    0     0
 ## Bulk_165        0   0    0    0   0    0          0  0       0    0     0
 ## Bulk_166        0   0    0    0   0    0          0  0       0    0     0
 ## Bulk_167        0   0    0    0   0    0          0  0       0    0     0
 ##          ER+ and HER2+ ER+
 ## Bulk_162             0   0
 ## Bulk_163             0   0
-## Bulk_164             0   0
+## Bulk_164           100   0
 ## Bulk_165           100   0
-## Bulk_166           100   0
+## Bulk_166             0 100
 ## Bulk_167             0 100</code></pre>
 <p>Moreover, the generated distributions can be plotted using the <code>showProbPlot</code> function:</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
@@ -490,8 +490,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: CASC1 ISCA2 ERVK9-11 ... ERVK9-11 ST7L AC232271.3 DRC3 
-##   colnames: BC09_31 BC04_33 BC07LN_26 ... BC07LN_26 BC03LN_62 BC07_03 BC03_11 
+##   rownames: AC005072.1 MAP7D1 ESR1 ... ESR1 TTPAL RYR2 RAB30 
+##   colnames: BC03LN_62 BC09_Re_07 BC01_02 ... BC01_02 BC07_18 BC07LN_29 BC03_11 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -499,20 +499,20 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Simulated single-cell profiles:
 ##   18751 features and 130 cells
-##   rownames: AC093503.2 AL161449.2 ABCE1 ... ABCE1 AC027307.3 FKBP11 TRIM65 
-##   colnames: TCD8_Simul84 Macrophage_Simul54 Treg_Simul111 ... Treg_Simul111 Bmem_Simul2 Tme_Simul99 Stromal_Simul80 
+##   rownames: AC016876.2 IGFBPL1 SLC2A1-AS1 ... SLC2A1-AS1 GNAL GARNL3 AC109322.1 
+##   colnames: ER+ and HER2+_Simul38 ER+_Simul30 DC_Simul17 ... DC_Simul17 Macrophage_Simul51 Monocyte_Simul63 HER2+_Simul44 
 ## Cell type composition matrices:
 ##   Cell type matrix for traindata: 167 bulk samples and 13 cell types 
 ##   Cell type matrix for testdata: 83 bulk samples and 13 cell types 
 ## Simulated bulk samples:
 ##   train bulk samples:
 ##     18751 features and 167 samples
-##     rownames: BX640514.2 LYRM1 IL17RC ... IL17RC PRMT5 MROH8 AP000766.1 
-##     colnames: Bulk_138 Bulk_34 Bulk_122 ... Bulk_122 Bulk_139 Bulk_13 Bulk_11 
+##     rownames: DUBR UNC79 SUZ12 ... SUZ12 MOGAT2 MRPS11 COLGALT1 
+##     colnames: Bulk_57 Bulk_47 Bulk_44 ... Bulk_44 Bulk_142 Bulk_72 Bulk_102 
 ##   test bulk samples:
 ##     18751 features and 83 samples
-##     rownames: LRRC37B RTTN LRIG2-DT ... LRIG2-DT DALRD3 NTN1 MFSD13A 
-##     colnames: Bulk_53 Bulk_40 Bulk_83 ... Bulk_83 Bulk_82 Bulk_10 Bulk_39 
+##     rownames: ESCO2 PPIL3 ISG20 ... ISG20 CREB3L1 ARPC4 ERMAP 
+##     colnames: Bulk_25 Bulk_67 Bulk_74 ... Bulk_74 Bulk_57 Bulk_8 Bulk_9 
 ## Project: ToyExampleBreast</code></pre>
 <p>Again, these pseudo-bulk samples can be stored as an HDF5 file. This is the most recommended step of <strong>digitalDLSorteR</strong> to use this functionality, as it is the most computationally expensive part of the package and these samples will only be accessed during training and evaluation of the Deep Neural Network (DNN) model. As in <code>simSCProfiles</code>, the samples can be simulated by batch and also a desired number of threads can be used:</p>
 <div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
@@ -568,10 +568,10 @@ Workflow to build new context-specific deconvolution models
 ## === Training DNN with 268 samples:</code></pre>
 <pre><code>## 
 ## === Evaluating DNN in test data (134 samples)</code></pre>
-<pre><code>##    - loss: 0.4544
-##    - accuracy: 0.7612
-##    - mean_absolute_error: 0.0508
-##    - categorical_accuracy: 0.7612</code></pre>
+<pre><code>##    - loss: 0.6779
+##    - accuracy: 0.6194
+##    - mean_absolute_error: 0.0599
+##    - categorical_accuracy: 0.6194</code></pre>
 <pre><code>## 
 ## === Generating prediction results using test data</code></pre>
 <pre><code>## DONE</code></pre>
@@ -581,8 +581,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: AL023284.4 AC087286.4 DMKN ... DMKN GNPTG AL136317.2 ZNF284 
-##   colnames: BC04_33 BC09_31 BC09_Re_62 ... BC09_Re_62 BC07LN_26 BC03_86 BC01_02 
+##   rownames: SWSAP1 FOXH1 MBTPS1 ... MBTPS1 HCG14 AL022323.4 AC103769.1 
+##   colnames: BC07LN_26 BC07_18 BC09_31 ... BC09_31 BC04_07 BC07LN_29 BC03_11 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -590,31 +590,31 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Simulated single-cell profiles:
 ##   18751 features and 130 cells
-##   rownames: SCUBE2 RGS12 LINC02482 ... LINC02482 APOBEC3C FRMD6-AS1 MAGIX 
-##   colnames: Treg_Simul114 Bmem_Simul6 Monocyte_Simul64 ... Monocyte_Simul64 DC_Simul13 Treg_Simul117 ER+ and HER2+_Simul36 
+##   rownames: ZMAT5 AL132657.1 ING1 ... ING1 AL731569.1 TMCC2 SLX1A-SULT1A3 
+##   colnames: Monocyte_Simul70 Treg_Simul118 TNBC_Simul110 ... TNBC_Simul110 Treg_Simul111 Monocyte_Simul63 Stromal_Simul73 
 ## Cell type composition matrices:
 ##   Cell type matrix for traindata: 167 bulk samples and 13 cell types 
 ##   Cell type matrix for testdata: 83 bulk samples and 13 cell types 
 ## Simulated bulk samples:
 ##   train bulk samples:
 ##     18751 features and 167 samples
-##     rownames: HEBP2 LYPD6B PITX1 ... PITX1 FTSJ3 LINC02367 ATP6V0E2 
-##     colnames: Bulk_9 Bulk_35 Bulk_41 ... Bulk_41 Bulk_117 Bulk_143 Bulk_13 
+##     rownames: DENND6A-DT DCAF17 PPAN ... PPAN TUBA3FP EML4 SPTLC2 
+##     colnames: Bulk_109 Bulk_125 Bulk_18 ... Bulk_18 Bulk_67 Bulk_128 Bulk_75 
 ##   test bulk samples:
 ##     18751 features and 83 samples
-##     rownames: EZH1 MRPL19 IL12RB1 ... IL12RB1 SOD1 LMO1 AC103702.1 
-##     colnames: Bulk_42 Bulk_72 Bulk_27 ... Bulk_27 Bulk_76 Bulk_24 Bulk_46 
+##     rownames: NR5A2 CHRNA5 FOS ... FOS FAM200A IGFLR1 RBM41 
+##     colnames: Bulk_79 Bulk_63 Bulk_13 ... Bulk_13 Bulk_48 Bulk_65 Bulk_43 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.3258
-##     accuracy: 0.7969
-##     mean_absolute_error: 0.0417
-##     categorical_accuracy: 0.7969
+##     loss: 0.2928
+##     accuracy: 0.8406
+##     mean_absolute_error: 0.0384
+##     categorical_accuracy: 0.8406
 ##   Evaluation metrics on test data:
-##     loss: 0.4544
-##     accuracy: 0.7612
-##     mean_absolute_error: 0.0508
-##     categorical_accuracy: 0.7612 
+##     loss: 0.6779
+##     accuracy: 0.6194
+##     mean_absolute_error: 0.0599
+##     categorical_accuracy: 0.6194 
 ## Project: ToyExampleBreast</code></pre>
 <p>As this is a ‘toy’ example, results are not very accurate. For a real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a> vignette.</p>
 <div id="on-the-fly-argument" class="section level4">
