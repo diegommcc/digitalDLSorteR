@@ -504,7 +504,7 @@ test_that(
       cell.ID.column = "Cell_ID",
       cell.type.column = "Cell_Type",
       prob.design = probMatrixValid,
-      num.bulk.samples = 100,
+      num.bulk.samples = 150,
       verbose = FALSE
     )
     DDLSLi <- simBulkProfiles(DDLSLi, verbose = FALSE)
