@@ -191,6 +191,10 @@ This process starts with the single-cell profiles being divided into training an
 
 The proportion of each sample type in the total of samples can be modified by the `proportion.train` and `proportion.test` arguments. Moreover, `prob.zero` controls the number of zeros (number of cell types that will be zero in each sample) in each method. This parameter was introduced because otherwise cell compositions that are strongly biased toward a certain cell type or missing specific cell types would be rare in training subset. To account for this, `prob.zero` generate sparse compositions depending on the probability introduced for each method. Finally, another important parameter is `n.cells` which determines the number of cells that will compose each pseudo-bulk sample, and `num.bulk.samples`, which defines the total number of pseudo-bulk samples generated (training + test subsets). The code would be as follows:
 
+```{r, echo = FALSE}
+set.seed(123)
+```
+
 ```{r}
 ## prior knowledge for prob.design argument
 probMatrix <- data.frame(
