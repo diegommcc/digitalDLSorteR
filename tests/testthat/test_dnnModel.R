@@ -355,6 +355,7 @@ test_that(
 test_that(
   "deconvDigitalDLSorterObj: deconvolution of new samples", 
   {
+    set.seed(123)
     probMatrixValid <- data.frame(
       Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M", 
                     "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
@@ -376,6 +377,7 @@ test_that(
       batch.size = 25,
       verbose = FALSE
     )
+    
     se <- SummarizedExperiment(TCGA.breast.small)
     DDLSLi <- loadDeconvData(
       DDLSLi, data = se, name.data = "TCGA"
@@ -493,6 +495,7 @@ test_that(
 test_that(
   "deconvDigitalDLSorterObj: deconvolution of new samples (JSON objects from disk)", 
   {
+    set.seed(123)
     probMatrixValid <- data.frame(
       Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M", 
                     "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
@@ -509,7 +512,9 @@ test_that(
     )
     DDLSLi <- simBulkProfiles(DDLSLi, verbose = FALSE)
     DDLSLi <- trainDigitalDLSorterModel(
-      object = DDLSLi, batch.size = 25, verbose = FALSE
+      object = DDLSLi,
+      batch.size = 25,
+      verbose = FALSE
     )
     # save DDLS object as RDS object: transform Python object into a JSON-like character object
     fileTMP <- tempfile()
