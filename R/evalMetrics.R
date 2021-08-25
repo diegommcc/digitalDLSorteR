@@ -62,10 +62,10 @@ default.colors <- function() {
 #' @examples
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   library(digitalDLSorteRdata)
-#'   data(DDLSLiComp.list)
-#'   DDLSLiComp <- listToDDLS(DDLSLiComp.list) # list to DigitalDLSorter obj
-#'   DDLSLiComp <- calculateEvalMetrics(
-#'     object = DDLSLiComp
+#'   data(DDLSLi.list)
+#'   DDLSLi <- listToDDLS(DDLSLi.list) # list to DigitalDLSorter obj
+#'   DDLSLi <- calculateEvalMetrics(
+#'     object = DDLSLi
 #'   )
 #' }
 calculateEvalMetrics <- function(
@@ -329,13 +329,13 @@ se <- function(x) sqrt(var(x)/length(x))
 #' @examples
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   library(digitalDLSorteRdata)
-#'   data(DDLSLiComp.list)
-#'   DDLSLiComp <- listToDDLS(DDLSLiComp.list)
-#'   DDLSLiComp <- calculateEvalMetrics(
-#'     object = DDLSLiComp
+#'   data(DDLSLi.list)
+#'   DDLSLi <- listToDDLS(DDLSLi.list)
+#'   DDLSLi <- calculateEvalMetrics(
+#'     object = DDLSLi
 #'   )
 #'   distErrorPlot(
-#'     object = DDLSLiComp,
+#'     object = DDLSLi,
 #'     error = "AbsErr",
 #'     facet.by = "CellType",
 #'     color.by = "nCellTypes",
@@ -343,7 +343,7 @@ se <- function(x) sqrt(var(x)/length(x))
 #'   )
 #'
 #'   distErrorPlot(
-#'     object = DDLSLiComp,
+#'     object = DDLSLi,
 #'     error = "AbsErr",
 #'     x.by = "CellType",
 #'     facet.by = NULL,
@@ -565,21 +565,21 @@ distErrorPlot <- function(
 #' @examples
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   library(digitalDLSorteRdata)
-#'   data(DDLSLiComp.list)
-#'   DDLSLiComp <- listToDDLS(DDLSLiComp.list)
-#'   DDLSLiComp <- calculateEvalMetrics(
-#'     object = DDLSLiComp
+#'   data(DDLSLi.list)
+#'   DDLSLi <- listToDDLS(DDLSLi.list)
+#'   DDLSLi <- calculateEvalMetrics(
+#'     object = DDLSLi
 #'   )
 #'   # correlations by cell type
 #'   corrExpPredPlot(
-#'     object = DDLSLiComp,
+#'     object = DDLSLi,
 #'     facet.by = "CellType",
 #'     color.by = "CellType",
 #'     corr = "both"
 #'   )
 #'   # correlations of all samples mixed
 #'   corrExpPredPlot(
-#'     object = DDLSLiComp,
+#'     object = DDLSLi,
 #'     facet.by = NULL,
 #'     color.by = "CellType",
 #'     corr = "ccc",
@@ -785,20 +785,20 @@ corrExpPredPlot <- function(
 #' @examples
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   library(digitalDLSorteRdata)
-#'   data(DDLSLiComp.list)
-#'   DDLSLiComp <- listToDDLS(DDLSLiComp.list)
-#'   DDLSLiComp <- calculateEvalMetrics(
-#'     object = DDLSLiComp
+#'   data(DDLSLi.list)
+#'   DDLSLi <- listToDDLS(DDLSLi.list)
+#'   DDLSLi <- calculateEvalMetrics(
+#'     object = DDLSLi
 #'   )
 #'   # Bland-Altman plot by cell type
 #'   blandAltmanLehPlot(
-#'     object = DDLSLiComp,
+#'     object = DDLSLi,
 #'     facet.by = "CellType",
 #'     color.by = "CellType"
 #'   )
 #'   # Bland-Altman plot of all samples mixed
 #'   blandAltmanLehPlot(
-#'     object = DDLSLiComp,
+#'     object = DDLSLi,
 #'     facet.by = NULL,
 #'     color.by = "CellType",
 #'     alpha.point = 0.3,
@@ -935,19 +935,19 @@ blandAltmanLehPlot <- function(
 #' @examples
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   library(digitalDLSorteRdata)
-#'   data(DDLSLiComp.list)
-#'   DDLSLiComp <- listToDDLS(DDLSLiComp.list)
-#'   DDLSLiComp <- calculateEvalMetrics(
-#'     object = DDLSLiComp
+#'   data(DDLSLi.list)
+#'   DDLSLi <- listToDDLS(DDLSLi.list)
+#'   DDLSLi <- calculateEvalMetrics(
+#'     object = DDLSLi
 #'   )
 #'   barErrorPlot(
-#'     object = DDLSLiComp,
+#'     object = DDLSLi,
 #'     error = "MSE",
 #'     by = "CellType"
 #'   )
 #'
 #'   barErrorPlot(
-#'     object = DDLSLiComp,
+#'     object = DDLSLi,
 #'     error = "MAE",
 #'     by = "nCellTypes"
 #'   )

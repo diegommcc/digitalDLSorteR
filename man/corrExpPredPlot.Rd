@@ -87,21 +87,21 @@ details.
 \examples{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
-  data(DDLSLiComp.list)
-  DDLSLiComp <- listToDDLS(DDLSLiComp.list)
-  DDLSLiComp <- calculateEvalMetrics(
-    object = DDLSLiComp
+  data(DDLSLi.list)
+  DDLSLi <- listToDDLS(DDLSLi.list)
+  DDLSLi <- calculateEvalMetrics(
+    object = DDLSLi
   )
   # correlations by cell type
   corrExpPredPlot(
-    object = DDLSLiComp,
+    object = DDLSLi,
     facet.by = "CellType",
     color.by = "CellType",
     corr = "both"
   )
   # correlations of all samples mixed
   corrExpPredPlot(
-    object = DDLSLiComp,
+    object = DDLSLi,
     facet.by = NULL,
     color.by = "CellType",
     corr = "ccc",

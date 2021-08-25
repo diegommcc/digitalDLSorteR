@@ -44,19 +44,19 @@ different cell types (\code{nCellTypes}) on test pseudo-bulk samples.
 \examples{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
-  data(DDLSLiComp.list)
-  DDLSLiComp <- listToDDLS(DDLSLiComp.list)
-  DDLSLiComp <- calculateEvalMetrics(
-    object = DDLSLiComp
+  data(DDLSLi.list)
+  DDLSLi <- listToDDLS(DDLSLi.list)
+  DDLSLi <- calculateEvalMetrics(
+    object = DDLSLi
   )
   barErrorPlot(
-    object = DDLSLiComp,
+    object = DDLSLi,
     error = "MSE",
     by = "CellType"
   )
 
   barErrorPlot(
-    object = DDLSLiComp,
+    object = DDLSLi,
     error = "MAE",
     by = "nCellTypes"
   )

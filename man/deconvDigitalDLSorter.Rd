@@ -69,6 +69,7 @@ want to build their own models from other scRNA-Seq datasets, see the
 functions.
 }
 \examples{
+\dontrun{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   # to ensure compatibility
   tensorflow::tf$compat$v1$disable_eager_execution()
@@ -80,6 +81,7 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     model = breast.chung.specific,
     normalize = TRUE
   )
+
   # simplify arguments
   simplify <- list(Tumor = c("ER+", "HER2+", "ER+/HER2+", "TNBC"),
                    Bcells = c("Bmem", "BGC"))
@@ -97,6 +99,7 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     normalize = TRUE,
     simplify.majority = simplify
   )
+}
 }
 
 }

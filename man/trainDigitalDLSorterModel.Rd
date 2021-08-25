@@ -126,14 +126,14 @@ during training/evaluation.
 \strong{Neural network architecture}
 
 By default, \code{\link{trainDigitalDLSorterModel}} implements the
-architecture selected in Torroja and Sánchez-Cabo, 2019. However, as
-the default architecture may not produce good results depending on the dataset, it is
-possible to change its parameters by using the corresponding argument: number
-of hidden layers, number of neurons for each hidden layer, dropout rate,
-activation function and loss function. For more customized models, it is
-possible to provide a pre-built model in the \code{custom.model} argument (a
-\code{keras.engine.sequential.Sequential} object) where it is necessary that
-the number of input neurons is equal to the number of considered
+architecture selected in Torroja and Sánchez-Cabo, 2019. However, as the
+default architecture may not produce good results depending on the dataset,
+it is possible to change its parameters by using the corresponding argument:
+number of hidden layers, number of neurons for each hidden layer, dropout
+rate, activation function and loss function. For more customized models, it
+is possible to provide a pre-built model in the \code{custom.model} argument
+(a \code{keras.engine.sequential.Sequential} object) where it is necessary
+that the number of input neurons is equal to the number of considered
 features/genes and the number of output neurons is equal to the number of
 considered cell types.
 }

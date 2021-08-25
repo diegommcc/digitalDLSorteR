@@ -78,20 +78,20 @@ argument and examples for more information.
 \examples{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
-  data(DDLSLiComp.list)
-  DDLSLiComp <- listToDDLS(DDLSLiComp.list)
-  DDLSLiComp <- calculateEvalMetrics(
-    object = DDLSLiComp
+  data(DDLSLi.list)
+  DDLSLi <- listToDDLS(DDLSLi.list)
+  DDLSLi <- calculateEvalMetrics(
+    object = DDLSLi
   )
   # Bland-Altman plot by cell type
   blandAltmanLehPlot(
-    object = DDLSLiComp,
+    object = DDLSLi,
     facet.by = "CellType",
     color.by = "CellType"
   )
   # Bland-Altman plot of all samples mixed
   blandAltmanLehPlot(
-    object = DDLSLiComp,
+    object = DDLSLi,
     facet.by = NULL,
     color.by = "CellType",
     alpha.point = 0.3,

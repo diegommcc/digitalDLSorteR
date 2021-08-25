@@ -39,12 +39,12 @@ are generated without any parameter introduced by the user.
 \examples{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
-  data(DDLSLiComp.list)
-  DDLSLiComp <- listToDDLS(DDLSLiComp.list)
+  data(DDLSLi.list)
+  DDLSLi <- listToDDLS(DDLSLi.list)
   lapply(
     X = 1:6, FUN = function(x) {
       showProbPlot(
-        DDLSLiComp,
+        DDLSLi,
         type.data = "train",
         set = x,
         type.plot = "boxplot"

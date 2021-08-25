@@ -1,5 +1,4 @@
 #' @importFrom dplyr %>%
-#' @importFrom keras keras_model_sequential layer_dense layer_batch_normalization layer_activation layer_dropout get_output_shape_at compile optimizer_adam fit_generator evaluate_generator predict_generator model_from_json set_weights model_to_json get_weights load_model_hdf5 save_model_hdf5
 #' @importFrom tools file_path_sans_ext
 NULL
 
@@ -40,14 +39,14 @@ globalVariables(c(".dataForDNN", "<<-"))
 #' \strong{Neural network architecture}
 #'
 #' By default, \code{\link{trainDigitalDLSorterModel}} implements the
-#' architecture selected in Torroja and Sánchez-Cabo, 2019. However, as 
-#' the default architecture may not produce good results depending on the dataset, it is
-#' possible to change its parameters by using the corresponding argument: number
-#' of hidden layers, number of neurons for each hidden layer, dropout rate,
-#' activation function and loss function. For more customized models, it is
-#' possible to provide a pre-built model in the \code{custom.model} argument (a
-#' \code{keras.engine.sequential.Sequential} object) where it is necessary that
-#' the number of input neurons is equal to the number of considered
+#' architecture selected in Torroja and Sánchez-Cabo, 2019. However, as the
+#' default architecture may not produce good results depending on the dataset,
+#' it is possible to change its parameters by using the corresponding argument:
+#' number of hidden layers, number of neurons for each hidden layer, dropout
+#' rate, activation function and loss function. For more customized models, it
+#' is possible to provide a pre-built model in the \code{custom.model} argument
+#' (a \code{keras.engine.sequential.Sequential} object) where it is necessary
+#' that the number of input neurons is equal to the number of considered
 #' features/genes and the number of output neurons is equal to the number of
 #' considered cell types.
 #'
@@ -875,6 +874,7 @@ trainDigitalDLSorterModel <- function(
 #'@seealso \code{\link{deconvDigitalDLSorterObj}}
 #'
 #' @examples
+#' \dontrun{
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   # to ensure compatibility
 #'   tensorflow::tf$compat$v1$disable_eager_execution()
@@ -886,6 +886,7 @@ trainDigitalDLSorterModel <- function(
 #'     model = breast.chung.specific,
 #'     normalize = TRUE
 #'   )
+#'
 #'   # simplify arguments
 #'   simplify <- list(Tumor = c("ER+", "HER2+", "ER+/HER2+", "TNBC"),
 #'                    Bcells = c("Bmem", "BGC"))
@@ -903,6 +904,7 @@ trainDigitalDLSorterModel <- function(
 #'     normalize = TRUE,
 #'     simplify.majority = simplify
 #'   )
+#' }
 #' }
 #'
 #'@references Chung, W., Eum, H. H., Lee, H. O., Lee, K. M., Lee, H. B., Kim, K.
@@ -926,7 +928,7 @@ deconvDigitalDLSorter <- function(
     stop("Model cannot be NULL. Please see available models in ", 
          "digitalDLSorteRdata package and ?deconvDigitalDLSorter")
   } else if (is(object = model, class2 = "list")) {
-      model <- digitalDLSorteRdata::listToDDLSDNN(model)
+      model <- listToDDLSDNN(model)
   } else if (!is(object = model, class2 = "DigitalDLSorterDNN")) {
       stop("'model' is not an object of DigitalDLSorterDNN class. Please ",
            "see available models in digitalDLSorteRdata package and ?deconvDigitalDLSorter")

@@ -38,10 +38,10 @@ the \code{\linkS4class{DigitalDLSorter}} object).
 \examples{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
-  data(DDLSLiComp.list)
-  DDLSLiComp <- listToDDLS(DDLSLiComp.list) # list to DigitalDLSorter obj
-  DDLSLiComp <- calculateEvalMetrics(
-    object = DDLSLiComp
+  data(DDLSLi.list)
+  DDLSLi <- listToDDLS(DDLSLi.list) # list to DigitalDLSorter obj
+  DDLSLi <- calculateEvalMetrics(
+    object = DDLSLi
   )
 }
 }

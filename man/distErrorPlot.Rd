@@ -98,13 +98,13 @@ details.
 \examples{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
-  data(DDLSLiComp.list)
-  DDLSLiComp <- listToDDLS(DDLSLiComp.list)
-  DDLSLiComp <- calculateEvalMetrics(
-    object = DDLSLiComp
+  data(DDLSLi.list)
+  DDLSLi <- listToDDLS(DDLSLi.list)
+  DDLSLi <- calculateEvalMetrics(
+    object = DDLSLi
   )
   distErrorPlot(
-    object = DDLSLiComp,
+    object = DDLSLi,
     error = "AbsErr",
     facet.by = "CellType",
     color.by = "nCellTypes",
@@ -112,7 +112,7 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   )
 
   distErrorPlot(
-    object = DDLSLiComp,
+    object = DDLSLi,
     error = "AbsErr",
     x.by = "CellType",
     facet.by = NULL,
