@@ -144,7 +144,7 @@
 <a href="#example-using-breast-cancer-samples-from-tcga-project" class="anchor" aria-hidden="true"></a>Example using breast cancer samples from TCGA project</h2>
 <p>The following code chunk shows an example using <code>breast.chung.generic</code> model and a small portion of data from The Cancer Genome Atlas (TCGA) project <span class="citation">(Koboldt et al. 2012; Ciriello et al. 2015)</span> loaded from <code>digitalDLSorteRdata</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">digitalDLSorteR</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diegommcc.github.io/digitalDLSorteR/" class="external-link">digitalDLSorteR</a></span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diegommcc/digitalDLSorteRdata" class="external-link">digitalDLSorteRdata</a></span><span class="op">)</span><span class="op">)</span>
 <span class="co"># disable eager execution for compatibility issues</span>
 <span class="fu">tensorflow</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/tensorflow/man/tf.html" class="external-link">tf</a></span><span class="op">$</span><span class="va">compat</span><span class="op">$</span><span class="va">v1</span><span class="op">$</span><span class="fu">disable_eager_execution</span><span class="op">(</span><span class="op">)</span>
@@ -153,7 +153,7 @@
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.breast.small</span><span class="op">)</span></code></pre></div>
 <p><code>breast.chung.generic</code> is a DigitalDLSorterDNN-like list (list with the same structure as a <code>DigitalDLSorterDNN</code> object) that can be inspected to check which cell types are considered by the model, how well it performed on test data, etc. As the <strong>digitalDLSorteRdata</strong> package stores all these objects as DigitalDLSorterDNN-like lists in order to remove its dependency on <strong>digitalDLSorteR</strong>, if you want to inspect the models you have to transform these lists into actual <code>DigitalDLSorterDNN</code> objects. This is done with the <code>listToDDLSDNN</code> function of <strong>digitalDLSorteRdata</strong>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">breast.chung.generic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/digitalDLSorteRdata/man/listToDDLSDNN.html" class="external-link">listToDDLSDNN</a></span><span class="op">(</span><span class="va">breast.chung.generic</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">breast.chung.generic</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/listToDDLSDNN.html">listToDDLSDNN</a></span><span class="op">(</span><span class="va">breast.chung.generic</span><span class="op">)</span>
 <span class="va">breast.chung.generic</span></code></pre></div>
 <pre><code>## Trained model: 20 epochs
 ##   Training metrics (last epoch):
@@ -186,19 +186,19 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span></code></pre></div>
 <pre><code>##              Tumor     Stromal   Monocyte     TcellCD4        Bcell       DCs
-## Sample_1 0.5716878 0.009549676 0.02705323 0.0009312481 2.085088e-05 0.2735238
-## Sample_2 0.4737066 0.015726037 0.01532315 0.0008934756 1.881224e-05 0.3624099
-## Sample_3 0.5632828 0.011810663 0.02118548 0.0009122483 2.213674e-05 0.3083327
-## Sample_4 0.4798905 0.013469698 0.01989892 0.0007664501 4.999197e-05 0.3453779
-## Sample_5 0.6283218 0.015287968 0.07622544 0.0022742269 3.257442e-06 0.1749347
-## Sample_6 0.4960882 0.015261918 0.02924264 0.0010657811 1.409765e-05 0.3112173
-##            TcellCD8
-## Sample_1 0.11723338
-## Sample_2 0.13192213
-## Sample_3 0.09445394
-## Sample_4 0.14054652
-## Sample_5 0.10295267
-## Sample_6 0.14711000</code></pre>
+## Sample_1 0.5716879 0.009549668 0.02705321 0.0009312486 2.085094e-05 0.2735237
+## Sample_2 0.4737064 0.015726032 0.01532314 0.0008934744 1.881228e-05 0.3624099
+## Sample_3 0.5632826 0.011810657 0.02118548 0.0009122468 2.213673e-05 0.3083328
+## Sample_4 0.4798905 0.013469691 0.01989891 0.0007664470 4.999192e-05 0.3453779
+## Sample_5 0.6283219 0.015287964 0.07622546 0.0022742241 3.257439e-06 0.1749346
+## Sample_6 0.4960882 0.015261909 0.02924264 0.0010657794 1.409765e-05 0.3112175
+##           TcellCD8
+## Sample_1 0.1172334
+## Sample_2 0.1319222
+## Sample_3 0.0944540
+## Sample_4 0.1405466
+## Sample_5 0.1029526
+## Sample_6 0.1471100</code></pre>
 <p><code>deconvDigitalDLSorter</code> returns a data frame with the samples as rows (<span class="math inline">\(k\)</span>) and the cell types considered by the model as columns (<span class="math inline">\(j\)</span>). Each entry corresponds to the proportion of cell type <span class="math inline">\(k\)</span> in sample <span class="math inline">\(i\)</span>. To visually evaluate these results using a bar chart, you can use the <code>barplotCellTypes</code> function as follows:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span>

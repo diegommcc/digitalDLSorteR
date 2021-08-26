@@ -97,6 +97,12 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/listToDDLS.html</loc>
+  </url>
+  <url>
+    <loc>/reference/listToDDLSDNN.html</loc>
+  </url>
+  <url>
     <loc>/reference/loadDeconvData.html</loc>
   </url>
   <url>

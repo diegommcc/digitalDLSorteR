@@ -115,11 +115,11 @@
 <p>This workflow is more computationally expensive than using pre-trained models, so we recommend building new models if you want to deconvolute samples from an unavailable model or in case you think your scRNA-Seq data provide a better picture of this environment than the ones already used in this package. In any case, <strong>digitalDLSorteR</strong> provides a set of functionalities that make this process easier and computationally cheaper in terms of RAM usage: batch processing of data and the use of the <a href="https://bioconductor.org/packages/release/bioc/html/HDF5Array.html" class="external-link">HDF5Array</a> and <a href="https://bioconductor.org/packages/release/bioc/html/DelayedArray.html" class="external-link">DelayedArray</a> packages (see <a href="hdf5Backend.html">HDF5 files as back-end</a> vignette for more information). Furthermore, all steps are centralized in the <code>DigitalDLSorter</code> S4-class, the core of <strong>digitalDLSorteR</strong>, in order to provide a good user-experience and keep all the generated information tidy in the same object.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## loading packages</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">digitalDLSorteR</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diegommcc.github.io/digitalDLSorteR/" class="external-link">digitalDLSorteR</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diegommcc/digitalDLSorteRdata" class="external-link">digitalDLSorteRdata</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
 <span class="co">## loading data for examples</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">DDLSChung.list</span><span class="op">)</span>
-<span class="va">DDLSChung</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/digitalDLSorteRdata/man/listToDDLS.html" class="external-link">listToDDLS</a></span><span class="op">(</span><span class="va">DDLSChung.list</span><span class="op">)</span>
+<span class="va">DDLSChung</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/listToDDLS.html">listToDDLS</a></span><span class="op">(</span><span class="va">DDLSChung.list</span><span class="op">)</span>
 <span class="co">## take SingleCellExperiment object from DigitalDLSorter object</span>
 <span class="va">sceObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/single.cell.real.html">single.cell.real</a></span><span class="op">(</span><span class="va">DDLSChung</span><span class="op">)</span>
 <span class="va">sceObj</span></code></pre></div>
@@ -173,8 +173,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: DHX58 AC093916.1 HIF1A ... HIF1A AL365356.1 AC005828.3 AC073052.2 
-##   colnames: BC03LN_62 BC09_Re_62 BC01_02 ... BC01_02 BC04_49 BC07_18 BC03_11 
+##   rownames: CNOT1 LINC01550 AC010834.3 ... AC010834.3 ACMSD BUD13 AL137009.2 
+##   colnames: BC09_31 BC07_42 BC03LN_91 ... BC03LN_91 BC03_43 BC07LN_29 BC04_33 
 ## Project: ToyExampleBreast</code></pre>
 <p>In this case, we are loading the single-cell profiles from a <code>SingleCellExperiment</code> object, but it could be done using files directly as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -226,8 +226,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: LIPC ITPR2 HMBS ... HMBS DCTN6 CCDC68 AC007695.1 
-##   colnames: BC03_86 BC07_42 BC09_42 ... BC09_42 BC05_84 BC09_Re_62 BC03_11 
+##   rownames: AL109615.2 ANXA2 TLCD3A ... TLCD3A HSP90B1 PGD POLR2B 
+##   colnames: BC07LN_54 BC09_Re_07 BC03LN_62 ... BC03LN_62 BC03_11 BC07_18 BC07_03 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -278,8 +278,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: AC099329.2 RCN1 KIRREL1 ... KIRREL1 FRG1 MERTK MAPK3 
-##   colnames: BC09_31 BC03LN_62 BC07LN_54 ... BC07LN_54 BC07LN_29 BC04_49 BC04_07 
+##   rownames: AC137630.1 ERP27 AC136624.2 ... AC136624.2 RINT1 RTEL1 FAM122A 
+##   colnames: BC03_86 BC05_84 BC09_Re_62 ... BC09_Re_62 BC04_49 BC03_11 BC07_03 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -287,8 +287,8 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Simulated single-cell profiles:
 ##   18751 features and 130 cells
-##   rownames: PRG2 ZNF217 AC067852.5 ... AC067852.5 ATP6V1B2 LINC02334 AC018529.2 
-##   colnames: ER+ and HER2+_Simul34 DC_Simul18 BGC_Simul129 ... BGC_Simul129 TCD8_Simul86 Tme_Simul95 ER+ and HER2+_Simul40 
+##   rownames: GK PROX1 CDKN3 ... CDKN3 PDCD1 TBX15 LINC01445 
+##   colnames: Monocyte_Simul67 Monocyte_Simul61 Bmem_Simul8 ... Bmem_Simul8 BGC_Simul124 Tme_Simul97 HER2+_Simul41 
 ## Project: ToyExampleBreast</code></pre>
 <p>In this step, it is also possible to store the new simulated single-cell profiles in a HDF5 file. Indeed, they can be simulated by batch, avoiding to load all data into RAM. The code would be as follows:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
@@ -568,10 +568,10 @@ Workflow to build new context-specific deconvolution models
 ## === Training DNN with 268 samples:</code></pre>
 <pre><code>## 
 ## === Evaluating DNN in test data (134 samples)</code></pre>
-<pre><code>##    - loss: 0.6331
-##    - accuracy: 0.5746
-##    - mean_absolute_error: 0.0633
-##    - categorical_accuracy: 0.5746</code></pre>
+<pre><code>##    - loss: 0.5804
+##    - accuracy: 0.6194
+##    - mean_absolute_error: 0.0583
+##    - categorical_accuracy: 0.6194</code></pre>
 <pre><code>## 
 ## === Generating prediction results using test data</code></pre>
 <pre><code>## DONE</code></pre>
@@ -606,15 +606,15 @@ Workflow to build new context-specific deconvolution models
 ##     colnames: Bulk_35 Bulk_60 Bulk_76 ... Bulk_76 Bulk_50 Bulk_75 Bulk_34 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.3083
-##     accuracy: 0.8656
-##     mean_absolute_error: 0.0401
-##     categorical_accuracy: 0.8656
+##     loss: 0.3023
+##     accuracy: 0.8313
+##     mean_absolute_error: 0.0396
+##     categorical_accuracy: 0.8313
 ##   Evaluation metrics on test data:
-##     loss: 0.6331
-##     accuracy: 0.5746
-##     mean_absolute_error: 0.0633
-##     categorical_accuracy: 0.5746 
+##     loss: 0.5804
+##     accuracy: 0.6194
+##     mean_absolute_error: 0.0583
+##     categorical_accuracy: 0.6194 
 ## Project: ToyExampleBreast</code></pre>
 <p>As this is a ‘toy’ example, results are not very accurate. For a real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a> vignette.</p>
 <div id="on-the-fly-argument" class="section level4">
