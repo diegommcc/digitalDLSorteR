@@ -173,8 +173,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: RCSD1 RXRA MPRIP ... MPRIP RBM47 AP4S1 RABIF 
-##   colnames: BC07LN_26 BC09_Re_62 BC03_86 ... BC03_86 BC07_42 BC03_43 BC07_03 
+##   rownames: KLF9 AC145207.6 CCDC17 ... CCDC17 MRPL50 EAF1 SPRY4 
+##   colnames: BC09_31 BC07_03 BC04_07 ... BC04_07 BC03_86 BC04_11 BC07LN_54 
 ## Project: ToyExampleBreast</code></pre>
 <p>In this case, we are loading the single-cell profiles from a <code>SingleCellExperiment</code> object, but it could be done using files directly as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -226,8 +226,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: ADI1 ITPRIPL1 RPP40 ... RPP40 HTATIP2 AL157938.2 MS4A6A 
-##   colnames: BC09_42 BC04_33 BC09_Re_07 ... BC09_Re_07 BC07_03 BC03_86 BC07_42 
+##   rownames: GNGT1 RNFT2 SMNDC1 ... SMNDC1 MYD88 PLCG1 RAPGEF3 
+##   colnames: BC09_31 BC04_11 BC04_49 ... BC04_49 BC03LN_62 BC07_18 BC03_43 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -278,8 +278,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: THAP10 ORMDL3 BCL2L1-AS1 ... BCL2L1-AS1 SMPD4 FAM223B IL17RD 
-##   colnames: BC03_86 BC03_92 BC09_Re_62 ... BC09_Re_62 BC07_18 BC04_11 BC04_49 
+##   rownames: PPP5C AL080317.2 DPM2 ... DPM2 PSME1 MTHFD1 WARS2 
+##   colnames: BC04_11 BC07_42 BC03LN_62 ... BC03LN_62 BC03_43 BC04_33 BC07LN_54 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -287,8 +287,8 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Simulated single-cell profiles:
 ##   18751 features and 130 cells
-##   rownames: MAP4 MORC3 ABHD14B ... ABHD14B TGFB1I1 FGFR4 SIRPB2 
-##   colnames: TNBC_Simul110 DC_Simul16 Monocyte_Simul70 ... Monocyte_Simul70 ER+_Simul29 TCD8_Simul84 DC_Simul19 
+##   rownames: AZIN2 IRX5 AC011676.1 ... AC011676.1 ATL2 AC129926.2 AC010336.8 
+##   colnames: TNBC_Simul106 ER+ and HER2+_Simul34 TCD8_Simul86 ... TCD8_Simul86 Monocyte_Simul61 ER+ and HER2+_Simul39 BGC_Simul121 
 ## Project: ToyExampleBreast</code></pre>
 <p>In this step, it is also possible to store the new simulated single-cell profiles in a HDF5 file. Indeed, they can be simulated by batch, avoiding to load all data into RAM. The code would be as follows:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
@@ -568,10 +568,10 @@ Workflow to build new context-specific deconvolution models
 ## === Training DNN with 268 samples:</code></pre>
 <pre><code>## 
 ## === Evaluating DNN in test data (134 samples)</code></pre>
-<pre><code>##    - loss: 0.5121
-##    - accuracy: 0.694
-##    - mean_absolute_error: 0.0529
-##    - categorical_accuracy: 0.694</code></pre>
+<pre><code>##    - loss: 0.6296
+##    - accuracy: 0.5746
+##    - mean_absolute_error: 0.0626
+##    - categorical_accuracy: 0.5746</code></pre>
 <pre><code>## 
 ## === Generating prediction results using test data</code></pre>
 <pre><code>## DONE</code></pre>
@@ -606,15 +606,15 @@ Workflow to build new context-specific deconvolution models
 ##     colnames: Bulk_35 Bulk_60 Bulk_76 ... Bulk_76 Bulk_50 Bulk_75 Bulk_34 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.2997
-##     accuracy: 0.8438
-##     mean_absolute_error: 0.0394
-##     categorical_accuracy: 0.8438
+##     loss: 0.3111
+##     accuracy: 0.8313
+##     mean_absolute_error: 0.0403
+##     categorical_accuracy: 0.8313
 ##   Evaluation metrics on test data:
-##     loss: 0.5121
-##     accuracy: 0.694
-##     mean_absolute_error: 0.0529
-##     categorical_accuracy: 0.694 
+##     loss: 0.6296
+##     accuracy: 0.5746
+##     mean_absolute_error: 0.0626
+##     categorical_accuracy: 0.5746 
 ## Project: ToyExampleBreast</code></pre>
 <p>As this is a ‘toy’ example, results are not very accurate. For a real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a> vignette.</p>
 <div id="on-the-fly-argument" class="section level4">
@@ -709,13 +709,15 @@ Workflow to build new context-specific deconvolution models
   corr <span class="op">=</span> <span class="st">"both"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
+<pre><code>## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+## -Inf</code></pre>
 <p><img src="newModels_files/figure-html/corr3-1.png" width="700"></p>
 </div>
 <div id="bland-err" class="section level4">
 <h4 class="hasAnchor">
 <a href="#bland-err" class="anchor" aria-hidden="true"></a><code>blandAltmanLehPlot</code>: Bland-Altman agreement plots</h4>
 <p>The <code>blandAltmanLehPlot</code> function allows to display Bland-Altman agreement plots. This is a kind of graphical method for comparing the level of agreement between two different sets of values. The differences between the predictions and the actual proportions are plotted against their means. The central dashed line represents the mean difference, while the two red dashed lines are the limits of agreement, which are defined as the mean difference plus and minus 1.96 times the standard deviation of the differences. 95% of the differences are expected to fall between these two limits, so the wider the margins, the worse the performance. It is also possible to show it in <span class="math inline">\(log_2\)</span> space.</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
   <span class="va">DDLSToy</span>, 
   color.by <span class="op">=</span> <span class="st">"CellType"</span>,
@@ -726,7 +728,7 @@ Workflow to build new context-specific deconvolution models
 <span class="op">)</span></code></pre></div>
 <p><img src="newModels_files/figure-html/bland1-1.png" width="700"></p>
 <p>In addition, this function has the same behaviour as the previous ones, as it is possible to split the plots:</p>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
   <span class="va">DDLSToy</span>, 
   color.by <span class="op">=</span> <span class="st">"nCellTypes"</span>,
@@ -743,7 +745,7 @@ Workflow to build new context-specific deconvolution models
 <h3 class="hasAnchor">
 <a href="#new-bulk" class="anchor" aria-hidden="true"></a>Loading new bulk RNA-Seq samples to deconvolute them</h3>
 <p>Once the model has been evaluated, new bulk RNA-seq data can be loaded into the object to be deconvoluted:</p>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
 <span class="va">se.TCGA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html" class="external-link">SummarizedExperiment</a></span><span class="op">(</span>assay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">TCGA.breast.small</span><span class="op">)</span><span class="op">)</span>
 
@@ -753,7 +755,7 @@ Workflow to build new context-specific deconvolution models
   name.data <span class="op">=</span> <span class="st">"TCGA.breast"</span>
 <span class="op">)</span></code></pre></div>
 <p>Then, with the <code>deconvDigitalDLSorterObj</code> function, these new samples can be deconvoluted into the cell types considered by the model and the predicted proportions can be represented by the <code>barPlotCellTypes</code> function. The cell composition matrix is stored in the <code>deconv.results</code> slot.</p>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDigitalDLSorterObj.html">deconvDigitalDLSorterObj</a></span><span class="op">(</span>
   object <span class="op">=</span> <span class="va">DDLSToy</span>, 
   name.data <span class="op">=</span> <span class="st">"TCGA.breast"</span>,
@@ -766,11 +768,11 @@ Workflow to build new context-specific deconvolution models
 <h3 class="hasAnchor">
 <a href="#save" class="anchor" aria-hidden="true"></a>Saving <code>DigitalDLSorter</code> object and trained models</h3>
 <p><strong>digitalDLSorteR</strong> provides different ways to save models to disk and to retrieve them in the <code>DigitalDLSorter</code> object. First, you can save <code>DigitalDLSorter</code> objects as RDS files. Since this type of files only accepts native R objects, they are not able to store complex data structures such as keras Python objects (<code>keras.engine.sequential.Sequential</code> class). To make it possible, <strong>digitalDLSorteR</strong> implements a <code>saveRDS</code> generic function that converts the keras model object into a list with the network achitecture and the weights after training. These two pieces of information are the minimal part needed to perform new predictions. When the model is to be used, it is compiled back to a <code>keras.engine.sequential.Sequential</code> object.</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## this code will not be run</span>
 <span class="fu"><a href="../reference/saveRDS.html">saveRDS</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, file <span class="op">=</span> <span class="st">"valid/path"</span><span class="op">)</span></code></pre></div>
 <p>However, the optimizer state is not saved in this way. To offer the possibility to save the complete model, <strong>digitalDLSorteR</strong> has the <code>saveTrainedModelAsH5</code> function to save to disk the DNN model, and <code>loadTrainedModelFromH5</code> to load-back models into <code>DigitalDLSorter</code> objects. Note that only the keras model is saved as an HDF5 file in this way.</p>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## this code will not be run</span>
 <span class="fu"><a href="../reference/saveTrainedModelAsH5.html">saveTrainedModelAsH5</a></span><span class="op">(</span><span class="va">DDLSToy</span>, file.path <span class="op">=</span> <span class="st">"valid/path"</span><span class="op">)</span>
 <span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadTrainedModelFromH5.html">loadTrainedModelFromH5</a></span><span class="op">(</span><span class="va">DDLSToy</span><span class="op">)</span></code></pre></div>
