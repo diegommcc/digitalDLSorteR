@@ -7,8 +7,8 @@
 NULL
 
 setOldClass(Classes = 'package_version')
-setOldClass(Classes = "keras.engine.sequential.Sequential")
 setOldClass(Classes = "keras_training_history")
+setOldClass(Classes = "keras.engine.sequential.Sequential")
 
 setClassUnion(name = "MatrixOrNULL", members = c("matrix", "NULL"))
 setClassUnion(name = "ListOrNULL", members = c("list", "NULL"))

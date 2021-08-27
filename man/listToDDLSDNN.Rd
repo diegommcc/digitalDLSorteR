@@ -9,18 +9,17 @@ listToDDLSDNN(listTo)
 }
 \arguments{
 \item{listTo}{A list in which each element must correspond to each slot of an
-\code{DigitalDLSorterDNN} object. The names must be the same
-as the slot names.}
+\code{DigitalDLSorterDNN} object. The names must be the same as the slot
+names.}
 }
 \value{
-\code{DigitalDLSorterDNN} object the data provided in
-the original list.
+\code{DigitalDLSorterDNN} object the data provided in the original
+list.
 }
 \description{
 Transform DigitalDLSorterDNN-like list into an actual
-\code{DigitalDLSorterDNN} object. This function allows to use
-pre-trained models in the \pkg{digitalDLSorteR} package. It only works if
-\pkg{digitalDLSorteR} is installed.
+\code{DigitalDLSorterDNN} object. This function allows to use pre-trained
+models in the \pkg{digitalDLSorteR} package.
 }
 \examples{
 \dontrun{

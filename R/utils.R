@@ -383,21 +383,20 @@ DigitalDLSorterTheme <- function() {
 #' object
 #'
 #' Transform DigitalDLSorterDNN-like list into an actual
-#' \code{DigitalDLSorterDNN} object. This function allows to use
-#' pre-trained models in the \pkg{digitalDLSorteR} package. It only works if
-#' \pkg{digitalDLSorteR} is installed.
+#' \code{DigitalDLSorterDNN} object. This function allows to use pre-trained
+#' models in the \pkg{digitalDLSorteR} package.
 #'
 #' @param listTo A list in which each element must correspond to each slot of an
-#'   \code{DigitalDLSorterDNN} object. The names must be the same
-#'   as the slot names.
+#'   \code{DigitalDLSorterDNN} object. The names must be the same as the slot
+#'   names.
 #'
-#' @return \code{DigitalDLSorterDNN} object the data provided in
-#'   the original list.
+#' @return \code{DigitalDLSorterDNN} object the data provided in the original
+#'   list.
 #'
 #' @export
 #'
-#' @seealso \code{\link{listToDDLS}} 
-#' 
+#' @seealso \code{\link{listToDDLS}}
+#'
 #' @examples
 #' \dontrun{
 #' if (requireNamespace("digitalDLSorteR", quietly = TRUE)) {
@@ -407,9 +406,6 @@ DigitalDLSorterTheme <- function() {
 #' }
 #' }
 listToDDLSDNN <- function(listTo) {
-  if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-    stop("This functionality only works if digitalDLSorteR package is installed")
-  } 
   if (any(!names(listTo) %in% c(
     "model", "training.history", "test.metrics", "test.pred", 
     "cell.types", "features", "test.deconv.metrics"
@@ -429,25 +425,22 @@ listToDDLSDNN <- function(listTo) {
   )
 }
 
-#' Transform DigitalDLSorter-like list into an actual DigitalDLSorterDNN
-#' object
+#' Transform DigitalDLSorter-like list into an actual DigitalDLSorterDNN object
 #'
-#' Transform DigitalDLSorter-like list into an actual
-#' \code{DigitalDLSorter} object. This function allows to
-#' generate the examples and the vignettes of \pkg{digitalDLSorteR} package as
-#' these are the data used.It only works if \pkg{digitalDLSorteR} is installed.
+#' Transform DigitalDLSorter-like list into an actual \code{DigitalDLSorter}
+#' object. This function allows to generate the examples and the vignettes of
+#' \pkg{digitalDLSorteR} package as these are the data used.
 #'
 #' @param listTo A list in which each element must correspond to each slot of an
-#'   \code{DigitalDLSorter} object. The names must be the same as
-#'   the slot names.
+#'   \code{DigitalDLSorter} object. The names must be the same as the slot
+#'   names.
 #'
-#' @return \code{DigitalDLSorter} object the data provided in the
-#'   original list.
+#' @return \code{DigitalDLSorter} object the data provided in the original list.
 #'
 #' @export
 #'
 #' @seealso \code{\link{listToDDLSDNN}}
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' if (requireNamespace("digitalDLSorteR", quietly = TRUE)) {
@@ -458,9 +451,6 @@ listToDDLSDNN <- function(listTo) {
 #' }
 #'   
 listToDDLS <- function(listTo) {
-  if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-    stop("This functionality only works if digitalDLSorteR package is installed")
-  } 
   if (any(!names(listTo) %in% c(
     "single.cell.real", "zinb.params", "single.cell.simul", 
     "prob.cell.types", "bulk.simul", "trained.model", "deconv.data", 

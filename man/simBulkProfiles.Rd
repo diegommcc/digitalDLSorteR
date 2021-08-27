@@ -114,6 +114,7 @@ generated 'on the fly' during the neural network training. For more details,
 see \code{?\link{trainDigitalDLSorterModel}}.
 }
 \examples{
+\dontrun{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
   data(DDLSLi.list)
@@ -138,7 +139,6 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     type.data = "both"
   )
 }
-\dontrun{
 # using HDF5 as backend
 DDLSLi <- simBulkProfiles(
   DDLSLi,

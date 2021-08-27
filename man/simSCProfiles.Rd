@@ -120,6 +120,7 @@ written to HDF5 files in blocks of \code{block.size} size by setting
 \code{block.processing = TRUE}.
 }
 \examples{
+\dontrun{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
   data(DDLSChung.list)
@@ -128,9 +129,10 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     object = DDLSChung,
     cell.ID.column = "Cell_ID",
     cell.type.column = "Cell_type",
-    n.cells = 10,
+    n.cells = 1,
     verbose = TRUE
   )
+}
 }
 
 }

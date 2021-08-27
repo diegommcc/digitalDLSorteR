@@ -1033,6 +1033,7 @@ setCount <- function(
 #'   \code{\link{trainDigitalDLSorterModel}}
 #'
 #' @examples
+#' \dontrun{
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   library(digitalDLSorteRdata)
 #'   data(DDLSLi.list)
@@ -1057,7 +1058,6 @@ setCount <- function(
 #'     type.data = "both"
 #'   )
 #' }
-#' \dontrun{
 #' # using HDF5 as backend
 #' DDLSLi <- simBulkProfiles(
 #'   DDLSLi,

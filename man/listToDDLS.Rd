@@ -2,25 +2,22 @@
 % Please edit documentation in R/utils.R
 \name{listToDDLS}
 \alias{listToDDLS}
-\title{Transform DigitalDLSorter-like list into an actual DigitalDLSorterDNN
-object}
+\title{Transform DigitalDLSorter-like list into an actual DigitalDLSorterDNN object}
 \usage{
 listToDDLS(listTo)
 }
 \arguments{
 \item{listTo}{A list in which each element must correspond to each slot of an
-\code{DigitalDLSorter} object. The names must be the same as
-the slot names.}
+\code{DigitalDLSorter} object. The names must be the same as the slot
+names.}
 }
 \value{
-\code{DigitalDLSorter} object the data provided in the
-original list.
+\code{DigitalDLSorter} object the data provided in the original list.
 }
 \description{
-Transform DigitalDLSorter-like list into an actual
-\code{DigitalDLSorter} object. This function allows to
-generate the examples and the vignettes of \pkg{digitalDLSorteR} package as
-these are the data used.It only works if \pkg{digitalDLSorteR} is installed.
+Transform DigitalDLSorter-like list into an actual \code{DigitalDLSorter}
+object. This function allows to generate the examples and the vignettes of
+\pkg{digitalDLSorteR} package as these are the data used.
 }
 \examples{
 \dontrun{

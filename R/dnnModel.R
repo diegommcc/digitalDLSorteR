@@ -438,6 +438,7 @@ trainDigitalDLSorterModel <- function(
       ))
     } else {
       sel.data <- prob.matrix[data.index, , drop = FALSE]
+      # message("AQUI SIIIIIIIIIIIIIIIIIIIII")
       counts <- .dataForDNN(
         object = object, 
         sel.data = sel.data, 
@@ -445,6 +446,8 @@ trainDigitalDLSorterModel <- function(
         type.data = type.data,
         threads = threads
       )
+      attr(counts, "scaled:center") <- NULL
+      attr(counts, "scaled:scale") <- NULL
       return(list(counts, sel.data))
     }
   }
@@ -500,18 +503,13 @@ trainDigitalDLSorterModel <- function(
       sel.cells <- rownames(sel.data)[!bulk.data]
       sim.cells <- grep(pattern = pattern, sel.cells, value = TRUE)
       real.cells <- grep(pattern = pattern, sel.cells, value = TRUE, invert = TRUE)
-      cell.samples <- mapply(
-        FUN = function(x, y) {
-          if (!is.null(x) && y == 1) {
-            return(as.matrix(assay(single.cell.simul(object))[, x, drop = FALSE]))
-          } else if (!is.null(x) && y == 2) {
-            return(as.matrix(assay(single.cell.real(object))[, x, drop = FALSE]))
-          }
-        }, 
-        x = list(sim.cells, real.cells), 
-        y = c(1, 2)
+      cell.samples.sim <- as.matrix(
+        assay(single.cell.simul(object))[, sim.cells, drop = FALSE]
       )
-      cell.samples <- .mergeMatrices(x = cell.samples[[2]], y = cell.samples[[1]])  
+      cell.samples.real <- as.matrix(
+        assay(single.cell.real(object))[, real.cells, drop = FALSE]
+      )
+      cell.samples <- .mergeMatrices(x = cell.samples.real, y = cell.samples.sim) 
     } else if (!is.null(single.cell.real(object)) && 
                is.null(single.cell.simul(object))) {
       sel.cells <- rownames(sel.data)[!bulk.data]
@@ -528,11 +526,12 @@ trainDigitalDLSorterModel <- function(
   }
   # return final matrix counts
   if (any(bulk.data) && any(!bulk.data)) {
-    counts <- cbind(bulk.samples, cell.samples)[, rownames(sel.data)]
-  } else if (any(bulk.data)) 
-    counts <- bulk.samples[, rownames(sel.data)]
-  else if (any(!bulk.data)) 
-    counts <- cell.samples[, rownames(sel.data)]
+    counts <- cbind(bulk.samples, cell.samples)[, rownames(sel.data), drop = FALSE]
+  } else if (any(bulk.data)) {
+    counts <- bulk.samples[, rownames(sel.data), drop = FALSE]
+  } else if (any(!bulk.data)) {
+    counts <- cell.samples[, rownames(sel.data), drop = FALSE]
+  }
   # normalize data for training and testing
   counts <- edgeR::cpm.default(y = counts, log = TRUE, prior.count = 1)
   return(t(scale(counts)))
@@ -562,18 +561,13 @@ trainDigitalDLSorterModel <- function(
       sel.cells <- rownames(sel.data)[!bulk.data]
       sim.cells <- grep(pattern = pattern, sel.cells, value = TRUE)
       real.cells <- grep(pattern = pattern, sel.cells, value = TRUE, invert = TRUE)
-      cell.samples <- mapply(
-        FUN = function(x, y) {
-          if (!is.null(x) && y == 1) {
-            return(as.matrix(assay(single.cell.simul(object))[, x, drop = FALSE]))
-          } else if (!is.null(x) && y == 2) {
-            return(as.matrix(assay(single.cell.real(object))[, x, drop = FALSE]))
-          }
-        }, 
-        x = list(sim.cells, real.cells), 
-        y = c(1, 2)
+      cell.samples.sim <- as.matrix(
+        assay(single.cell.simul(object))[, sim.cells, drop = FALSE]
       )
-      cell.samples <- .mergeMatrices(x = cell.samples[[2]], y = cell.samples[[1]])  
+      cell.samples.real <- as.matrix(
+        assay(single.cell.real(object))[, real.cells, drop = FALSE]
+      )
+      cell.samples <- .mergeMatrices(x = cell.samples.real, y = cell.samples.sim) 
     } else if (!is.null(single.cell.real(object)) && 
                is.null(single.cell.simul(object))) {
       sel.cells <- rownames(sel.data)[!bulk.data]
@@ -702,9 +696,14 @@ trainDigitalDLSorterModel <- function(
 
 .mergeMatrices <- function(x, y) {
   genes.out <- setdiff(rownames(x), rownames(y))
-  zero.genes <- matrix(0, nrow = length(genes.out), ncol = ncol(y), 
-                       dimnames = list(genes.out, NULL))
-  return(cbind(x, rbind(y, zero.genes)[rownames(x), , drop = FALSE]))
+  if (identical(genes.out, character(0))) {
+    return(cbind(x, y))
+  } else {
+    zero.genes <- matrix(0, nrow = length(genes.out), ncol = ncol(y), 
+                         dimnames = list(genes.out, NULL))
+    return(cbind(x, rbind(y, zero.genes)[rownames(x), , drop = FALSE]))  
+  }
+  
 }
 
 .mergePropsSort <- function(m.small, m.big) {

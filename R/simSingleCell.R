@@ -711,6 +711,7 @@ estimateZinbwaveParams <- function(
 #' @seealso \code{\link{estimateZinbwaveParams}}
 #'
 #' @examples
+#' \dontrun{
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   library(digitalDLSorteRdata)
 #'   data(DDLSChung.list)
@@ -719,9 +720,10 @@ estimateZinbwaveParams <- function(
 #'     object = DDLSChung,
 #'     cell.ID.column = "Cell_ID",
 #'     cell.type.column = "Cell_type",
-#'     n.cells = 10,
+#'     n.cells = 1,
 #'     verbose = TRUE
 #'   )
+#' }
 #' }
 #'
 #' @references Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
