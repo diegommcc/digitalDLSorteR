@@ -1,5 +1,9 @@
 # **digitalDLSorteR** <img src="man/figures/logo.png" align="right" width="120"/>
 
+[![R build status](https://github.com/diegommcc/digitalDLsorteR/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/diegommcc/digitalDLsorteR/actions) 
+[![codecov.io](https://codecov.io/github/diegommcc/digitalDLSorteR/coverage.svg?branch=master)](https://app.codecov.io/gh/diegommcc/digitalDLSorteR)
+
+
 <div style="text-align:left">
 <span>
 <h4>An R package to deconvolute bulk RNA-Seq from scRNA-Seq data based on Deep Learning</h4></span>
