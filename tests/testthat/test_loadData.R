@@ -217,8 +217,6 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     }
   )
   
-  # loadFinalSCProfiles core is the same as loadSCProfiles, so its behavior
-  # is the same. However, the slot updated is other
   test_that(
     desc = "Check if loadSCProfiles works as expected", 
     code = {
@@ -248,13 +246,15 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   test_that(
     desc = "Check if loading data from tsv files works as expected", 
     code = {
-      expect_message(loadSCProfiles(
-        single.cell.data = file.path(file.tests, files.tsv),
-        cell.ID.column = "Cell_ID",
-        gene.ID.column = 2,
-        min.counts = 2,
-        min.cells = 2
-      ), "=== Filtering features")
+      expect_message(
+        loadSCProfiles(
+          single.cell.data = file.path(file.tests, files.tsv),
+          cell.ID.column = "Cell_ID",
+          gene.ID.column = 2,
+          min.counts = 2,
+          min.cells = 2
+        ), "=== Filtering features"
+      )
       expect_error(loadSCProfiles(
         single.cell.data = file.path(file.tests, files.tsv),
         cell.ID.column = "Cell_ID",
@@ -370,8 +370,7 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     }
   )
   
-  
-  # Behavior functions with bad built files
+  # behaviour of functions with bad built files
   test_that(
     desc = "Check if loading data from sparse files works as expected", 
     code = {
@@ -420,4 +419,43 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
       )
     }
   )
+  
+  # behaviour of functions with hfd5 files
+  if (requireNamespace("DelayedArray", quietly = TRUE) || 
+      requireNamespace("HDF5Array", quietly = TRUE)) {
+    test_that(
+      desc = "Check behaviour with HDF5 files", 
+      code = {
+        file <- tempfile()
+        expect_message(
+          DDLS.tsv <- loadSCProfiles(
+            single.cell.data = file.path(file.tests, files.tsv),
+            cell.ID.column = "Cell_ID",
+            gene.ID.column = 2,
+            min.counts = 0,
+            min.cells = 12,
+            file.backend = file
+          ), 
+          regexp = "=== Writing data to HDF5 file"
+        )
+        expect_message(
+          DDLS.tsv <- loadSCProfiles(
+            single.cell.data = file.path(file.tests, files.tsv),
+            cell.ID.column = "Cell_ID",
+            gene.ID.column = 2,
+            min.counts = 0,
+            min.cells = 12,
+            file.backend = file,
+            name.dataset.backend = "other_dataset",
+            block.processing = TRUE
+          ),
+          regexp = "=== Processing data in HDF5 by blocks"
+        )
+        expect_true(file.exists(file))
+        expect_s4_class(
+          object = single.cell.real(DDLS.tsv)@assays@data$counts, class = "HDF5Array"
+        )
+      }
+    )
+  }
 }
