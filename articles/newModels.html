@@ -173,8 +173,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: CGN DKK1 ZNF467 ... ZNF467 AC104964.1 SYMPK TBCC 
-##   colnames: BC03_92 BC04_11 BC09_Re_07 ... BC09_Re_07 BC05_84 BC03LN_91 BC04_49 
+##   rownames: SRSF11 SPAG8 TET2-AS1 ... TET2-AS1 LINC02381 AC104532.2 ARMT1 
+##   colnames: BC07LN_29 BC03LN_62 BC03_86 ... BC03_86 BC07LN_54 BC09_Re_07 BC04_49 
 ## Project: ToyExampleBreast</code></pre>
 <p>In this case, we are loading the single-cell profiles from a <code>SingleCellExperiment</code> object, but it could be done using files directly as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -226,8 +226,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: KHDRBS1 TRPS1 AC009053.4 ... AC009053.4 AC007952.2 GEN1 PHRF1 
-##   colnames: BC09_42 BC03_86 BC09_Re_07 ... BC09_Re_07 BC07_18 BC07LN_54 BC05_84 
+##   rownames: NOL6 IGFBPL1 MYH9 ... MYH9 RASA4 FRAT2 SLC7A8 
+##   colnames: BC03_43 BC07LN_26 BC01_02 ... BC01_02 BC04_33 BC09_42 BC09_Re_62 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -278,8 +278,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: PSD4 AP001107.9 AC008966.1 ... AC008966.1 MFSD14B DISP2 PRPH2 
-##   colnames: BC04_33 BC03LN_91 BC09_42 ... BC09_42 BC07_18 BC07LN_29 BC07LN_54 
+##   rownames: AC009779.4 AC007552.2 ATG2A ... ATG2A AP001178.3 ONECUT3 PARP4 
+##   colnames: BC04_07 BC04_33 BC04_49 ... BC04_49 BC03_86 BC03_43 BC03_11 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -287,8 +287,8 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Simulated single-cell profiles:
 ##   18751 features and 130 cells
-##   rownames: IQSEC2 ICE1 AC008119.1 ... AC008119.1 CEMIP2 GTF2IRD2 USP49 
-##   colnames: TNBC_Simul102 BGC_Simul128 Bmem_Simul6 ... Bmem_Simul6 Macrophage_Simul52 Tme_Simul91 BGC_Simul129 
+##   rownames: AC008443.5 SEC24C HIVEP1 ... HIVEP1 OR2A5 CCDC96 COASY 
+##   colnames: Tme_Simul92 Stromal_Simul78 Macrophage_Simul60 ... Macrophage_Simul60 ER+ and HER2+_Simul36 HER2+_Simul50 BGC_Simul125 
 ## Project: ToyExampleBreast</code></pre>
 <p>In this step, it is also possible to store the new simulated single-cell profiles in a HDF5 file. Indeed, they can be simulated by batch, avoiding to load all data into RAM. The code would be as follows:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
@@ -568,9 +568,9 @@ Workflow to build new context-specific deconvolution models
 ## === Training DNN with 268 samples:</code></pre>
 <pre><code>## 
 ## === Evaluating DNN in test data (134 samples)</code></pre>
-<pre><code>##    - loss: 0.4866
+<pre><code>##    - loss: 0.5102
 ##    - accuracy: 0.6642
-##    - mean_absolute_error: 0.0504
+##    - mean_absolute_error: 0.0508
 ##    - categorical_accuracy: 0.6642</code></pre>
 <pre><code>## 
 ## === Generating prediction results using test data</code></pre>
@@ -606,14 +606,14 @@ Workflow to build new context-specific deconvolution models
 ##     colnames: Bulk_35 Bulk_60 Bulk_76 ... Bulk_76 Bulk_50 Bulk_75 Bulk_34 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.3007
-##     accuracy: 0.825
-##     mean_absolute_error: 0.0396
-##     categorical_accuracy: 0.825
+##     loss: 0.3092
+##     accuracy: 0.8219
+##     mean_absolute_error: 0.0402
+##     categorical_accuracy: 0.8219
 ##   Evaluation metrics on test data:
-##     loss: 0.4866
+##     loss: 0.5102
 ##     accuracy: 0.6642
-##     mean_absolute_error: 0.0504
+##     mean_absolute_error: 0.0508
 ##     categorical_accuracy: 0.6642 
 ## Project: ToyExampleBreast</code></pre>
 <p>As this is a ‘toy’ example, results are not very accurate. For a real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a> vignette.</p>
