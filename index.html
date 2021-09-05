@@ -117,18 +117,26 @@ An R package to deconvolute bulk RNA-Seq from scRNA-Seq data based on Deep Learn
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor" aria-hidden="true"></a>Installation</h2>
-<p><strong>digitalDLSorteR</strong> can be installed from GitHub, although it will be available at CRAN coming soon.</p>
+<p><strong>digitalDLSorteR</strong> can be installed from GitHub, but will soon be available on CRAN.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"devtools"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"diegommcc/digitalDLSorteR"</span><span class="op">)</span></code></pre></div>
-<p><strong>digitalDLSorteR</strong> depends on <strong>digitalDLSorteRdata</strong> and <strong>digitalDLSorteRmodels</strong> data packages as they make pre-trained context-specific models deconvolution and other data needed for tests and examples available. Therefore, they must be installed together with <strong>digitalDLSorteR</strong> as one of its dependencies. To do so, the following code before using any of these functionalities should be enough to install the packages from GitHub once <strong>digitalDLSorteR</strong> has been installed:</p>
+<p><strong>digitalDLSorteR</strong> depends on <strong>digitalDLSorteRdata</strong> and <strong>digitalDLSorteRmodels</strong> data packages as they make available pre-trained context-specific models deconvolution and other data needed for tests and examples. Therefore, they must be installed together with <strong>digitalDLSorteR</strong> as one of its dependencies. To do so, the following code should be enough to install the packages from GitHub once <strong>digitalDLSorteR</strong> has been installed:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"digitalDLSorteRdata"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"digitalDLSorteRdata"</span><span class="op">)</span>
 <span class="op">}</span>
 <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"digitalDLSorteRmodels"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"digitalDLSorteRmodels"</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>Also, they can be installed using devtools as follows:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"digitalDLSorteRdata"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"diegommcc/digitalDLSorteRdata"</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"digitalDLSorteRmodels"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"diegommcc/digitalDLSorteRmodels"</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 </div>
 <div id="rationale-of-digitaldlsorter" class="section level2">
