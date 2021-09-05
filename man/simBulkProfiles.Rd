@@ -115,37 +115,33 @@ see \code{?\link{trainDigitalDLSorterModel}}.
 }
 \examples{
 \dontrun{
-if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  install.packages(
-    "digitalDLSorteRdata", 
-    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSLi.list)
+  DDLSLi <- listToDDLS(DDLSLi.list)
+  probMatrix <- data.frame(
+    Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M",
+                "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
+    from = c(rep(1, 8), 1, 30),
+    to = c(rep(15, 8), 50, 70)
+  )
+  DDLSLi <- generateBulkCellMatrix(
+    object = DDLSLi,
+    cell.ID.column = "Cell_ID",
+    cell.type.column = "Cell_Type",
+    prob.design = probMatrix,
+    num.bulk.samples = 100,
+    verbose = FALSE
+  )
+  # loading all data in memory
+  DDLSLi <- simBulkProfiles(DDLSLi, type.data = "both")
+  # using HDF5 as backend
+  DDLSLi <- simBulkProfiles(
+    DDLSLi,
+    type.data = "both",
+    file.backend = "DDLSLi.bulk.simul.h5"
   )
 }
-library(digitalDLSorteRdata)
-data(DDLSLi.list)
-DDLSLi <- listToDDLS(DDLSLi.list)
-probMatrix <- data.frame(
-  Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M",
-                "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
-  from = c(rep(1, 8), 1, 30),
-  to = c(rep(15, 8), 50, 70)
-)
-DDLSLi <- generateBulkCellMatrix(
-  object = DDLSLi,
-  cell.ID.column = "Cell_ID",
-  cell.type.column = "Cell_Type",
-  prob.design = probMatrix,
-  num.bulk.samples = 100,
-  verbose = FALSE
-)
-# loading all data in memory
-DDLSLi <- simBulkProfiles(DDLSLi, type.data = "both")
-# using HDF5 as backend
-DDLSLi <- simBulkProfiles(
-  DDLSLi,
-  type.data = "both",
-  file.backend = "DDLSLi.bulk.simul.h5"
-)
 }
 
 }

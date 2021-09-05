@@ -27,7 +27,10 @@ This workflow is more computationally expensive than using pre-trained models, s
 suppressMessages(library(digitalDLSorteR, quietly = TRUE))
 # if digitalDLSOrteRdata is not installed
 if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  install.packages("digitalDLSorteRdata", repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/")
+  install.packages(
+    "digitalDLSorteRdata", 
+    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+  )
 }
 suppressMessages(library(digitalDLSorteRdata, quietly = TRUE))
 ## loading data for examples

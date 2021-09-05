@@ -70,7 +70,7 @@ data(breast.chung.generic)
 data(TCGA.breast.small)
 ```
 
-`breast.chung.generic` is a DigitalDLSorterDNN-like list (list with the same structure as a `DigitalDLSorterDNN` object) that can be inspected to check which cell types are considered by the model, how well it performed on test data, etc. As the **digitalDLSorteRdata** package stores all these objects as DigitalDLSorterDNN-like lists in order to remove its dependency on **digitalDLSorteR**, if you want to inspect the models you have to transform these lists into actual `DigitalDLSorterDNN` objects. This is done with the `listToDDLSDNN` function of **digitalDLSorteRdata**.
+`breast.chung.generic` is a DigitalDLSorterDNN-like list (list with the same structure as a `DigitalDLSorterDNN` object) that can be inspected to check which cell types are considered by the model, how well it performed on test data, etc. As the **digitalDLSorteRmodels** package stores all these objects as DigitalDLSorterDNN-like lists in order to remove its dependency on **digitalDLSorteR**, if you want to inspect the models you have to transform these lists into actual `DigitalDLSorterDNN` objects. This is done with the `listToDDLSDNN` function.
 
 ```{r}
 breast.chung.generic <- listToDDLSDNN(breast.chung.generic)
@@ -127,11 +127,9 @@ On the other hand, `simplify.majority` does not create new classes but sums the 
 
 ## Contribute your own models
 
-New models are planned to be published soon, but you can contribute your own models by making them available to other users. Please do not hesitate to contact us! We'll check the models and include them in the **digitalDLSorteRdata** package.
+New models are planned to be published soon, but you can contribute your own models by making them available to other users. Please do not hesitate to contact us! We'll check the models and include them in the **digitalDLSorteRmodels** package.
 
 ## References
-
-
 
 <!-- ## Session info {.unnumbered} -->
 

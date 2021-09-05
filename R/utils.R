@@ -61,25 +61,21 @@ getProbMatrix <- function(object, type.data) {
 #' @seealso \code{\link{generateBulkCellMatrix}}
 #'
 #' @examples
-#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   install.packages(
-#'     "digitalDLSorteRdata", 
-#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSLi.list)
+#'   DDLSLi <- listToDDLS(DDLSLi.list)
+#'   lapply(
+#'     X = 1:6, FUN = function(x) {
+#'       showProbPlot(
+#'         DDLSLi,
+#'         type.data = "train",
+#'         set = x,
+#'         type.plot = "boxplot"
+#'       )
+#'     }
 #'   )
 #' }
-#' library(digitalDLSorteRdata)
-#' data(DDLSLi.list)
-#' DDLSLi <- listToDDLS(DDLSLi.list)
-#' lapply(
-#'   X = 1:6, FUN = function(x) {
-#'     showProbPlot(
-#'       DDLSLi,
-#'       type.data = "train",
-#'       set = x,
-#'       type.plot = "boxplot"
-#'     )
-#'   }
-#' )
 #' 
 showProbPlot <- function(
   object,
@@ -405,16 +401,12 @@ DigitalDLSorterTheme <- function() {
 #'
 #' @examples
 #' \dontrun{
-#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   install.packages(
-#'     "digitalDLSorteRdata", 
-#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
-#'   )
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRmodels)
+#'   data("colorectal.li")
+#'   DDLSDNNObj <- listToDDLSDNN(colorectal.li)
+#'   DDLSDNNObj
 #' }
-#' library(digitalDLSorteRmodels)
-#' data("colorectal.li")
-#' DDLSDNNObj <- listToDDLSDNN(colorectal.li)
-#' DDLSDNNObj
 #' }
 #' 
 listToDDLSDNN <- function(listTo) {
@@ -456,13 +448,12 @@ listToDDLSDNN <- function(listTo) {
 #'
 #' @examples
 #' \dontrun{
-#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   install.packages("digitalDLSorteRdata")
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data("DDLSLi.list")
+#'   DDLSLiObj <- listToDDLS(DDLSLi.list)
+#'   DDLSLiObj
 #' }
-#' library(digitalDLSorteRdata)
-#' data("DDLSLi.list")
-#' DDLSLiObj <- listToDDLS(DDLSLi.list)
-#' DDLSLiObj
 #' }
 #'   
 listToDDLS <- function(listTo) {

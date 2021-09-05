@@ -121,22 +121,18 @@ written to HDF5 files in blocks of \code{block.size} size by setting
 }
 \examples{
 \dontrun{
-if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  install.packages(
-    "digitalDLSorteRdata", 
-    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSChung.list)
+  DDLSChung <- listToDDLS(DDLSChung.list)
+  DDLSChung <- simSCProfiles(
+    object = DDLSChung,
+    cell.ID.column = "Cell_ID",
+    cell.type.column = "Cell_type",
+    n.cells = 1,
+    verbose = TRUE
   )
 }
-library(digitalDLSorteRdata)
-data(DDLSChung.list)
-DDLSChung <- listToDDLS(DDLSChung.list)
-DDLSChung <- simSCProfiles(
-  object = DDLSChung,
-  cell.ID.column = "Cell_ID",
-  cell.type.column = "Cell_type",
-  n.cells = 1,
-  verbose = TRUE
-)
 }
 
 }

@@ -24,16 +24,12 @@ the digitalDLSorteRmodels package.
 }
 \examples{
 \dontrun{
-if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  install.packages(
-    "digitalDLSorteRdata", 
-    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
-  )
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRmodels)
+  data("colorectal.li")
+  DDLSDNNObj <- listToDDLSDNN(colorectal.li)
+  DDLSDNNObj
 }
-library(digitalDLSorteRmodels)
-data("colorectal.li")
-DDLSDNNObj <- listToDDLSDNN(colorectal.li)
-DDLSDNNObj
 }
 
 }

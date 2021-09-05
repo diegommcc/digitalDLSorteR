@@ -16,7 +16,7 @@ The **digitalDLSorteR** R package provides a set of tools to deconvolute and inf
 
 ## Installation
 
-**digitalDLSorteR** can be installed from GitHub, although it will be available at CRAN coming soon.
+**digitalDLSorteR** can be installed from GitHub, but will soon be available on CRAN.
 
 ```r
 if (!requireNamespace("devtools", quietly = TRUE))
@@ -24,7 +24,7 @@ if (!requireNamespace("devtools", quietly = TRUE))
 devtools::install_github("diegommcc/digitalDLSorteR")
 ```
 
-**digitalDLSorteR** depends on **digitalDLSorteRdata** and **digitalDLSorteRmodels** data packages as they make pre-trained context-specific models deconvolution and other data needed for tests and examples available. Therefore, they must be installed together with **digitalDLSorteR** as one of its dependencies. To do so, the following code before using any of these functionalities should be enough to install the packages from GitHub once **digitalDLSorteR** has been installed:
+**digitalDLSorteR** depends on **digitalDLSorteRdata** and **digitalDLSorteRmodels** data packages as they make available pre-trained context-specific models deconvolution and other data needed for tests and examples. Therefore, they must be installed together with **digitalDLSorteR** as one of its dependencies. To do so, the following code should be enough to install the packages from GitHub once **digitalDLSorteR** has been installed:
 
 ```r
 if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
@@ -32,6 +32,17 @@ if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 }
 if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
   install.packages("digitalDLSorteRmodels")
+}
+```
+
+Also, they can be installed using devtools as follows:
+
+```r
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  devtools::install_github("diegommcc/digitalDLSorteRdata")
+}
+if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
+  devtools::install_github("diegommcc/digitalDLSorteRmodels")
 }
 ```
 

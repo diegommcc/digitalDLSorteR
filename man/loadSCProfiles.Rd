@@ -117,25 +117,20 @@ these profiles will be used directly to simulate pseudo-bulk RNA-seq samples
 with known cell composition.
 }
 \examples{
-if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  install.packages(
-    "digitalDLSorteRdata", 
-    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSChung.list)
+  DDLSChung <- listToDDLS(DDLSChung.list)
+  sc.chung.breast <- single.cell.real(DDLSChung)
+  DDLSChungSmall <- loadSCProfiles(
+    single.cell.data = sc.chung.breast,
+    cell.ID.column = "Cell_ID",
+    gene.ID.column = "external_gene_name",
+    min.cells = 0,
+    min.counts = 0,
+    project = "Chung_example"
   )
 }
-library(digitalDLSorteRdata)
-data(DDLSChung.list)
-DDLSChung <- listToDDLS(DDLSChung.list)
-sc.chung.breast <- single.cell.real(DDLSChung)
-DDLSChungSmall <- loadSCProfiles(
-  single.cell.data = sc.chung.breast,
-  cell.ID.column = "Cell_ID",
-  gene.ID.column = "external_gene_name",
-  min.cells = 0,
-  min.counts = 0,
-  project = "Chung_example"
-)
-
 }
 \seealso{
 \code{\link{estimateZinbwaveParams}}

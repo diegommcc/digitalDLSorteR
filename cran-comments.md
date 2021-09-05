@@ -6,23 +6,6 @@
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
 
-  digitalDLSorteRdata is the data package for digitalDLSorteR, so the latter 
-  relies on the former, as these data are required for examples and tests, as 
-  well as the package contains pre-trained deconvolution models. There are no 
-  WARNINGs because everything has been tested with digitalDLSorteRdata 
-  installed. Otherwise, a WARNING refered to non-standard dependencies appears 
-  and vignettes/examples and tests are not executed.
-
-  Furthermore, as deep learning related-tasks are performed using tensorflow and
-  keras R packages, a functional Python interpreter with all these dependencies 
-  covered is needed to run the examples, tests and vignettes. To do so, the 
-  following code is sufficient to install a functional Python environment:
-
-```r
-reticulate::install_miniconda() # if miniconda not installed
-tensorflow::install_tensorflow(version = '2.5-cpu')
-```
-
 There were 2 NOTEs:
 
 * checking dependencies in R code ... NOTE
@@ -39,3 +22,26 @@ trainDigitalDLSorterModel: no visible binding for '<<-' assignment to
 
   '<<-' assigment used in trainDigitalDLSorterModel function to assign a 
   function to a variable depending on 'on.the.fly' argument.
+
+In case digitalDLSorteRdata and/or digitalDLSorteRmodels are not installed, 
+there will be one more note:
+
+* checking package dependencies ... NOTE
+  Packages suggested but not available for checking:
+    'digitalDLSorteRdata', 'digitalDLSorteRmodels'
+    
+  digitalDLSorteRdata and digitalDLSorteRmodels are the data packages for 
+  digitalDLSorteR, so the last relies on them, as these data are required for 
+  examples, tests, vignettes and pre-trained deconvolution models. These 
+  packages have been included as Suggests as digitalDLSorteR can be used without
+  them. This NOTE disappears if both are installed.
+  
+Furthermore, all deep learning related-tasks are performed using tensorflow and
+keras R packages, a functional Python interpreter with all these dependencies 
+covered is needed to run the examples, tests and vignettes. To do so, the 
+following code is sufficient to install a functional Python environment:
+
+```r
+reticulate::install_miniconda() # if miniconda not installed
+tensorflow::install_tensorflow(version = '2.5-cpu')
+```

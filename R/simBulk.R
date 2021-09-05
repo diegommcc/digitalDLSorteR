@@ -114,23 +114,19 @@ NULL
 #'   from = c(rep(30, 4), 1, rep(1, 8)),
 #'   to = c(rep(70, 4), 50, rep(15, 8))
 #' )
-#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   install.packages(
-#'     "digitalDLSorteRdata", 
-#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSChung.list)
+#'   DDLSChung <- listToDDLS(DDLSChung.list)
+#'   DDLSChung <- generateBulkCellMatrix(
+#'     object = DDLSChung,
+#'     cell.type.column = "Cell_type",
+#'     cell.ID.column = "Cell_ID",
+#'     prob.design = probMatrix,
+#'     num.bulk.samples = 100,
+#'     verbose = TRUE
 #'   )
 #' }
-#' library(digitalDLSorteRdata)
-#' data(DDLSChung.list)
-#' DDLSChung <- listToDDLS(DDLSChung.list)
-#' DDLSChung <- generateBulkCellMatrix(
-#'   object = DDLSChung,
-#'   cell.type.column = "Cell_type",
-#'   cell.ID.column = "Cell_ID",
-#'   prob.design = probMatrix,
-#'   num.bulk.samples = 100,
-#'   verbose = TRUE
-#' )
 #' }
 #' 
 #' @references Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
@@ -1038,37 +1034,33 @@ setCount <- function(
 #'
 #' @examples
 #' \dontrun{
-#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   install.packages(
-#'     "digitalDLSorteRdata", 
-#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   library(digitalDLSorteRdata)
+#'   data(DDLSLi.list)
+#'   DDLSLi <- listToDDLS(DDLSLi.list)
+#'   probMatrix <- data.frame(
+#'     Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M",
+#'                 "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
+#'     from = c(rep(1, 8), 1, 30),
+#'     to = c(rep(15, 8), 50, 70)
+#'   )
+#'   DDLSLi <- generateBulkCellMatrix(
+#'     object = DDLSLi,
+#'     cell.ID.column = "Cell_ID",
+#'     cell.type.column = "Cell_Type",
+#'     prob.design = probMatrix,
+#'     num.bulk.samples = 100,
+#'     verbose = FALSE
+#'   )
+#'   # loading all data in memory
+#'   DDLSLi <- simBulkProfiles(DDLSLi, type.data = "both")
+#'   # using HDF5 as backend
+#'   DDLSLi <- simBulkProfiles(
+#'     DDLSLi,
+#'     type.data = "both",
+#'     file.backend = "DDLSLi.bulk.simul.h5"
 #'   )
 #' }
-#' library(digitalDLSorteRdata)
-#' data(DDLSLi.list)
-#' DDLSLi <- listToDDLS(DDLSLi.list)
-#' probMatrix <- data.frame(
-#'   Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M",
-#'                 "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
-#'   from = c(rep(1, 8), 1, 30),
-#'   to = c(rep(15, 8), 50, 70)
-#' )
-#' DDLSLi <- generateBulkCellMatrix(
-#'   object = DDLSLi,
-#'   cell.ID.column = "Cell_ID",
-#'   cell.type.column = "Cell_Type",
-#'   prob.design = probMatrix,
-#'   num.bulk.samples = 100,
-#'   verbose = FALSE
-#' )
-#' # loading all data in memory
-#' DDLSLi <- simBulkProfiles(DDLSLi, type.data = "both")
-#' # using HDF5 as backend
-#' DDLSLi <- simBulkProfiles(
-#'   DDLSLi,
-#'   type.data = "both",
-#'   file.backend = "DDLSLi.bulk.simul.h5"
-#' )
 #' }
 #'
 #' @references Fischer B, Smith M and Pau, G (2020). rhdf5: R Interface to HDF5.

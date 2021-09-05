@@ -22,13 +22,12 @@ stored in the digitalDLSorteRdata package.
 }
 \examples{
 \dontrun{
-if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  install.packages("digitalDLSorteRdata")
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data("DDLSLi.list")
+  DDLSLiObj <- listToDDLS(DDLSLi.list)
+  DDLSLiObj
 }
-library(digitalDLSorteRdata)
-data("DDLSLi.list")
-DDLSLiObj <- listToDDLS(DDLSLi.list)
-DDLSLiObj
 }
   
 }

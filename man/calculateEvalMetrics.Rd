@@ -36,18 +36,14 @@ from the evaluation). The evaluation metrics will be available in the
 the \code{\linkS4class{DigitalDLSorter}} object).
 }
 \examples{
-if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  install.packages(
-    "digitalDLSorteRdata", 
-    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  library(digitalDLSorteRdata)
+  data(DDLSLi.list)
+  DDLSLi <- listToDDLS(DDLSLi.list) # list to DigitalDLSorter obj
+  DDLSLi <- calculateEvalMetrics(
+    object = DDLSLi
   )
 }
-library(digitalDLSorteRdata)
-data(DDLSLi.list)
-DDLSLi <- listToDDLS(DDLSLi.list) # list to DigitalDLSorter obj
-DDLSLi <- calculateEvalMetrics(
-  object = DDLSLi
-)
 
 }
 \seealso{
