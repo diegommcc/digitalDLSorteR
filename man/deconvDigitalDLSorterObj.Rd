@@ -64,26 +64,30 @@ model to deconvolute your samples, see \code{?\link{deconvDigitalDLSorter}}.
 }
 \examples{
 \dontrun{
-if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  library(digitalDLSorteRdata)
-  data(DDLSLi.list)
-  DDLSLi <- listToDDLS(DDLSLi.list)
-  data(TCGA.colon.se)
-  # to ensure compatibility
-  tensorflow::tf$compat$v1$disable_eager_execution()
-  # simplify arguments
-  simplify = list(Macrophages = c("Mc", "M"))
-  DDLSLi <- loadDeconvData(
-    object = DDLSLi, data = TCGA.colon.se,
-    name.data = "TCGA.colon"
-  )
-  DDLSLi <- deconvDigitalDLSorterObj(
-    object = DDLSLi,
-    name.data = "TCGA.colon",
-    simplify.set = simplify,
-    simplify.majority = simplify
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  install.packages(
+    "digitalDLSorteRdata", 
+    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
   )
 }
+library(digitalDLSorteRdata)
+data(DDLSLi.list)
+DDLSLi <- listToDDLS(DDLSLi.list)
+data(TCGA.colon.se)
+# to ensure compatibility
+tensorflow::tf$compat$v1$disable_eager_execution()
+# simplify arguments
+simplify = list(Macrophages = c("Mc", "M"))
+DDLSLi <- loadDeconvData(
+  object = DDLSLi, data = TCGA.colon.se,
+  name.data = "TCGA.colon"
+)
+DDLSLi <- deconvDigitalDLSorterObj(
+  object = DDLSLi,
+  name.data = "TCGA.colon",
+  simplify.set = simplify,
+  simplify.majority = simplify
+)
 }
 }
 \references{

@@ -200,6 +200,12 @@ jobs:
           remotes::install_github("diegommcc/digitalDLSorteRdata")
         shell: Rscript {0}
 
+      - name: Install digitalDLSorteRmodels
+        run: |
+          ## data digitalDLSorteRmodels
+          remotes::install_github("diegommcc/digitalDLSorteRmodels")
+        shell: Rscript {0}
+
       - name: Install Miniconda
         run: reticulate::install_miniconda()
         shell: Rscript {0}

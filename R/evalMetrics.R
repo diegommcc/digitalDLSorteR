@@ -68,6 +68,7 @@ default.colors <- function() {
 #'     object = DDLSLi
 #'   )
 #' }
+#' 
 calculateEvalMetrics <- function(
   object,
   metrics = c("MAE", "MSE")
@@ -341,7 +342,6 @@ se <- function(x) sqrt(var(x)/length(x))
 #'     color.by = "nCellTypes",
 #'     error.label = TRUE
 #'   )
-#'
 #'   distErrorPlot(
 #'     object = DDLSLi,
 #'     error = "AbsErr",
@@ -352,6 +352,7 @@ se <- function(x) sqrt(var(x)/length(x))
 #'     error.label = TRUE
 #'   )
 #' }
+#' 
 distErrorPlot <- function(
   object,
   error,
@@ -945,7 +946,6 @@ blandAltmanLehPlot <- function(
 #'     error = "MSE",
 #'     by = "CellType"
 #'   )
-#'
 #'   barErrorPlot(
 #'     object = DDLSLi,
 #'     error = "MAE",

@@ -137,21 +137,25 @@ probMatrix <- data.frame(
   from = c(rep(30, 4), 1, rep(1, 8)),
   to = c(rep(70, 4), 50, rep(15, 8))
 )
-if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  library(digitalDLSorteRdata)
-  data(DDLSChung.list)
-  DDLSChung <- listToDDLS(DDLSChung.list)
-  DDLSChung <- generateBulkCellMatrix(
-    object = DDLSChung,
-    cell.type.column = "Cell_type",
-    cell.ID.column = "Cell_ID",
-    prob.design = probMatrix,
-    num.bulk.samples = 100,
-    verbose = TRUE
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  install.packages(
+    "digitalDLSorteRdata", 
+    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
   )
+}
+library(digitalDLSorteRdata)
+data(DDLSChung.list)
+DDLSChung <- listToDDLS(DDLSChung.list)
+DDLSChung <- generateBulkCellMatrix(
+  object = DDLSChung,
+  cell.type.column = "Cell_type",
+  cell.ID.column = "Cell_ID",
+  prob.design = probMatrix,
+  num.bulk.samples = 100,
+  verbose = TRUE
+)
+}
 
-}
-}
 }
 \references{
 Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep

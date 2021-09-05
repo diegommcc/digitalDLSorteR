@@ -70,36 +70,47 @@ functions.
 }
 \examples{
 \dontrun{
-if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  # to ensure compatibility
-  tensorflow::tf$compat$v1$disable_eager_execution()
-  library(digitalDLSorteRdata)
-  data(breast.chung.specific)
-  data(TCGA.breast.small)
-  results1 <- deconvDigitalDLSorter(
-    data = TCGA.breast.small,
-    model = breast.chung.specific,
-    normalize = TRUE
-  )
-
-  # simplify arguments
-  simplify <- list(Tumor = c("ER+", "HER2+", "ER+/HER2+", "TNBC"),
-                   Bcells = c("Bmem", "BGC"))
-  # in this case the names of the list will be the new labels
-  results2 <- deconvDigitalDLSorter(
-    TCGA.breast.small,
-    model = breast.chung.specific,
-    normalize = TRUE,
-    simplify.set = simplify
-  )
-  # in this case the cell type with the highest proportion will be the new label
-  results3 <- deconvDigitalDLSorter(
-    TCGA.breast.small,
-    model = breast.chung.specific,
-    normalize = TRUE,
-    simplify.majority = simplify
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  install.packages(
+    "digitalDLSorteRdata", 
+    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
   )
 }
+if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
+  install.packages(
+    "digitalDLSorteRmodels", 
+    repos = "https://diegommcc.github.io/digitalDLSorteRmodelsRepo/"
+  )
+}
+library(digitalDLSorteRdata)
+library(digitalDLSorteRmodels)
+# to ensure compatibility
+tensorflow::tf$compat$v1$disable_eager_execution()
+library(digitalDLSorteRdata)
+data(breast.chung.specific)
+data(TCGA.breast.small)
+results1 <- deconvDigitalDLSorter(
+  data = TCGA.breast.small,
+  model = breast.chung.specific,
+  normalize = TRUE
+)
+# simplify arguments
+simplify <- list(Tumor = c("ER+", "HER2+", "ER+/HER2+", "TNBC"),
+                 Bcells = c("Bmem", "BGC"))
+# in this case the names of the list will be the new labels
+results2 <- deconvDigitalDLSorter(
+  TCGA.breast.small,
+  model = breast.chung.specific,
+  normalize = TRUE,
+  simplify.set = simplify
+)
+# in this case the cell type with the highest proportion will be the new label
+results3 <- deconvDigitalDLSorter(
+  TCGA.breast.small,
+  model = breast.chung.specific,
+  normalize = TRUE,
+  simplify.majority = simplify
+)
 }
 
 }

@@ -110,7 +110,6 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     color.by = "nCellTypes",
     error.label = TRUE
   )
-
   distErrorPlot(
     object = DDLSLi,
     error = "AbsErr",
@@ -121,6 +120,7 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     error.label = TRUE
   )
 }
+
 }
 \seealso{
 \code{\link{calculateEvalMetrics}} \code{\link{corrExpPredPlot}}

@@ -16,9 +16,9 @@ plotTrainingHistory(
 
 \item{title}{Title of plot.}
 
-\item{metrics}{Metrics to be plotted. If \code{NULL} (by
-default), all metrics available in the \code{\linkS4class{DigitalDLSorterDNN}}
-object will be plotted.}
+\item{metrics}{Metrics to be plotted. If \code{NULL} (by default), all
+metrics available in the \code{\linkS4class{DigitalDLSorterDNN}} object
+will be plotted.}
 }
 \description{
 Plot training history of a trained DigitalDLSorter Deep Neural Network model.

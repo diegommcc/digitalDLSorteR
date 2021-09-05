@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-**digitalDLSorteR** offers the possibility to use pre-trained context-specific deconvolution models included in **digitalDLSorteRdata** package (<https://github.com/diegommcc/digitalDLSorteRdata>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use **digitalDLSorteR** and only requires loading into R a raw bulk RNA-Seq matrix with genes as rows (annotated as _SYMBOL_) and samples as columns, and selecting the desired model. This is done by the `deconvDigitalDLSorter` function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. After the process, estimated cell composition of each sample can be explored as a bar chart using the `barPlotCellTypes` function (workflow summarized in the figure below).
+**digitalDLSorteR** offers the possibility to use pre-trained context-specific deconvolution models included in **digitalDLSorteRmodels** package (<https://github.com/diegommcc/digitalDLSorteRmodels>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use **digitalDLSorteR** and only requires loading into R a raw bulk RNA-Seq matrix with genes as rows (annotated as _SYMBOL_) and samples as columns, and selecting the desired model. This is done by the `deconvDigitalDLSorter` function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. After the process, estimated cell composition of each sample can be explored as a bar chart using the `barPlotCellTypes` function (workflow summarized in the figure below).
 
 ```{r workflow, fig.cap = "**Workflow to use pre-trained models**", echo = FALSE}
 knitr::include_graphics("workflow_pretrained_models.png")
@@ -47,6 +47,21 @@ The following code chunk shows an example using `breast.chung.generic` model and
 
 ```{r deconvolutingTCGA, message=FALSE}
 suppressMessages(library(digitalDLSorteR))
+# to load pre-trained models
+if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
+  install.packages(
+    "digitalDLSorteRmodels", 
+    repos = "https://diegommcc.github.io/digitalDLSorteRmodelsRepo/"
+  )
+}
+suppressMessages(library(digitalDLSorteRmodels))
+# data for example
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  install.packages(
+    "digitalDLSorteRdata", 
+    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+  )
+}
 suppressMessages(library(digitalDLSorteRdata))
 # disable eager execution for compatibility issues
 tensorflow::tf$compat$v1$disable_eager_execution()

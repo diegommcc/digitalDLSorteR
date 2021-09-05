@@ -113,19 +113,23 @@ globalVariables(c(".dataForDNN", "<<-"))
 #'
 #' @examples
 #' \dontrun{
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   library(digitalDLSorteRdata)
-#'   data(DDLiComp.list)
-#'   DDLiComp <- listToDDLS(DDLiComp.list)
-#'   # to ensure compatibility
-#'   tensorflow::tf$compat$v1$disable_eager_execution()
-#'   DDLiComp <- trainDigitalDLSorterModel(
-#'     object = DDLiComp,
-#'     on.the.fly = TRUE,
-#'     batch.size = 24,
-#'     num.epochs = 5 # 20
+#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   install.packages(
+#'     "digitalDLSorteRdata", 
+#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
 #'   )
 #' }
+#' library(digitalDLSorteRdata)
+#' data(DDLiComp.list)
+#' DDLiComp <- listToDDLS(DDLiComp.list)
+#' # to ensure compatibility
+#' tensorflow::tf$compat$v1$disable_eager_execution()
+#' DDLiComp <- trainDigitalDLSorterModel(
+#'   object = DDLiComp,
+#'   on.the.fly = TRUE,
+#'   batch.size = 24,
+#'   num.epochs = 5 # 20
+#' )
 #' }
 #' @references Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq
@@ -874,36 +878,47 @@ trainDigitalDLSorterModel <- function(
 #'
 #' @examples
 #' \dontrun{
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   # to ensure compatibility
-#'   tensorflow::tf$compat$v1$disable_eager_execution()
-#'   library(digitalDLSorteRdata)
-#'   data(breast.chung.specific)
-#'   data(TCGA.breast.small)
-#'   results1 <- deconvDigitalDLSorter(
-#'     data = TCGA.breast.small,
-#'     model = breast.chung.specific,
-#'     normalize = TRUE
-#'   )
-#'
-#'   # simplify arguments
-#'   simplify <- list(Tumor = c("ER+", "HER2+", "ER+/HER2+", "TNBC"),
-#'                    Bcells = c("Bmem", "BGC"))
-#'   # in this case the names of the list will be the new labels
-#'   results2 <- deconvDigitalDLSorter(
-#'     TCGA.breast.small,
-#'     model = breast.chung.specific,
-#'     normalize = TRUE,
-#'     simplify.set = simplify
-#'   )
-#'   # in this case the cell type with the highest proportion will be the new label
-#'   results3 <- deconvDigitalDLSorter(
-#'     TCGA.breast.small,
-#'     model = breast.chung.specific,
-#'     normalize = TRUE,
-#'     simplify.majority = simplify
+#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   install.packages(
+#'     "digitalDLSorteRdata", 
+#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
 #'   )
 #' }
+#' if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
+#'   install.packages(
+#'     "digitalDLSorteRmodels", 
+#'     repos = "https://diegommcc.github.io/digitalDLSorteRmodelsRepo/"
+#'   )
+#' }
+#' library(digitalDLSorteRdata)
+#' library(digitalDLSorteRmodels)
+#' # to ensure compatibility
+#' tensorflow::tf$compat$v1$disable_eager_execution()
+#' library(digitalDLSorteRdata)
+#' data(breast.chung.specific)
+#' data(TCGA.breast.small)
+#' results1 <- deconvDigitalDLSorter(
+#'   data = TCGA.breast.small,
+#'   model = breast.chung.specific,
+#'   normalize = TRUE
+#' )
+#' # simplify arguments
+#' simplify <- list(Tumor = c("ER+", "HER2+", "ER+/HER2+", "TNBC"),
+#'                  Bcells = c("Bmem", "BGC"))
+#' # in this case the names of the list will be the new labels
+#' results2 <- deconvDigitalDLSorter(
+#'   TCGA.breast.small,
+#'   model = breast.chung.specific,
+#'   normalize = TRUE,
+#'   simplify.set = simplify
+#' )
+#' # in this case the cell type with the highest proportion will be the new label
+#' results3 <- deconvDigitalDLSorter(
+#'   TCGA.breast.small,
+#'   model = breast.chung.specific,
+#'   normalize = TRUE,
+#'   simplify.majority = simplify
+#' )
 #' }
 #'
 #'@references Chung, W., Eum, H. H., Lee, H. O., Lee, K. M., Lee, H. B., Kim, K.
@@ -1017,26 +1032,30 @@ deconvDigitalDLSorter <- function(
 #'
 #' @examples
 #' \dontrun{
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   library(digitalDLSorteRdata)
-#'   data(DDLSLi.list)
-#'   DDLSLi <- listToDDLS(DDLSLi.list)
-#'   data(TCGA.colon.se)
-#'   # to ensure compatibility
-#'   tensorflow::tf$compat$v1$disable_eager_execution()
-#'   # simplify arguments
-#'   simplify = list(Macrophages = c("Mc", "M"))
-#'   DDLSLi <- loadDeconvData(
-#'     object = DDLSLi, data = TCGA.colon.se,
-#'     name.data = "TCGA.colon"
-#'   )
-#'   DDLSLi <- deconvDigitalDLSorterObj(
-#'     object = DDLSLi,
-#'     name.data = "TCGA.colon",
-#'     simplify.set = simplify,
-#'     simplify.majority = simplify
+#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   install.packages(
+#'     "digitalDLSorteRdata", 
+#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
 #'   )
 #' }
+#' library(digitalDLSorteRdata)
+#' data(DDLSLi.list)
+#' DDLSLi <- listToDDLS(DDLSLi.list)
+#' data(TCGA.colon.se)
+#' # to ensure compatibility
+#' tensorflow::tf$compat$v1$disable_eager_execution()
+#' # simplify arguments
+#' simplify = list(Macrophages = c("Mc", "M"))
+#' DDLSLi <- loadDeconvData(
+#'   object = DDLSLi, data = TCGA.colon.se,
+#'   name.data = "TCGA.colon"
+#' )
+#' DDLSLi <- deconvDigitalDLSorterObj(
+#'   object = DDLSLi,
+#'   name.data = "TCGA.colon",
+#'   simplify.set = simplify,
+#'   simplify.majority = simplify
+#' )
 #' }
 #' @references Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq

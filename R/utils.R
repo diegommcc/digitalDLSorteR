@@ -61,21 +61,26 @@ getProbMatrix <- function(object, type.data) {
 #' @seealso \code{\link{generateBulkCellMatrix}}
 #'
 #' @examples
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   library(digitalDLSorteRdata)
-#'   data(DDLSLi.list)
-#'   DDLSLi <- listToDDLS(DDLSLi.list)
-#'   lapply(
-#'     X = 1:6, FUN = function(x) {
-#'       showProbPlot(
-#'         DDLSLi,
-#'         type.data = "train",
-#'         set = x,
-#'         type.plot = "boxplot"
-#'       )
-#'     }
+#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   install.packages(
+#'     "digitalDLSorteRdata", 
+#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
 #'   )
 #' }
+#' library(digitalDLSorteRdata)
+#' data(DDLSLi.list)
+#' DDLSLi <- listToDDLS(DDLSLi.list)
+#' lapply(
+#'   X = 1:6, FUN = function(x) {
+#'     showProbPlot(
+#'       DDLSLi,
+#'       type.data = "train",
+#'       set = x,
+#'       type.plot = "boxplot"
+#'     )
+#'   }
+#' )
+#' 
 showProbPlot <- function(
   object,
   type.data,
@@ -334,9 +339,9 @@ loadTrainedModelFromH5 <- function(
 #' @param object \code{\linkS4class{DigitalDLSorter}} object with
 #'   \code{trained.model} slot.
 #' @param title Title of plot.
-#' @param metrics Metrics to be plotted. If \code{NULL} (by
-#'   default), all metrics available in the \code{\linkS4class{DigitalDLSorterDNN}}
-#'   object will be plotted.
+#' @param metrics Metrics to be plotted. If \code{NULL} (by default), all
+#'   metrics available in the \code{\linkS4class{DigitalDLSorterDNN}} object
+#'   will be plotted.
 #'
 #' @export
 #'
@@ -384,7 +389,8 @@ DigitalDLSorterTheme <- function() {
 #'
 #' Transform DigitalDLSorterDNN-like list into an actual
 #' \code{DigitalDLSorterDNN} object. This function allows to use pre-trained
-#' models in the \pkg{digitalDLSorteR} package.
+#' models in the \pkg{digitalDLSorteR} package. These models are stored in 
+#' the digitalDLSorteRmodels package.
 #'
 #' @param listTo A list in which each element must correspond to each slot of an
 #'   \code{DigitalDLSorterDNN} object. The names must be the same as the slot
@@ -399,12 +405,18 @@ DigitalDLSorterTheme <- function() {
 #'
 #' @examples
 #' \dontrun{
-#' if (requireNamespace("digitalDLSorteR", quietly = TRUE)) {
-#'   data("colorectal.li")
-#'   DDLSDNNObj <- listToDDLSDNN(colorectal.li)
-#'   DDLSDNNObj
+#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   install.packages(
+#'     "digitalDLSorteRdata", 
+#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+#'   )
 #' }
+#' library(digitalDLSorteRmodels)
+#' data("colorectal.li")
+#' DDLSDNNObj <- listToDDLSDNN(colorectal.li)
+#' DDLSDNNObj
 #' }
+#' 
 listToDDLSDNN <- function(listTo) {
   if (any(!names(listTo) %in% c(
     "model", "training.history", "test.metrics", "test.pred", 
@@ -429,7 +441,8 @@ listToDDLSDNN <- function(listTo) {
 #'
 #' Transform DigitalDLSorter-like list into an actual \code{DigitalDLSorter}
 #' object. This function allows to generate the examples and the vignettes of
-#' \pkg{digitalDLSorteR} package as these are the data used.
+#' \pkg{digitalDLSorteR} package as these are the data used. These data are
+#' stored in the digitalDLSorteRdata package.
 #'
 #' @param listTo A list in which each element must correspond to each slot of an
 #'   \code{DigitalDLSorter} object. The names must be the same as the slot
@@ -443,11 +456,13 @@ listToDDLSDNN <- function(listTo) {
 #'
 #' @examples
 #' \dontrun{
-#' if (requireNamespace("digitalDLSorteR", quietly = TRUE)) {
-#'   data("DDLSLi.list")
-#'   DDLSLiObj <- listToDDLS(DDLSLi.list)
-#'   DDLSLiObj
+#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   install.packages("digitalDLSorteRdata")
 #' }
+#' library(digitalDLSorteRdata)
+#' data("DDLSLi.list")
+#' DDLSLiObj <- listToDDLS(DDLSLi.list)
+#' DDLSLiObj
 #' }
 #'   
 listToDDLS <- function(listTo) {

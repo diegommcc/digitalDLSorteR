@@ -18,13 +18,17 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-**digitalDLSorteR** implements all the necessary tools to build new context-specific deconvolution models from  previously characterized scRNA-Seq data. Taking into account the variability of some cell types depending on the context in which they are found, we aim to generate different specific models for each environment. From our point of view, this opens a door to more accurate and specific models instead of using generic transcriptional profiles as a reference as, for instance, in the case of peripheral blood mononuclear cell (PBMC) to estimate the proportions of tumor-infiltrating lymphocytes in cancer settings. In this vignette, this workflow is going to be shown using a 'toy' example with data from **digitalDLSorteRdata** package, but the performance of a real model can be explored in [Performance of a real model: deconvolution of colorectal cancer samples](realModelExample.html) vignette.
+**digitalDLSorteR** implements all the necessary tools to build new context-specific deconvolution models from  previously characterized scRNA-Seq data. Taking into account the variability of some cell types depending on the context in which they are found, we aim to generate different specific models for each environment. From our point of view, this opens a door to more accurate and specific models instead of using generic transcriptional profiles as a reference as, for instance, in the case of peripheral blood mononuclear cell (PBMC) to estimate the proportions of tumor-infiltrating lymphocytes in cancer settings. In this vignette, this workflow is going to be shown using a 'toy' example with data from the **digitalDLSorteRdata** package (<https://github.com/diegommcc/digitalDLSorteRdata>), but the performance of a real model can be explored in [Performance of a real model: deconvolution of colorectal cancer samples](realModelExample.html) vignette.
 
 This workflow is more computationally expensive than using pre-trained models, so we recommend building new models if you want to deconvolute samples from an unavailable model or in case you think your scRNA-Seq data provide a better picture of this environment than the ones already used in this package. In any case, **digitalDLSorteR** provides a set of functionalities that make this process easier and computationally cheaper in terms of RAM usage: batch processing of data and the use of the [HDF5Array](https://bioconductor.org/packages/release/bioc/html/HDF5Array.html) and [DelayedArray](https://bioconductor.org/packages/release/bioc/html/DelayedArray.html) packages (see [HDF5 files as back-end](hdf5Backend.html) vignette for more information). Furthermore, all steps are centralized in the `DigitalDLSorter` S4-class, the core of **digitalDLSorteR**, in order to provide a good user-experience and keep all the generated information tidy in the same object.
 
 ```{r}
-## loading packages
+## loading the packages
 suppressMessages(library(digitalDLSorteR, quietly = TRUE))
+# if digitalDLSOrteRdata is not installed
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  install.packages("digitalDLSorteRdata", repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/")
+}
 suppressMessages(library(digitalDLSorteRdata, quietly = TRUE))
 ## loading data for examples
 data(DDLSChung.list)

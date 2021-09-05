@@ -19,16 +19,23 @@ list.
 \description{
 Transform DigitalDLSorterDNN-like list into an actual
 \code{DigitalDLSorterDNN} object. This function allows to use pre-trained
-models in the \pkg{digitalDLSorteR} package.
+models in the \pkg{digitalDLSorteR} package. These models are stored in
+the digitalDLSorteRmodels package.
 }
 \examples{
 \dontrun{
-if (requireNamespace("digitalDLSorteR", quietly = TRUE)) {
-  data("colorectal.li")
-  DDLSDNNObj <- listToDDLSDNN(colorectal.li)
-  DDLSDNNObj
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  install.packages(
+    "digitalDLSorteRdata", 
+    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+  )
 }
+library(digitalDLSorteRmodels)
+data("colorectal.li")
+DDLSDNNObj <- listToDDLSDNN(colorectal.li)
+DDLSDNNObj
 }
+
 }
 \seealso{
 \code{\link{listToDDLS}}

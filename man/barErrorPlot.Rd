@@ -54,7 +54,6 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     error = "MSE",
     by = "CellType"
   )
-
   barErrorPlot(
     object = DDLSLi,
     error = "MAE",

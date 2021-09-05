@@ -17,7 +17,6 @@ Depends:
     R (>= 4.0.0)
 Imports:
     rlang,
-    digitalDLSorteRdata,
     Matrix,
     Matrix.utils,
     methods,
@@ -40,6 +39,8 @@ Imports:
     ggpubr,
     RColorBrewer
 Suggests:
+    digitalDLSorteRdata,
+    digitalDLSorteRmodels,
     knitr,
     rmarkdown,
     BiocParallel,
@@ -48,6 +49,9 @@ Suggests:
     DelayedMatrixStats,
     HDF5Array,
     testthat
+Additional_repositories: 
+    https://diegommcc.github.io/digitalDLSorteRdataRepo/
+    https://diegommcc.github.io/digitalDLSorteRmodelsRepo/
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Collate: 

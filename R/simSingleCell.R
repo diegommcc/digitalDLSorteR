@@ -74,20 +74,24 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   library(digitalDLSorteRdata)
-#'   data(DDLSChung.list)
-#'   DDLSChung <- listToDDLS(DDLSChung.list)
-#'   DDLSChung <- estimateZinbwaveParams(
-#'     object = DDLSChung,
-#'     cell.ID.column = "Cell_ID",
-#'     gene.ID.column = "external_gene_name",
-#'     cell.type.column = "Cell_type",
-#'     cell.cov.columns = c("Patient", "Sample_type"),
-#'     gene.cov.columns = "gene_length",
-#'     verbose = TRUE
+#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   install.packages(
+#'     "digitalDLSorteRdata", 
+#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
 #'   )
 #' }
+#' library(digitalDLSorteRdata)
+#' data(DDLSChung.list)
+#' DDLSChung <- listToDDLS(DDLSChung.list)
+#' DDLSChung <- estimateZinbwaveParams(
+#'   object = DDLSChung,
+#'   cell.ID.column = "Cell_ID",
+#'   gene.ID.column = "external_gene_name",
+#'   cell.type.column = "Cell_type",
+#'   cell.cov.columns = c("Patient", "Sample_type"),
+#'   gene.cov.columns = "gene_length",
+#'   verbose = TRUE
+#' )
 #' }
 #'
 #' @references Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
@@ -712,18 +716,22 @@ estimateZinbwaveParams <- function(
 #'
 #' @examples
 #' \dontrun{
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   library(digitalDLSorteRdata)
-#'   data(DDLSChung.list)
-#'   DDLSChung <- listToDDLS(DDLSChung.list)
-#'   DDLSChung <- simSCProfiles(
-#'     object = DDLSChung,
-#'     cell.ID.column = "Cell_ID",
-#'     cell.type.column = "Cell_type",
-#'     n.cells = 1,
-#'     verbose = TRUE
+#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+#'   install.packages(
+#'     "digitalDLSorteRdata", 
+#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
 #'   )
 #' }
+#' library(digitalDLSorteRdata)
+#' data(DDLSChung.list)
+#' DDLSChung <- listToDDLS(DDLSChung.list)
+#' DDLSChung <- simSCProfiles(
+#'   object = DDLSChung,
+#'   cell.ID.column = "Cell_ID",
+#'   cell.type.column = "Cell_type",
+#'   n.cells = 1,
+#'   verbose = TRUE
+#' )
 #' }
 #'
 #' @references Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general

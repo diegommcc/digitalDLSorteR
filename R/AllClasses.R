@@ -506,3 +506,12 @@ setMethod(
     cat("Project:", object@project, "\n")
   }
 )
+
+# make github repositories available (data packages)
+.onLoad <- function(libname, pkgname) {
+  repos = getOption("repos")
+  repos["github_data"] = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+  repos["github_models"] = "https://diegommcc.github.io/digitalDLSorteRmodelsRepo/"
+  options(repos = repos)
+  invisible(repos)
+}

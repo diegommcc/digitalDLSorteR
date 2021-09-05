@@ -139,19 +139,23 @@ considered cell types.
 }
 \examples{
 \dontrun{
-if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  library(digitalDLSorteRdata)
-  data(DDLiComp.list)
-  DDLiComp <- listToDDLS(DDLiComp.list)
-  # to ensure compatibility
-  tensorflow::tf$compat$v1$disable_eager_execution()
-  DDLiComp <- trainDigitalDLSorterModel(
-    object = DDLiComp,
-    on.the.fly = TRUE,
-    batch.size = 24,
-    num.epochs = 5 # 20
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  install.packages(
+    "digitalDLSorteRdata", 
+    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
   )
 }
+library(digitalDLSorteRdata)
+data(DDLiComp.list)
+DDLiComp <- listToDDLS(DDLiComp.list)
+# to ensure compatibility
+tensorflow::tf$compat$v1$disable_eager_execution()
+DDLiComp <- trainDigitalDLSorterModel(
+  object = DDLiComp,
+  on.the.fly = TRUE,
+  batch.size = 24,
+  num.epochs = 5 # 20
+)
 }
 }
 \references{

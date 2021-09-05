@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 
 ## Installation
 
-**digitalDLSorteR** is based on Deep Neural Network (DNN) models. To use them, [keras](https://cran.r-project.org/package=keras) package (available from CRAN), a high-level neural networks API implemented in Python, is used. [keras](https://cran.r-project.org/package=keras) R version works as an interface between these two languages by using [reticulate](https://cran.r-project.org/package=reticulate) package. Therefore, [keras](https://cran.r-project.org/package=keras) requires a Python interpreter to work. We recommend using conda environments to provide a Python interpreter with all its dependencies covered. If you already have a conda environment compatible with [keras](https://cran.r-project.org/package=keras) requirements, the package will find it automatically during the installation. Otherwise, [keras](https://cran.r-project.org/package=keras) will create a new environment named `r-reticulate` with all these dependencies covered. There are other methods to install a functionally back-end and it is possible more customized installations, see <https://keras.rstudio.com/reference/install_keras.html> and <https://tensorflow.rstudio.com/installation/> for more details.
+**digitalDLSorteR** is based on Deep Neural Network (DNN) models. To use them, [keras](https://cran.r-project.org/package=keras) package (available from CRAN), a high-level neural networks API implemented in Python, is used. [keras](https://cran.r-project.org/package=keras) R version works as an interface between these two languages by using the [reticulate](https://cran.r-project.org/package=reticulate) package. Therefore, [keras](https://cran.r-project.org/package=keras) requires a Python interpreter to work. We recommend using conda environments to provide a Python interpreter with all its dependencies covered. If you already have a conda environment compatible with [keras](https://cran.r-project.org/package=keras) requirements, the package will find it automatically during the installation. Otherwise, [keras](https://cran.r-project.org/package=keras) will create a new environment named `r-reticulate` with all these dependencies covered. There are other ways to install a functionally back-end and it is possible more customized installations, see <https://keras.rstudio.com/reference/install_keras.html> and <https://tensorflow.rstudio.com/installation/> for more details.
 
 ```{r, eval = FALSE}
 install.packages("keras")
@@ -34,7 +34,19 @@ install_keras(method = "conda") # other options are available
 
 If you experiment errors related to its installation and/or [keras](https://cran.r-project.org/package=keras) is not able to find a functional Python environment, follow these steps:
 
-Instead of using `keras::install_keras()` function, run the following code chunk installing [tensorflow](https://cran.r-project.org/package=tensorflow) R package. This code will create a Python interpreter with [tensorflow](https://cran.r-project.org/package=tensorflow) with all its dependencies covered.
+First, in case you don't have miniconda installed, use the following R code using [reticulate](https://cran.r-project.org/package=reticulate):
+
+```{r, eval = FALSE}
+reticulate::install_miniconda()
+```
+
+Or type in a Terminal:
+
+```{bash}
+conda create --name r-reticulate-tensorflow python tensorflow=2.1
+```
+
+Then, instead of using `keras::install_keras()` function, run the following code chunk using the [tensorflow](https://cran.r-project.org/package=tensorflow) R package. This code will create a Python interpreter with [tensorflow](https://cran.r-project.org/package=tensorflow) with all its dependencies covered.
 
 ```{r, eval = FALSE}
 tensorflow::install_tensorflow(
@@ -42,19 +54,13 @@ tensorflow::install_tensorflow(
 )
 ```
 
-If this code chunk raises an error, create manually a conda environment from any terminal:
-
-```{bash}
-conda create --name r-tensorflow-21 python tensorflow=2.1
-```
-
-Then, run the above chunk code setting the `envname` parameter equal to the name of the newly created conda environment name. If problems still happen, set this new environment as the selected Python environment:
+Finally, if [keras](https://cran.r-project.org/package=keras) still does not recognize the functional environment, set this new environment as the selected Python environment:
 
 ```{r}
 tensorflow::use_condaenv("r-reticulate-tensorflow")
 ```
 
-Finally, if Python-interpreter problems don't dissapear, it is possible to set manually the interpreter that will be used using [reticulate](https://cran.r-project.org/package=reticulate). See the following guide: <https://rstudio.github.io/reticulate/articles/versions.html>. And of course, don't hesitate to tell us your problem and we'll try to help you!
+Finally, if Python-interpreter problems don't dissapear, it is possible to set manually the interpreter that will be used using [reticulate](https://cran.r-project.org/package=reticulate). See the following guide: <https://rstudio.github.io/reticulate/articles/versions.html>. And of course, don't hesitate to tell us your problem, we'll try to help you.
 
 ### Eager execution
 

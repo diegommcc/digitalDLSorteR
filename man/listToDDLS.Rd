@@ -17,15 +17,18 @@ names.}
 \description{
 Transform DigitalDLSorter-like list into an actual \code{DigitalDLSorter}
 object. This function allows to generate the examples and the vignettes of
-\pkg{digitalDLSorteR} package as these are the data used.
+\pkg{digitalDLSorteR} package as these are the data used. These data are
+stored in the digitalDLSorteRdata package.
 }
 \examples{
 \dontrun{
-if (requireNamespace("digitalDLSorteR", quietly = TRUE)) {
-  data("DDLSLi.list")
-  DDLSLiObj <- listToDDLS(DDLSLi.list)
-  DDLSLiObj
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  install.packages("digitalDLSorteRdata")
 }
+library(digitalDLSorteRdata)
+data("DDLSLi.list")
+DDLSLiObj <- listToDDLS(DDLSLi.list)
+DDLSLiObj
 }
   
 }

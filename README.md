@@ -12,7 +12,7 @@
 <br>
 
 
-The **digitalDLSorteR** R package provides a set of tools to deconvolute and infer cell type proportions of bulk RNA-Seq data through the development of context-specific deconvolution models based on Deep Learning and single-cell RNA-Seq (scRNA-Seq) data. These models are able to accurately enumerate and quantify cell proportions of bulk RNA-Seq data from specific biological environments. For more details about the algorithm and the functionalities implemented in this package, see [Torroja and Sanchez-Cabo, 2019](https://www.frontiersin.org/articles/10.3389/fgene.2019.00978/full), `vignette(digitalDLSorteR)` and <https://diegommcc.github.io/digitalDLSorteR/>.
+The **digitalDLSorteR** R package provides a set of tools to deconvolute and infer cell type proportions of bulk RNA-Seq data through the development of context-specific deconvolution models based on Deep Learning and single-cell RNA-Seq (scRNA-Seq) data. These models are able to accurately enumerate and quantify cell proportions of bulk RNA-Seq data from specific biological environments. For more details about the algorithm and the functionalities implemented in this package, see [Torroja and Sanchez-Cabo, 2019](https://www.frontiersin.org/articles/10.3389/fgene.2019.00978/full), <https://diegommcc.github.io/digitalDLSorteR/>, and `vignette(digitalDLSorteR)`.
 
 ## Installation
 
@@ -24,7 +24,16 @@ if (!requireNamespace("devtools", quietly = TRUE))
 devtools::install_github("diegommcc/digitalDLSorteR")
 ```
 
-**digitalDLSorteR** depends on **digitalDLSorteRdata** data package as it makes available pre-trained context-specific models deconvolution and other data needed for tests and examples. Therefore, it must be installed together with **digitalDLSorteR** as one of its dependencies.
+**digitalDLSorteR** depends on **digitalDLSorteRdata** and **digitalDLSorteRmodels** data packages as they make pre-trained context-specific models deconvolution and other data needed for tests and examples available. Therefore, they must be installed together with **digitalDLSorteR** as one of its dependencies. To do so, the following code before using any of these functionalities should be enough to install the packages from GitHub once **digitalDLSorteR** has been installed:
+
+```r
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  install.packages("digitalDLSorteRdata")
+}
+if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
+  install.packages("digitalDLSorteRmodels")
+}
+```
 
 ## Rationale of **digitalDLSorteR**
 
@@ -34,14 +43,16 @@ This algorithm consists of training Deep Neural Network (DNN) models with simula
 
 The package has two main ways of usage:
 
-1. Using pre-trained models included in `digitalLDSorteRdata` package to deconvolute new bulk RNA-Seq samples from the same environment. So far, the available models allow to deconvolute samples from human breast cancer ([GSE75688](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688) from [Chung et al., 2017](https://www.nature.com/articles/ncomms15081) used as reference), and colorectal cancer ([GSE81861](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861) from [Li et al., 2017](https://www.nature.com/articles/ng.3818) used as reference). For more details about this workflow, please see `vignette(digitalDLSorteR)` or . Moreover, in the panel A of the figure below it is summarized.
-2. Building new deconvolution models from pre-characterized scRNA-Seq datasets. This workflow involves some requirements regarding computational resources, although **digitalDLSorteR** has been developed to provide with all the possible facilities to make the process easier, such as batch processing of data and the use of the `HDF5Array` and `DelayedArray` packages. For more information about this workflow, see `vignette(digitalDLSorteR)`. Moreover, the main steps are summarized in the panel B of the figure below.
+1. Using pre-trained models included in `digitalLDSorteRmodels` package to deconvolute new bulk RNA-Seq samples from the same environment. So far, the available models allow to deconvolute samples from human breast cancer ([GSE75688](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688) from [Chung et al., 2017](https://www.nature.com/articles/ncomms15081) used as reference), and colorectal cancer ([GSE81861](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861) from [Li et al., 2017](https://www.nature.com/articles/ng.3818) used as reference). For more details about this workflow, please see `vignette(digitalDLSorteR)` or . Moreover, in the panel A of the figure below it is summarized.
+2. Building new deconvolution models from pre-characterized scRNA-Seq datasets. This workflow involves some requirements regarding computational resources, although **digitalDLSorteR** has been developed to provide with all the possible facilities to make the process easier, such as batch processing of data and the use of the `HDF5Array` and `DelayedArray` packages. For more information about this workflow, see `vignette(digitalDLSorteR)` at <https://diegommcc.github.io/digitalDLSorteR/>. Moreover, the main steps are summarized in the panel B of the figure below.
 
 <img src="man/figures/workflow_readme.png"/>
 
 ## Final remarks
 
 * Regarding available pre-trained models, new models coming soon! Of course, you can build your own models and even contribute to **digitalDLSorteR** making them available. Contact us to incude them in the package!
+* The pre-trained context-specific deconvolution models are available in the **digitalDLSorteRmodels** R package (<https://github.com/diegommcc/digitalDLSorteRmodels>)
+* The used data for examples and the vignette are available in the **digitalDLSorteRdata** R package (<https://github.com/diegommcc/digitalDLSorteRdata>)
 * Report bugs at <https://github.com/diegommcc/digitalDLSorteR/issues>
 * Contributions and suggestions are welcome!
 

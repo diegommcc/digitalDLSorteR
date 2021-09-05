@@ -28,6 +28,12 @@ The model to be shown has been built with data from @Li2017 ([GSE81861](https://
 ```{r}
 suppressMessages(library(ggplot2))
 suppressMessages(library(digitalDLSorteR))
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+    install.packages(
+    "digitalDLSorteRdata", 
+    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+  )
+}
 suppressMessages(library(digitalDLSorteRdata))
 data(DDLSLiComp.list)
 DDLSLiComp <- listToDDLS(DDLSLiComp.list)
