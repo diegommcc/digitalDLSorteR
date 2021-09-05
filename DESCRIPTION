@@ -12,7 +12,6 @@ License: GPL-3
 URL: https://diegommcc.github.io/digitalDLSorteR/, https://github.com/diegommcc/digitalDLSorteR
 BugReports: https://github.com/diegommcc/digitalDLSorteR/issues
 Encoding: UTF-8
-LazyData: true
 Depends: 
     R (>= 4.0.0)
 Imports:

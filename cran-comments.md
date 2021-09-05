@@ -1,7 +1,7 @@
 ## Test environments
 * local Ubuntu 20.04, R 4.1.0
 * local macOS BigSur 11.4, R 4.1.0
-* macOS, Ubuntu 20.04 and Windows 10 on Github Actions
+* macOS, Windows 10, and Ubuntu 20.04 (R release and devel) on Github Actions
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
@@ -23,8 +23,8 @@ trainDigitalDLSorterModel: no visible binding for '<<-' assignment to
   '<<-' assigment used in trainDigitalDLSorterModel function to assign a 
   function to a variable depending on 'on.the.fly' argument.
 
-In case digitalDLSorteRdata and/or digitalDLSorteRmodels are not installed, 
-there will be one more note:
+In case digitalDLSorteRdata and/or digitalDLSorteRmodels (the data packages for 
+digitalDLSorteR) are not installed, there will be one more note:
 
 * checking package dependencies ... NOTE
   Packages suggested but not available for checking:
