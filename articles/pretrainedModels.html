@@ -111,7 +111,7 @@
 
     
     
-<p><strong>digitalDLSorteR</strong> offers the possibility to use pre-trained context-specific deconvolution models included in <strong>digitalDLSorteRdata</strong> package (<a href="https://github.com/diegommcc/digitalDLSorteRdata" class="external-link uri">https://github.com/diegommcc/digitalDLSorteRdata</a>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use <strong>digitalDLSorteR</strong> and only requires loading into R a raw bulk RNA-Seq matrix with genes as rows (annotated as <em>SYMBOL</em>) and samples as columns, and selecting the desired model. This is done by the <code>deconvDigitalDLSorter</code> function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. After the process, estimated cell composition of each sample can be explored as a bar chart using the <code>barPlotCellTypes</code> function (workflow summarized in the figure below).</p>
+<p><strong>digitalDLSorteR</strong> offers the possibility to use pre-trained context-specific deconvolution models included in <strong>digitalDLSorteRmodels</strong> package (<a href="https://github.com/diegommcc/digitalDLSorteRmodels" class="external-link uri">https://github.com/diegommcc/digitalDLSorteRmodels</a>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use <strong>digitalDLSorteR</strong> and only requires loading into R a raw bulk RNA-Seq matrix with genes as rows (annotated as <em>SYMBOL</em>) and samples as columns, and selecting the desired model. This is done by the <code>deconvDigitalDLSorter</code> function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. After the process, estimated cell composition of each sample can be explored as a bar chart using the <code>barPlotCellTypes</code> function (workflow summarized in the figure below).</p>
 <div class="figure">
 <img src="workflow_pretrained_models.png" alt="**Workflow to use pre-trained models**" width="811"><p class="caption">
 <strong>Workflow to use pre-trained models</strong>
@@ -145,6 +145,21 @@
 <p>The following code chunk shows an example using <code>breast.chung.generic</code> model and a small portion of data from The Cancer Genome Atlas (TCGA) project <span class="citation">(Koboldt et al. 2012; Ciriello et al. 2015)</span> loaded from <code>digitalDLSorteRdata</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diegommcc.github.io/digitalDLSorteR/" class="external-link">digitalDLSorteR</a></span><span class="op">)</span><span class="op">)</span>
+<span class="co"># to load pre-trained models</span>
+<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"digitalDLSorteRmodels"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span>
+    <span class="st">"digitalDLSorteRmodels"</span>, 
+    repos <span class="op">=</span> <span class="st">"https://diegommcc.github.io/digitalDLSorteRmodelsRepo/"</span>
+  <span class="op">)</span>
+<span class="op">}</span>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diegommcc/digitalDLSorteRmodels" class="external-link">digitalDLSorteRmodels</a></span><span class="op">)</span><span class="op">)</span>
+<span class="co"># data for example</span>
+<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"digitalDLSorteRdata"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span>
+    <span class="st">"digitalDLSorteRdata"</span>, 
+    repos <span class="op">=</span> <span class="st">"https://diegommcc.github.io/digitalDLSorteRdataRepo/"</span>
+  <span class="op">)</span>
+<span class="op">}</span>
 <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diegommcc/digitalDLSorteRdata" class="external-link">digitalDLSorteRdata</a></span><span class="op">)</span><span class="op">)</span>
 <span class="co"># disable eager execution for compatibility issues</span>
 <span class="fu">tensorflow</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/tensorflow/man/tf.html" class="external-link">tf</a></span><span class="op">$</span><span class="va">compat</span><span class="op">$</span><span class="va">v1</span><span class="op">$</span><span class="fu">disable_eager_execution</span><span class="op">(</span><span class="op">)</span>
