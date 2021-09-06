@@ -60,7 +60,7 @@ setClassUnion(name = "KerasTrainOrNULL",
 #'
 #' @references Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq
-#'   data. Frontiers in Genetics 10, 978. doi: \url{10.3389/fgene.2019.00978}
+#'   data. Frontiers in Genetics 10, 978. doi: \doi{10.3389/fgene.2019.00978}
 #'
 #' @export ProbMatrixCellTypes
 #'   
@@ -510,8 +510,7 @@ setMethod(
 # make github repositories available (data packages)
 .onLoad <- function(libname, pkgname) {
   repos = getOption("repos")
-  repos["github_data"] = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
-  repos["github_models"] = "https://diegommcc.github.io/digitalDLSorteRmodelsRepo/"
+  repos["github"] = "https://diegommcc.github.io/digitalDLSorteRmodelsRepo/"
   options(repos = repos)
   invisible(repos)
 }

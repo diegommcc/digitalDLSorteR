@@ -73,22 +73,33 @@ NULL
 #' @seealso \code{\link{simSCProfiles}}
 #'
 #' @examples
-#' \dontrun{
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   library(digitalDLSorteRdata)
-#'   data(DDLSChung.list)
-#'   DDLSChung <- listToDDLS(DDLSChung.list)
-#'   DDLSChung <- estimateZinbwaveParams(
-#'     object = DDLSChung,
-#'     cell.ID.column = "Cell_ID",
-#'     gene.ID.column = "external_gene_name",
-#'     cell.type.column = "Cell_type",
-#'     cell.cov.columns = c("Patient", "Sample_type"),
-#'     gene.cov.columns = "gene_length",
-#'     verbose = TRUE
+#' sce <- SingleCellExperiment::SingleCellExperiment(
+#'   matrix(
+#'     rpois(30, lambda = 5), nrow = 15, ncol = 10, 
+#'     dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(10)))
+#'   ),
+#'   colData = data.frame(
+#'     Cell_ID = paste0("RHC", seq(10)),
+#'     Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10, 
+#'                        replace = TRUE)
+#'   ),
+#'   rowData = data.frame(
+#'     Gene_ID = paste0("Gene", seq(15))
 #'   )
-#' }
-#' }
+#' )
+#' DDLS <- loadSCProfiles(
+#'   single.cell.data = sce,
+#'   cell.ID.column = "Cell_ID",
+#'   gene.ID.column = "Gene_ID"
+#' )
+#' DDLS <- estimateZinbwaveParams(
+#'   object = DDLS,
+#'   cell.type.column = "Cell_Type",
+#'   cell.ID.column = "Cell_ID",
+#'   gene.ID.column = "Gene_ID", 
+#'   subset.cells = 4,
+#'   verbose = TRUE
+#' )
 #'
 #' @references Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
 #'   and flexible method for signal extraction from single-cell RNA-seq data.
@@ -154,7 +165,7 @@ estimateZinbwaveParams <- function(
     y = c("cell.ID.column", "cell.type.column")
   )
   # check if cell type variable has at least two levels
-  if (length(unique(list.data[[2]][, cell.type.column])) <= 2) 
+  if (length(unique(list.data[[2]][, cell.type.column])) < 2) 
     stop("'cell.type.column' must have 2 or more unique elements")  
   # if cell.cov.columns is provided, check if everything is correct
   if (!(missing(cell.cov.columns) || is.null(cell.cov.columns))) {
@@ -172,12 +183,11 @@ estimateZinbwaveParams <- function(
     lapply(
       X = cell.cov.columns,
       FUN = function(x) {
-        if (length(unique(list.data[[2]][, x])) <= 2) 
+        if (length(unique(list.data[[2]][, x])) < 2) 
           stop(x, " must have 2 or more unique elements")
       }
     )
   }
-  
   # if gene.cov.columns is provided, check if everything is correct
   if (!(missing(gene.cov.columns) || is.null(gene.cov.columns))) {
     lapply(
@@ -194,7 +204,7 @@ estimateZinbwaveParams <- function(
     lapply(
       gene.cov.columns,
       function(x) {
-        if (length(unique(list.data[[3]][, x])) <= 2) 
+        if (length(unique(list.data[[3]][, x])) < 2) 
           stop(x, " must have 2 or more unique elements")
       }
     )
@@ -273,7 +283,8 @@ estimateZinbwaveParams <- function(
     sdm <- model.matrix(
       formula.cell.model,
       data = list.data[[2]][match(colnames(list.data[[1]]),
-                                  list.data[[2]][, cell.ID.column]), ]
+                                  list.data[[2]][, cell.ID.column]), , 
+                            drop = FALSE]
     )
     sdm.ncol <- ncol(sdm)
     sdm.colnames <- colnames(sdm)
@@ -311,9 +322,9 @@ estimateZinbwaveParams <- function(
       }
     }
     cell.IDs <- list.data[[2]][which(list.data[[2]][, cell.type.column] == set.type),
-                               cell.ID.column]
-    list.data[[2]] <- list.data[[2]][cell.IDs, ]
-    list.data[[1]] <- list.data[[1]][, cell.IDs]
+                               cell.ID.column, drop = FALSE]
+    list.data[[2]] <- list.data[[2]][cell.IDs, , drop = FALSE]
+    list.data[[1]] <- list.data[[1]][, cell.IDs, drop = FALSE]
     # subset of cells
     if (!is.null(subset.cells)) {
       list.data <- .reduceDataset(
@@ -329,7 +340,8 @@ estimateZinbwaveParams <- function(
     sdm <- model.matrix(
       formula.cell.model,
       data = list.data[[2]][match(colnames(list.data[[1]]),
-                                  list.data[[2]][, cell.ID.column]), ]
+                                  list.data[[2]][, cell.ID.column]), , 
+                            drop = FALSE]
     )
     sdm.ncol <- ncol(sdm)
     sdm.colnames <- colnames(sdm)
@@ -343,7 +355,8 @@ estimateZinbwaveParams <- function(
       message("=== Create gene model matrix without gene covariates\n")
     gdm <- model.matrix(
       ~ 1, data = list.data[[3]][match(rownames(list.data[[1]]),
-                                       list.data[[3]][, gene.ID.column]), ]
+                                       list.data[[3]][, gene.ID.column]), ,
+                                 drop = FALSE]
     )
   } else {
     formula.gene.model <- as.formula(
@@ -357,7 +370,7 @@ estimateZinbwaveParams <- function(
     gdm <- model.matrix(formula.gene.model,
                         data = list.data[[3]][match(
                           rownames(list.data[[1]]), 
-                          list.data[[3]][, gene.ID.column]), ])
+                          list.data[[3]][, gene.ID.column]), , drop = FALSE])
   }
   rownames(gdm) <- rownames(list.data[[1]])
   if (verbose) {
@@ -408,7 +421,7 @@ estimateZinbwaveParams <- function(
   if (verbose) {
     message("\nDONE")
     end_time <- Sys.time()
-    message("\nInvested time: ", round(end_time - start_time, 2), " mins")
+    message("\nInvested time: ", round(end_time - start_time, 2))
   }
   return(object)
 }
@@ -710,21 +723,41 @@ estimateZinbwaveParams <- function(
 #'
 #' @seealso \code{\link{estimateZinbwaveParams}}
 #'
-#' @examples
-#' \dontrun{
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   library(digitalDLSorteRdata)
-#'   data(DDLSChung.list)
-#'   DDLSChung <- listToDDLS(DDLSChung.list)
-#'   DDLSChung <- simSCProfiles(
-#'     object = DDLSChung,
-#'     cell.ID.column = "Cell_ID",
-#'     cell.type.column = "Cell_type",
-#'     n.cells = 1,
-#'     verbose = TRUE
+#' @examples 
+#' sce <- SingleCellExperiment::SingleCellExperiment(
+#'   matrix(
+#'     rpois(30, lambda = 5), nrow = 15, ncol = 10, 
+#'     dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(10)))
+#'   ),
+#'   colData = data.frame(
+#'     Cell_ID = paste0("RHC", seq(10)),
+#'     Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10, 
+#'                        replace = TRUE)
+#'   ),
+#'   rowData = data.frame(
+#'     Gene_ID = paste0("Gene", seq(15))
 #'   )
-#' }
-#' }
+#' )
+#' DDLS <- loadSCProfiles(
+#'   single.cell.data = sce,
+#'   cell.ID.column = "Cell_ID",
+#'   gene.ID.column = "Gene_ID"
+#' )
+#' DDLS <- estimateZinbwaveParams(
+#'   object = DDLS,
+#'   cell.type.column = "Cell_Type",
+#'   cell.ID.column = "Cell_ID",
+#'   gene.ID.column = "Gene_ID", 
+#'   subset.cells = 4,
+#'   verbose = FALSE
+#' )
+#' DDLS <- simSCProfiles(
+#'   object = DDLS,
+#'   cell.ID.column = "Cell_ID",
+#'   cell.type.column = "Cell_Type",
+#'   n.cells = 2,
+#'   verbose = TRUE
+#' )
 #'
 #' @references Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
 #'   and flexible method for signal extraction from single-cell RNA-seq data.

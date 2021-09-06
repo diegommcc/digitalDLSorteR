@@ -94,22 +94,33 @@ function from the \pkg{zinbwave} package (Risso et al., 2018). For more
 details about the model, see Risso et al., 2018.
 }
 \examples{
-\dontrun{
-if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  library(digitalDLSorteRdata)
-  data(DDLSChung.list)
-  DDLSChung <- listToDDLS(DDLSChung.list)
-  DDLSChung <- estimateZinbwaveParams(
-    object = DDLSChung,
-    cell.ID.column = "Cell_ID",
-    gene.ID.column = "external_gene_name",
-    cell.type.column = "Cell_type",
-    cell.cov.columns = c("Patient", "Sample_type"),
-    gene.cov.columns = "gene_length",
-    verbose = TRUE
+sce <- SingleCellExperiment::SingleCellExperiment(
+  matrix(
+    rpois(30, lambda = 5), nrow = 15, ncol = 10, 
+    dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(10)))
+  ),
+  colData = data.frame(
+    Cell_ID = paste0("RHC", seq(10)),
+    Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10, 
+                       replace = TRUE)
+  ),
+  rowData = data.frame(
+    Gene_ID = paste0("Gene", seq(15))
   )
-}
-}
+)
+DDLS <- loadSCProfiles(
+  single.cell.data = sce,
+  cell.ID.column = "Cell_ID",
+  gene.ID.column = "Gene_ID"
+)
+DDLS <- estimateZinbwaveParams(
+  object = DDLS,
+  cell.type.column = "Cell_Type",
+  cell.ID.column = "Cell_ID",
+  gene.ID.column = "Gene_ID", 
+  subset.cells = 4,
+  verbose = TRUE
+)
 
 }
 \references{

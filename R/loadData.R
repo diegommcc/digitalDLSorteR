@@ -340,7 +340,8 @@ NULL
     )
   }
   genes.metadata <- genes.metadata[match(rownames(counts), 
-                                         genes.metadata[, gene.ID.column]), ]
+                                         genes.metadata[, gene.ID.column]), , 
+                                   drop = FALSE]
   # removing genes without any expression
   row.zero <- Matrix::rowSums(counts) > 0
   if (!all(row.zero)) {
@@ -372,7 +373,6 @@ NULL
   }
   genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
                                      rownames(counts), , drop = FALSE]
-  
   return(list(counts, genes.metadata))
 }
 
@@ -464,10 +464,12 @@ NULL
   if (!missing(cell.ID.column) && new.data) {
     # check if given IDs exist in cells.metadata. In cells.metadata is not
     # necessary because the data are provided from an SCE object
-    .checkColumn(metadata = cells.metadata,
-                 ID.column = cell.ID.column,
-                 type.metadata = "cells.metadata",
-                 arg = "cell.ID.column")
+    .checkColumn(
+      metadata = cells.metadata,
+      ID.column = cell.ID.column,
+      type.metadata = "cells.metadata",
+      arg = "cell.ID.column"
+    )
   }
   # extract count matrix
   if (length(SummarizedExperiment::assays(SCEobject)) == 0) {
@@ -713,20 +715,29 @@ NULL
 #'   \code{\link{generateBulkCellMatrix}}
 #'
 #' @examples
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   library(digitalDLSorteRdata)
-#'   data(DDLSChung.list)
-#'   DDLSChung <- listToDDLS(DDLSChung.list)
-#'   sc.chung.breast <- single.cell.real(DDLSChung)
-#'   DDLSChungSmall <- loadSCProfiles(
-#'     single.cell.data = sc.chung.breast,
-#'     cell.ID.column = "Cell_ID",
-#'     gene.ID.column = "external_gene_name",
-#'     min.cells = 0,
-#'     min.counts = 0,
-#'     project = "Chung_example"
+#' sce <- SingleCellExperiment::SingleCellExperiment(
+#'   matrix(
+#'     rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+#'     dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
+#'   ),
+#'   colData = data.frame(
+#'     Cell_ID = paste0("RHC", seq(30)),
+#'     Cell_Type = sample(x = paste0("CellType", seq(4)), size = 30, 
+#'                        replace = TRUE)
+#'   ),
+#'   rowData = data.frame(
+#'     Gene_ID = paste0("Gene", seq(40))
 #'   )
-#' }
+#' )
+#' DDLS <- loadSCProfiles(
+#'   single.cell.data = sce,
+#'   cell.ID.column = "Cell_ID",
+#'   gene.ID.column = "Gene_ID",
+#'   min.cells = 0,
+#'   min.counts = 0,
+#'   project = "Simul_example"
+#' )
+#'   
 loadSCProfiles <- function(
   single.cell.data,
   cell.ID.column,

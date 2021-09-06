@@ -76,6 +76,7 @@ of cell types present in samples (\code{nCellTypes}). See the \code{facet.by}
 argument and examples for more information.
 }
 \examples{
+\dontrun{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
   data(DDLSLi.list)
@@ -98,6 +99,8 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     log2 = TRUE
   )
 }
+}
+
 }
 \seealso{
 \code{\link{calculateEvalMetrics}} \code{\link{corrExpPredPlot}}

@@ -42,6 +42,7 @@ Generate bar error plots by cell type (\code{CellType}) or by number of
 different cell types (\code{nCellTypes}) on test pseudo-bulk samples.
 }
 \examples{
+\dontrun{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
   data(DDLSLi.list)
@@ -60,6 +61,8 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     by = "nCellTypes"
   )
 }
+}
+
 }
 \seealso{
 \code{\link{calculateEvalMetrics}} \code{\link{corrExpPredPlot}}

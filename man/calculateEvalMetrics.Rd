@@ -36,6 +36,7 @@ from the evaluation). The evaluation metrics will be available in the
 the \code{\linkS4class{DigitalDLSorter}} object).
 }
 \examples{
+\dontrun{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
   data(DDLSLi.list)
@@ -43,6 +44,7 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   DDLSLi <- calculateEvalMetrics(
     object = DDLSLi
   )
+}
 }
 
 }

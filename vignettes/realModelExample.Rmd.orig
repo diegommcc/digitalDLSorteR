@@ -50,7 +50,7 @@ DDLSLiComp <- calculateEvalMetrics(DDLSLiComp)
 
 With `distErrorPlot`, we can plot in different ways how errors are distributed. In this case, we can see the absolute error (`AbsErr`) by cell type (`CellType`). CD4 T cell proportions are predicted worse than the other cell types, but still have a median error closse to zero. 
 
-```{r distErr1}
+```{r distErr1_realModelExample}
 distErrorPlot(
   DDLSLiComp,
   error = "AbsErr",
@@ -64,14 +64,14 @@ distErrorPlot(
 
 In order to see the mean error values, we can check it with `barErrorPlot`:
 
-```{r}
+```{r barError_realModelExample}
 barErrorPlot(DDLSLiComp, error = "MAE", by = "CellType")
 ```
 
 
 Now, we can see in which proportions the model is failing more by changing the `x.by` argument to `"pBin"` and optionally setting `facet.by = "CellType"`:
 
-```{r distErr2}
+```{r distErr2_realModelExample}
 distErrorPlot(
   DDLSLiComp,
   x.by = "pBin",
@@ -80,6 +80,9 @@ distErrorPlot(
   type = "boxplot",
   size.point = 0.5
 )
+```
+
+```{r distErr3_realModelExample}
 distErrorPlot(
   DDLSLiComp,
   x.by = "pBin",
@@ -91,13 +94,14 @@ distErrorPlot(
 )
 ```
 
+
 As can be seen, most of the failures in CD4 T cell proportions occurs at high proportions (between 0.5 and 1), and the mean absolute errors (`MAbsErr`) shown as annotations on each panel are very low in all the cases.
 
 ### Correlation between actual and expected proportions
 
 Another way to visualize how the model works is to use the `corrExpPredPlot` function. Like `distErrorPlot`, we can see how the proportions are correlated by different variables. Here, we can see the same trend observed above: the model performs worse estimating CD4 T cell proportions with the lowest concordance correlation and Pearson's coefficients ($R = 0.95$ and $CCC = 0.794$, respectively). In fact, we can observe that the model tends to under-estimate these proportions, although these values are still good. For the rest of cell types, the results show a very good performance with high coefficients (between 0.97 and 0.99).
 
-```{r corr1}
+```{r corr1_realModelExample}
 corrExpPredPlot(
   DDLSLiComp,
   color.by = "CellType",
@@ -109,7 +113,7 @@ corrExpPredPlot(
 
 It is very important to note that these results only show the estimated proportions of pseudo-bulk samples. If we don't filter out single-cell profiles, the results improve in general, showing that the model is able to deal with pure samples as well.
 
-```{r corr2}
+```{r corr2_realModelExample}
 corrExpPredPlot(
   DDLSLiComp,
   color.by = "CellType",
@@ -123,7 +127,7 @@ corrExpPredPlot(
 
 In the end, we can see the overall results without splitting the graph. As can be seen, both coefficients present also high values when all proportions are considered.
 
-```{r corr3}
+```{r corr3_realModelExample}
 corrExpPredPlot(
   DDLSLiComp,
   color.by = "CellType",
@@ -138,7 +142,7 @@ corrExpPredPlot(
 The last way to graphically represent results is to use `blandAltmanLehPlot`. It generates a Bland-Altman agreement plot, a method for analyzing the level of agreement between two variables, in that case expected vs predicted cell proportions. As shown, most of the proportions fall close to zero (note the blue density lines) and the dashed red lineas are very close to the mean, although we can observe again the aforementioned problem in the estimate of T CD4 cell proportions. 
 
 
-```{r bland1}
+```{r bland1_realModelExample}
 blandAltmanLehPlot(
   DDLSLiComp, 
   color.by = "CellType",
@@ -150,7 +154,7 @@ blandAltmanLehPlot(
 
 Finally, we can generate the same plot but spliting the information by the number of different cell types present in each pseudo-bulk sample. The smaller the number of cell types, the larger the error made by the model. In any case, considering the results from `distErrorPlot` and `corrExpPredPlot`, we can conclude that the model performs well on the test data.
 
-```{r bland2}
+```{r bland2_realModelExample}
 blandAltmanLehPlot(
   DDLSLiComp, 
   color.by = "nCellTypes",
@@ -184,7 +188,7 @@ DDLSLiComp <- loadDeconvData(
 
 Then, with the `deconvDigitalDLSorterObj` function, these new samples can be deconvoluted into the cell types considered by the model and the predicted proportions can be represented by the `barPlotCellTypes` function. 
 
-```{r, warning=FALSE}
+```{r barPlotResults_realModelExample, warning=FALSE}
 DDLSLiComp <- deconvDigitalDLSorterObj(
   object = DDLSLiComp, 
   name.data = "TCGA.colon",
@@ -195,7 +199,7 @@ barPlotCellTypes(DDLSLiComp,  name.data = "TCGA.colon", rm.x.text = TRUE)
 
 As the total number of samples is too high, we can see the results of some samples by taking the matrix with the proportions and ploting 20 random samples with `barPlotCellTypes`:
 
-```{r}
+```{r barPlotResults20_realModelExample}
 set.seed(12345)
 resDeconvTCGA <- deconv.results(DDLSLiComp, "TCGA.colon")
 barPlotCellTypes(
@@ -206,7 +210,7 @@ barPlotCellTypes(
 
 Finally, to check whether the predicted estimates make sense with the type of sample they come from (metastatic, normal, primary and recurrent), we will inspect the predicted proportions of tumor cells, epithelial cells and fibroblasts.
 
-```{r, fig.width=10, fig.height=4}
+```{r boxplotsTypes_realModelExample, fig.width=10, fig.height=4}
 dfProp <- data.frame(
   Sample = rownames(resDeconvTCGA),
   CRC = resDeconvTCGA[, "CRC"],

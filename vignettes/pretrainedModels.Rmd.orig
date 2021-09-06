@@ -96,7 +96,7 @@ head(deconvResults)
 
 `deconvDigitalDLSorter` returns a data frame with the samples as rows ($k$) and the cell types considered by the model as columns ($j$). Each entry corresponds to the proportion of cell type $k$ in sample $i$. To visually evaluate these results using a bar chart, you can use the `barplotCellTypes` function as follows:
 
-```{r resultsDeconvTCGA}
+```{r resultsDeconvTCGA_pretrainedModels}
 barPlotCellTypes(
   deconvResults, 
   color.line = "black",
@@ -106,7 +106,7 @@ barPlotCellTypes(
 
 Finally, `deconvDigitalDLSorterObj` also offers two parameters in case you want to simplify the results by aggregating cell proportions of similar cell types: `simplify.set` and `simplify.majority`. For instance, we can summarize dendritic cells (DCs) and monocytes in the new class mononuclear phagocyte system (MPS) using `simplify.set` as follows:
 
-```{r, warning = FALSE}
+```{r resultsDeconvTCGASimpl_pretrainedModels, warning = FALSE}
 # deconvolution
 deconvResultsSum <- deconvDigitalDLSorter(
   data = TCGA.breast.small,

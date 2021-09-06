@@ -96,6 +96,7 @@ type (\code{CellType}) or number of cell types present in the samples
 details.
 }
 \examples{
+\dontrun{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
   data(DDLSLi.list)
@@ -119,6 +120,7 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     color.by = "CellType",
     error.label = TRUE
   )
+}
 }
 
 }

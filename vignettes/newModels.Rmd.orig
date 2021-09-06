@@ -54,7 +54,7 @@ The main steps needed to build new models are summarized as follows, although yo
 9. [Saving `DigitalDLSorter` object and trained models](#save)
 
 
-```{r workflowfull, fig.cap = "Workflow to build new context-specific deconvolution models", echo = FALSE}
+```{r workflowfull_newModels, fig.cap = "Workflow to build new context-specific deconvolution models", echo = FALSE}
 knitr::include_graphics("workflow_buiilding_models.png")
 ```
 
@@ -238,7 +238,7 @@ tail(getProbMatrix(DDLSToy, type.data = "train"))
 
 Moreover, the generated distributions can be plotted using the `showProbPlot` function:
 
-```{r showProbPlot}
+```{r showProbPlot_newModels}
 lapply(
   1:6, function(x) {
     showProbPlot(
@@ -337,7 +337,7 @@ Now, these results can ve plotted by the following battery of functions.
 
 The `distErrorPlot` function allows to plot how errors are distributed in different ways. Moreover, it allows to split the charts in different panels representing how the errors are distributed by a determined variable. The available variables are cell types (`CellType`) and number of cell types present in the samples (`nCellTypes`). In the following example, we will represent the overall errors by cell types.
 
-```{r distErr1}
+```{r distErr1_newModels}
 distErrorPlot(
   DDLSToy,
   error = "AbsErr",
@@ -351,7 +351,7 @@ distErrorPlot(
 
 Now, if you want to know if there is a bias toward a specific cell type, yo can use `facet.by` parameter to split the plot by cell type:
 
-```{r distErr2, warning=FALSE}
+```{r distErr2_newModels, warning=FALSE}
 distErrorPlot(
   DDLSToy,
   error = "AbsErr",
@@ -364,7 +364,7 @@ distErrorPlot(
 
 It is also possible to represent errors by number of different cell types in the samples: 
 
-```{r distErr3}
+```{r distErr3_newModels}
 distErrorPlot(
   DDLSToy,
   error = "AbsErr",
@@ -377,7 +377,7 @@ distErrorPlot(
 
 Finally, with `barErrorPlot`, the mean error values with their corresponding dispersion ranges can be plotted:
 
-```{r barError}
+```{r barError_newModels}
 barErrorPlot(DDLSToy, error = "MAE", by = "CellType")
 ```
 
@@ -387,7 +387,7 @@ barErrorPlot(DDLSToy, error = "MAE", by = "CellType")
 Ideally, the model should provide predictions that linearly match the actual proportions. Therefore, you can generate correlations plots to assess the model. By default, the Pearson's coefficient correlation ($R$) and the concordance correlation coefficient (CCC) are shown as annotations on the plots. The latter is a more realistic measure as it decreases as the points move away from the identity.
 
 
-```{r corr1}
+```{r corr1_newModels}
 corrExpPredPlot(
   DDLSToy,
   color.by = "CellType",
@@ -398,7 +398,7 @@ corrExpPredPlot(
 
 As in the previous case, the charts can be split according to different variables. Now, let's split results by `CellType` and `nCellTypes` as an example:
 
-```{r corr2}
+```{r corr2_newModels}
 corrExpPredPlot(
   DDLSToy,
   color.by = "CellType",
@@ -409,7 +409,7 @@ corrExpPredPlot(
 )
 ```
 
-```{r corr3}
+```{r corr3_newModels}
 corrExpPredPlot(
   DDLSToy,
   color.by = "CellType",
@@ -424,7 +424,7 @@ corrExpPredPlot(
 
 The `blandAltmanLehPlot` function allows to display Bland-Altman agreement plots. This is a kind of graphical method for comparing the level of agreement between two different sets of values. The differences between the predictions and the actual proportions are plotted against their means. The central dashed line represents the mean difference, while the two red dashed lines are the limits of agreement, which are defined as the mean difference plus and minus 1.96 times the standard deviation of the differences. 95% of the differences are expected to fall between these two limits, so the wider the margins, the worse the performance. It is also possible to show it in $log_2$ space.
 
-```{r bland1}
+```{r bland1_newModels}
 blandAltmanLehPlot(
   DDLSToy, 
   color.by = "CellType",
@@ -437,7 +437,7 @@ blandAltmanLehPlot(
 
 In addition, this function has the same behaviour as the previous ones, as it is possible to split the plots:
 
-```{r bland2}
+```{r bland2_newModels}
 blandAltmanLehPlot(
   DDLSToy, 
   color.by = "nCellTypes",
@@ -454,7 +454,7 @@ blandAltmanLehPlot(
 
 Once the model has been evaluated, new bulk RNA-seq data can be loaded into the object to be deconvoluted:
 
-```{r deconvoluteNewBulk}
+```{r deconvoluteNewBulk_newModels}
 suppressMessages(library(SummarizedExperiment, quietly = TRUE))
 se.TCGA <- SummarizedExperiment(assay = list(counts = TCGA.breast.small))
 
@@ -467,7 +467,7 @@ DDLSToy <- loadDeconvData(
 
 Then, with the `deconvDigitalDLSorterObj` function, these new samples can be deconvoluted into the cell types considered by the model and the predicted proportions can be represented by the `barPlotCellTypes` function. The cell composition matrix is stored in the `deconv.results` slot.
 
-```{r, warning=FALSE}
+```{r resultsBarPlot_newModels, warning=FALSE}
 DDLSToy <- deconvDigitalDLSorterObj(
   object = DDLSToy, 
   name.data = "TCGA.breast",

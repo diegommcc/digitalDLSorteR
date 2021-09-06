@@ -60,6 +60,7 @@ default.colors <- function() {
 #'   \code{\link{blandAltmanLehPlot}} \code{\link{barErrorPlot}}
 #'
 #' @examples
+#' \dontrun{
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   library(digitalDLSorteRdata)
 #'   data(DDLSLi.list)
@@ -67,6 +68,7 @@ default.colors <- function() {
 #'   DDLSLi <- calculateEvalMetrics(
 #'     object = DDLSLi
 #'   )
+#' }
 #' }
 #' 
 calculateEvalMetrics <- function(
@@ -328,6 +330,7 @@ se <- function(x) sqrt(var(x)/length(x))
 #'   \code{\link{blandAltmanLehPlot}} \code{\link{barErrorPlot}}
 #'
 #' @examples
+#' \dontrun{
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   library(digitalDLSorteRdata)
 #'   data(DDLSLi.list)
@@ -351,6 +354,7 @@ se <- function(x) sqrt(var(x)/length(x))
 #'     color.by = "CellType",
 #'     error.label = TRUE
 #'   )
+#' }
 #' }
 #' 
 distErrorPlot <- function(
@@ -564,6 +568,7 @@ distErrorPlot <- function(
 #'   \code{\link{blandAltmanLehPlot}} \code{\link{barErrorPlot}}
 #'
 #' @examples
+#' \dontrun{
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   library(digitalDLSorteRdata)
 #'   data(DDLSLi.list)
@@ -588,6 +593,8 @@ distErrorPlot <- function(
 #'     alpha.point = 0.3
 #'   )
 #' }
+#' }
+#' 
 corrExpPredPlot <- function(
   object,
   colors,
@@ -784,6 +791,7 @@ corrExpPredPlot <- function(
 #'   \code{\link{distErrorPlot}} \code{\link{barErrorPlot}}
 #'
 #' @examples
+#' \dontrun{
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   library(digitalDLSorteRdata)
 #'   data(DDLSLi.list)
@@ -806,6 +814,8 @@ corrExpPredPlot <- function(
 #'     log2 = TRUE
 #'   )
 #' }
+#' }
+#' 
 blandAltmanLehPlot <- function(
   object,
   colors,
@@ -903,8 +913,6 @@ blandAltmanLehPlot <- function(
   return(plot)
 }
 
-
-
 ################################################################################
 ############################### Bar error plot #################################
 ################################################################################
@@ -934,6 +942,7 @@ blandAltmanLehPlot <- function(
 #'   \code{\link{distErrorPlot}} \code{\link{blandAltmanLehPlot}}
 #'
 #' @examples
+#' \dontrun{
 #' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   library(digitalDLSorteRdata)
 #'   data(DDLSLi.list)
@@ -952,6 +961,8 @@ blandAltmanLehPlot <- function(
 #'     by = "nCellTypes"
 #'   )
 #' }
+#' }
+#' 
 barErrorPlot <- function(
   object,
   error = "MSE",

@@ -85,6 +85,7 @@ displayed as an annotation on the plots. See the \code{corr} argument for
 details.
 }
 \examples{
+\dontrun{
 if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   library(digitalDLSorteRdata)
   data(DDLSLi.list)
@@ -109,6 +110,8 @@ if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     alpha.point = 0.3
   )
 }
+}
+
 }
 \seealso{
 \code{\link{calculateEvalMetrics}} \code{\link{distErrorPlot}}

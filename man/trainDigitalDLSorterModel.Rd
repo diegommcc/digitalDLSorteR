@@ -141,7 +141,7 @@ considered cell types.
 \dontrun{
 if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   install.packages(
-    "digitalDLSorteRdata", 
+    "digitalDLSorteRdata",
     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
   )
 }

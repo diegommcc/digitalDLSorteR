@@ -115,7 +115,7 @@ globalVariables(c(".dataForDNN", "<<-"))
 #' \dontrun{
 #' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
 #'   install.packages(
-#'     "digitalDLSorteRdata", 
+#'     "digitalDLSorteRdata",
 #'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
 #'   )
 #' }
@@ -946,9 +946,11 @@ deconvDigitalDLSorter <- function(
   } else if (!is(object = model, class2 = "DigitalDLSorterDNN")) {
       stop("'model' is not an object of DigitalDLSorterDNN class. Please ",
            "see available models in digitalDLSorteRdata package and ?deconvDigitalDLSorter")
-  } 
+  }
   model.dnn <- model
-  model.dnn <- .loadModelFromJSON(model.dnn)
+  if (is.list(model.dnn@model)) {
+    model.dnn <- .loadModelFromJSON(model.dnn)  
+  }
   # check data --> check if there are duplicated genes and aggregate
   results <- .deconvCore(
     deconv.counts = data,

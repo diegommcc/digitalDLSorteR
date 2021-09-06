@@ -1,54 +1,50 @@
-context("Loading scRNA-seq data into DigitalDLSorter object")
-
-if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  install.packages(
-    "digitalDLSorteRdata",
-    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
-  )
-}
-
-# loading data    
-library(digitalDLSorteRdata)
-data(DDLSLi.list)
-DDLSLi <- listToDDLS(DDLSLi.list)
-DDLSLi@single.cell.simul <- NULL
-DDLSLi@prob.cell.types <- NULL
-DDLSLi@bulk.simul <- NULL
-DDLSLi@trained.model <- NULL
+context("Loading scRNA-seq data into DigitalDLSorter object: loadData.R")
 
 ################################################################################
 ##################### From a SingleCellExperiment object #######################
 ################################################################################
-sceLiSmall <- single.cell.real(DDLSLi)
 
+sce <- SingleCellExperiment(
+  matrix(
+    rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+    dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
+  ),
+  colData = data.frame(
+    Cell_ID = paste0("RHC", seq(30)),
+    Cell_Type = sample(x = paste0("CellType", seq(4)), size = 30, replace = TRUE)
+  ),
+  rowData = data.frame(
+    Gene_ID = paste0("Gene", seq(40))
+  )
+)
 # errors related with wrong columns metadata
 test_that(
   desc = "Wrong metadata columns return errors", 
   code = {
     expect_error(
       loadSCProfiles(
-        single.cell.data = sceLiSmall,
-        cell.ID.column = "Cell_ID",
+        single.cell.data = sce,
+        cell.ID.column = "CellID",
         gene.ID.column = 1
       )
     )
     expect_error(
       suppressWarnings(loadSCProfiles(
-        single.cell.data = sceLiSmall,
+        single.cell.data = sce,
         cell.ID.column = "Cell_type",
         gene.ID.column = 2
       ))
     )
     expect_error(
       loadSCProfiles(
-        single.cell.data = sceLiSmall,
+        single.cell.data = sce,
         cell.ID.column = "non_existent_column",
         gene.ID.column = 2
       )
     )
     expect_error(
       loadSCProfiles(
-        single.cell.data = sceLiSmall,
+        single.cell.data = sce,
         cell.ID.column = "Cell_type",
         gene.ID.column = "non_existent_column"
       )
@@ -60,72 +56,85 @@ test_that(
 test_that(
   desc = "Catch errors related to min.counts and min.cells", 
   code = {
-    expect_error(loadSCProfiles(
-      single.cell.data = sceLiSmall,
-      cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
-      min.counts = -1,
-      min.cells = 1
-    ))
-    expect_error(loadSCProfiles(
-      single.cell.data = sceLiSmall,
-      cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
-      min.counts = 1,
-      min.cells = -1
-    ))
-    expect_error(loadSCProfiles(
-      single.cell.data = sceLiSmall,
-      cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
-      min.counts = 10e6,
-      min.cells = 10
-    ))
-    expect_error(loadSCProfiles(
-      single.cell.data = sceLiSmall,
-      cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
-      min.counts = 30,
-      min.cells = 440
-    ))
+    expect_error(
+      loadSCProfiles(
+        single.cell.data = sce,
+        cell.ID.column = "Cell_ID",
+        gene.ID.column = 1,
+        min.counts = -1,
+        min.cells = 1
+      ), 
+      regexp = "'min.counts' and 'min.cells' must be greater than or equal to zero"
+    )
+    expect_error(
+      loadSCProfiles(
+        single.cell.data = sce,
+        cell.ID.column = "Cell_ID",
+        gene.ID.column = 1,
+        min.counts = 1,
+        min.cells = -1
+      ), 
+      regexp = "'min.counts' and 'min.cells' must be greater than or equal to zero"
+    )
+    expect_error(
+      loadSCProfiles(
+        single.cell.data = sce,
+        cell.ID.column = "Cell_ID",
+        gene.ID.column = 1,
+        min.counts = 10e6,
+        min.cells = 10
+      ),
+      regexp = "Resulting count matrix after filtering using min.genes"
+    )
+    expect_error(
+      loadSCProfiles(
+        single.cell.data = sce,
+        cell.ID.column = "Cell_ID",
+        gene.ID.column = 1,
+        min.counts = 30,
+        min.cells = 440
+      ),
+      regexp = "Resulting count matrix after filtering using min.genes"
+    )
   }
 )
 
 test_that(
   desc = "Check if filtering works as expected", 
   code = {
-    counts.real <- assay(sceLiSmall)
-    min.counts <- 0
+    counts.real <- assay(sce)
+    min.counts <- 6
     min.cells <- 12
     counts <- counts.real[Matrix::rowSums(counts.real > min.counts) >= min.cells, ]
     DDLSFiltered <- loadSCProfiles(
-      single.cell.data = sceLiSmall,
+      single.cell.data = sce,
       cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
-      min.counts = 0,
-      min.cells = 12
+      gene.ID.column = 1,
+      min.counts = min.counts,
+      min.cells = min.cells
     )
     expect_equal(dim(counts), dim(single.cell.real(DDLSFiltered)))
-    expect_equal(counts, assay(single.cell.real(DDLSFiltered)))
+    expect_equal(
+      as.matrix(counts), as.matrix(assay(single.cell.real(DDLSFiltered)))
+    )
   }
 )
-
 
 test_that(
   desc = "Check if counts matrix is a sparse matrix object", 
   code = {
     DDLS1 <- loadSCProfiles(
-      single.cell.data = sceLiSmall,
+      single.cell.data = sce,
       cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
+      gene.ID.column = 1,
       min.counts = 0,
       min.cells = 0
     )
     DDLS2 <- loadSCProfiles(
-      single.cell.data = sceLiSmall,
+      single.cell.data = sce,
       cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
-      min.counts = 12,
+      gene.ID.column = 1,
+      min.counts = 6,
       min.cells = 12
     )
     expect_is(assay(single.cell.real(DDLS1)), class = "dgCMatrix")
@@ -139,87 +148,106 @@ test_that(
 test_that(
   desc = "Wrong SingleCellExperiment object", 
   code = {
-    counts <- single.cell.real(DDLSLi) %>% assay
+    counts <- assay(sce)
     # 1 - no rownames neither rowData: genes
-    countsNoGenes <- single.cell.real(DDLSLi) %>% assay
+    countsNoGenes <- assay(sce)
     rownames(countsNoGenes) <- NULL
     sceLiNoGenes <- SingleCellExperiment(
       assay = list(counts = countsNoGenes),
-      colData = colData(single.cell.real(DDLSLi))
+      colData = colData(sce)
     )
-    expect_error(loadSCProfiles(
-      single.cell.data = sceLiNoGenes,
-      cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
-      min.counts = 0,
-      min.cells = 0
-    ), regexp = "Count matrix must have rownames")
+    expect_error(
+      loadSCProfiles(
+        single.cell.data = sceLiNoGenes,
+        cell.ID.column = "Cell_ID",
+        gene.ID.column = 1,
+        min.counts = 0,
+        min.cells = 0
+      ), 
+      regexp = "Count matrix must have rownames"
+    )
     # 2 - no colnames neither colData: cells
-    countsNoCells <- assay(single.cell.real(DDLSLi))
+    countsNoCells <- assay(sce)
     colnames(countsNoCells) <- NULL
     sceLiNoCells <- SingleCellExperiment(
       assay = list(counts = countsNoCells),
-      rowData = rowData(single.cell.real(DDLSLi))
+      rowData = rowData(sce)
     )
-    expect_error(loadSCProfiles(
-      single.cell.data = sceLiNoCells,
-      cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
-      min.counts = 0,
-      min.cells = 0
-    ), regexp = "No data provided in colData slot")
+    expect_error(
+      loadSCProfiles(
+        single.cell.data = sceLiNoCells,
+        cell.ID.column = "Cell_ID",
+        gene.ID.column = 1,
+        min.counts = 0,
+        min.cells = 0
+      ), 
+      regexp = "No data provided in colData slot"
+    )
     # 3 - no rowData: genes
     sceLiRNoRowData <- SingleCellExperiment(
-      assay = list(counts = single.cell.real(DDLSLi) %>% assay),
-      colData = colData(single.cell.real(DDLSLi))
+      assay = list(counts =  assay(sce)),
+      colData = colData(sce)
     )
-    expect_error(loadSCProfiles(
-      single.cell.data = sceLiRNoRowData,
-      cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
-      min.counts = 0,
-      min.cells = 0
-    ), regexp = "No data provided in rowData slot")
+    expect_error(
+      loadSCProfiles(
+        single.cell.data = sceLiRNoRowData,
+        cell.ID.column = "Cell_ID",
+        gene.ID.column = 1,
+        min.counts = 0,
+        min.cells = 0
+      ), 
+      regexp = "No data provided in rowData slot"
+    )
     # 4 - no colnames: cells in matrix
-    dfCellsMetadata <- colData(single.cell.real(DDLSLi))
+    dfCellsMetadata <- colData(sce)
     rownames(dfCellsMetadata) <- NULL
+    sceC <- sce
+    colnames(sceC) <- NULL
     sceLiNoColNames <- SingleCellExperiment(
-      assay = list(counts = countsNoCells),
+      assay = list(counts = assay(sceC)),
       colData = dfCellsMetadata,
-      rowData = rowData(single.cell.real(DDLSLi))
+      rowData = rowData(sceC)
     )
-    expect_error(loadSCProfiles(
-      single.cell.data = sceLiNoColNames,
-      cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
-      min.counts = 0,
-      min.cells = 0
-    ), regexp = "Count matrix must have")
+    expect_error(
+      loadSCProfiles(
+        single.cell.data = sceLiNoColNames,
+        cell.ID.column = "Cell_ID",
+        gene.ID.column = 1,
+        min.counts = 0,
+        min.cells = 0
+      ), regexp = "Count matrix must have"
+    )
     # 5 - No matrix counts
     sceLiNoCounts <- SingleCellExperiment(
-      colData = colData(single.cell.real(DDLSLi)),
-      rowData = rowData(single.cell.real(DDLSLi))
+      colData = colData(sce),
+      rowData = rowData(sce)
     )
-    expect_error(loadSCProfiles(
-      single.cell.data = sceLiNoCounts,
-      cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
-      min.counts = 0,
-      min.cells = 0
-    ), regexp = "No count data in SingleCellExperiment object provided")
+    expect_error(
+      loadSCProfiles(
+        single.cell.data = sceLiNoCounts,
+        cell.ID.column = "Cell_ID",
+        gene.ID.column = 1,
+        min.counts = 0,
+        min.cells = 0
+      ), 
+      regexp = "No count data in SingleCellExperiment object provided"
+    )
     # 6 - More than one assay in SingleCellExperiment: warning, no error
     sceLiMoreThanOne <- SingleCellExperiment(
-      assay = list(counts = counts, log = log2(counts  + 1)),
-      colData = colData(single.cell.real(DDLSLi)),
-      rowData = rowData(single.cell.real(DDLSLi))
+      assay = list(counts = assay(sce), log = log2(assay(sce)  + 1)),
+      colData = colData(sce),
+      rowData = rowData(sce)
     )
-    expect_warning(loadSCProfiles(
-      single.cell.data = sceLiMoreThanOne,
-      cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
-      min.counts = 0,
-      min.cells = 0
-    ), regexp = "There is more than one assay, only the first will be used")
+    expect_warning(
+      loadSCProfiles(
+        single.cell.data = sceLiMoreThanOne,
+        cell.ID.column = "Cell_ID",
+        gene.ID.column = 1,
+        min.counts = 0,
+        min.cells = 0
+      ), 
+      regexp = "There is more than one assay, only the first will be used"
+    )
   }
 )
 
@@ -227,9 +255,9 @@ test_that(
   desc = "Check if loadSCProfiles works as expected", 
   code = {
     DDLS <- loadSCProfiles(
-      single.cell.data = sceLiSmall,
+      single.cell.data = sce,
       cell.ID.column = "Cell_ID",
-      gene.ID.column = 2,
+      gene.ID.column = 1,
       min.counts = 2,
       min.cells = 2
     )
@@ -427,7 +455,7 @@ test_that(
 )
 
 # behaviour of functions with hfd5 files
-if (requireNamespace("DelayedArray", quietly = TRUE) || 
+if (requireNamespace("DelayedArray", quietly = TRUE) &&
     requireNamespace("HDF5Array", quietly = TRUE)) {
   test_that(
     desc = "Check behaviour with HDF5 files", 
@@ -459,7 +487,8 @@ if (requireNamespace("DelayedArray", quietly = TRUE) ||
       )
       expect_true(file.exists(file))
       expect_s4_class(
-        object = single.cell.real(DDLS.tsv)@assays@data$counts, class = "HDF5Array"
+        object = single.cell.real(DDLS.tsv)@assays@data$counts, 
+        class = "HDF5Array"
       )
     }
   )

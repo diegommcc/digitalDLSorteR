@@ -105,29 +105,39 @@ NULL
 #'   \code{\linkS4class{ProbMatrixCellTypes}}
 #'
 #' @examples
-#' \dontrun{
-#' # generate a data.frame with frequency ranges of each cell type
-#' probMatrix <- data.frame(
-#'   Cell_type = c("ER+", "HER2+", "ER+ and HER2+", "TNBC",
-#'                 "Stromal", "Monocyte", "Tme", "BGC",
-#'                 "Bmem", "DC", "Macrophage", "TCD8", "Treg"),
-#'   from = c(rep(30, 4), 1, rep(1, 8)),
-#'   to = c(rep(70, 4), 50, rep(15, 8))
-#' )
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   library(digitalDLSorteRdata)
-#'   data(DDLSChung.list)
-#'   DDLSChung <- listToDDLS(DDLSChung.list)
-#'   DDLSChung <- generateBulkCellMatrix(
-#'     object = DDLSChung,
-#'     cell.type.column = "Cell_type",
-#'     cell.ID.column = "Cell_ID",
-#'     prob.design = probMatrix,
-#'     num.bulk.samples = 100,
-#'     verbose = TRUE
+#' # simulated data
+#' sce <- SingleCellExperiment::SingleCellExperiment(
+#'   matrix(
+#'     rpois(30, lambda = 5), nrow = 15, ncol = 10, 
+#'     dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(10)))
+#'   ),
+#'   colData = data.frame(
+#'     Cell_ID = paste0("RHC", seq(10)),
+#'     Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10, 
+#'                        replace = TRUE)
+#'   ),
+#'   rowData = data.frame(
+#'     Gene_ID = paste0("Gene", seq(15))
 #'   )
-#' }
-#' }
+#' )
+#' DDLS <- loadSCProfiles(
+#'   single.cell.data = sce,
+#'   cell.ID.column = "Cell_ID",
+#'   gene.ID.column = "Gene_ID"
+#' )
+#' probMatrixValid <- data.frame(
+#'   Cell_Type = paste0("CellType", seq(2)),
+#'   from = c(1, 30),
+#'   to = c(15, 70)
+#' )
+#' DDLS <- generateBulkCellMatrix(
+#'   object = DDLS,
+#'   cell.ID.column = "Cell_ID",
+#'   cell.type.column = "Cell_Type",
+#'   prob.design = probMatrixValid,
+#'   num.bulk.samples = 10,
+#'   verbose = TRUE
+#' )
 #' 
 #' @references Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq
@@ -1033,35 +1043,40 @@ setCount <- function(
 #'   \code{\link{trainDigitalDLSorterModel}}
 #'
 #' @examples
-#' \dontrun{
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   library(digitalDLSorteRdata)
-#'   data(DDLSLi.list)
-#'   DDLSLi <- listToDDLS(DDLSLi.list)
-#'   probMatrix <- data.frame(
-#'     Cell_Type = c("pB", "gB", "CD8Gn", "Mc", "M",
-#'                 "CD8Gp", "CD4", "Fb", "Ep", "CRC"),
-#'     from = c(rep(1, 8), 1, 30),
-#'     to = c(rep(15, 8), 50, 70)
+#' # simulated data
+#' sce <- SingleCellExperiment::SingleCellExperiment(
+#'   matrix(
+#'     rpois(30, lambda = 5), nrow = 15, ncol = 10,
+#'     dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(10)))
+#'   ),
+#'   colData = data.frame(
+#'     Cell_ID = paste0("RHC", seq(10)),
+#'     Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10, 
+#'                        replace = TRUE)
+#'   ),
+#'   rowData = data.frame(
+#'     Gene_ID = paste0("Gene", seq(15))
 #'   )
-#'   DDLSLi <- generateBulkCellMatrix(
-#'     object = DDLSLi,
-#'     cell.ID.column = "Cell_ID",
-#'     cell.type.column = "Cell_Type",
-#'     prob.design = probMatrix,
-#'     num.bulk.samples = 100,
-#'     verbose = FALSE
-#'   )
-#'   # loading all data in memory
-#'   DDLSLi <- simBulkProfiles(DDLSLi, type.data = "both")
-#'   # using HDF5 as backend
-#'   DDLSLi <- simBulkProfiles(
-#'     DDLSLi,
-#'     type.data = "both",
-#'     file.backend = "DDLSLi.bulk.simul.h5"
-#'   )
-#' }
-#' }
+#' )
+#' DDLS <- loadSCProfiles(
+#'   single.cell.data = sce,
+#'   cell.ID.column = "Cell_ID",
+#'   gene.ID.column = "Gene_ID"
+#' )
+#' probMatrixValid <- data.frame(
+#'   Cell_Type = paste0("CellType", seq(2)),
+#'   from = c(1, 30),
+#'   to = c(15, 70)
+#' )
+#' DDLS <- generateBulkCellMatrix(
+#'   object = DDLS,
+#'   cell.ID.column = "Cell_ID",
+#'   cell.type.column = "Cell_Type",
+#'   prob.design = probMatrixValid,
+#'   num.bulk.samples = 10,
+#'   verbose = TRUE
+#' )
+#' DDLS <- simBulkProfiles(DDLS, verbose = TRUE)
 #'
 #' @references Fischer B, Smith M and Pau, G (2020). rhdf5: R Interface to HDF5.
 #'   R package version 2.34.0.
