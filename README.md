@@ -11,7 +11,6 @@
 
 <br>
 
-
 The **digitalDLSorteR** R package provides a set of tools to deconvolute and infer cell type proportions of bulk RNA-Seq data through the development of context-specific deconvolution models based on Deep Learning and single-cell RNA-Seq (scRNA-Seq) data. These models are able to accurately enumerate and quantify cell proportions of bulk RNA-Seq data from specific biological environments. For more details about the algorithm and the functionalities implemented in this package, see [Torroja and Sanchez-Cabo, 2019](https://www.frontiersin.org/articles/10.3389/fgene.2019.00978/full), <https://diegommcc.github.io/digitalDLSorteR/>, and `vignette(digitalDLSorteR)`.
 
 ## Installation
@@ -24,27 +23,8 @@ if (!requireNamespace("devtools", quietly = TRUE))
 devtools::install_github("diegommcc/digitalDLSorteR")
 ```
 
-**digitalDLSorteR** depends on **digitalDLSorteRdata** and **digitalDLSorteRmodels** data packages as they make available pre-trained context-specific models deconvolution and other data needed for tests and examples. Therefore, they must be installed together with **digitalDLSorteR** as one of its dependencies. To do so, the following code should be enough to install the packages from GitHub once **digitalDLSorteR** has been installed:
+It depends on Tensorflow R package, so a working Python interpreter with the Tensorflow Python library installed is needed. See <https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html> for more details.
 
-```r
-if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  install.packages("digitalDLSorteRdata")
-}
-if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
-  install.packages("digitalDLSorteRmodels")
-}
-```
-
-Also, they can be installed using devtools as follows:
-
-```r
-if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  devtools::install_github("diegommcc/digitalDLSorteRdata")
-}
-if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
-  devtools::install_github("diegommcc/digitalDLSorteRmodels")
-}
-```
 
 ## Rationale of **digitalDLSorteR**
 
@@ -58,6 +38,32 @@ The package has two main ways of usage:
 2. Building new deconvolution models from pre-characterized scRNA-Seq datasets. This workflow involves some requirements regarding computational resources, although **digitalDLSorteR** has been developed to provide with all the possible facilities to make the process easier, such as batch processing of data and the use of the `HDF5Array` and `DelayedArray` packages. For more information about this workflow, see `vignette(digitalDLSorteR)` at <https://diegommcc.github.io/digitalDLSorteR/>. Moreover, the main steps are summarized in the panel B of the figure below.
 
 <img src="man/figures/workflow_readme.png"/>
+
+To use pre-trained context specific deconvolution models, **digitalDLSorteR** depends on **digitalDLSorteRmodels** data package as it makes available them. Therefore, it must be installed together with **digitalDLSorteR** if this functionality want to be used. To do so, the following code should be enough to install it from GitHub once **digitalDLSorteR** has been installed:
+
+```r
+if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
+  install.packages("digitalDLSorteRmodels")
+}
+```
+
+Also, it can be installed using devtools as follows:
+
+```r
+if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
+  devtools::install_github("diegommcc/digitalDLSorteRmodels")
+}
+```
+
+Once **digitalDLSorteRmodels** is loaded, the pre-trained models are available. See <https://diegommcc.github.io/digitalDLSorteR/articles/pretrainedModels.html> for some examples.
+
+In addition, some examples and the vignettes of **digitalDLSorteR** make use of pre-computed datasets from the **digitalDLSorteRdata** package. If you want to inspect these pre-computed _DigitalDLSorter_ objects, you can install the package from GitHub using devtools as follows. See <https://diegommcc.github.io/digitalDLSorteR/articles/realModelExample.html> for an example.
+
+```r
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  devtools::install_github("diegommcc/digitalDLSorteRdata")
+}
+```
 
 ## Final remarks
 

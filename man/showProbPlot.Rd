@@ -36,24 +36,6 @@ different cell types present in the samples by setting \code{type.plot =
 These plots are only for diagnostic purposes. This is the reason because they
 are generated without any parameter introduced by the user.
 }
-\examples{
-if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  library(digitalDLSorteRdata)
-  data(DDLSLi.list)
-  DDLSLi <- listToDDLS(DDLSLi.list)
-  lapply(
-    X = 1:6, FUN = function(x) {
-      showProbPlot(
-        DDLSLi,
-        type.data = "train",
-        set = x,
-        type.plot = "boxplot"
-      )
-    }
-  )
-}
-
-}
 \seealso{
 \code{\link{generateBulkCellMatrix}}
 }

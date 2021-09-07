@@ -8,7 +8,7 @@ context("Simulation of single-cell RNA-Seq profiles: simSingleCell.R")
 set.seed(123)
 sce <- SingleCellExperiment(
   matrix(
-    rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+    stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 
     dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
   ),
   colData = data.frame(
@@ -330,33 +330,46 @@ test_that(
 )
 
 # simSCProfiles: check parameters related to HDF5 files used as back-end
-if (requireNamespace("DelayedArray", quietly = TRUE) && 
-    requireNamespace("HDF5Array", quietly = TRUE)) {
-  test_that(
-    desc = paste("Using HDF5 files as back-end simSCProfiles: the following", 
-          "tests will write file in temp directory/files. Only available if", 
-          "DelayedArray and HDF5Array packages are installed"), 
-    code = {
-      # check if HDF5 file exists and if it is correct
-      single.cell.simul(DDLS) <- NULL
-      file <- tempfile()
-      expect_message(
-        DDLS <- simSCProfiles(
-          object = DDLS,
-          cell.ID.column = "Cell_ID",
-          cell.type.column = "Cell_Type",
-          n.cells = 10,
-          file.backend = file,
-          verbose = TRUE
-        ), 
-        regexp = "=== Writing data to HDF5 file"
-      )
-      expect_equal(dim(single.cell.simul(DDLS))[2], 10 * 4)
-      expect_true(file.exists(file))
-      expect_s4_class(object = counts(single.cell.simul(DDLS)), class = "HDF5Array")
-      # check if name.dataset.backend changes the name of dataset used
-      single.cell.simul(DDLS) <- NULL
+test_that(
+  desc = paste("Using HDF5 files as back-end simSCProfiles: the following", 
+        "tests will write file in temp directory/files. Only available if", 
+        "DelayedArray and HDF5Array packages are installed"), 
+  code = {
+    skip_if_not_installed("DelayedArray")
+    skip_if_not_installed("HDF5Array")
+    # check if HDF5 file exists and if it is correct
+    single.cell.simul(DDLS) <- NULL
+    file <- tempfile()
+    expect_message(
       DDLS <- simSCProfiles(
+        object = DDLS,
+        cell.ID.column = "Cell_ID",
+        cell.type.column = "Cell_Type",
+        n.cells = 10,
+        file.backend = file,
+        verbose = TRUE
+      ), 
+      regexp = "=== Writing data to HDF5 file"
+    )
+    expect_equal(dim(single.cell.simul(DDLS))[2], 10 * 4)
+    expect_true(file.exists(file))
+    expect_s4_class(object = counts(single.cell.simul(DDLS)), class = "HDF5Array")
+    # check if name.dataset.backend changes the name of dataset used
+    single.cell.simul(DDLS) <- NULL
+    DDLS <- simSCProfiles(
+      object = DDLS,
+      cell.ID.column = "Cell_ID",
+      cell.type.column = "Cell_Type",
+      n.cells = 10,
+      file.backend = file,
+      name.dataset.backend = "new.dataset",
+      verbose = FALSE
+    )
+    expect_true("new.dataset" %in% rhdf5::h5ls(file)[, "name"])
+    # cannot be used the same dataset in the same HDF5 file
+    single.cell.simul(DDLS) <- NULL
+    expect_error(
+      simSCProfiles(
         object = DDLS,
         cell.ID.column = "Cell_ID",
         cell.type.column = "Cell_Type",
@@ -365,35 +378,21 @@ if (requireNamespace("DelayedArray", quietly = TRUE) &&
         name.dataset.backend = "new.dataset",
         verbose = FALSE
       )
-      expect_true("new.dataset" %in% rhdf5::h5ls(file)[, "name"])
-      # cannot be used the same dataset in the same HDF5 file
-      single.cell.simul(DDLS) <- NULL
-      expect_error(
-        simSCProfiles(
-          object = DDLS,
-          cell.ID.column = "Cell_ID",
-          cell.type.column = "Cell_Type",
-          n.cells = 10,
-          file.backend = file,
-          name.dataset.backend = "new.dataset",
-          verbose = FALSE
-        )
-      )
-      # check if block.processing works
-      single.cell.simul(DDLS) <- NULL
-      expect_message(
-        DDLS <- simSCProfiles(
-          object = DDLS,
-          cell.ID.column = "Cell_ID",
-          cell.type.column = "Cell_Type",
-          n.cells = 10,
-          file.backend = file,
-          name.dataset.backend = "new.dataset.1",
-          block.processing = TRUE,
-          block.size = 5,
-          verbose = TRUE
-        ), regexp = "=== Simulating and writing new single-cell profiles by block"
-      )
-    }
-  )
-} 
+    )
+    # check if block.processing works
+    single.cell.simul(DDLS) <- NULL
+    expect_message(
+      DDLS <- simSCProfiles(
+        object = DDLS,
+        cell.ID.column = "Cell_ID",
+        cell.type.column = "Cell_Type",
+        n.cells = 10,
+        file.backend = file,
+        name.dataset.backend = "new.dataset.1",
+        block.processing = TRUE,
+        block.size = 5,
+        verbose = TRUE
+      ), regexp = "=== Simulating and writing new single-cell profiles by block"
+    )
+  }
+)

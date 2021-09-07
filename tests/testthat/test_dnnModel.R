@@ -1,5 +1,7 @@
 context("Training of deconvolution models (Deep Neural Networks): dnnModel.R")
 
+skip_if_not(.checkPythonDependencies(alert = "none"))
+
 # to make compatible with any computer --> disable eager execution
 tensorflow::tf$compat$v1$disable_eager_execution()
 
@@ -10,7 +12,7 @@ tensorflow::tf$compat$v1$disable_eager_execution()
 # simulating data
 sce <- SingleCellExperiment(
   matrix(
-    rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+    stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 
     dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
   ),
   colData = data.frame(
@@ -131,7 +133,6 @@ test_that(
         verbose = FALSE
       )
       DDLS <- simBulkProfiles(DDLS, verbose = FALSE)
-      # on.the.fly, batch.size and combine were done
       # change neural network architecture
       DDLS <- trainDigitalDLSorterModel(
         object = DDLS,
@@ -403,7 +404,7 @@ test_that(
     # simulating bulk samples
     se <- SummarizedExperiment(
       matrix(
-        rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
+        stats::rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
         nrow = 40, ncol = 15, 
         dimnames = list(paste0("Gene", seq(40)), paste0("Bulk", seq(15)))
       )
@@ -556,7 +557,7 @@ test_that(
     # recompile and use it to deconvolve new samples
     se <- SummarizedExperiment(
       matrix(
-        rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
+        stats::rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
         nrow = 40, ncol = 15, 
         dimnames = list(paste0("Gene", seq(40)), paste0("Bulk", seq(15)))
       )
@@ -618,7 +619,7 @@ test_that(
     )
     deconv.model <- trained.model(DDLS)
     countsBulk <- matrix(
-      rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
+      stats::rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
       nrow = 40, ncol = 15, 
       dimnames = list(paste0("Gene", seq(40)), paste0("Bulk", seq(15)))
     )
@@ -709,7 +710,7 @@ test_that(
     )
     se <- SummarizedExperiment(
       matrix(
-        rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
+        stats::rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
         nrow = 40, ncol = 15, 
         dimnames = list(paste0("Gene", seq(40)), paste0("Bulk", seq(15)))
       )
@@ -806,7 +807,7 @@ test_that(
     )
     deconv.model <- trained.model(DDLS)
     countsBulk <- matrix(
-      rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
+      stats::rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
       nrow = 40, ncol = 15, 
       dimnames = list(paste0("Gene", seq(40)), paste0("Bulk", seq(15)))
     )

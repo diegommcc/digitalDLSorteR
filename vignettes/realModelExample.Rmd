@@ -87,7 +87,7 @@ distErrorPlot(
 )
 ```
 
-![plot of chunk distErr1_realModelExample](figure/distErr1_realModelExample-1.png)
+![plot of chunk distErr1_realModelExample](distErr1_realModelExample-1.png)
 
 In order to see the mean error values, we can check it with `barErrorPlot`:
 
@@ -96,7 +96,7 @@ In order to see the mean error values, we can check it with `barErrorPlot`:
 barErrorPlot(DDLSLiComp, error = "MAE", by = "CellType")
 ```
 
-![plot of chunk barError_realModelExample](figure/barError_realModelExample-1.png)
+![plot of chunk barError_realModelExample](barError_realModelExample-1.png)
 
 
 Now, we can see in which proportions the model is failing more by changing the `x.by` argument to `"pBin"` and optionally setting `facet.by = "CellType"`:
@@ -113,7 +113,7 @@ distErrorPlot(
 )
 ```
 
-![plot of chunk distErr2_realModelExample](figure/distErr2_realModelExample-1.png)
+![plot of chunk distErr2_realModelExample](distErr2_realModelExample-1.png)
 
 
 ```r
@@ -128,7 +128,7 @@ distErrorPlot(
 )
 ```
 
-![plot of chunk distErr3_realModelExample](figure/distErr3_realModelExample-1.png)
+![plot of chunk distErr3_realModelExample](distErr3_realModelExample-1.png)
 
 
 As can be seen, most of the failures in CD4 T cell proportions occurs at high proportions (between 0.5 and 1), and the mean absolute errors (`MAbsErr`) shown as annotations on each panel are very low in all the cases.
@@ -152,7 +152,7 @@ corrExpPredPlot(
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![plot of chunk corr1_realModelExample](figure/corr1_realModelExample-1.png)
+![plot of chunk corr1_realModelExample](corr1_realModelExample-1.png)
 
 It is very important to note that these results only show the estimated proportions of pseudo-bulk samples. If we don't filter out single-cell profiles, the results improve in general, showing that the model is able to deal with pure samples as well.
 
@@ -172,7 +172,7 @@ corrExpPredPlot(
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![plot of chunk corr2_realModelExample](figure/corr2_realModelExample-1.png)
+![plot of chunk corr2_realModelExample](corr2_realModelExample-1.png)
 
 
 In the end, we can see the overall results without splitting the graph. As can be seen, both coefficients present also high values when all proportions are considered.
@@ -191,7 +191,7 @@ corrExpPredPlot(
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![plot of chunk corr3_realModelExample](figure/corr3_realModelExample-1.png)
+![plot of chunk corr3_realModelExample](corr3_realModelExample-1.png)
 
 
 ### Bland-Altman agreement plots
@@ -210,7 +210,7 @@ blandAltmanLehPlot(
 )
 ```
 
-![plot of chunk bland1_realModelExample](figure/bland1_realModelExample-1.png)
+![plot of chunk bland1_realModelExample](bland1_realModelExample-1.png)
 
 Finally, we can generate the same plot but spliting the information by the number of different cell types present in each pseudo-bulk sample. The smaller the number of cell types, the larger the error made by the model. In any case, considering the results from `distErrorPlot` and `corrExpPredPlot`, we can conclude that the model performs well on the test data.
 
@@ -227,7 +227,7 @@ blandAltmanLehPlot(
 )
 ```
 
-![plot of chunk bland2_realModelExample](figure/bland2_realModelExample-1.png)
+![plot of chunk bland2_realModelExample](bland2_realModelExample-1.png)
 
 
 ## **digitalDLSorteR** dealing with real data from TCGA project
@@ -275,7 +275,7 @@ DDLSLiComp <- deconvDigitalDLSorterObj(
 barPlotCellTypes(DDLSLiComp,  name.data = "TCGA.colon", rm.x.text = TRUE)
 ```
 
-![plot of chunk barPlotResults_realModelExample](figure/barPlotResults_realModelExample-1.png)
+![plot of chunk barPlotResults_realModelExample](barPlotResults_realModelExample-1.png)
 
 As the total number of samples is too high, we can see the results of some samples by taking the matrix with the proportions and ploting 20 random samples with `barPlotCellTypes`:
 
@@ -289,7 +289,7 @@ barPlotCellTypes(
 )
 ```
 
-![plot of chunk barPlotResults20_realModelExample](figure/barPlotResults20_realModelExample-1.png)
+![plot of chunk barPlotResults20_realModelExample](barPlotResults20_realModelExample-1.png)
 
 Finally, to check whether the predicted estimates make sense with the type of sample they come from (metastatic, normal, primary and recurrent), we will inspect the predicted proportions of tumor cells, epithelial cells and fibroblasts.
 
@@ -319,7 +319,7 @@ ggplot(dfProp, aes(x = TypeSample, y = value, fill = TypeSample)) +
   )
 ```
 
-![plot of chunk boxplotsTypes_realModelExample](figure/boxplotsTypes_realModelExample-1.png)
+![plot of chunk boxplotsTypes_realModelExample](boxplotsTypes_realModelExample-1.png)
 
 **digitalDLSorteR** correctly estimates the proportion of tumor cells (`CRC`) and epithelial/fibroblast cells (`Ep` and `Fb`) according to sample type. Further analysis can be performed to better understand and evaluate the performance of the model on these data (correlation analysis between estimated cell proportions, comparisons with other published tools, etc.).
 

@@ -3,7 +3,7 @@ context("Utils (helper functions): utils.R")
 # simulating data
 sce <- SingleCellExperiment(
   matrix(
-    rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+    stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 
     dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
   ),
   colData = data.frame(
@@ -48,11 +48,6 @@ DDLSComp <- generateBulkCellMatrix(
   verbose = FALSE
 )
 DDLSComp <- simBulkProfiles(DDLSComp, verbose = FALSE)
-DDLSComp <- trainDigitalDLSorterModel(
-  object = DDLSComp,
-  batch.size = 28,
-  verbose = FALSE
-)
 
 # getProbMatrix
 test_that(
@@ -118,6 +113,12 @@ test_that(
 test_that(
   desc = "preparingToSave function", 
   code = {
+    skip_if_not(.checkPythonDependencies(alert = "none"))
+    DDLSComp <- trainDigitalDLSorterModel(
+      object = DDLSComp,
+      batch.size = 28,
+      verbose = FALSE
+    )
     # incorrect object: no trained.model slot
     expect_error(
       preparingToSave(object = DDLS), 
@@ -140,6 +141,12 @@ fileTMP <- tempfile()
 test_that(
   desc = "saveTrainedModelAsH5 and loadTrainedModelFromH5: saving/reading models as HDF5 files", 
   code = {
+    skip_if_not(.checkPythonDependencies(alert = "none"))
+    DDLSComp <- trainDigitalDLSorterModel(
+      object = DDLSComp,
+      batch.size = 28,
+      verbose = FALSE
+    )
     # saving model
     # incorrect object: no trained.model slot
     expect_error(
@@ -199,6 +206,12 @@ test_that(
 test_that(
   desc = "plotTrainingHistory", 
   code = {
+    skip_if_not(.checkPythonDependencies(alert = "none"))
+    DDLSComp <- trainDigitalDLSorterModel(
+      object = DDLSComp,
+      batch.size = 28,
+      verbose = FALSE
+    )
     # incorrect object: no trained.model slot
     expect_error(
       plotTrainingHistory(object = DDLS), 
@@ -228,7 +241,7 @@ test_that(
     # load data from a SummarizedExperiment object
     se <- SummarizedExperiment(
       matrix(
-        rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
+        stats::rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
         nrow = 40, ncol = 15, 
         dimnames = list(paste0("Gene", seq(40)), paste0("Bulk", seq(15)))
       )
@@ -253,13 +266,15 @@ test_that(
   }
 )
 
-data("DDLS.list")
-data("DDLSComp.list")
-data("breast.chung.generic")
-data("breast.chung.specific")
 test_that(
   desc = "Check behaviour list to DDLS", 
   code = {
+    skip_if_not(.checkPythonDependencies(alert = "none"))
+    DDLSComp <- trainDigitalDLSorterModel(
+      object = DDLSComp,
+      batch.size = 28,
+      verbose = FALSE
+    )
     deconv.model <- trained.model(DDLSComp)
     deconv.model.list <- list(
       model = model(deconv.model),
@@ -274,8 +289,15 @@ test_that(
     expect_s4_class(
       listToDDLSDNN(deconv.model.list), "DigitalDLSorterDNN"
     )
-    # DigitalDLSorter
-    # expect_s4_class(listToDDLS(DDLS), "DigitalDLSorter")
-    # expect_s4_class(listToDDLS(DDLSComp.list), "DigitalDLSorter")
+  }
+)
+
+test_that(
+  desc = "reticulate and python/tensorflow checks", 
+  code = {
+    skip_if_not(.checkPythonDependencies(alert = "none"))
+    expect_true(.isConda())
+    expect_true(.isPython())
+    expect_true(.isTensorFlow())
   }
 )

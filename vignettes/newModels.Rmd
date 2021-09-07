@@ -23,7 +23,7 @@ This workflow is more computationally expensive than using pre-trained models, s
 
 ```r
 ## loading the packages
-suppressMessages(library(digitalDLSorteR, quietly = TRUE))
+suppressMessages(library(digitalDLSorteR))
 # if digitalDLSOrteRdata is not installed
 if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   install.packages(
@@ -31,7 +31,7 @@ if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
   )
 }
-suppressMessages(library(digitalDLSorteRdata, quietly = TRUE))
+suppressMessages(library(digitalDLSorteRdata))
 ## loading data for examples
 data(DDLSChung.list)
 DDLSChung <- listToDDLS(DDLSChung.list)
@@ -480,42 +480,42 @@ lapply(
 ## [[1]]
 ```
 
-![plot of chunk showProbPlot_newModels](figure/showProbPlot_newModels-1.png)
+![plot of chunk showProbPlot_newModels](showProbPlot_newModels-1.png)
 
 ```
 ## 
 ## [[2]]
 ```
 
-![plot of chunk showProbPlot_newModels](figure/showProbPlot_newModels-2.png)
+![plot of chunk showProbPlot_newModels](showProbPlot_newModels-2.png)
 
 ```
 ## 
 ## [[3]]
 ```
 
-![plot of chunk showProbPlot_newModels](figure/showProbPlot_newModels-3.png)
+![plot of chunk showProbPlot_newModels](showProbPlot_newModels-3.png)
 
 ```
 ## 
 ## [[4]]
 ```
 
-![plot of chunk showProbPlot_newModels](figure/showProbPlot_newModels-4.png)
+![plot of chunk showProbPlot_newModels](showProbPlot_newModels-4.png)
 
 ```
 ## 
 ## [[5]]
 ```
 
-![plot of chunk showProbPlot_newModels](figure/showProbPlot_newModels-5.png)
+![plot of chunk showProbPlot_newModels](showProbPlot_newModels-5.png)
 
 ```
 ## 
 ## [[6]]
 ```
 
-![plot of chunk showProbPlot_newModels](figure/showProbPlot_newModels-6.png)
+![plot of chunk showProbPlot_newModels](showProbPlot_newModels-6.png)
 
 ### Simulation of pseudo-bulk RNA-Seq samples with known cell composition {#simul-bulk}
 
@@ -633,35 +633,35 @@ DDLSToy <- trainDigitalDLSorterModel(object = DDLSToy)
 
 ```
 ## Model: "DigitalDLSorter"
-## ______________________________________________________________________________________________________________________________
-## Layer (type)                                            Output Shape                                       Param #            
-## ==============================================================================================================================
-## Dense1 (Dense)                                          (None, 200)                                        3750400            
-## ______________________________________________________________________________________________________________________________
-## BatchNormalization1 (BatchNormalization)                (None, 200)                                        800                
-## ______________________________________________________________________________________________________________________________
-## ActivationReLu1 (Activation)                            (None, 200)                                        0                  
-## ______________________________________________________________________________________________________________________________
-## Dropout1 (Dropout)                                      (None, 200)                                        0                  
-## ______________________________________________________________________________________________________________________________
-## Dense2 (Dense)                                          (None, 200)                                        40200              
-## ______________________________________________________________________________________________________________________________
-## BatchNormalization2 (BatchNormalization)                (None, 200)                                        800                
-## ______________________________________________________________________________________________________________________________
-## ActivationReLu2 (Activation)                            (None, 200)                                        0                  
-## ______________________________________________________________________________________________________________________________
-## Dropout2 (Dropout)                                      (None, 200)                                        0                  
-## ______________________________________________________________________________________________________________________________
-## Dense3 (Dense)                                          (None, 13)                                         2613               
-## ______________________________________________________________________________________________________________________________
-## BatchNormalization3 (BatchNormalization)                (None, 13)                                         52                 
-## ______________________________________________________________________________________________________________________________
-## ActivationSoftmax (Activation)                          (None, 13)                                         0                  
-## ==============================================================================================================================
+## ________________________________________________________________________________________________________________________________
+## Layer (type)                                             Output Shape                                       Param #             
+## ================================================================================================================================
+## Dense1 (Dense)                                           (None, 200)                                        3750400             
+## ________________________________________________________________________________________________________________________________
+## BatchNormalization1 (BatchNormalization)                 (None, 200)                                        800                 
+## ________________________________________________________________________________________________________________________________
+## ActivationReLu1 (Activation)                             (None, 200)                                        0                   
+## ________________________________________________________________________________________________________________________________
+## Dropout1 (Dropout)                                       (None, 200)                                        0                   
+## ________________________________________________________________________________________________________________________________
+## Dense2 (Dense)                                           (None, 200)                                        40200               
+## ________________________________________________________________________________________________________________________________
+## BatchNormalization2 (BatchNormalization)                 (None, 200)                                        800                 
+## ________________________________________________________________________________________________________________________________
+## ActivationReLu2 (Activation)                             (None, 200)                                        0                   
+## ________________________________________________________________________________________________________________________________
+## Dropout2 (Dropout)                                       (None, 200)                                        0                   
+## ________________________________________________________________________________________________________________________________
+## Dense3 (Dense)                                           (None, 13)                                         2613                
+## ________________________________________________________________________________________________________________________________
+## BatchNormalization3 (BatchNormalization)                 (None, 13)                                         52                  
+## ________________________________________________________________________________________________________________________________
+## ActivationSoftmax (Activation)                           (None, 13)                                         0                   
+## ================================================================================================================================
 ## Total params: 3,794,865
 ## Trainable params: 3,794,039
 ## Non-trainable params: 826
-## ______________________________________________________________________________________________________________________________
+## ________________________________________________________________________________________________________________________________
 ```
 
 ```
@@ -675,10 +675,10 @@ DDLSToy <- trainDigitalDLSorterModel(object = DDLSToy)
 ```
 
 ```
-##    - loss: 0.5125
-##    - accuracy: 0.6567
-##    - mean_absolute_error: 0.0509
-##    - categorical_accuracy: 0.6567
+##    - loss: 0.6292
+##    - accuracy: 0.6119
+##    - mean_absolute_error: 0.0535
+##    - categorical_accuracy: 0.6119
 ```
 
 ```
@@ -726,15 +726,15 @@ DDLSToy
 ##     colnames: Bulk_35 Bulk_60 Bulk_76 ... Bulk_76 Bulk_50 Bulk_75 Bulk_34 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.3088
-##     accuracy: 0.85
+##     loss: 0.3069
+##     accuracy: 0.8313
 ##     mean_absolute_error: 0.04
-##     categorical_accuracy: 0.85
+##     categorical_accuracy: 0.8313
 ##   Evaluation metrics on test data:
-##     loss: 0.5125
-##     accuracy: 0.6567
-##     mean_absolute_error: 0.0509
-##     categorical_accuracy: 0.6567 
+##     loss: 0.6292
+##     accuracy: 0.6119
+##     mean_absolute_error: 0.0535
+##     categorical_accuracy: 0.6119 
 ## Project: ToyExampleBreast
 ```
 
@@ -779,7 +779,7 @@ distErrorPlot(
 )
 ```
 
-![plot of chunk distErr1_newModels](figure/distErr1_newModels-1.png)
+![plot of chunk distErr1_newModels](distErr1_newModels-1.png)
 
 Now, if you want to know if there is a bias toward a specific cell type, yo can use `facet.by` parameter to split the plot by cell type:
 
@@ -795,7 +795,7 @@ distErrorPlot(
 )
 ```
 
-![plot of chunk distErr2_newModels](figure/distErr2_newModels-1.png)
+![plot of chunk distErr2_newModels](distErr2_newModels-1.png)
 
 It is also possible to represent errors by number of different cell types in the samples: 
 
@@ -811,7 +811,7 @@ distErrorPlot(
 )
 ```
 
-![plot of chunk distErr3_newModels](figure/distErr3_newModels-1.png)
+![plot of chunk distErr3_newModels](distErr3_newModels-1.png)
 
 Finally, with `barErrorPlot`, the mean error values with their corresponding dispersion ranges can be plotted:
 
@@ -820,7 +820,7 @@ Finally, with `barErrorPlot`, the mean error values with their corresponding dis
 barErrorPlot(DDLSToy, error = "MAE", by = "CellType")
 ```
 
-![plot of chunk barError_newModels](figure/barError_newModels-1.png)
+![plot of chunk barError_newModels](barError_newModels-1.png)
 
 
 #### `corrExpPredPlot`: correlation plots between predicted and expected proportions {#corr-err}
@@ -842,7 +842,7 @@ corrExpPredPlot(
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![plot of chunk corr1_newModels](figure/corr1_newModels-1.png)
+![plot of chunk corr1_newModels](corr1_newModels-1.png)
 
 As in the previous case, the charts can be split according to different variables. Now, let's split results by `CellType` and `nCellTypes` as an example:
 
@@ -862,7 +862,7 @@ corrExpPredPlot(
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![plot of chunk corr2_newModels](figure/corr2_newModels-1.png)
+![plot of chunk corr2_newModels](corr2_newModels-1.png)
 
 
 ```r
@@ -879,7 +879,7 @@ corrExpPredPlot(
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![plot of chunk corr3_newModels](figure/corr3_newModels-1.png)
+![plot of chunk corr3_newModels](corr3_newModels-1.png)
 
 
 #### `blandAltmanLehPlot`: Bland-Altman agreement plots {#bland-err}
@@ -898,7 +898,7 @@ blandAltmanLehPlot(
 )
 ```
 
-![plot of chunk bland1_newModels](figure/bland1_newModels-1.png)
+![plot of chunk bland1_newModels](bland1_newModels-1.png)
 
 In addition, this function has the same behaviour as the previous ones, as it is possible to split the plots:
 
@@ -915,7 +915,7 @@ blandAltmanLehPlot(
 )
 ```
 
-![plot of chunk bland2_newModels](figure/bland2_newModels-1.png)
+![plot of chunk bland2_newModels](bland2_newModels-1.png)
 
 
 ### Loading new bulk RNA-Seq samples to deconvolute them {#new-bulk}
@@ -946,7 +946,7 @@ DDLSToy <- deconvDigitalDLSorterObj(
 barPlotCellTypes(DDLSToy, name.data = "TCGA.breast", rm.x.text = TRUE)
 ```
 
-![plot of chunk resultsBarPlot_newModels](figure/resultsBarPlot_newModels-1.png)
+![plot of chunk resultsBarPlot_newModels](resultsBarPlot_newModels-1.png)
 
 
 ### Saving `DigitalDLSorter` object and trained models {#save}

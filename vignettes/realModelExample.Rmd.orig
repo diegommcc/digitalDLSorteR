@@ -15,7 +15,10 @@ fontsize: 12pt
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, dpi = 300, fig.width = 12, fig.height = 8)
+knitr::opts_chunk$set(
+  echo = TRUE, dpi = 72, fig.width = 8, fig.height = 6, 
+  base.dir = ".", fig.path = ""
+)
 ```
 
 

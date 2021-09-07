@@ -7,7 +7,7 @@ context("Simulation of bulk RNA-Seq profiles: simBulk.R")
 # simulating data
 sce <- SingleCellExperiment(
   matrix(
-    rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+    stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 
     dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
   ),
   colData = data.frame(
@@ -417,57 +417,56 @@ test_that(
 )
 
 # simBulkProfiles: check parameters related to HDF5 files used as back-end
-if (requireNamespace("DelayedArray", quietly = TRUE) &&
-    requireNamespace("HDF5Array", quietly = TRUE)) {
-  test_that(
-    desc = paste(
-      "Using HDF5 files as back-end simBulkProfiles: the following", 
-      "tests will write file in temp directory/files. Only available if", 
-      "DelayedArray and HDF5Array packages are installed"
-    ), code = {
-      bulk.simul(DDLS) <- NULL
-      # check if HDF5 file exists and if it is correct
-      file <- tempfile()
-      expect_message(
-        DDLS <- simBulkProfiles(
-          object = DDLS,
-          type.data = "both",
-          file.backend = file,
-          verbose = TRUE
-        ), 
-        regexp = "=== Writing data to HDF5 file"
-      )
-      expect_equal(
-        dim(bulk.simul(DDLS, "train"))[2], 
-        dim(prob.cell.types(DDLS, type.data = "train")@prob.matrix)[1]
-      )
-      expect_true(file.exists(file))
-      expect_s4_class(
-        object = bulk.simul(DDLS, "train")@assays@data$counts, 
-        class = "HDF5Array"
-      )
-      # file.backend that already exists
-      expect_error(
-        object = simBulkProfiles(
-          object = DDLS,
-          type.data = "both",
-          file.backend = file,
-          verbose = TRUE
-        ),
-        regexp = "'file.backend' already exists. Please provide a correct file path"
-      )
-      # check if block.processing works
-      bulk.simul(DDLS) <- NULL
-      expect_message(
-        DDLS <- simBulkProfiles(
-          object = DDLS,
-          type.data = "both",
-          file.backend = tempfile(),
-          block.processing = TRUE,
-          block.size = 3,
-          verbose = TRUE
-        ), regexp = "Writing block"
-      )
-    }
-  )
-} 
+test_that(
+  desc = paste(
+    "Using HDF5 files as back-end simBulkProfiles: the following", 
+    "tests will write file in temp directory/files. Only available if", 
+    "DelayedArray and HDF5Array packages are installed"
+  ), code = {
+    skip_if_not_installed("DelayedArray")
+    skip_if_not_installed("HDF5Array")
+    bulk.simul(DDLS) <- NULL
+    # check if HDF5 file exists and if it is correct
+    file <- tempfile()
+    expect_message(
+      DDLS <- simBulkProfiles(
+        object = DDLS,
+        type.data = "both",
+        file.backend = file,
+        verbose = TRUE
+      ), 
+      regexp = "=== Writing data to HDF5 file"
+    )
+    expect_equal(
+      dim(bulk.simul(DDLS, "train"))[2], 
+      dim(prob.cell.types(DDLS, type.data = "train")@prob.matrix)[1]
+    )
+    expect_true(file.exists(file))
+    expect_s4_class(
+      object = bulk.simul(DDLS, "train")@assays@data$counts, 
+      class = "HDF5Array"
+    )
+    # file.backend that already exists
+    expect_error(
+      object = simBulkProfiles(
+        object = DDLS,
+        type.data = "both",
+        file.backend = file,
+        verbose = TRUE
+      ),
+      regexp = "'file.backend' already exists. Please provide a correct file path"
+    )
+    # check if block.processing works
+    bulk.simul(DDLS) <- NULL
+    expect_message(
+      DDLS <- simBulkProfiles(
+        object = DDLS,
+        type.data = "both",
+        file.backend = tempfile(),
+        block.processing = TRUE,
+        block.size = 3,
+        verbose = TRUE
+      ), regexp = "Writing block"
+    )
+  }
+)

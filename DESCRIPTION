@@ -32,13 +32,13 @@ Imports:
     reshape2,
     gtools,
     edgeR,
+    reticulate,
     keras,
     tensorflow,
     ggplot2,
     ggpubr,
     RColorBrewer
 Suggests:
-    digitalDLSorteRmodels,
     knitr,
     rmarkdown,
     BiocParallel,
@@ -47,9 +47,7 @@ Suggests:
     DelayedMatrixStats,
     HDF5Array,
     testthat
-Additional_repositories: 
-    https://diegommcc.github.io/digitalDLSorteRdataRepo/
-    https://diegommcc.github.io/digitalDLSorteRmodelsRepo/
+SystemRequirements: Python (>= 2.7.0), TensorFlow (https://www.tensorflow.org/)
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Collate: 

@@ -14,7 +14,10 @@ fontsize: 12pt
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, dpi = 300, fig.width = 12, fig.height = 8)
+knitr::opts_chunk$set(
+  echo = TRUE, dpi = 72, fig.width = 8, fig.height = 6, 
+  base.dir = ".", fig.path = ""
+)
 ```
 
 
@@ -24,7 +27,7 @@ This workflow is more computationally expensive than using pre-trained models, s
 
 ```{r}
 ## loading the packages
-suppressMessages(library(digitalDLSorteR, quietly = TRUE))
+suppressMessages(library(digitalDLSorteR))
 # if digitalDLSOrteRdata is not installed
 if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   install.packages(
@@ -32,7 +35,7 @@ if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
   )
 }
-suppressMessages(library(digitalDLSorteRdata, quietly = TRUE))
+suppressMessages(library(digitalDLSorteRdata))
 ## loading data for examples
 data(DDLSChung.list)
 DDLSChung <- listToDDLS(DDLSChung.list)

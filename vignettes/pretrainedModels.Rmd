@@ -155,7 +155,7 @@ barPlotCellTypes(
 )
 ```
 
-![plot of chunk resultsDeconvTCGA_pretrainedModels](figure/resultsDeconvTCGA_pretrainedModels-1.png)
+![plot of chunk resultsDeconvTCGA_pretrainedModels](resultsDeconvTCGA_pretrainedModels-1.png)
 
 Finally, `deconvDigitalDLSorterObj` also offers two parameters in case you want to simplify the results by aggregating cell proportions of similar cell types: `simplify.set` and `simplify.majority`. For instance, we can summarize dendritic cells (DCs) and monocytes in the new class mononuclear phagocyte system (MPS) using `simplify.set` as follows:
 
@@ -200,7 +200,7 @@ barPlotCellTypes(
 )
 ```
 
-![plot of chunk resultsDeconvTCGASimpl_pretrainedModels](figure/resultsDeconvTCGASimpl_pretrainedModels-1.png)
+![plot of chunk resultsDeconvTCGASimpl_pretrainedModels](resultsDeconvTCGASimpl_pretrainedModels-1.png)
 
 On the other hand, `simplify.majority` does not create new classes but sums the proportions to the most abundant cell type from those provided in each sample. See the documentation and examples for more details.
 

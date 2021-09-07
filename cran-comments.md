@@ -6,7 +6,7 @@
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
 
-There were 2 NOTEs:
+There were 3 NOTEs:
 
 * checking dependencies in R code ... NOTE
 Unexported object imported by a ':::' call: ‘DelayedArray:::set_verbose_block_processing’
@@ -28,9 +28,9 @@ digitalDLSorteR) are not installed, there will be one more note:
 
 * checking package dependencies ... NOTE
   Packages suggested but not available for checking:
-    'digitalDLSorteRdata', 'digitalDLSorteRmodels'
+    'digitalDLSorteRmodels'
     
-  digitalDLSorteRdata and digitalDLSorteRmodels are the data packages for 
+  digitalDLSorteRmodels are the data packages for 
   digitalDLSorteR, so the last relies on them, as these data are required for 
   examples, tests, vignettes and pre-trained deconvolution models. These 
   packages have been included as Suggests as digitalDLSorteR can be used without
@@ -38,8 +38,7 @@ digitalDLSorteR) are not installed, there will be one more note:
   
 Furthermore, all deep learning related-tasks are performed using tensorflow and
 keras R packages, a functional Python interpreter with all these dependencies 
-covered is needed to run the examples, tests and vignettes. To do so, the 
-following code is sufficient to install a functional Python environment:
+covered is needed to run the examples, tests and vignettes. 
 
 ```r
 reticulate::install_miniconda() # if miniconda not installed

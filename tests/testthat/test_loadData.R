@@ -6,7 +6,7 @@ context("Loading scRNA-seq data into DigitalDLSorter object: loadData.R")
 
 sce <- SingleCellExperiment(
   matrix(
-    rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+    stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 
     dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
   ),
   colData = data.frame(
@@ -455,41 +455,41 @@ test_that(
 )
 
 # behaviour of functions with hfd5 files
-if (requireNamespace("DelayedArray", quietly = TRUE) &&
-    requireNamespace("HDF5Array", quietly = TRUE)) {
-  test_that(
-    desc = "Check behaviour with HDF5 files", 
-    code = {
-      file <- tempfile()
-      expect_message(
-        DDLS.tsv <- loadSCProfiles(
-          single.cell.data = file.path(file.tests, files.tsv),
-          cell.ID.column = "Cell_ID",
-          gene.ID.column = 2,
-          min.counts = 0,
-          min.cells = 12,
-          file.backend = file
-        ), 
-        regexp = "=== Writing data to HDF5 file"
-      )
-      expect_message(
-        DDLS.tsv <- loadSCProfiles(
-          single.cell.data = file.path(file.tests, files.tsv),
-          cell.ID.column = "Cell_ID",
-          gene.ID.column = 2,
-          min.counts = 0,
-          min.cells = 12,
-          file.backend = file,
-          name.dataset.backend = "other_dataset",
-          block.processing = TRUE
-        ),
-        regexp = "=== Processing data in HDF5 by blocks"
-      )
-      expect_true(file.exists(file))
-      expect_s4_class(
-        object = single.cell.real(DDLS.tsv)@assays@data$counts, 
-        class = "HDF5Array"
-      )
-    }
-  )
-}
+test_that(
+  desc = "Check behaviour with HDF5 files", 
+  code = {
+    skip_if_not_installed("DelayedArray")
+    skip_if_not_installed("HDF5Array")
+    file <- tempfile()
+    expect_message(
+      DDLS.tsv <- loadSCProfiles(
+        single.cell.data = file.path(file.tests, files.tsv),
+        cell.ID.column = "Cell_ID",
+        gene.ID.column = 2,
+        min.counts = 0,
+        min.cells = 12,
+        file.backend = file
+      ), 
+      regexp = "=== Writing data to HDF5 file"
+    )
+    expect_message(
+      DDLS.tsv <- loadSCProfiles(
+        single.cell.data = file.path(file.tests, files.tsv),
+        cell.ID.column = "Cell_ID",
+        gene.ID.column = 2,
+        min.counts = 0,
+        min.cells = 12,
+        file.backend = file,
+        name.dataset.backend = "other_dataset",
+        block.processing = TRUE
+      ),
+      regexp = "=== Processing data in HDF5 by blocks"
+    )
+    expect_true(file.exists(file))
+    expect_s4_class(
+      object = single.cell.real(DDLS.tsv)@assays@data$counts, 
+      class = "HDF5Array"
+    )
+  }
+)
+

@@ -1,4 +1,6 @@
 #' @importFrom ggplot2 theme_bw
+#' @importFrom reticulate conda_binary py_available py_module_available
+#' @importFrom utils compareVersion
 NULL
 
 #' Getter function for the cell composition matrix
@@ -61,14 +63,42 @@ getProbMatrix <- function(object, type.data) {
 #' @seealso \code{\link{generateBulkCellMatrix}}
 #'
 #' @examples
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   library(digitalDLSorteRdata)
-#'   data(DDLSLi.list)
-#'   DDLSLi <- listToDDLS(DDLSLi.list)
-#'   lapply(
-#'     X = 1:6, FUN = function(x) {
+#' # simulating data
+#' sce <- SingleCellExperiment(
+#'   matrix(
+#'     rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+#'     dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
+#'   ),
+#'   colData = data.frame(
+#'     Cell_ID = paste0("RHC", seq(30)),
+#'     Cell_Type = sample(x = paste0("CellType", seq(4)), size = 30, 
+#'                        replace = TRUE)
+#'   ),
+#'   rowData = data.frame(
+#'     Gene_ID = paste0("Gene", seq(40))
+#'   )
+#' )
+#' DDLS <- loadSCProfiles(
+#'   single.cell.data = sce,
+#'   cell.ID.column = "Cell_ID",
+#'   gene.ID.column = "Gene_ID"
+#' )
+#' probMatrix <- data.frame(
+#'   Cell_Type = paste0("CellType", seq(4)),
+#'   from = c(1, 1, 1, 30),
+#'   to = c(15, 15, 50, 70)
+#' )
+#' DDLS <- generateBulkCellMatrix(
+#'   object = DDLS,
+#'   cell.ID.column = "Cell_ID",
+#'   cell.type.column = "Cell_Type",
+#'   prob.design = probMatrixValid,
+#'   num.bulk.samples = 60
+#' )
+#' lapply(
+#'   X = 1:6, FUN = function(x) {
 #'       showProbPlot(
-#'         DDLSLi,
+#'         DDLS,
 #'         type.data = "train",
 #'         set = x,
 #'         type.plot = "boxplot"
@@ -76,7 +106,6 @@ getProbMatrix <- function(object, type.data) {
 #'     }
 #'   )
 #' }
-#' 
 showProbPlot <- function(
   object,
   type.data,
@@ -130,6 +159,8 @@ showProbPlot <- function(
 preparingToSave <- function(
   object
 ) {
+  # check if python dependencies are covered
+  .checkPythonDependencies(alert = "error")
   if (!is(object, "DigitalDLSorter") && !is(object, "DigitalDLSorterDNN")) {
     stop("Provided object is not a DigitalDLSorter object")
   }
@@ -217,6 +248,8 @@ saveTrainedModelAsH5 <- function(
   file.path,
   overwrite = FALSE
 ) {
+  # check if python dependencies are covered
+  .checkPythonDependencies(alert = "error")
   if (!is(object, "DigitalDLSorter")) {
     stop("Provided object is not a DigitalDLSorter object")
   } else if (is.null(trained.model(object))) {
@@ -286,6 +319,8 @@ loadTrainedModelFromH5 <- function(
   file.path,
   reset.slot = FALSE
 ) {
+  # check if python dependencies are covered
+  .checkPythonDependencies(alert = "error")
   if (!is(object, "DigitalDLSorter")) {
     stop("Provided object is not a DigitalDLSorter object")
   } else if (!file.exists(file.path)) {
@@ -349,6 +384,8 @@ plotTrainingHistory <- function(
   title = "History of metrics during training",
   metrics = NULL
 ) {
+  # check if python dependencies are covered
+  .checkPythonDependencies(alert = "error")
   if (!is(object, "DigitalDLSorter")) {
     stop("Provided object is not of DigitalDLSorter class")
   } else if (is.null(trained.model(object))) {
@@ -374,7 +411,6 @@ DigitalDLSorterTheme <- function() {
     legend.title = element_text(face = "bold")
   )
 }
-
 
 ################################################################################
 ##################### Functions to transform list into DDLS ####################
@@ -507,4 +543,71 @@ listToDDLS <- function(listTo) {
       version = listTo$version
     )
   )
+}
+
+################################################################################
+############################# Python dependencies ##############################
+################################################################################
+
+.isConda <- function() {
+  conda <- tryCatch(
+    reticulate::conda_binary("auto"), error = function(e) NULL
+  )
+  !is.null(conda)
+}
+
+.isPython <- function() {
+  tryCatch(
+    expr = reticulate::py_available(initialize = TRUE), 
+    error = function(e) FALSE
+  )
+}
+
+.isTensorFlow <- function() {
+  tfAvailable <- reticulate::py_module_available("tensorflow")
+  if (tfAvailable) {
+    tfVersion <- tensorflow::tf$`__version__`
+    tfAvailable <- utils::compareVersion("2.1.0", tfVersion) <= 0
+  }
+  return(tfAvailable)
+}
+
+# alert: c("none", "error", "warn", "message", "startup")
+.checkPythonDependencies <- function(
+  alert = "error"
+) {
+  # turn off reticulate autoconfigure
+  ac_flag <- Sys.getenv("RETICULATE_AUTOCONFIGURE")
+  on.exit(Sys.setenv(RETICULATE_AUTOCONFIGURE = ac_flag))
+  Sys.setenv(RETICULATE_AUTOCONFIGURE = FALSE)
+  dependencies <- c(python = .isPython(), tf = .isTensorFlow())
+  if (!all(dependencies)) {
+    messageT <- c(
+      "There is no a Python interpreter with all the digitalDLSorteR \
+        dependencies covered available. Please, look at \
+        https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html \
+        or see ?installPythonDepend"
+    )
+    warningT <- c(
+      "There is no a Python interpreter with all the digitalDLSorteR \
+        dependencies covered available. Please, look at \
+        https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html \
+        or see ?installPythonDepend"
+    )
+    errorT <- c(
+      "There is no a Python interpreter with all the digitalDLSorteR \
+        dependencies covered available. Please, look at \
+        https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html \
+        or see ?installPythonDepend"
+    )
+    switch(
+      alert,
+      error = stop(errorT, call. = FALSE),
+      warn = warning(warningT, call. = FALSE),
+      message = message(messageT),
+      startup = packageStartupMessage(messageT),
+      none = NULL
+    )
+  }
+  return(invisible(all(dependencies)))
 }

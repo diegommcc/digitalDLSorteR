@@ -154,6 +154,8 @@ trainDigitalDLSorterModel <- function(
   view.metrics.plot = TRUE,
   verbose = TRUE
 ) {
+  # check if python dependencies are covered
+  .checkPythonDependencies(alert = "error")
   if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of DigitalDLSorter class")
   } else if (is.null(prob.cell.types(object))) {
@@ -935,6 +937,8 @@ deconvDigitalDLSorter <- function(
   simplify.majority = NULL,
   verbose = TRUE
 ) {
+  # check if python dependencies are covered
+  .checkPythonDependencies(alert = "error")
   if (!is.matrix(data) && !is.data.frame(data)) {
     stop("'data' must be a matrix or data.frame")
   }
@@ -1072,6 +1076,8 @@ deconvDigitalDLSorterObj <- function(
   simplify.majority = NULL,
   verbose = TRUE
 ) {
+  # check if python dependencies are covered
+  .checkPythonDependencies(alert = "error")
   if (!is(object, "DigitalDLSorter")) {
     stop("The provided object is not of class DigitalDLSorter")
   } else if (is.null(trained.model(object))) {
@@ -1128,7 +1134,6 @@ deconvDigitalDLSorterObj <- function(
   if (verbose) message("DONE")
   return(object)
 }
-
 
 .deconvCore <- function(
   deconv.counts,
