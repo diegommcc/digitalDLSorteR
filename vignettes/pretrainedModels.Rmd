@@ -17,7 +17,7 @@ fontsize: 12pt
 
 **digitalDLSorteR** offers the possibility to use pre-trained context-specific deconvolution models included in **digitalDLSorteRmodels** package (<https://github.com/diegommcc/digitalDLSorteRmodels>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use **digitalDLSorteR** and only requires loading into R a raw bulk RNA-Seq matrix with genes as rows (annotated as _SYMBOL_) and samples as columns, and selecting the desired model. This is done by the `deconvDigitalDLSorter` function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. After the process, estimated cell composition of each sample can be explored as a bar chart using the `barPlotCellTypes` function (workflow summarized in the figure below).
 
-![**Workflow to use pre-trained models**](workflow_pretrained_models.png)
+<img src="workflow_pretrained_models.png" title="**Workflow to use pre-trained models**" alt="**Workflow to use pre-trained models**" style="display: block; margin: auto;" />
 
 <!-- ![(#fig:workflow) Workflow to use pre-trained models](workflow_pretrained_models.png) -->
 
@@ -155,7 +155,7 @@ barPlotCellTypes(
 )
 ```
 
-![plot of chunk resultsDeconvTCGA_pretrainedModels](resultsDeconvTCGA_pretrainedModels-1.png)
+<img src="resultsDeconvTCGA_pretrainedModels-1.png" title="plot of chunk resultsDeconvTCGA_pretrainedModels" alt="plot of chunk resultsDeconvTCGA_pretrainedModels" style="display: block; margin: auto;" />
 
 Finally, `deconvDigitalDLSorterObj` also offers two parameters in case you want to simplify the results by aggregating cell proportions of similar cell types: `simplify.set` and `simplify.majority`. For instance, we can summarize dendritic cells (DCs) and monocytes in the new class mononuclear phagocyte system (MPS) using `simplify.set` as follows:
 
@@ -200,7 +200,7 @@ barPlotCellTypes(
 )
 ```
 
-![plot of chunk resultsDeconvTCGASimpl_pretrainedModels](resultsDeconvTCGASimpl_pretrainedModels-1.png)
+<img src="resultsDeconvTCGASimpl_pretrainedModels-1.png" title="plot of chunk resultsDeconvTCGASimpl_pretrainedModels" alt="plot of chunk resultsDeconvTCGASimpl_pretrainedModels" style="display: block; margin: auto;" />
 
 On the other hand, `simplify.majority` does not create new classes but sums the proportions to the most abundant cell type from those provided in each sample. See the documentation and examples for more details.
 

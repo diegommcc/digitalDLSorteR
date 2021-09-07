@@ -46,6 +46,7 @@ Suggests:
     DelayedArray,
     DelayedMatrixStats,
     HDF5Array,
+    callr,
     testthat
 SystemRequirements: Python (>= 2.7.0), TensorFlow (https://www.tensorflow.org/)
 RoxygenNote: 7.1.1

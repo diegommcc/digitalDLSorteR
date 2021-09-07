@@ -36,6 +36,51 @@ different cell types present in the samples by setting \code{type.plot =
 These plots are only for diagnostic purposes. This is the reason because they
 are generated without any parameter introduced by the user.
 }
+\examples{
+# simulating data
+sce <- SingleCellExperiment::SingleCellExperiment(
+  matrix(
+    rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+    dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
+  ),
+  colData = data.frame(
+    Cell_ID = paste0("RHC", seq(30)),
+    Cell_Type = sample(x = paste0("CellType", seq(4)), size = 30, 
+                       replace = TRUE)
+  ),
+  rowData = data.frame(
+    Gene_ID = paste0("Gene", seq(40))
+  )
+)
+DDLS <- loadSCProfiles(
+  single.cell.data = sce,
+  cell.ID.column = "Cell_ID",
+  gene.ID.column = "Gene_ID"
+)
+probMatrix <- data.frame(
+  Cell_Type = paste0("CellType", seq(4)),
+  from = c(1, 1, 1, 30),
+  to = c(15, 15, 50, 70)
+)
+DDLS <- generateBulkCellMatrix(
+  object = DDLS,
+  cell.ID.column = "Cell_ID",
+  cell.type.column = "Cell_Type",
+  prob.design = probMatrix,
+  num.bulk.samples = 60
+)
+lapply(
+  X = 1:6, FUN = function(x) {
+      showProbPlot(
+        DDLS,
+        type.data = "train",
+        set = x,
+        type.plot = "boxplot"
+      )
+    }
+  )
+  
+}
 \seealso{
 \code{\link{generateBulkCellMatrix}}
 }

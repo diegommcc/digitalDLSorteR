@@ -1,6 +1,7 @@
 #' @importFrom ggplot2 theme_bw
-#' @importFrom reticulate conda_binary py_available py_module_available
+#' @importFrom reticulate conda_binary py_available py_module_available conda_install
 #' @importFrom utils compareVersion
+#' @importFrom tensorflow install_tensorflow
 NULL
 
 #' Getter function for the cell composition matrix
@@ -64,7 +65,7 @@ getProbMatrix <- function(object, type.data) {
 #'
 #' @examples
 #' # simulating data
-#' sce <- SingleCellExperiment(
+#' sce <- SingleCellExperiment::SingleCellExperiment(
 #'   matrix(
 #'     rpois(100, lambda = 5), nrow = 40, ncol = 30, 
 #'     dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
@@ -92,7 +93,7 @@ getProbMatrix <- function(object, type.data) {
 #'   object = DDLS,
 #'   cell.ID.column = "Cell_ID",
 #'   cell.type.column = "Cell_Type",
-#'   prob.design = probMatrixValid,
+#'   prob.design = probMatrix,
 #'   num.bulk.samples = 60
 #' )
 #' lapply(
@@ -105,7 +106,7 @@ getProbMatrix <- function(object, type.data) {
 #'       )
 #'     }
 #'   )
-#' }
+#'   
 showProbPlot <- function(
   object,
   type.data,
@@ -572,7 +573,7 @@ listToDDLS <- function(listTo) {
   return(tfAvailable)
 }
 
-# alert: c("none", "error", "warn", "message", "startup")
+# alert parameter: c("none", "error", "warn", "message", "startup")
 .checkPythonDependencies <- function(
   alert = "error"
 ) {
@@ -610,4 +611,108 @@ listToDDLS <- function(listTo) {
     )
   }
   return(invisible(all(dependencies)))
+}
+
+#' Install Python dependencies for digitalDLSorteR
+#'
+#' This is a helper function to install Python dependencies needed: a Python
+#' interpreter with TensorFlow Python library and its dependencies. It is
+#' performed using the \pkg{reticulate} package and the installer of the
+#' \pkg{tensorflow} R package. The available options are virtual or conda
+#' environments. The are named digitaldlsorter. In any case, it can be manually
+#' done as it is explained in
+#' \url{https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html}.
+#'
+#' This function is intended to make easier the installation of the requirements
+#' needed to use \pkg{digitalDLSorteR}. It will automatically install Miniconda
+#' (if wanted, see Parameters) and create an environment named
+#' 'digitaldlsorter-env'. If you want to use other python/conda environment, see
+#' ?tensorflow::use_condaenv and/or vignette('kerasIssues').
+#'
+#' @param method Installation method ("virtualenv" or "conda").
+#' @param conda Path to a conda executable. Use \code{"auto"} (by default)
+#'   allows \pkg{reticulate} to automatically find an appropriate conda binary.
+#' @param install.conda Boolean indicating if install miniconda automatically
+#'   using \pkg{reticulate}. If \code{TRUE}, \code{conda} argument is ignored.
+#'   \code{FALSE} by default.
+#' @param miniconda.path If \code{install.conda} is \code{TRUE}, you can set the
+#'   path where miniconda will be installed. If \code{NULL}, conda will find
+#'   automatically the proper place.
+#' @param timeout Maximum time in minutes until the installation for each
+#'   component (6 minutes per component by default).
+#'
+#' @return A list with informative notes about the installation.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' notesInstallation <- installPythonDepends(
+#'   method = "auto", conda = "auto", install.conda = TRUE
+#' )
+#' }
+#' 
+installPythonDepends <- function(
+  method = "auto",
+  conda = "auto",
+  install.conda = FALSE,
+  miniconda.path = NULL,
+  timeout = 5
+) {
+  if (!requireNamespace("callr", quietly = TRUE)) {
+    stop("To use this helper function, the callr package must be installed.",
+         "Use install.packages('callr')")
+  } 
+  if ((!.isConda()) && (method != "virtualenv")) {
+    if (!install.conda) {
+      stop("No miniconda detected, but 'install.conda' is FALSE. Please, set ", 
+           "'install.conda = TRUE' to install miniconda." )
+    }
+    message("=== No miniconda detected, installing through the reticulate R package")
+    if (is.null(miniconda.path)) {
+      miniconda.path <- reticulate::miniconda_path()
+    }
+    callrMiniconda <- callr::r_process_options(
+      func = function(){
+        reticulate::install_miniconda(path = miniconda.path)
+      }
+    )
+    notes <- list()
+    installMiniconda <- callr::r_process$new(callrMiniconda)
+    installMiniconda$wait(timeout = timeout * 60 * 1000)
+    status <- installMiniconda$get_exit_status()
+    if (is.null(status)) {
+      stop(
+        "Timeout reached. Consider increase the 'timeout' parameter'",
+        call. = FALSE
+      )
+    } else {
+      notes$conda_installation <- installMiniconda$read_output()
+      message("   Miniconda was successfully installed!")
+    }
+  }
+  message("=== Creating digitaldlsorter-env environment")
+  callrEnvironment <- callr::r_process_options(
+    func = function(){
+      tensorflow::install_tensorflow(
+        version = '2.1-cpu', method = method, eenvname = "digitaldlsorter-env"
+      )
+    }
+  )
+  envCreate <- callr::r_process$new(callrEnvironment)
+  envCreate$wait(timeout = timeout * 1000)
+  status <- envCreate$get_exit_status()
+  if (is.null(status)) {
+    stop(
+      "Timeout reached. Consider increase the 'timeout' parameter'",
+      call. = FALSE
+    )
+  } else {
+    notes$env_installation <- envCreate$read_output()
+    message("   digitaldlsorter-env with tensorflow was successfully installed!")
+  }
+  message("Installation complete!")
+  message(c("Restart R and load digitalDLSorteR. If you find any problem, \
+         see ?tensorflow::use_condaenv and kerasIssues.Rmd vignette"))
+  return(notes)
 }
