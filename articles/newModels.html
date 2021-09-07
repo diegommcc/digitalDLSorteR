@@ -115,7 +115,7 @@
 <p>This workflow is more computationally expensive than using pre-trained models, so we recommend building new models if you want to deconvolute samples from an unavailable model or in case you think your scRNA-Seq data provide a better picture of this environment than the ones already used in this package. In any case, <strong>digitalDLSorteR</strong> provides a set of functionalities that make this process easier and computationally cheaper in terms of RAM usage: batch processing of data and the use of the <a href="https://bioconductor.org/packages/release/bioc/html/HDF5Array.html" class="external-link">HDF5Array</a> and <a href="https://bioconductor.org/packages/release/bioc/html/DelayedArray.html" class="external-link">DelayedArray</a> packages (see <a href="hdf5Backend.html">HDF5 files as back-end</a> vignette for more information). Furthermore, all steps are centralized in the <code>DigitalDLSorter</code> S4-class, the core of <strong>digitalDLSorteR</strong>, in order to provide a good user-experience and keep all the generated information tidy in the same object.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## loading the packages</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diegommcc.github.io/digitalDLSorteR/" class="external-link">digitalDLSorteR</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diegommcc.github.io/digitalDLSorteR/" class="external-link">digitalDLSorteR</a></span><span class="op">)</span><span class="op">)</span>
 <span class="co"># if digitalDLSOrteRdata is not installed</span>
 <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"digitalDLSorteRdata"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span>
@@ -123,7 +123,7 @@
     repos <span class="op">=</span> <span class="st">"https://diegommcc.github.io/digitalDLSorteRdataRepo/"</span>
   <span class="op">)</span>
 <span class="op">}</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diegommcc/digitalDLSorteRdata" class="external-link">digitalDLSorteRdata</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diegommcc/digitalDLSorteRdata" class="external-link">digitalDLSorteRdata</a></span><span class="op">)</span><span class="op">)</span>
 <span class="co">## loading data for examples</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">DDLSChung.list</span><span class="op">)</span>
 <span class="va">DDLSChung</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/listToDDLS.html">listToDDLS</a></span><span class="op">(</span><span class="va">DDLSChung.list</span><span class="op">)</span>
@@ -153,9 +153,7 @@
 <li><a href="#save">Saving <code>DigitalDLSorter</code> object and trained models</a></li>
 </ol>
 <div class="figure">
-<img src="workflow_buiilding_models.png" alt="Workflow to build new context-specific deconvolution models" width="1234"><p class="caption">
-Workflow to build new context-specific deconvolution models
-</p>
+<img src="workflow_buiilding_models.png" alt=""><p class="caption">Workflow to build new context-specific deconvolution models</p>
 </div>
 <div id="load" class="section level3">
 <h3 class="hasAnchor">
@@ -180,8 +178,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: SLC17A5 P2RY10 ABCA1 ... ABCA1 AP001992.2 AC111149.2 TMEM101 
-##   colnames: BC09_42 BC07LN_29 BC09_Re_07 ... BC09_Re_07 BC03LN_62 BC03_11 BC04_49 
+##   rownames: AC007381.1 OR2M3 NLRP1 ... NLRP1 FGD2 HMBOX1 ZNF575 
+##   colnames: BC07LN_26 BC09_Re_62 BC04_49 ... BC04_49 BC07LN_29 BC03LN_91 BC04_07 
 ## Project: ToyExampleBreast</code></pre>
 <p>In this case, we are loading the single-cell profiles from a <code>SingleCellExperiment</code> object, but it could be done using files directly as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -233,8 +231,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: DNAH5 KLRB1 AL162718.2 ... AL162718.2 GZMB ARHGEF26 LPCAT2 
-##   colnames: BC04_33 BC04_11 BC09_Re_07 ... BC09_Re_07 BC03_43 BC03LN_62 BC07LN_54 
+##   rownames: RASSF8-AS1 SLC39A10 SLC12A7 ... SLC12A7 CD72 SNN TRABD 
+##   colnames: BC07LN_54 BC07_42 BC03_86 ... BC03_86 BC09_Re_07 BC09_42 BC03LN_62 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -285,8 +283,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   18751 features and 22 cells
-##   rownames: SERPINE2 AC022150.2 AC092447.4 ... AC092447.4 ZNF165 CD14 BIRC5 
-##   colnames: BC09_Re_07 BC03LN_91 BC03_43 ... BC03_43 BC07LN_54 BC07LN_26 BC04_07 
+##   rownames: AC011523.1 NBEA YDJC ... YDJC AL139407.1 AC124312.3 KRT7-AS 
+##   colnames: BC07LN_29 BC01_02 BC03LN_91 ... BC03LN_91 BC03_86 BC03_11 BC09_42 
 ## ZinbParams object:
 ##   22 samples;   18751 genes.
 ##   21 sample-level covariate(s) (mu);   21 sample-level covariate(s) (pi);
@@ -294,8 +292,8 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Simulated single-cell profiles:
 ##   18751 features and 130 cells
-##   rownames: EP400 DBNDD2 NCAPH2 ... NCAPH2 RBM17 IRF8 RN7SL832P 
-##   colnames: Monocyte_Simul70 BGC_Simul122 Bmem_Simul6 ... Bmem_Simul6 HER2+_Simul41 Bmem_Simul5 DC_Simul11 
+##   rownames: SUCO AC104695.4 DEGS2 ... DEGS2 CDC42BPB ACAD9 ATG10 
+##   colnames: Macrophage_Simul55 Stromal_Simul77 Macrophage_Simul53 ... Macrophage_Simul53 TCD8_Simul87 TCD8_Simul86 Tme_Simul91 
 ## Project: ToyExampleBreast</code></pre>
 <p>In this step, it is also possible to store the new simulated single-cell profiles in a HDF5 file. Indeed, they can be simulated by batch, avoiding to load all data into RAM. The code would be as follows:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
@@ -407,36 +405,22 @@ Workflow to build new context-specific deconvolution models
 <p>You can inspect the cell composition matrix created in this step with the getter function <code>getProbMatrix</code>:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##        Monocyte Tme Bmem TCD8 BGC Treg Macrophage DC Stromal TNBC HER2+
-## Bulk_1        4   1    3    4   5    2          3  2      13   18    19
-## Bulk_2        0   6    0    3   4    5          4  0       8   18    17
-## Bulk_3        3   6    2    3   4    4          0  3      11   14    15
-## Bulk_4        3   0    0    7   6    0          0 10      19    0    55
-## Bulk_5        5   5    2    4   0    3          3  0       6   19    18
-## Bulk_6        2   6    0    0   0    1          0  0      11   21    20
-##        ER+ and HER2+ ER+
-## Bulk_1            13  13
-## Bulk_2            17  18
-## Bulk_3            15  20
-## Bulk_4             0   0
-## Bulk_5            18  17
-## Bulk_6            16  23</code></pre>
+<pre><code>##        Monocyte Tme Bmem TCD8 BGC Treg Macrophage DC Stromal TNBC HER2+ ER+ and HER2+ ER+
+## Bulk_1        4   1    3    4   5    2          3  2      13   18    19            13  13
+## Bulk_2        0   6    0    3   4    5          4  0       8   18    17            17  18
+## Bulk_3        3   6    2    3   4    4          0  3      11   14    15            15  20
+## Bulk_4        3   0    0    7   6    0          0 10      19    0    55             0   0
+## Bulk_5        5   5    2    4   0    3          3  0       6   19    18            18  17
+## Bulk_6        2   6    0    0   0    1          0  0      11   21    20            16  23</code></pre>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##          Monocyte Tme Bmem TCD8 BGC Treg Macrophage DC Stromal TNBC HER2+
-## Bulk_162        0   0    0    0   0    0          0  0       0    0   100
-## Bulk_163        0   0    0    0   0    0          0  0       0    0   100
-## Bulk_164        0   0    0    0   0    0          0  0       0    0     0
-## Bulk_165        0   0    0    0   0    0          0  0       0    0     0
-## Bulk_166        0   0    0    0   0    0          0  0       0    0     0
-## Bulk_167        0   0    0    0   0    0          0  0       0    0     0
-##          ER+ and HER2+ ER+
-## Bulk_162             0   0
-## Bulk_163             0   0
-## Bulk_164           100   0
-## Bulk_165           100   0
-## Bulk_166             0 100
-## Bulk_167             0 100</code></pre>
+<pre><code>##          Monocyte Tme Bmem TCD8 BGC Treg Macrophage DC Stromal TNBC HER2+ ER+ and HER2+ ER+
+## Bulk_162        0   0    0    0   0    0          0  0       0    0   100             0   0
+## Bulk_163        0   0    0    0   0    0          0  0       0    0   100             0   0
+## Bulk_164        0   0    0    0   0    0          0  0       0    0     0           100   0
+## Bulk_165        0   0    0    0   0    0          0  0       0    0     0           100   0
+## Bulk_166        0   0    0    0   0    0          0  0       0    0     0             0 100
+## Bulk_167        0   0    0    0   0    0          0  0       0    0     0             0 100</code></pre>
 <p>Moreover, the generated distributions can be plotted using the <code>showProbPlot</code> function:</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span>
@@ -447,22 +431,34 @@ Workflow to build new context-specific deconvolution models
   <span class="op">}</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## [[1]]</code></pre>
-<p><img src="newModels_files/figure-html/showProbPlot-1.png" width="700"></p>
+<div class="figure">
+<img src="showProbPlot_newModels-1.png" alt=""><p class="caption">plot of chunk showProbPlot_newModels</p>
+</div>
 <pre><code>## 
 ## [[2]]</code></pre>
-<p><img src="newModels_files/figure-html/showProbPlot-2.png" width="700"></p>
+<div class="figure">
+<img src="showProbPlot_newModels-2.png" alt=""><p class="caption">plot of chunk showProbPlot_newModels</p>
+</div>
 <pre><code>## 
 ## [[3]]</code></pre>
-<p><img src="newModels_files/figure-html/showProbPlot-3.png" width="700"></p>
+<div class="figure">
+<img src="showProbPlot_newModels-3.png" alt=""><p class="caption">plot of chunk showProbPlot_newModels</p>
+</div>
 <pre><code>## 
 ## [[4]]</code></pre>
-<p><img src="newModels_files/figure-html/showProbPlot-4.png" width="700"></p>
+<div class="figure">
+<img src="showProbPlot_newModels-4.png" alt=""><p class="caption">plot of chunk showProbPlot_newModels</p>
+</div>
 <pre><code>## 
 ## [[5]]</code></pre>
-<p><img src="newModels_files/figure-html/showProbPlot-5.png" width="700"></p>
+<div class="figure">
+<img src="showProbPlot_newModels-5.png" alt=""><p class="caption">plot of chunk showProbPlot_newModels</p>
+</div>
 <pre><code>## 
 ## [[6]]</code></pre>
-<p><img src="newModels_files/figure-html/showProbPlot-6.png" width="700"></p>
+<div class="figure">
+<img src="showProbPlot_newModels-6.png" alt=""><p class="caption">plot of chunk showProbPlot_newModels</p>
+</div>
 </div>
 <div id="simul-bulk" class="section level3">
 <h3 class="hasAnchor">
@@ -542,43 +538,43 @@ Workflow to build new context-specific deconvolution models
 <code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDigitalDLSorterModel.html">trainDigitalDLSorterModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span><span class="op">)</span></code></pre></div>
 <pre><code>## === Training and test from stored data was selected</code></pre>
 <pre><code>## Model: "DigitalDLSorter"
-## ________________________________________________________________________________
-## Layer (type)                        Output Shape                    Param #     
-## ================================================================================
-## Dense1 (Dense)                      (None, 200)                     3750400     
-## ________________________________________________________________________________
-## BatchNormalization1 (BatchNormaliza (None, 200)                     800         
-## ________________________________________________________________________________
-## ActivationReLu1 (Activation)        (None, 200)                     0           
-## ________________________________________________________________________________
-## Dropout1 (Dropout)                  (None, 200)                     0           
-## ________________________________________________________________________________
-## Dense2 (Dense)                      (None, 200)                     40200       
-## ________________________________________________________________________________
-## BatchNormalization2 (BatchNormaliza (None, 200)                     800         
-## ________________________________________________________________________________
-## ActivationReLu2 (Activation)        (None, 200)                     0           
-## ________________________________________________________________________________
-## Dropout2 (Dropout)                  (None, 200)                     0           
-## ________________________________________________________________________________
-## Dense3 (Dense)                      (None, 13)                      2613        
-## ________________________________________________________________________________
-## BatchNormalization3 (BatchNormaliza (None, 13)                      52          
-## ________________________________________________________________________________
-## ActivationSoftmax (Activation)      (None, 13)                      0           
-## ================================================================================
+## ________________________________________________________________________________________________________________________________
+## Layer (type)                                             Output Shape                                       Param #             
+## ================================================================================================================================
+## Dense1 (Dense)                                           (None, 200)                                        3750400             
+## ________________________________________________________________________________________________________________________________
+## BatchNormalization1 (BatchNormalization)                 (None, 200)                                        800                 
+## ________________________________________________________________________________________________________________________________
+## ActivationReLu1 (Activation)                             (None, 200)                                        0                   
+## ________________________________________________________________________________________________________________________________
+## Dropout1 (Dropout)                                       (None, 200)                                        0                   
+## ________________________________________________________________________________________________________________________________
+## Dense2 (Dense)                                           (None, 200)                                        40200               
+## ________________________________________________________________________________________________________________________________
+## BatchNormalization2 (BatchNormalization)                 (None, 200)                                        800                 
+## ________________________________________________________________________________________________________________________________
+## ActivationReLu2 (Activation)                             (None, 200)                                        0                   
+## ________________________________________________________________________________________________________________________________
+## Dropout2 (Dropout)                                       (None, 200)                                        0                   
+## ________________________________________________________________________________________________________________________________
+## Dense3 (Dense)                                           (None, 13)                                         2613                
+## ________________________________________________________________________________________________________________________________
+## BatchNormalization3 (BatchNormalization)                 (None, 13)                                         52                  
+## ________________________________________________________________________________________________________________________________
+## ActivationSoftmax (Activation)                           (None, 13)                                         0                   
+## ================================================================================================================================
 ## Total params: 3,794,865
 ## Trainable params: 3,794,039
 ## Non-trainable params: 826
-## ________________________________________________________________________________</code></pre>
+## ________________________________________________________________________________________________________________________________</code></pre>
 <pre><code>## 
 ## === Training DNN with 268 samples:</code></pre>
 <pre><code>## 
 ## === Evaluating DNN in test data (134 samples)</code></pre>
-<pre><code>##    - loss: 0.4869
-##    - accuracy: 0.6791
-##    - mean_absolute_error: 0.0531
-##    - categorical_accuracy: 0.6791</code></pre>
+<pre><code>##    - loss: 0.6292
+##    - accuracy: 0.6119
+##    - mean_absolute_error: 0.0535
+##    - categorical_accuracy: 0.6119</code></pre>
 <pre><code>## 
 ## === Generating prediction results using test data</code></pre>
 <pre><code>## DONE</code></pre>
@@ -613,15 +609,15 @@ Workflow to build new context-specific deconvolution models
 ##     colnames: Bulk_35 Bulk_60 Bulk_76 ... Bulk_76 Bulk_50 Bulk_75 Bulk_34 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.3093
-##     accuracy: 0.8375
-##     mean_absolute_error: 0.0402
-##     categorical_accuracy: 0.8375
+##     loss: 0.3069
+##     accuracy: 0.8313
+##     mean_absolute_error: 0.04
+##     categorical_accuracy: 0.8313
 ##   Evaluation metrics on test data:
-##     loss: 0.4869
-##     accuracy: 0.6791
-##     mean_absolute_error: 0.0531
-##     categorical_accuracy: 0.6791 
+##     loss: 0.6292
+##     accuracy: 0.6119
+##     mean_absolute_error: 0.0535
+##     categorical_accuracy: 0.6119 
 ## Project: ToyExampleBreast</code></pre>
 <p>As this is a ‘toy’ example, results are not very accurate. For a real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a> vignette.</p>
 <div id="on-the-fly-argument" class="section level4">
@@ -654,7 +650,9 @@ Workflow to build new context-specific deconvolution models
   type <span class="op">=</span> <span class="st">"boxplot"</span>,
   size.point <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="newModels_files/figure-html/distErr1-1.png" width="700"></p>
+<div class="figure">
+<img src="distErr1_newModels-1.png" alt=""><p class="caption">plot of chunk distErr1_newModels</p>
+</div>
 <p>Now, if you want to know if there is a bias toward a specific cell type, yo can use <code>facet.by</code> parameter to split the plot by cell type:</p>
 <div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
@@ -665,7 +663,9 @@ Workflow to build new context-specific deconvolution models
   type <span class="op">=</span> <span class="st">"violinplot"</span>,
   size.point <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="newModels_files/figure-html/distErr2-1.png" width="700"></p>
+<div class="figure">
+<img src="distErr2_newModels-1.png" alt=""><p class="caption">plot of chunk distErr2_newModels</p>
+</div>
 <p>It is also possible to represent errors by number of different cell types in the samples:</p>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
@@ -676,11 +676,15 @@ Workflow to build new context-specific deconvolution models
   type <span class="op">=</span> <span class="st">"boxplot"</span>,
   size.point <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="newModels_files/figure-html/distErr3-1.png" width="700"></p>
+<div class="figure">
+<img src="distErr3_newModels-1.png" alt=""><p class="caption">plot of chunk distErr3_newModels</p>
+</div>
 <p>Finally, with <code>barErrorPlot</code>, the mean error values with their corresponding dispersion ranges can be plotted:</p>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/barErrorPlot.html">barErrorPlot</a></span><span class="op">(</span><span class="va">DDLSToy</span>, error <span class="op">=</span> <span class="st">"MAE"</span>, by <span class="op">=</span> <span class="st">"CellType"</span><span class="op">)</span></code></pre></div>
-<p><img src="newModels_files/figure-html/barError-1.png" width="700"></p>
+<div class="figure">
+<img src="barError_newModels-1.png" alt=""><p class="caption">plot of chunk barError_newModels</p>
+</div>
 </div>
 <div id="corr-err" class="section level4">
 <h4 class="hasAnchor">
@@ -694,7 +698,9 @@ Workflow to build new context-specific deconvolution models
   corr <span class="op">=</span> <span class="st">"both"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
-<p><img src="newModels_files/figure-html/corr1-1.png" width="700"></p>
+<div class="figure">
+<img src="corr1_newModels-1.png" alt=""><p class="caption">plot of chunk corr1_newModels</p>
+</div>
 <p>As in the previous case, the charts can be split according to different variables. Now, let’s split results by <code>CellType</code> and <code>nCellTypes</code> as an example:</p>
 <div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
@@ -706,7 +712,9 @@ Workflow to build new context-specific deconvolution models
   corr <span class="op">=</span> <span class="st">"both"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
-<p><img src="newModels_files/figure-html/corr2-1.png" width="700"></p>
+<div class="figure">
+<img src="corr2_newModels-1.png" alt=""><p class="caption">plot of chunk corr2_newModels</p>
+</div>
 <div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
   <span class="va">DDLSToy</span>,
@@ -716,7 +724,9 @@ Workflow to build new context-specific deconvolution models
   corr <span class="op">=</span> <span class="st">"both"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
-<p><img src="newModels_files/figure-html/corr3-1.png" width="700"></p>
+<div class="figure">
+<img src="corr3_newModels-1.png" alt=""><p class="caption">plot of chunk corr3_newModels</p>
+</div>
 </div>
 <div id="bland-err" class="section level4">
 <h4 class="hasAnchor">
@@ -731,7 +741,9 @@ Workflow to build new context-specific deconvolution models
   filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,
   density <span class="op">=</span> <span class="cn">TRUE</span>,
 <span class="op">)</span></code></pre></div>
-<p><img src="newModels_files/figure-html/bland1-1.png" width="700"></p>
+<div class="figure">
+<img src="bland1_newModels-1.png" alt=""><p class="caption">plot of chunk bland1_newModels</p>
+</div>
 <p>In addition, this function has the same behaviour as the previous ones, as it is possible to split the plots:</p>
 <div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
@@ -743,7 +755,9 @@ Workflow to build new context-specific deconvolution models
   filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,
   density <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="newModels_files/figure-html/bland2-1.png" width="700"></p>
+<div class="figure">
+<img src="bland2_newModels-1.png" alt=""><p class="caption">plot of chunk bland2_newModels</p>
+</div>
 </div>
 </div>
 <div id="new-bulk" class="section level3">
@@ -767,7 +781,9 @@ Workflow to build new context-specific deconvolution models
   verbose <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span>
 <span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span><span class="va">DDLSToy</span>, name.data <span class="op">=</span> <span class="st">"TCGA.breast"</span>, rm.x.text <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img src="newModels_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
+<div class="figure">
+<img src="resultsBarPlot_newModels-1.png" alt=""><p class="caption">plot of chunk resultsBarPlot_newModels</p>
+</div>
 </div>
 <div id="save" class="section level3">
 <h3 class="hasAnchor">

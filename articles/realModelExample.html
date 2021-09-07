@@ -167,11 +167,15 @@
   type <span class="op">=</span> <span class="st">"boxplot"</span>,
   size.point <span class="op">=</span> <span class="fl">0.5</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="realModelExample_files/figure-html/distErr1-1.png" width="700"></p>
+<div class="figure">
+<img src="distErr1_realModelExample-1.png" alt=""><p class="caption">plot of chunk distErr1_realModelExample</p>
+</div>
 <p>In order to see the mean error values, we can check it with <code>barErrorPlot</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/barErrorPlot.html">barErrorPlot</a></span><span class="op">(</span><span class="va">DDLSLiComp</span>, error <span class="op">=</span> <span class="st">"MAE"</span>, by <span class="op">=</span> <span class="st">"CellType"</span><span class="op">)</span></code></pre></div>
-<p><img src="realModelExample_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<div class="figure">
+<img src="barError_realModelExample-1.png" alt=""><p class="caption">plot of chunk barError_realModelExample</p>
+</div>
 <p>Now, we can see in which proportions the model is failing more by changing the <code>x.by</code> argument to <code>"pBin"</code> and optionally setting <code>facet.by = "CellType"</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
@@ -182,7 +186,9 @@
   type <span class="op">=</span> <span class="st">"boxplot"</span>,
   size.point <span class="op">=</span> <span class="fl">0.5</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="realModelExample_files/figure-html/distErr2-1.png" width="700"></p>
+<div class="figure">
+<img src="distErr2_realModelExample-1.png" alt=""><p class="caption">plot of chunk distErr2_realModelExample</p>
+</div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
   <span class="va">DDLSLiComp</span>,
@@ -193,7 +199,9 @@
   error.label <span class="op">=</span> <span class="cn">TRUE</span>,
   type <span class="op">=</span> <span class="st">"boxplot"</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="realModelExample_files/figure-html/distErr2-2.png" width="700"></p>
+<div class="figure">
+<img src="distErr3_realModelExample-1.png" alt=""><p class="caption">plot of chunk distErr3_realModelExample</p>
+</div>
 <p>As can be seen, most of the failures in CD4 T cell proportions occurs at high proportions (between 0.5 and 1), and the mean absolute errors (<code>MAbsErr</code>) shown as annotations on each panel are very low in all the cases.</p>
 </div>
 <div id="correlation-between-actual-and-expected-proportions" class="section level3">
@@ -209,7 +217,9 @@
   size.point <span class="op">=</span> <span class="fl">0.5</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
-<p><img src="realModelExample_files/figure-html/corr1-1.png" width="700"></p>
+<div class="figure">
+<img src="corr1_realModelExample-1.png" alt=""><p class="caption">plot of chunk corr1_realModelExample</p>
+</div>
 <p>It is very important to note that these results only show the estimated proportions of pseudo-bulk samples. If we don’t filter out single-cell profiles, the results improve in general, showing that the model is able to deal with pure samples as well.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
@@ -221,7 +231,9 @@
   corr <span class="op">=</span> <span class="st">"both"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
-<p><img src="realModelExample_files/figure-html/corr2-1.png" width="700"></p>
+<div class="figure">
+<img src="corr2_realModelExample-1.png" alt=""><p class="caption">plot of chunk corr2_realModelExample</p>
+</div>
 <p>In the end, we can see the overall results without splitting the graph. As can be seen, both coefficients present also high values when all proportions are considered.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
@@ -231,7 +243,9 @@
   corr <span class="op">=</span> <span class="st">"both"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
-<p><img src="realModelExample_files/figure-html/corr3-1.png" width="700"></p>
+<div class="figure">
+<img src="corr3_realModelExample-1.png" alt=""><p class="caption">plot of chunk corr3_realModelExample</p>
+</div>
 </div>
 <div id="bland-altman-agreement-plots" class="section level3">
 <h3 class="hasAnchor">
@@ -245,7 +259,9 @@
   filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,
   density <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="realModelExample_files/figure-html/bland1-1.png" width="700"></p>
+<div class="figure">
+<img src="bland1_realModelExample-1.png" alt=""><p class="caption">plot of chunk bland1_realModelExample</p>
+</div>
 <p>Finally, we can generate the same plot but spliting the information by the number of different cell types present in each pseudo-bulk sample. The smaller the number of cell types, the larger the error made by the model. In any case, considering the results from <code>distErrorPlot</code> and <code>corrExpPredPlot</code>, we can conclude that the model performs well on the test data.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
@@ -257,7 +273,9 @@
   filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,
   density <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="realModelExample_files/figure-html/bland2-1.png" width="700"></p>
+<div class="figure">
+<img src="bland2_realModelExample-1.png" alt=""><p class="caption">plot of chunk bland2_realModelExample</p>
+</div>
 </div>
 </div>
 <div id="digitaldlsorter-dealing-with-real-data-from-tcga-project" class="section level2">
@@ -273,10 +291,8 @@
 ## assays(1): counts
 ## rownames(59085): 5S_RRNA 7SK ... ZZEF1 ZZZ3
 ## rowData names(0):
-## colnames(521): X0096f6b3.94f5.49d9.aa43.66d9ab6b2b5c
-##   X01f5a228.a2cf.444f.8102.a9d4a2d9a27d ...
-##   ff016e44.7a4d.4423.822e.aa6aa6df0ef2
-##   ffbe7115.06be.4592.91d0.3dad62e3c73a
+## colnames(521): X0096f6b3.94f5.49d9.aa43.66d9ab6b2b5c X01f5a228.a2cf.444f.8102.a9d4a2d9a27d ...
+##   ff016e44.7a4d.4423.822e.aa6aa6df0ef2 ffbe7115.06be.4592.91d0.3dad62e3c73a
 ## colData names(2): Bulk Tumor_Type</code></pre>
 <p>As shown in <a href="newModels.html">Building new deconvolution models</a>, we can load the data into the <code>DigitalDLSorter</code> object as follows:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -293,7 +309,9 @@
   verbose <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span>
 <span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span><span class="va">DDLSLiComp</span>,  name.data <span class="op">=</span> <span class="st">"TCGA.colon"</span>, rm.x.text <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img src="realModelExample_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<div class="figure">
+<img src="barPlotResults_realModelExample-1.png" alt=""><p class="caption">plot of chunk barPlotResults_realModelExample</p>
+</div>
 <p>As the total number of samples is too high, we can see the results of some samples by taking the matrix with the proportions and ploting 20 random samples with <code>barPlotCellTypes</code>:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span>
@@ -302,7 +320,9 @@
   <span class="va">resDeconvTCGA</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">521</span>, size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>, <span class="op">]</span>, rm.x.text <span class="op">=</span> <span class="cn">TRUE</span>,
   title <span class="op">=</span> <span class="st">"Results of deconvolution (20 random samples)"</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="realModelExample_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<div class="figure">
+<img src="barPlotResults20_realModelExample-1.png" alt=""><p class="caption">plot of chunk barPlotResults20_realModelExample</p>
+</div>
 <p>Finally, to check whether the predicted estimates make sense with the type of sample they come from (metastatic, normal, primary and recurrent), we will inspect the predicted proportions of tumor cells, epithelial cells and fibroblasts.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dfProp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
@@ -322,7 +342,9 @@
     plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,
     legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
-<p><img src="realModelExample_files/figure-html/unnamed-chunk-8-1.png" width="960"></p>
+<div class="figure">
+<img src="boxplotsTypes_realModelExample-1.png" alt=""><p class="caption">plot of chunk boxplotsTypes_realModelExample</p>
+</div>
 <p><strong>digitalDLSorteR</strong> correctly estimates the proportion of tumor cells (<code>CRC</code>) and epithelial/fibroblast cells (<code>Ep</code> and <code>Fb</code>) according to sample type. Further analysis can be performed to better understand and evaluate the performance of the model on these data (correlation analysis between estimated cell proportions, comparisons with other published tools, etc.).</p>
 </div>
 <div id="references" class="section level2 unnumbered">
