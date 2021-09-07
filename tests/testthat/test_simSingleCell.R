@@ -110,25 +110,9 @@ test_that(
     )
     # an object with less than two cell types
     DDLSMod <- DDLS
-    single.cell.real(DDLSMod) <- single.cell.real(DDLSMod)[, c(1, 3, 4, 5)]
-    zinb.params(DDLSMod) <- NULL
-    expect_error(
-      estimateZinbwaveParams(
-        object = DDLSMod,
-        cell.ID.column = "Cell_ID",
-        gene.ID.column = "Gene_ID",
-        cell.type.column = "Cell_Type",
-        cell.cov.columns = "Patient",
-        gene.cov.columns = "gene_length",
-        set.type = "All",
-        threads = 1,
-        verbose = TRUE
-      ), 
-      regexp = "Patient must have 2 or more unique elements"
-    )
-    # an object with less than two cell types
-    DDLSMod <- DDLS
-    single.cell.real(DDLSMod) <- single.cell.real(DDLSMod)[, c(1, 3, 29, 30)]
+    sce <- single.cell.real(DDLS) 
+    colData(sce)$Cell_Type <- 1
+    single.cell.real(DDLSMod) <- sce
     zinb.params(DDLSMod) <- NULL
     expect_error(
       estimateZinbwaveParams(
