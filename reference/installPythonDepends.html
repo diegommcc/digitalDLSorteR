@@ -172,20 +172,14 @@ done as it is explained in
     </div>
 
     <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>installPythonDepends</span><span class='op'>(</span>
-  method <span class='op'>=</span> <span class='st'>"auto"</span>,
   conda <span class='op'>=</span> <span class='st'>"auto"</span>,
   install.conda <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  miniconda.path <span class='op'>=</span> <span class='cn'>NULL</span>,
-  timeout <span class='op'>=</span> <span class='fl'>5</span>
+  miniconda.path <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>method</th>
-      <td><p>Installation method ("virtualenv" or "conda").</p></td>
-    </tr>
     <tr>
       <th>conda</th>
       <td><p>Path to a conda executable. Use <code>"auto"</code> (by default)
@@ -203,16 +197,8 @@ using <span class="pkg">reticulate</span>. If <code>TRUE</code>, <code>conda</co
 path where miniconda will be installed. If <code>NULL</code>, conda will find
 automatically the proper place.</p></td>
     </tr>
-    <tr>
-      <th>timeout</th>
-      <td><p>Maximum time in minutes until the installation for each
-component (6 minutes per component by default).</p></td>
-    </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A list with informative notes about the installation.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function is intended to make easier the installation of the requirements
