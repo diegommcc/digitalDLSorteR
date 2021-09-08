@@ -152,9 +152,7 @@
 <li><a href="#new-bulk">Loading and deconvolution of new bulk RNA-Seq samples</a></li>
 <li><a href="#save">Saving <code>DigitalDLSorter</code> object and trained models</a></li>
 </ol>
-<div class="figure">
-<img src="workflow_buiilding_models.png" alt=""><p class="caption">Workflow to build new context-specific deconvolution models</p>
-</div>
+<p><img src="workflow_buiilding_models.png" title="Workflow to build new context-specific deconvolution models" alt="Workflow to build new context-specific deconvolution models" style="display: block; margin: auto;"></p>
 <div id="load" class="section level3">
 <h3 class="hasAnchor">
 <a href="#load" class="anchor" aria-hidden="true"></a>Loading data into a <code>DigitalDLSorter</code> object</h3>
@@ -431,34 +429,22 @@
   <span class="op">}</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## [[1]]</code></pre>
-<div class="figure">
-<img src="showProbPlot_newModels-1.png" alt=""><p class="caption">plot of chunk showProbPlot_newModels</p>
-</div>
+<p><img src="showProbPlot_newModels-1.png" title="plot of chunk showProbPlot_newModels" alt="plot of chunk showProbPlot_newModels" style="display: block; margin: auto;"></p>
 <pre><code>## 
 ## [[2]]</code></pre>
-<div class="figure">
-<img src="showProbPlot_newModels-2.png" alt=""><p class="caption">plot of chunk showProbPlot_newModels</p>
-</div>
+<p><img src="showProbPlot_newModels-2.png" title="plot of chunk showProbPlot_newModels" alt="plot of chunk showProbPlot_newModels" style="display: block; margin: auto;"></p>
 <pre><code>## 
 ## [[3]]</code></pre>
-<div class="figure">
-<img src="showProbPlot_newModels-3.png" alt=""><p class="caption">plot of chunk showProbPlot_newModels</p>
-</div>
+<p><img src="showProbPlot_newModels-3.png" title="plot of chunk showProbPlot_newModels" alt="plot of chunk showProbPlot_newModels" style="display: block; margin: auto;"></p>
 <pre><code>## 
 ## [[4]]</code></pre>
-<div class="figure">
-<img src="showProbPlot_newModels-4.png" alt=""><p class="caption">plot of chunk showProbPlot_newModels</p>
-</div>
+<p><img src="showProbPlot_newModels-4.png" title="plot of chunk showProbPlot_newModels" alt="plot of chunk showProbPlot_newModels" style="display: block; margin: auto;"></p>
 <pre><code>## 
 ## [[5]]</code></pre>
-<div class="figure">
-<img src="showProbPlot_newModels-5.png" alt=""><p class="caption">plot of chunk showProbPlot_newModels</p>
-</div>
+<p><img src="showProbPlot_newModels-5.png" title="plot of chunk showProbPlot_newModels" alt="plot of chunk showProbPlot_newModels" style="display: block; margin: auto;"></p>
 <pre><code>## 
 ## [[6]]</code></pre>
-<div class="figure">
-<img src="showProbPlot_newModels-6.png" alt=""><p class="caption">plot of chunk showProbPlot_newModels</p>
-</div>
+<p><img src="showProbPlot_newModels-6.png" title="plot of chunk showProbPlot_newModels" alt="plot of chunk showProbPlot_newModels" style="display: block; margin: auto;"></p>
 </div>
 <div id="simul-bulk" class="section level3">
 <h3 class="hasAnchor">
@@ -538,43 +524,43 @@
 <code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDigitalDLSorterModel.html">trainDigitalDLSorterModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span><span class="op">)</span></code></pre></div>
 <pre><code>## === Training and test from stored data was selected</code></pre>
 <pre><code>## Model: "DigitalDLSorter"
-## ________________________________________________________________________________________________________________________________
-## Layer (type)                                             Output Shape                                       Param #             
-## ================================================================================================================================
-## Dense1 (Dense)                                           (None, 200)                                        3750400             
-## ________________________________________________________________________________________________________________________________
-## BatchNormalization1 (BatchNormalization)                 (None, 200)                                        800                 
-## ________________________________________________________________________________________________________________________________
-## ActivationReLu1 (Activation)                             (None, 200)                                        0                   
-## ________________________________________________________________________________________________________________________________
-## Dropout1 (Dropout)                                       (None, 200)                                        0                   
-## ________________________________________________________________________________________________________________________________
-## Dense2 (Dense)                                           (None, 200)                                        40200               
-## ________________________________________________________________________________________________________________________________
-## BatchNormalization2 (BatchNormalization)                 (None, 200)                                        800                 
-## ________________________________________________________________________________________________________________________________
-## ActivationReLu2 (Activation)                             (None, 200)                                        0                   
-## ________________________________________________________________________________________________________________________________
-## Dropout2 (Dropout)                                       (None, 200)                                        0                   
-## ________________________________________________________________________________________________________________________________
-## Dense3 (Dense)                                           (None, 13)                                         2613                
-## ________________________________________________________________________________________________________________________________
-## BatchNormalization3 (BatchNormalization)                 (None, 13)                                         52                  
-## ________________________________________________________________________________________________________________________________
-## ActivationSoftmax (Activation)                           (None, 13)                                         0                   
-## ================================================================================================================================
+## _______________________________________________________________________________________________________________________________________________________________________
+## Layer (type)                                                               Output Shape                                                      Param #                   
+## =======================================================================================================================================================================
+## Dense1 (Dense)                                                             (None, 200)                                                       3750400                   
+## _______________________________________________________________________________________________________________________________________________________________________
+## BatchNormalization1 (BatchNormalization)                                   (None, 200)                                                       800                       
+## _______________________________________________________________________________________________________________________________________________________________________
+## ActivationReLu1 (Activation)                                               (None, 200)                                                       0                         
+## _______________________________________________________________________________________________________________________________________________________________________
+## Dropout1 (Dropout)                                                         (None, 200)                                                       0                         
+## _______________________________________________________________________________________________________________________________________________________________________
+## Dense2 (Dense)                                                             (None, 200)                                                       40200                     
+## _______________________________________________________________________________________________________________________________________________________________________
+## BatchNormalization2 (BatchNormalization)                                   (None, 200)                                                       800                       
+## _______________________________________________________________________________________________________________________________________________________________________
+## ActivationReLu2 (Activation)                                               (None, 200)                                                       0                         
+## _______________________________________________________________________________________________________________________________________________________________________
+## Dropout2 (Dropout)                                                         (None, 200)                                                       0                         
+## _______________________________________________________________________________________________________________________________________________________________________
+## Dense3 (Dense)                                                             (None, 13)                                                        2613                      
+## _______________________________________________________________________________________________________________________________________________________________________
+## BatchNormalization3 (BatchNormalization)                                   (None, 13)                                                        52                        
+## _______________________________________________________________________________________________________________________________________________________________________
+## ActivationSoftmax (Activation)                                             (None, 13)                                                        0                         
+## =======================================================================================================================================================================
 ## Total params: 3,794,865
 ## Trainable params: 3,794,039
 ## Non-trainable params: 826
-## ________________________________________________________________________________________________________________________________</code></pre>
+## _______________________________________________________________________________________________________________________________________________________________________</code></pre>
 <pre><code>## 
 ## === Training DNN with 268 samples:</code></pre>
 <pre><code>## 
 ## === Evaluating DNN in test data (134 samples)</code></pre>
-<pre><code>##    - loss: 0.6292
-##    - accuracy: 0.6119
-##    - mean_absolute_error: 0.0535
-##    - categorical_accuracy: 0.6119</code></pre>
+<pre><code>##    - loss: 0.6273
+##    - accuracy: 0.5896
+##    - mean_absolute_error: 0.0583
+##    - categorical_accuracy: 0.5896</code></pre>
 <pre><code>## 
 ## === Generating prediction results using test data</code></pre>
 <pre><code>## DONE</code></pre>
@@ -609,15 +595,15 @@
 ##     colnames: Bulk_35 Bulk_60 Bulk_76 ... Bulk_76 Bulk_50 Bulk_75 Bulk_34 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.3069
-##     accuracy: 0.8313
-##     mean_absolute_error: 0.04
-##     categorical_accuracy: 0.8313
+##     loss: 0.3047
+##     accuracy: 0.85
+##     mean_absolute_error: 0.0395
+##     categorical_accuracy: 0.85
 ##   Evaluation metrics on test data:
-##     loss: 0.6292
-##     accuracy: 0.6119
-##     mean_absolute_error: 0.0535
-##     categorical_accuracy: 0.6119 
+##     loss: 0.6273
+##     accuracy: 0.5896
+##     mean_absolute_error: 0.0583
+##     categorical_accuracy: 0.5896 
 ## Project: ToyExampleBreast</code></pre>
 <p>As this is a ‘toy’ example, results are not very accurate. For a real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a> vignette.</p>
 <div id="on-the-fly-argument" class="section level4">
@@ -650,9 +636,7 @@
   type <span class="op">=</span> <span class="st">"boxplot"</span>,
   size.point <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="distErr1_newModels-1.png" alt=""><p class="caption">plot of chunk distErr1_newModels</p>
-</div>
+<p><img src="distErr1_newModels-1.png" title="plot of chunk distErr1_newModels" alt="plot of chunk distErr1_newModels" style="display: block; margin: auto;"></p>
 <p>Now, if you want to know if there is a bias toward a specific cell type, yo can use <code>facet.by</code> parameter to split the plot by cell type:</p>
 <div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
@@ -663,9 +647,7 @@
   type <span class="op">=</span> <span class="st">"violinplot"</span>,
   size.point <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="distErr2_newModels-1.png" alt=""><p class="caption">plot of chunk distErr2_newModels</p>
-</div>
+<p><img src="distErr2_newModels-1.png" title="plot of chunk distErr2_newModels" alt="plot of chunk distErr2_newModels" style="display: block; margin: auto;"></p>
 <p>It is also possible to represent errors by number of different cell types in the samples:</p>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
@@ -676,15 +658,11 @@
   type <span class="op">=</span> <span class="st">"boxplot"</span>,
   size.point <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="distErr3_newModels-1.png" alt=""><p class="caption">plot of chunk distErr3_newModels</p>
-</div>
+<p><img src="distErr3_newModels-1.png" title="plot of chunk distErr3_newModels" alt="plot of chunk distErr3_newModels" style="display: block; margin: auto;"></p>
 <p>Finally, with <code>barErrorPlot</code>, the mean error values with their corresponding dispersion ranges can be plotted:</p>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/barErrorPlot.html">barErrorPlot</a></span><span class="op">(</span><span class="va">DDLSToy</span>, error <span class="op">=</span> <span class="st">"MAE"</span>, by <span class="op">=</span> <span class="st">"CellType"</span><span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="barError_newModels-1.png" alt=""><p class="caption">plot of chunk barError_newModels</p>
-</div>
+<p><img src="barError_newModels-1.png" title="plot of chunk barError_newModels" alt="plot of chunk barError_newModels" style="display: block; margin: auto;"></p>
 </div>
 <div id="corr-err" class="section level4">
 <h4 class="hasAnchor">
@@ -698,9 +676,7 @@
   corr <span class="op">=</span> <span class="st">"both"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
-<div class="figure">
-<img src="corr1_newModels-1.png" alt=""><p class="caption">plot of chunk corr1_newModels</p>
-</div>
+<p><img src="corr1_newModels-1.png" title="plot of chunk corr1_newModels" alt="plot of chunk corr1_newModels" style="display: block; margin: auto;"></p>
 <p>As in the previous case, the charts can be split according to different variables. Now, let’s split results by <code>CellType</code> and <code>nCellTypes</code> as an example:</p>
 <div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
@@ -712,9 +688,7 @@
   corr <span class="op">=</span> <span class="st">"both"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
-<div class="figure">
-<img src="corr2_newModels-1.png" alt=""><p class="caption">plot of chunk corr2_newModels</p>
-</div>
+<p><img src="corr2_newModels-1.png" title="plot of chunk corr2_newModels" alt="plot of chunk corr2_newModels" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
   <span class="va">DDLSToy</span>,
@@ -724,9 +698,7 @@
   corr <span class="op">=</span> <span class="st">"both"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
-<div class="figure">
-<img src="corr3_newModels-1.png" alt=""><p class="caption">plot of chunk corr3_newModels</p>
-</div>
+<p><img src="corr3_newModels-1.png" title="plot of chunk corr3_newModels" alt="plot of chunk corr3_newModels" style="display: block; margin: auto;"></p>
 </div>
 <div id="bland-err" class="section level4">
 <h4 class="hasAnchor">
@@ -741,9 +713,7 @@
   filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,
   density <span class="op">=</span> <span class="cn">TRUE</span>,
 <span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="bland1_newModels-1.png" alt=""><p class="caption">plot of chunk bland1_newModels</p>
-</div>
+<p><img src="bland1_newModels-1.png" title="plot of chunk bland1_newModels" alt="plot of chunk bland1_newModels" style="display: block; margin: auto;"></p>
 <p>In addition, this function has the same behaviour as the previous ones, as it is possible to split the plots:</p>
 <div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
@@ -755,9 +725,7 @@
   filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,
   density <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="bland2_newModels-1.png" alt=""><p class="caption">plot of chunk bland2_newModels</p>
-</div>
+<p><img src="bland2_newModels-1.png" title="plot of chunk bland2_newModels" alt="plot of chunk bland2_newModels" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div id="new-bulk" class="section level3">
@@ -781,9 +749,7 @@
   verbose <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span>
 <span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span><span class="va">DDLSToy</span>, name.data <span class="op">=</span> <span class="st">"TCGA.breast"</span>, rm.x.text <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="resultsBarPlot_newModels-1.png" alt=""><p class="caption">plot of chunk resultsBarPlot_newModels</p>
-</div>
+<p><img src="resultsBarPlot_newModels-1.png" title="plot of chunk resultsBarPlot_newModels" alt="plot of chunk resultsBarPlot_newModels" style="display: block; margin: auto;"></p>
 </div>
 <div id="save" class="section level3">
 <h3 class="hasAnchor">

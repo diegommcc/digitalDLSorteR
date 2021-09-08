@@ -112,9 +112,7 @@
     
     
 <p><strong>digitalDLSorteR</strong> offers the possibility to use pre-trained context-specific deconvolution models included in <strong>digitalDLSorteRmodels</strong> package (<a href="https://github.com/diegommcc/digitalDLSorteRmodels" class="external-link uri">https://github.com/diegommcc/digitalDLSorteRmodels</a>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use <strong>digitalDLSorteR</strong> and only requires loading into R a raw bulk RNA-Seq matrix with genes as rows (annotated as <em>SYMBOL</em>) and samples as columns, and selecting the desired model. This is done by the <code>deconvDigitalDLSorter</code> function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. After the process, estimated cell composition of each sample can be explored as a bar chart using the <code>barPlotCellTypes</code> function (workflow summarized in the figure below).</p>
-<div class="figure">
-<img src="workflow_pretrained_models.png" alt=""><p class="caption"><strong>Workflow to use pre-trained models</strong></p>
-</div>
+<p><img src="workflow_pretrained_models.png" title="**Workflow to use pre-trained models**" alt="**Workflow to use pre-trained models**" style="display: block; margin: auto;"></p>
 <!-- ![(#fig:workflow) Workflow to use pre-trained models](workflow_pretrained_models.png) -->
 <div id="available-models" class="section level2">
 <h2 class="hasAnchor">
@@ -212,9 +210,7 @@
   color.line <span class="op">=</span> <span class="st">"black"</span>,
   title <span class="op">=</span> <span class="st">"Results of deconvolution of TCGA breast samples"</span>
 <span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="resultsDeconvTCGA_pretrainedModels-1.png" alt=""><p class="caption">plot of chunk resultsDeconvTCGA_pretrainedModels</p>
-</div>
+<p><img src="resultsDeconvTCGA_pretrainedModels-1.png" title="plot of chunk resultsDeconvTCGA_pretrainedModels" alt="plot of chunk resultsDeconvTCGA_pretrainedModels" style="display: block; margin: auto;"></p>
 <p>Finally, <code>deconvDigitalDLSorterObj</code> also offers two parameters in case you want to simplify the results by aggregating cell proportions of similar cell types: <code>simplify.set</code> and <code>simplify.majority</code>. For instance, we can summarize dendritic cells (DCs) and monocytes in the new class mononuclear phagocyte system (MPS) using <code>simplify.set</code> as follows:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># deconvolution</span>
@@ -237,9 +233,7 @@
   color.line <span class="op">=</span> <span class="st">"black"</span>,
   title <span class="op">=</span> <span class="st">"Results of deconvolution of TCGA breast samples (simplified)"</span>
 <span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="resultsDeconvTCGASimpl_pretrainedModels-1.png" alt=""><p class="caption">plot of chunk resultsDeconvTCGASimpl_pretrainedModels</p>
-</div>
+<p><img src="resultsDeconvTCGASimpl_pretrainedModels-1.png" title="plot of chunk resultsDeconvTCGASimpl_pretrainedModels" alt="plot of chunk resultsDeconvTCGASimpl_pretrainedModels" style="display: block; margin: auto;"></p>
 <p>On the other hand, <code>simplify.majority</code> does not create new classes but sums the proportions to the most abundant cell type from those provided in each sample. See the documentation and examples for more details.</p>
 </div>
 <div id="contribute-your-own-models" class="section level2">
