@@ -5,16 +5,12 @@
 \title{Install Python dependencies for digitalDLSorteR}
 \usage{
 installPythonDepends(
-  method = "auto",
   conda = "auto",
   install.conda = FALSE,
-  miniconda.path = NULL,
-  timeout = 5
+  miniconda.path = NULL
 )
 }
 \arguments{
-\item{method}{Installation method ("virtualenv" or "conda").}
-
 \item{conda}{Path to a conda executable. Use \code{"auto"} (by default)
 allows \pkg{reticulate} to automatically find an appropriate conda binary.}
 
@@ -25,12 +21,6 @@ using \pkg{reticulate}. If \code{TRUE}, \code{conda} argument is ignored.
 \item{miniconda.path}{If \code{install.conda} is \code{TRUE}, you can set the
 path where miniconda will be installed. If \code{NULL}, conda will find
 automatically the proper place.}
-
-\item{timeout}{Maximum time in minutes until the installation for each
-component (6 minutes per component by default).}
-}
-\value{
-A list with informative notes about the installation.
 }
 \description{
 This is a helper function to install Python dependencies needed: a Python

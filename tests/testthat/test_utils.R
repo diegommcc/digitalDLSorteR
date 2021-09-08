@@ -291,9 +291,10 @@ test_that(
     )
   }
 )
-
+print("is here")
+# reticulate/tensorflow installation
 test_that(
-  desc = "reticulate and python/tensorflow checks", 
+  desc = "reticulate and python/tensorflow checks (if dependencies available)", 
   code = {
     skip_if_not(.checkPythonDependencies(alert = "none"))
     expect_true(.isConda())

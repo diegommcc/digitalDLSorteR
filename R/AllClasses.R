@@ -3,7 +3,6 @@
 #' @import SingleCellExperiment SummarizedExperiment
 #' @importClassesFrom splatter ZINBParams
 #' @importClassesFrom Matrix dgCMatrix
-#' @importFrom keras keras_model_sequential layer_dense layer_batch_normalization layer_activation layer_dropout get_output_shape_at compile optimizer_adam fit_generator evaluate_generator predict_generator model_from_json set_weights model_to_json get_weights load_model_hdf5 save_model_hdf5
 NULL
 
 setOldClass(Classes = 'package_version')
@@ -507,10 +506,18 @@ setMethod(
   }
 )
 
-# make github repositories available (data packages)
 .onLoad <- function(libname, pkgname) {
+  # make github digitalDLSorteRmodels repo available (data package)
   repos = getOption("repos")
   repos["github"] = "https://diegommcc.github.io/digitalDLSorteRmodelsRepo/"
   options(repos = repos)
   invisible(repos)
+  # set conda environment for tensorflow
+  if (.isConda()) {
+    tryCatch(
+      expr = reticulate::use_condaenv("digitaldlsorter-env", required = TRUE),
+      error = function(e) NULL
+    )
+  }
+  Sys.setenv(TF_CPP_MIN_LOG_LEVEL = 2)
 }

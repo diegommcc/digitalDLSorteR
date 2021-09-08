@@ -187,6 +187,7 @@ test_that(
 test_that(
   desc = "Check object ZinbWave", 
   code = {
+    zinb.params(DDLS) <- NULL
     DDLS <- estimateZinbwaveParams(
       object = DDLS,
       cell.ID.column = "Cell_ID",

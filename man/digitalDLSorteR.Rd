@@ -35,5 +35,6 @@ to build your own models trained with your own scRNA-Seq data. These new
 models may be published to make them available for other users working with
 similar data (e.g. neural environment, prostate cancer environment, etc.). At
 the moment, the available models allows the deconvolution of TILs from breast
-cancer and colorectal cancer. See the vignettes or more details.
+cancer and colorectal cancer. See the vignettes and
+\url{https://diegommcc.github.io/digitalDLSorteR/} for more details.
 }

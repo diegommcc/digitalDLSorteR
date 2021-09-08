@@ -568,7 +568,7 @@ listToDDLS <- function(listTo) {
   tfAvailable <- reticulate::py_module_available("tensorflow")
   if (tfAvailable) {
     tfVersion <- tensorflow::tf$`__version__`
-    tfAvailable <- utils::compareVersion("2.1.0", tfVersion) <= 0
+    tfAvailable <- utils::compareVersion("2.2", tfVersion) <= 0
   }
   return(tfAvailable)
 }
@@ -629,7 +629,6 @@ listToDDLS <- function(listTo) {
 #' 'digitaldlsorter-env'. If you want to use other python/conda environment, see
 #' ?tensorflow::use_condaenv and/or vignette('kerasIssues').
 #'
-#' @param method Installation method ("virtualenv" or "conda").
 #' @param conda Path to a conda executable. Use \code{"auto"} (by default)
 #'   allows \pkg{reticulate} to automatically find an appropriate conda binary.
 #' @param install.conda Boolean indicating if install miniconda automatically
@@ -638,10 +637,6 @@ listToDDLS <- function(listTo) {
 #' @param miniconda.path If \code{install.conda} is \code{TRUE}, you can set the
 #'   path where miniconda will be installed. If \code{NULL}, conda will find
 #'   automatically the proper place.
-#' @param timeout Maximum time in minutes until the installation for each
-#'   component (6 minutes per component by default).
-#'
-#' @return A list with informative notes about the installation.
 #'
 #' @export
 #'
@@ -653,17 +648,11 @@ listToDDLS <- function(listTo) {
 #' }
 #' 
 installPythonDepends <- function(
-  method = "auto",
   conda = "auto",
   install.conda = FALSE,
-  miniconda.path = NULL,
-  timeout = 5
+  miniconda.path = NULL
 ) {
-  if (!requireNamespace("callr", quietly = TRUE)) {
-    stop("To use this helper function, the callr package must be installed.",
-         "Use install.packages('callr')")
-  } 
-  if ((!.isConda()) && (method != "virtualenv")) {
+  if ((!.isConda())) {
     if (!install.conda) {
       stop("No miniconda detected, but 'install.conda' is FALSE. Please, set ", 
            "'install.conda = TRUE' to install miniconda." )
@@ -672,47 +661,55 @@ installPythonDepends <- function(
     if (is.null(miniconda.path)) {
       miniconda.path <- reticulate::miniconda_path()
     }
-    callrMiniconda <- callr::r_process_options(
-      func = function(){
-        reticulate::install_miniconda(path = miniconda.path)
+    status1 <- tryCatch(
+      reticulate::install_miniconda(path = miniconda.path), 
+      error = function(e) {
+        return(TRUE)
       }
     )
-    notes <- list()
-    installMiniconda <- callr::r_process$new(callrMiniconda)
-    installMiniconda$wait(timeout = timeout * 60 * 1000)
-    status <- installMiniconda$get_exit_status()
-    if (is.null(status)) {
+    if (isTRUE(status1)) {
       stop(
-        "Timeout reached. Consider increase the 'timeout' parameter'",
+        "Error during the installation. Please see vignette('kerasIssues')",
         call. = FALSE
       )
-    } else {
-      notes$conda_installation <- installMiniconda$read_output()
-      message("   Miniconda was successfully installed!")
     }
   }
-  message("=== Creating digitaldlsorter-env environment")
-  callrEnvironment <- callr::r_process_options(
-    func = function(){
-      tensorflow::install_tensorflow(
-        version = '2.1-cpu', method = method, eenvname = "digitaldlsorter-env"
-      )
+  dirConda <- reticulate::conda_binary("auto")
+  message("\n=== Creating digitaldlsorter-env environment")
+  status2 <- tryCatch(
+    reticulate::conda_create(
+      envname = "digitaldlsorter-env", 
+      packages = "python==3.7.11"
+    ), 
+    error = function(e) {
+      return(TRUE)
     }
   )
-  envCreate <- callr::r_process$new(callrEnvironment)
-  envCreate$wait(timeout = timeout * 1000)
-  status <- envCreate$get_exit_status()
-  if (is.null(status)) {
+  if (isTRUE(status2)) {
     stop(
-      "Timeout reached. Consider increase the 'timeout' parameter'",
+      "Error during the creation of the environment. Please see vignette('kerasIssues')",
       call. = FALSE
     )
-  } else {
-    notes$env_installation <- envCreate$read_output()
-    message("   digitaldlsorter-env with tensorflow was successfully installed!")
+  }
+  message("\n=== Installing tensorflow in digitaldlsorter-env environment")
+  status3 <- tryCatch(
+    tensorflow::install_tensorflow(
+      version = "2.5-cpu", 
+      method = "conda", 
+      conda = dirConda, 
+      envname = "digitaldlsorter-env"
+    ), 
+    error = function(e) {
+      return(TRUE)
+    }
+  )
+  if (isTRUE(status3)) {
+    stop(
+      "Error during the installation of tensorflow. Please see vignette('kerasIssues')",
+      call. = FALSE
+    )
   }
   message("Installation complete!")
   message(c("Restart R and load digitalDLSorteR. If you find any problem, \
          see ?tensorflow::use_condaenv and kerasIssues.Rmd vignette"))
-  return(notes)
 }

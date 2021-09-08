@@ -23,7 +23,13 @@ if (!requireNamespace("devtools", quietly = TRUE))
 devtools::install_github("diegommcc/digitalDLSorteR")
 ```
 
-It depends on Tensorflow R package, so a working Python interpreter with the Tensorflow Python library installed is needed. See <https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html> for more details.
+It depends on Tensorflow R package, so a working Python interpreter with the Tensorflow Python library installed is needed. The `installPythonDepends` function provides an easy way to install a conda environment named `digitaldlsorter-env` with all the needed dependencies covered. We recommend installing TensorFlow Python library in this way, although a custom installation is possible. See <https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html> for more details.
+
+
+```r
+library("digitalDLSorteR")
+installPythonDepends(install.conda = TRUE)
+```
 
 
 ## Rationale of **digitalDLSorteR**
@@ -39,15 +45,7 @@ The package has two main ways of usage:
 
 <img src="man/figures/workflow_readme.png"/>
 
-To use pre-trained context specific deconvolution models, **digitalDLSorteR** depends on **digitalDLSorteRmodels** data package as it makes available them. Therefore, it must be installed together with **digitalDLSorteR** if this functionality want to be used. To do so, the following code should be enough to install it from GitHub once **digitalDLSorteR** has been installed:
-
-```r
-if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
-  install.packages("digitalDLSorteRmodels")
-}
-```
-
-Also, it can be installed using devtools as follows:
+To use pre-trained context specific deconvolution models, **digitalDLSorteR** depends on **digitalDLSorteRmodels** data package as it makes available them. Therefore, it must be installed together with **digitalDLSorteR** if this functionality want to be used. To do so,it can be installed from GitHub using devtools:
 
 ```r
 if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
@@ -57,7 +55,7 @@ if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
 
 Once **digitalDLSorteRmodels** is loaded, the pre-trained models are available. See <https://diegommcc.github.io/digitalDLSorteR/articles/pretrainedModels.html> for some examples.
 
-In addition, some examples and the vignettes of **digitalDLSorteR** make use of pre-computed datasets from the **digitalDLSorteRdata** package. If you want to inspect these pre-computed _DigitalDLSorter_ objects, you can install the package from GitHub using devtools as follows. See <https://diegommcc.github.io/digitalDLSorteR/articles/realModelExample.html> for an example.
+In addition, some examples and the vignettes of **digitalDLSorteR** make use of pre-computed datasets from the **digitalDLSorteRdata** package. If you want to inspect these pre-computed _DigitalDLSorter_ objects, you can install the package from GitHub using devtools as follows. See <https://diegommcc.github.io/digitalDLSorteR/articles/realModelExample.html> for examples.
 
 ```r
 if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
