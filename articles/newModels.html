@@ -152,7 +152,7 @@
 <li><a href="#new-bulk">Loading and deconvolution of new bulk RNA-Seq samples</a></li>
 <li><a href="#save">Saving <code>DigitalDLSorter</code> object and trained models</a></li>
 </ol>
-<p><img src="workflow_buiilding_models.png" title="Workflow to build new context-specific deconvolution models" alt="Workflow to build new context-specific deconvolution models" style="display: block; margin: auto;"></p>
+<p><img src="workflow_building_models.png" title="Workflow to build new context-specific deconvolution models" alt="Workflow to build new context-specific deconvolution models" style="display: block; margin: auto;"></p>
 <div id="load" class="section level3">
 <h3 class="hasAnchor">
 <a href="#load" class="anchor" aria-hidden="true"></a>Loading data into a <code>DigitalDLSorter</code> object</h3>
@@ -399,7 +399,7 @@
 ##   Cell type matrix for traindata: 167 bulk samples and 13 cell types 
 ##   Cell type matrix for testdata: 83 bulk samples and 13 cell types 
 ## Project: ToyExampleBreast</code></pre>
-<p>Remember that this is a ‘toy’ example. In real circumstances, depending on the number of single-cell profiles loaded/simulated at the begining and the computational resources, about 20,000-30,000 samples would be recommended.</p>
+<p>Remember that this is a ‘toy’ example. In real circumstances, depending on the number of single-cell profiles loaded/simulated at the beginning and the computational resources, about 20,000-30,000 samples would be recommended.</p>
 <p>You can inspect the cell composition matrix created in this step with the getter function <code>getProbMatrix</code>:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -524,43 +524,43 @@
 <code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDigitalDLSorterModel.html">trainDigitalDLSorterModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span><span class="op">)</span></code></pre></div>
 <pre><code>## === Training and test from stored data was selected</code></pre>
 <pre><code>## Model: "DigitalDLSorter"
-## _______________________________________________________________________________________________________________________________________________________________________
-## Layer (type)                                                               Output Shape                                                      Param #                   
-## =======================================================================================================================================================================
-## Dense1 (Dense)                                                             (None, 200)                                                       3750400                   
-## _______________________________________________________________________________________________________________________________________________________________________
-## BatchNormalization1 (BatchNormalization)                                   (None, 200)                                                       800                       
-## _______________________________________________________________________________________________________________________________________________________________________
-## ActivationReLu1 (Activation)                                               (None, 200)                                                       0                         
-## _______________________________________________________________________________________________________________________________________________________________________
-## Dropout1 (Dropout)                                                         (None, 200)                                                       0                         
-## _______________________________________________________________________________________________________________________________________________________________________
-## Dense2 (Dense)                                                             (None, 200)                                                       40200                     
-## _______________________________________________________________________________________________________________________________________________________________________
-## BatchNormalization2 (BatchNormalization)                                   (None, 200)                                                       800                       
-## _______________________________________________________________________________________________________________________________________________________________________
-## ActivationReLu2 (Activation)                                               (None, 200)                                                       0                         
-## _______________________________________________________________________________________________________________________________________________________________________
-## Dropout2 (Dropout)                                                         (None, 200)                                                       0                         
-## _______________________________________________________________________________________________________________________________________________________________________
-## Dense3 (Dense)                                                             (None, 13)                                                        2613                      
-## _______________________________________________________________________________________________________________________________________________________________________
-## BatchNormalization3 (BatchNormalization)                                   (None, 13)                                                        52                        
-## _______________________________________________________________________________________________________________________________________________________________________
-## ActivationSoftmax (Activation)                                             (None, 13)                                                        0                         
-## =======================================================================================================================================================================
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## Layer (type)                                                                                     Output Shape                                                                           Param #                          
+## =========================================================================================================================================================================================================================
+## Dense1 (Dense)                                                                                   (None, 200)                                                                            3750400                          
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## BatchNormalization1 (BatchNormalization)                                                         (None, 200)                                                                            800                              
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## ActivationReLu1 (Activation)                                                                     (None, 200)                                                                            0                                
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## Dropout1 (Dropout)                                                                               (None, 200)                                                                            0                                
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## Dense2 (Dense)                                                                                   (None, 200)                                                                            40200                            
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## BatchNormalization2 (BatchNormalization)                                                         (None, 200)                                                                            800                              
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## ActivationReLu2 (Activation)                                                                     (None, 200)                                                                            0                                
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## Dropout2 (Dropout)                                                                               (None, 200)                                                                            0                                
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## Dense3 (Dense)                                                                                   (None, 13)                                                                             2613                             
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## BatchNormalization3 (BatchNormalization)                                                         (None, 13)                                                                             52                               
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## ActivationSoftmax (Activation)                                                                   (None, 13)                                                                             0                                
+## =========================================================================================================================================================================================================================
 ## Total params: 3,794,865
 ## Trainable params: 3,794,039
 ## Non-trainable params: 826
-## _______________________________________________________________________________________________________________________________________________________________________</code></pre>
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________</code></pre>
 <pre><code>## 
 ## === Training DNN with 268 samples:</code></pre>
 <pre><code>## 
 ## === Evaluating DNN in test data (134 samples)</code></pre>
-<pre><code>##    - loss: 0.6273
-##    - accuracy: 0.5896
-##    - mean_absolute_error: 0.0583
-##    - categorical_accuracy: 0.5896</code></pre>
+<pre><code>##    - loss: 0.5409
+##    - accuracy: 0.6194
+##    - mean_absolute_error: 0.0535
+##    - categorical_accuracy: 0.6194</code></pre>
 <pre><code>## 
 ## === Generating prediction results using test data</code></pre>
 <pre><code>## DONE</code></pre>
@@ -595,15 +595,15 @@
 ##     colnames: Bulk_35 Bulk_60 Bulk_76 ... Bulk_76 Bulk_50 Bulk_75 Bulk_34 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.3047
-##     accuracy: 0.85
-##     mean_absolute_error: 0.0395
-##     categorical_accuracy: 0.85
+##     loss: 0.3093
+##     accuracy: 0.8094
+##     mean_absolute_error: 0.0403
+##     categorical_accuracy: 0.8094
 ##   Evaluation metrics on test data:
-##     loss: 0.6273
-##     accuracy: 0.5896
-##     mean_absolute_error: 0.0583
-##     categorical_accuracy: 0.5896 
+##     loss: 0.5409
+##     accuracy: 0.6194
+##     mean_absolute_error: 0.0535
+##     categorical_accuracy: 0.6194 
 ## Project: ToyExampleBreast</code></pre>
 <p>As this is a ‘toy’ example, results are not very accurate. For a real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a> vignette.</p>
 <div id="on-the-fly-argument" class="section level4">
@@ -754,7 +754,7 @@
 <div id="save" class="section level3">
 <h3 class="hasAnchor">
 <a href="#save" class="anchor" aria-hidden="true"></a>Saving <code>DigitalDLSorter</code> object and trained models</h3>
-<p><strong>digitalDLSorteR</strong> provides different ways to save models to disk and to retrieve them in the <code>DigitalDLSorter</code> object. First, you can save <code>DigitalDLSorter</code> objects as RDS files. Since this type of files only accepts native R objects, they are not able to store complex data structures such as keras Python objects (<code>keras.engine.sequential.Sequential</code> class). To make it possible, <strong>digitalDLSorteR</strong> implements a <code>saveRDS</code> generic function that converts the keras model object into a list with the network achitecture and the weights after training. These two pieces of information are the minimal part needed to perform new predictions. When the model is to be used, it is compiled back to a <code>keras.engine.sequential.Sequential</code> object.</p>
+<p><strong>digitalDLSorteR</strong> provides different ways to save models to disk and to retrieve them in the <code>DigitalDLSorter</code> object. First, you can save <code>DigitalDLSorter</code> objects as RDS files. Since this type of files only accepts native R objects, they are not able to store complex data structures such as keras Python objects (<code>keras.engine.sequential.Sequential</code> class). To make it possible, <strong>digitalDLSorteR</strong> implements a <code>saveRDS</code> generic function that converts the keras model object into a list with the network architecture and the weights after training. These two pieces of information are the minimal part needed to perform new predictions. When the model is to be used, it is compiled back to a <code>keras.engine.sequential.Sequential</code> object.</p>
 <div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## this code will not be run</span>
 <span class="fu"><a href="../reference/saveRDS.html">saveRDS</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, file <span class="op">=</span> <span class="st">"valid/path"</span><span class="op">)</span></code></pre></div>

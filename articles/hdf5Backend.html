@@ -111,14 +111,14 @@
 
     
     
-<p>The Hierarchical Data Format version 5 (HDF5) is an open source file format that supports large, complex, heterogeneous data. This format has different advantages that make it very suitable for storing large datasets together with their metadata in a way that allows to access fastly all the information. As <strong>digitalDLSorteR</strong> needs to simulate large amounts of pseudo-bulk samples to reach a good training and uses as input single-cell RNA-Seq datasets whose size is getting much bigger over time, it implements a set of functionalities that offer the possibility to use HDF5 files as back-end for each step where large data are required:</p>
+<p>The Hierarchical Data Format version 5 (HDF5) is an open source file format that supports large, complex, heterogeneous data. This format has different advantages that make it very suitable for storing large datasets together with their metadata in a way that allows to access quickly all the information. As <strong>digitalDLSorteR</strong> needs to simulate large amounts of pseudo-bulk samples to reach a good training and uses as input single-cell RNA-Seq datasets whose size is getting much bigger over time, it implements a set of functionalities that offer the possibility to use HDF5 files as back-end for each step where large data are required:</p>
 <ul>
 <li>
 <code>loadSCProfiles</code>: when single-cell data is loaded. It allows to keep large datasets that do not fit in RAM.</li>
 <li>
 <code>simSCProfiles</code>: when new single-cell profiles are simulated. Moreover, this function allows to create those profiles by batch without creating large matrices that don’t fit in memory.</li>
 <li>
-<code>simBulkProfiles</code>: this is the most delicated step where HDF5 files can be very useful. As <code>simSCProfiles</code>, this function is able to create the simulated pseudo-bulk profiles without loading all of them into RAM.</li>
+<code>simBulkProfiles</code>: this is the most delicate step where HDF5 files can be very useful. As <code>simSCProfiles</code>, this function is able to create the simulated pseudo-bulk profiles without loading all of them into RAM.</li>
 </ul>
 <p>To use this format, <strong>digitalDLSorteR</strong> uses mainly the <a href="https://bioconductor.org/packages/release/bioc/html/HDF5Array.html" class="external-link">HDF5Array</a> and <a href="https://bioconductor.org/packages/release/bioc/html/DelayedArray.html" class="external-link">DelayedArray</a> packages, although some functionalities have been implemented using directly <a href="https://www.bioconductor.org/packages/release/bioc/html/rhdf5.html" class="external-link">rhdf5</a>. For more information about these packages, we recommend their corresponding vignettes and this workshop by Peter Hickey: <a href="https://petehaitch.github.io/BioC2020_DelayedArray_workshop/articles/Effectively_using_the_DelayedArray_framework_for_users.html" class="external-link">Effectively using the DelayedArray framework to support the analysis of large datasets</a>.</p>
 <div id="general-usage" class="section level2">

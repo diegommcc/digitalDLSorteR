@@ -156,7 +156,7 @@
 <div id="how-errors-are-distributed" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-errors-are-distributed" class="anchor" aria-hidden="true"></a>How errors are distributed</h3>
-<p>With <code>distErrorPlot</code>, we can plot in different ways how errors are distributed. In this case, we can see the absolute error (<code>AbsErr</code>) by cell type (<code>CellType</code>). CD4 T cell proportions are predicted worse than the other cell types, but still have a median error closse to zero.</p>
+<p>With <code>distErrorPlot</code>, we can plot in different ways how errors are distributed. In this case, we can see the absolute error (<code>AbsErr</code>) by cell type (<code>CellType</code>). CD4 T cell proportions are predicted worse than the other cell types, but still have a median error close to zero.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
   <span class="va">DDLSLiComp</span>,
@@ -236,7 +236,7 @@
 <div id="bland-altman-agreement-plots" class="section level3">
 <h3 class="hasAnchor">
 <a href="#bland-altman-agreement-plots" class="anchor" aria-hidden="true"></a>Bland-Altman agreement plots</h3>
-<p>The last way to graphically represent results is to use <code>blandAltmanLehPlot</code>. It generates a Bland-Altman agreement plot, a method for analyzing the level of agreement between two variables, in that case expected vs predicted cell proportions. As shown, most of the proportions fall close to zero (note the blue density lines) and the dashed red lineas are very close to the mean, although we can observe again the aforementioned problem in the estimate of T CD4 cell proportions.</p>
+<p>The last way to graphically represent results is to use <code>blandAltmanLehPlot</code>. It generates a Bland-Altman agreement plot, a method for analyzing the level of agreement between two variables, in that case expected vs predicted cell proportions. As shown, most of the proportions fall close to zero (note the blue density lines) and the dashed red lines are very close to the mean, although we can observe again the aforementioned problem in the estimate of T CD4 cell proportions.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
   <span class="va">DDLSLiComp</span>, 
@@ -273,8 +273,7 @@
 ## assays(1): counts
 ## rownames(59085): 5S_RRNA 7SK ... ZZEF1 ZZZ3
 ## rowData names(0):
-## colnames(521): X0096f6b3.94f5.49d9.aa43.66d9ab6b2b5c X01f5a228.a2cf.444f.8102.a9d4a2d9a27d ... ff016e44.7a4d.4423.822e.aa6aa6df0ef2
-##   ffbe7115.06be.4592.91d0.3dad62e3c73a
+## colnames(521): X0096f6b3.94f5.49d9.aa43.66d9ab6b2b5c X01f5a228.a2cf.444f.8102.a9d4a2d9a27d ... ff016e44.7a4d.4423.822e.aa6aa6df0ef2 ffbe7115.06be.4592.91d0.3dad62e3c73a
 ## colData names(2): Bulk Tumor_Type</code></pre>
 <p>As shown in <a href="newModels.html">Building new deconvolution models</a>, we can load the data into the <code>DigitalDLSorter</code> object as follows:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -292,7 +291,7 @@
 <span class="op">)</span>
 <span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span><span class="va">DDLSLiComp</span>,  name.data <span class="op">=</span> <span class="st">"TCGA.colon"</span>, rm.x.text <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="barPlotResults_realModelExample-1.png" title="plot of chunk barPlotResults_realModelExample" alt="plot of chunk barPlotResults_realModelExample" style="display: block; margin: auto;"></p>
-<p>As the total number of samples is too high, we can see the results of some samples by taking the matrix with the proportions and ploting 20 random samples with <code>barPlotCellTypes</code>:</p>
+<p>As the total number of samples is too high, we can see the results of some samples by taking the matrix with the proportions and plotting 20 random samples with <code>barPlotCellTypes</code>:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span>
 <span class="va">resDeconvTCGA</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconv.results.html">deconv.results</a></span><span class="op">(</span><span class="va">DDLSLiComp</span>, <span class="st">"TCGA.colon"</span><span class="op">)</span>
