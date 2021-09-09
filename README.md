@@ -23,12 +23,12 @@ if (!requireNamespace("devtools", quietly = TRUE))
 devtools::install_github("diegommcc/digitalDLSorteR")
 ```
 
-It depends on Tensorflow R package, so a working Python interpreter with the Tensorflow Python library installed is needed. The `installPythonDepends` function provides an easy way to install a conda environment named `digitaldlsorter-env` with all the needed dependencies covered. We recommend installing TensorFlow Python library in this way, although a custom installation is possible. See <https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html> for more details.
+It depends on Tensorflow R package, so a working Python interpreter with the Tensorflow Python library installed is needed. The `installTFpython` function provides an easy way to install a conda environment named `digitaldlsorter-env` with all the needed dependencies covered. We recommend installing TensorFlow Python library in this way, although a custom installation is possible. See <https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html> for more details.
 
 
 ```r
 library("digitalDLSorteR")
-installPythonDepends(install.conda = TRUE)
+installTFpython(install.conda = TRUE)
 ```
 
 
@@ -40,7 +40,7 @@ This algorithm consists of training Deep Neural Network (DNN) models with simula
 
 The package has two main ways of usage:
 
-1. Using pre-trained models included in `digitalLDSorteRmodels` package to deconvolute new bulk RNA-Seq samples from the same environment. So far, the available models allow to deconvolute samples from human breast cancer ([GSE75688](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688) from [Chung et al., 2017](https://www.nature.com/articles/ncomms15081) used as reference), and colorectal cancer ([GSE81861](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861) from [Li et al., 2017](https://www.nature.com/articles/ng.3818) used as reference). For more details about this workflow, please see `vignette(digitalDLSorteR)` or . Moreover, in the panel A of the figure below it is summarized.
+1. Using pre-trained models included in `digitalLDSorteRmodels` package to deconvolute new bulk RNA-Seq samples from the same environment. So far, the available models allow to deconvolute samples from human breast cancer ([GSE75688](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688) from [Chung et al., 2017](https://www.nature.com/articles/ncomms15081) used as reference), and colorectal cancer ([GSE81861](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861) from [Li et al., 2017](https://www.nature.com/articles/ng.3818) used as reference). For more details about this workflow, please see `vignette(digitalDLSorteR)` at <https://diegommcc.github.io/digitalDLSorteR/>. Moreover, in the panel A of the figure below it is summarized.
 2. Building new deconvolution models from pre-characterized scRNA-Seq datasets. This workflow involves some requirements regarding computational resources, although **digitalDLSorteR** has been developed to provide with all the possible facilities to make the process easier, such as batch processing of data and the use of the `HDF5Array` and `DelayedArray` packages. For more information about this workflow, see `vignette(digitalDLSorteR)` at <https://diegommcc.github.io/digitalDLSorteR/>. Moreover, the main steps are summarized in the panel B of the figure below.
 
 <img src="man/figures/workflow_readme.png"/>

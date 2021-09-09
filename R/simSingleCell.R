@@ -527,7 +527,7 @@ estimateZinbwaveParams <- function(
       }
     }
   } else {
-    message("Subseting of cells is not available for this dataset")
+    message("Subsetting of cells is not available for this dataset")
   }
   return(prop.final)
 }

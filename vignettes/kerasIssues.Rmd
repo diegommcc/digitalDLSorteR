@@ -21,10 +21,10 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 
 **digitalDLSorteR** is based on Deep Neural Network (DNN) models. To use them, [keras](https://cran.r-project.org/package=keras) package (available from CRAN), a high-level neural networks API implemented in Python, is used. [keras](https://cran.r-project.org/package=keras) R version works as an interface between these two languages by using the [reticulate](https://cran.r-project.org/package=reticulate) package. Therefore, [keras](https://cran.r-project.org/package=keras) requires a Python interpreter to work. We recommend using conda environments to provide a Python interpreter with all its dependencies covered. If you already have a conda environment compatible with [keras](https://cran.r-project.org/package=keras) requirements, the package will find it automatically during the installation. Otherwise, [keras](https://cran.r-project.org/package=keras) will create a new environment named `r-reticulate` with all these dependencies covered. There are other ways to install a functionally back-end and it is possible more customized installations, see <https://keras.rstudio.com/reference/install_keras.html> and <https://tensorflow.rstudio.com/installation/> for more details.
 
-In addition, **digitalDLSorteR** provides the `installPythonDepends` function, a helper function to install a Miniconda (if needed) and create a conda environment named `digitaldlsorter-env` with all the dependencies covered (a Python interpreter with Tensorflow >= 2.1). We recommend using `installPythonDepends` to install TensorFlow Python library, as in other ways problems can arise. Moreover, when **digitalDLSorteR** is loaded, it try to set this environment as the default, although other conda environment can be settled using `tensorflow::use_condaenv`. If `digitaldlsorter-env`  does not exist, the package does not return any error, but a TensorFlow environment will be needed. The code needed is as follows:
+In addition, **digitalDLSorteR** provides the `installTFpython` function, a helper function to install a miniconda (if needed) and create a conda environment named `digitaldlsorter-env` with all the dependencies covered (a Python interpreter with tensorflow >= 2.2). We recommend using `installTFpython` to install tensorFlow Python library, as in other ways problems can arise. Moreover, when **digitalDLSorteR** is loaded, it try to set this environment as the default, although other conda environment can be settled using `tensorflow::use_condaenv`. If `digitaldlsorter-env`  does not exist, the package does not return any error, but a tensorFlow environment will be needed. The code needed is as follows:
 
 ```{r, eval = FALSE}
-installPythonDepends(install.conda = TRUE)
+installTFpython(install.conda = TRUE)
 ```
 
 ## Common errors with [keras](https://cran.r-project.org/package=keras)
@@ -66,7 +66,7 @@ Finally, although It is automatically done by **digitalDLSorteR**, if [keras](ht
 tensorflow::use_condaenv("digitaldlsorter-env")
 ```
 
-Finally, if the Python-interpreter problems don't dissapear, it is possible to set manually the interpreter that will be used using [reticulate](https://cran.r-project.org/package=reticulate). See the following guide: <https://rstudio.github.io/reticulate/articles/versions.html>. And of course, don't hesitate to tell us your problem, we'll try to help you.
+Finally, if the Python-interpreter problems don't disappear, it is possible to set manually the interpreter that will be used using [reticulate](https://cran.r-project.org/package=reticulate). See the following guide: <https://rstudio.github.io/reticulate/articles/versions.html>. And of course, don't hesitate to tell us your problem, we'll try to help you.
 
 ### Eager execution
 

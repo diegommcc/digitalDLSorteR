@@ -1,5 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^LICENSE\.md$ 
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
@@ -8,3 +9,4 @@
 cran-comments.md
 ^doc$
 ^Meta$
+^vignettes/knitr_rendering\.R$

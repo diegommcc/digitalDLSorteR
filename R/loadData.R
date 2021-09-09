@@ -635,7 +635,7 @@ NULL
 #' Create a \code{\linkS4class{DigitalDLSorter}} object from single-cell RNA-seq
 #' data from files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5)
 #' or a \code{\linkS4class{SingleCellExperiment}} object. The data will be
-#' stored in \code{single.cell.real} slot. Tha data provided should consist of
+#' stored in \code{single.cell.real} slot. The data provided should consist of
 #' three pieces of information: \itemize{ \item Single-cell counts: genes as
 #' rows and cells as columns. \item Cells metadata: annotations (columns) for
 #' each cell (rows). \item Genes metadata: annotations (columns) for each gene
@@ -651,7 +651,7 @@ NULL
 #' This data can be used to simulate new single-cell profiles using the
 #' ZINB-WaVE framework with the \code{\link{estimateZinbwaveParams}} function.
 #' In this way, it is possible to increase the signal of cell types that are
-#' underrepresented in the original dataset. If this step is not neccesary,
+#' underrepresented in the original dataset. If this step is not necessary,
 #' these profiles will be used directly to simulate pseudo-bulk RNA-seq samples
 #' with known cell composition.
 #'
@@ -682,7 +682,7 @@ NULL
 #'   will be performed by blocks (i.e subsets of determined size), which may
 #'   result in longer execution times. \code{NULL} by default.
 #' @param name.dataset.backend Name of the dataset of the HDF5 file to be used.
-#'   Note that it cannot exist. If \code{NULL} (by default), a random datset
+#'   Note that it cannot exist. If \code{NULL} (by default), a random dataset
 #'   name will be used.
 #' @param compression.level The compression level used if \code{file.backend} is
 #'   provided. It is an integer value between 0 (no compression) and 9 (highest

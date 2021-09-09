@@ -1,12 +1,13 @@
 ## Test environments
 * local Ubuntu 20.04, R 4.1.0
 * local macOS BigSur 11.4, R 4.1.0
+* win-builder (devel and release)
 * macOS, Windows 10, and Ubuntu 20.04 (R release and devel) on Github Actions
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
 
-There were 3 NOTEs:
+There were 2 NOTEs:
 
 * checking dependencies in R code ... NOTE
 Unexported object imported by a ':::' call: ‘DelayedArray:::set_verbose_block_processing’
@@ -26,21 +27,21 @@ trainDigitalDLSorterModel: no visible binding for '<<-' assignment to
 In case digitalDLSorteRdata and/or digitalDLSorteRmodels (the data packages for 
 digitalDLSorteR) are not installed, there will be one more note:
 
-* checking package dependencies ... NOTE
-  Packages suggested but not available for checking:
-    'digitalDLSorteRmodels'
+Additional considerations:
     
-  digitalDLSorteRmodels are the data packages for 
-  digitalDLSorteR, so the last relies on them, as these data are required for 
-  examples, tests, vignettes and pre-trained deconvolution models. These 
-  packages have been included as Suggests as digitalDLSorteR can be used without
-  them. This NOTE disappears if both are installed.
+* digitalDLSorteRmodels is the data package for digitalDLSorteR, so the latter 
+relies on the former for one functionality (the use of pre-trained models). 
+However, as the rest of functions work without these data, they have not 
+been included due to the size limit. The vignettes that depend on these
+data have been pre-computed in order to make them available.
   
-Furthermore, all deep learning related-tasks are performed using tensorflow and
-keras R packages, a functional Python interpreter with all these dependencies 
-covered is needed to run the examples, tests and vignettes. 
+* Furthermore, all deep learning related-tasks are performed using tensorflow 
+and keras R packages. As a functional Python interpreter with all these 
+dependencies covered is needed, some examples/tests will not run unless these 
+system requirements are available. SystemRequirements is in DESCRIPTION. A 
+helper function has been implemented in order to make easier the installation 
+and configuration of tensorflow-python:
 
 ```r
-reticulate::install_miniconda() # if miniconda not installed
-tensorflow::install_tensorflow(version = '2.5-cpu')
+installTFpython(install.conda = TRUE)
 ```

@@ -67,7 +67,7 @@ The main steps needed to build new models are summarized as follows, although yo
 9. [Saving `DigitalDLSorter` object and trained models](#save)
 
 
-<img src="workflow_buiilding_models.png" title="Workflow to build new context-specific deconvolution models" alt="Workflow to build new context-specific deconvolution models" style="display: block; margin: auto;" />
+<img src="workflow_building_models.png" title="Workflow to build new context-specific deconvolution models" alt="Workflow to build new context-specific deconvolution models" style="display: block; margin: auto;" />
 
 ### Loading data into a `DigitalDLSorter` object {#load}
 
@@ -430,7 +430,7 @@ DDLSToy
 ## Project: ToyExampleBreast
 ```
 
-Remember that this is a 'toy' example. In real circumstances, depending on the number of single-cell profiles loaded/simulated at the begining and the computational resources, about 20,000-30,000 samples would be recommended.
+Remember that this is a 'toy' example. In real circumstances, depending on the number of single-cell profiles loaded/simulated at the beginning and the computational resources, about 20,000-30,000 samples would be recommended.
 
 You can inspect the cell composition matrix created in this step with the getter function `getProbMatrix`:
 
@@ -633,35 +633,35 @@ DDLSToy <- trainDigitalDLSorterModel(object = DDLSToy)
 
 ```
 ## Model: "DigitalDLSorter"
-## _______________________________________________________________________________________________________________________________________________________________________
-## Layer (type)                                                               Output Shape                                                      Param #                   
-## =======================================================================================================================================================================
-## Dense1 (Dense)                                                             (None, 200)                                                       3750400                   
-## _______________________________________________________________________________________________________________________________________________________________________
-## BatchNormalization1 (BatchNormalization)                                   (None, 200)                                                       800                       
-## _______________________________________________________________________________________________________________________________________________________________________
-## ActivationReLu1 (Activation)                                               (None, 200)                                                       0                         
-## _______________________________________________________________________________________________________________________________________________________________________
-## Dropout1 (Dropout)                                                         (None, 200)                                                       0                         
-## _______________________________________________________________________________________________________________________________________________________________________
-## Dense2 (Dense)                                                             (None, 200)                                                       40200                     
-## _______________________________________________________________________________________________________________________________________________________________________
-## BatchNormalization2 (BatchNormalization)                                   (None, 200)                                                       800                       
-## _______________________________________________________________________________________________________________________________________________________________________
-## ActivationReLu2 (Activation)                                               (None, 200)                                                       0                         
-## _______________________________________________________________________________________________________________________________________________________________________
-## Dropout2 (Dropout)                                                         (None, 200)                                                       0                         
-## _______________________________________________________________________________________________________________________________________________________________________
-## Dense3 (Dense)                                                             (None, 13)                                                        2613                      
-## _______________________________________________________________________________________________________________________________________________________________________
-## BatchNormalization3 (BatchNormalization)                                   (None, 13)                                                        52                        
-## _______________________________________________________________________________________________________________________________________________________________________
-## ActivationSoftmax (Activation)                                             (None, 13)                                                        0                         
-## =======================================================================================================================================================================
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## Layer (type)                                                                                     Output Shape                                                                           Param #                          
+## =========================================================================================================================================================================================================================
+## Dense1 (Dense)                                                                                   (None, 200)                                                                            3750400                          
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## BatchNormalization1 (BatchNormalization)                                                         (None, 200)                                                                            800                              
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## ActivationReLu1 (Activation)                                                                     (None, 200)                                                                            0                                
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## Dropout1 (Dropout)                                                                               (None, 200)                                                                            0                                
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## Dense2 (Dense)                                                                                   (None, 200)                                                                            40200                            
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## BatchNormalization2 (BatchNormalization)                                                         (None, 200)                                                                            800                              
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## ActivationReLu2 (Activation)                                                                     (None, 200)                                                                            0                                
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## Dropout2 (Dropout)                                                                               (None, 200)                                                                            0                                
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## Dense3 (Dense)                                                                                   (None, 13)                                                                             2613                             
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## BatchNormalization3 (BatchNormalization)                                                         (None, 13)                                                                             52                               
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## ActivationSoftmax (Activation)                                                                   (None, 13)                                                                             0                                
+## =========================================================================================================================================================================================================================
 ## Total params: 3,794,865
 ## Trainable params: 3,794,039
 ## Non-trainable params: 826
-## _______________________________________________________________________________________________________________________________________________________________________
+## _________________________________________________________________________________________________________________________________________________________________________________________________________________________
 ```
 
 ```
@@ -675,10 +675,10 @@ DDLSToy <- trainDigitalDLSorterModel(object = DDLSToy)
 ```
 
 ```
-##    - loss: 0.6273
-##    - accuracy: 0.5896
-##    - mean_absolute_error: 0.0583
-##    - categorical_accuracy: 0.5896
+##    - loss: 0.5409
+##    - accuracy: 0.6194
+##    - mean_absolute_error: 0.0535
+##    - categorical_accuracy: 0.6194
 ```
 
 ```
@@ -726,15 +726,15 @@ DDLSToy
 ##     colnames: Bulk_35 Bulk_60 Bulk_76 ... Bulk_76 Bulk_50 Bulk_75 Bulk_34 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.3047
-##     accuracy: 0.85
-##     mean_absolute_error: 0.0395
-##     categorical_accuracy: 0.85
+##     loss: 0.3093
+##     accuracy: 0.8094
+##     mean_absolute_error: 0.0403
+##     categorical_accuracy: 0.8094
 ##   Evaluation metrics on test data:
-##     loss: 0.6273
-##     accuracy: 0.5896
-##     mean_absolute_error: 0.0583
-##     categorical_accuracy: 0.5896 
+##     loss: 0.5409
+##     accuracy: 0.6194
+##     mean_absolute_error: 0.0535
+##     categorical_accuracy: 0.6194 
 ## Project: ToyExampleBreast
 ```
 
@@ -951,7 +951,7 @@ barPlotCellTypes(DDLSToy, name.data = "TCGA.breast", rm.x.text = TRUE)
 
 ### Saving `DigitalDLSorter` object and trained models {#save}
 
-**digitalDLSorteR** provides different ways to save models to disk and to retrieve them in the `DigitalDLSorter` object. First, you can save `DigitalDLSorter` objects as RDS files. Since this type of files only accepts native R objects, they are not able to store complex data structures such as keras Python objects (`keras.engine.sequential.Sequential` class). To make it possible, **digitalDLSorteR** implements a `saveRDS` generic function that converts the keras model object into a list with the network achitecture and the weights after training. These two pieces of information are the minimal part needed to perform new predictions. When the model is to be used, it is compiled back to a `keras.engine.sequential.Sequential` object. 
+**digitalDLSorteR** provides different ways to save models to disk and to retrieve them in the `DigitalDLSorter` object. First, you can save `DigitalDLSorter` objects as RDS files. Since this type of files only accepts native R objects, they are not able to store complex data structures such as keras Python objects (`keras.engine.sequential.Sequential` class). To make it possible, **digitalDLSorteR** implements a `saveRDS` generic function that converts the keras model object into a list with the network architecture and the weights after training. These two pieces of information are the minimal part needed to perform new predictions. When the model is to be used, it is compiled back to a `keras.engine.sequential.Sequential` object. 
 
 
 ```r

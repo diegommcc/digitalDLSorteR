@@ -16,7 +16,7 @@ fontsize: 12pt
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  echo = TRUE, dpi = 80, fig.width = 8, fig.height = 5.5, 
+  echo = TRUE, dpi = 90, fig.width = 8, fig.height = 5.5, 
   base.dir = ".", fig.path = "", fig.align = "center"
 )
 ```
@@ -51,7 +51,7 @@ DDLSLiComp <- calculateEvalMetrics(DDLSLiComp)
 
 ### How errors are distributed
 
-With `distErrorPlot`, we can plot in different ways how errors are distributed. In this case, we can see the absolute error (`AbsErr`) by cell type (`CellType`). CD4 T cell proportions are predicted worse than the other cell types, but still have a median error closse to zero. 
+With `distErrorPlot`, we can plot in different ways how errors are distributed. In this case, we can see the absolute error (`AbsErr`) by cell type (`CellType`). CD4 T cell proportions are predicted worse than the other cell types, but still have a median error close to zero. 
 
 ```{r distErr1_realModelExample}
 distErrorPlot(
@@ -142,7 +142,7 @@ corrExpPredPlot(
 
 ### Bland-Altman agreement plots
 
-The last way to graphically represent results is to use `blandAltmanLehPlot`. It generates a Bland-Altman agreement plot, a method for analyzing the level of agreement between two variables, in that case expected vs predicted cell proportions. As shown, most of the proportions fall close to zero (note the blue density lines) and the dashed red lineas are very close to the mean, although we can observe again the aforementioned problem in the estimate of T CD4 cell proportions. 
+The last way to graphically represent results is to use `blandAltmanLehPlot`. It generates a Bland-Altman agreement plot, a method for analyzing the level of agreement between two variables, in that case expected vs predicted cell proportions. As shown, most of the proportions fall close to zero (note the blue density lines) and the dashed red lines are very close to the mean, although we can observe again the aforementioned problem in the estimate of T CD4 cell proportions. 
 
 
 ```{r bland1_realModelExample}
@@ -200,7 +200,7 @@ DDLSLiComp <- deconvDigitalDLSorterObj(
 barPlotCellTypes(DDLSLiComp,  name.data = "TCGA.colon", rm.x.text = TRUE)
 ```
 
-As the total number of samples is too high, we can see the results of some samples by taking the matrix with the proportions and ploting 20 random samples with `barPlotCellTypes`:
+As the total number of samples is too high, we can see the results of some samples by taking the matrix with the proportions and plotting 20 random samples with `barPlotCellTypes`:
 
 ```{r barPlotResults20_realModelExample}
 set.seed(12345)

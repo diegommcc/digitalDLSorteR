@@ -627,7 +627,7 @@ listToDDLS <- function(listTo) {
 #' needed to use \pkg{digitalDLSorteR}. It will automatically install Miniconda
 #' (if wanted, see Parameters) and create an environment named
 #' 'digitaldlsorter-env'. If you want to use other python/conda environment, see
-#' ?tensorflow::use_condaenv and/or vignette('kerasIssues').
+#' \code{?tensorflow::use_condaenv} and/or \code{('kerasIssues')}.
 #'
 #' @param conda Path to a conda executable. Use \code{"auto"} (by default)
 #'   allows \pkg{reticulate} to automatically find an appropriate conda binary.
@@ -642,12 +642,12 @@ listToDDLS <- function(listTo) {
 #'
 #' @examples
 #' \dontrun{
-#' notesInstallation <- installPythonDepends(
+#' notesInstallation <- installTFpython(
 #'   method = "auto", conda = "auto", install.conda = TRUE
 #' )
 #' }
 #' 
-installPythonDepends <- function(
+installTFpython <- function(
   conda = "auto",
   install.conda = FALSE,
   miniconda.path = NULL

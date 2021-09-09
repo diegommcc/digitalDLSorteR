@@ -15,7 +15,7 @@ fontsize: 12pt
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  echo = TRUE, dpi = 80, fig.width = 8, fig.height = 5.5, 
+  echo = TRUE, dpi = 90, fig.width = 8, fig.height = 5.5, 
   base.dir = ".", fig.path = "", fig.align = "center"
 )
 ```
@@ -58,7 +58,7 @@ The main steps needed to build new models are summarized as follows, although yo
 
 
 ```{r workflowfull_newModels, fig.cap = "Workflow to build new context-specific deconvolution models", echo = FALSE}
-knitr::include_graphics("workflow_buiilding_models.png")
+knitr::include_graphics("workflow_building_models.png")
 ```
 
 ### Loading data into a `DigitalDLSorter` object {#load}
@@ -230,7 +230,7 @@ DDLSToy <- generateBulkCellMatrix(
 DDLSToy
 ```
 
-Remember that this is a 'toy' example. In real circumstances, depending on the number of single-cell profiles loaded/simulated at the begining and the computational resources, about 20,000-30,000 samples would be recommended.
+Remember that this is a 'toy' example. In real circumstances, depending on the number of single-cell profiles loaded/simulated at the beginning and the computational resources, about 20,000-30,000 samples would be recommended.
 
 You can inspect the cell composition matrix created in this step with the getter function `getProbMatrix`:
 
@@ -482,7 +482,7 @@ barPlotCellTypes(DDLSToy, name.data = "TCGA.breast", rm.x.text = TRUE)
 
 ### Saving `DigitalDLSorter` object and trained models {#save}
 
-**digitalDLSorteR** provides different ways to save models to disk and to retrieve them in the `DigitalDLSorter` object. First, you can save `DigitalDLSorter` objects as RDS files. Since this type of files only accepts native R objects, they are not able to store complex data structures such as keras Python objects (`keras.engine.sequential.Sequential` class). To make it possible, **digitalDLSorteR** implements a `saveRDS` generic function that converts the keras model object into a list with the network achitecture and the weights after training. These two pieces of information are the minimal part needed to perform new predictions. When the model is to be used, it is compiled back to a `keras.engine.sequential.Sequential` object. 
+**digitalDLSorteR** provides different ways to save models to disk and to retrieve them in the `DigitalDLSorter` object. First, you can save `DigitalDLSorter` objects as RDS files. Since this type of files only accepts native R objects, they are not able to store complex data structures such as keras Python objects (`keras.engine.sequential.Sequential` class). To make it possible, **digitalDLSorteR** implements a `saveRDS` generic function that converts the keras model object into a list with the network architecture and the weights after training. These two pieces of information are the minimal part needed to perform new predictions. When the model is to be used, it is compiled back to a `keras.engine.sequential.Sequential` object. 
 
 ```{r saveRDS, eval=FALSE}
 ## this code will not be run

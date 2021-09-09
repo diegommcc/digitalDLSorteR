@@ -361,7 +361,7 @@ generateBulkCellMatrix <- function(
   if (length(unique(names(test.set))) != length(unique(names(cells)))) {
     stop(
       paste(
-        "Not all cell types consireded in DigitalDLSorter object are in test",
+        "Not all cell types considered in DigitalDLSorter object are in test",
         "data. digitalDLSorteR needs to have all cell types in both subsets",
         "(training and test). Please, provide a bigger single-cell experiment",
         "or consider simulate new single-cell profiles with", 
