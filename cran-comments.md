@@ -7,7 +7,7 @@
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
 
-There were 2 NOTEs:
+There was 1 NOTE:
 
 * checking dependencies in R code ... NOTE
 Unexported object imported by a ':::' call: ‘DelayedArray:::set_verbose_block_processing’
@@ -16,13 +16,6 @@ Unexported object imported by a ':::' call: ‘DelayedArray:::set_verbose_block_
   Unexported object from DelayedArray package is used because there is no other 
   option to remove informative messages during execution while DelayedArray and 
   HDF5Array packages are being used.
-
-* checking R code for possible problems ... NOTE
-trainDigitalDLSorterModel: no visible binding for '<<-' assignment to
-  ‘.dataForDNN’
-
-  '<<-' assigment used in trainDigitalDLSorterModel function to assign a 
-  function to a variable depending on 'on.the.fly' argument.
 
 Additional considerations:
     

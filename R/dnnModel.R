@@ -312,13 +312,13 @@ trainDigitalDLSorterModel <- function(
     suffix.names <- "_Simul"
   }
   pattern <- suffix.names
+  # variable set ni order to avoid NOTE. File by default
+  # assign(.dataForDNN, .dataForDNN.file, inherits = TRUE, immediate = TRUE)
+  .dataForDNN <- .dataForDNN.file
   # set if samples will be generated on the fly
   if (on.the.fly) {
     # assign(.dataForDNN, .dataForDNN.onFly, inherits = TRUE, immediate = TRUE)
     .dataForDNN <<- .dataForDNN.onFly
-  } else {
-    # assign(.dataForDNN, .dataForDNN.file, inherits = TRUE, immediate = TRUE)
-    .dataForDNN <<- .dataForDNN.file
   }
   if (verbose) 
     message(paste("\n=== Training DNN with", n.train, "samples:\n"))

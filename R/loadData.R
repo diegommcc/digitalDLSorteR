@@ -717,12 +717,12 @@ NULL
 #' @examples
 #' sce <- SingleCellExperiment::SingleCellExperiment(
 #'   matrix(
-#'     rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+#'     rpois(100, lambda = 5), nrow = 40, ncol = 30,
 #'     dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
 #'   ),
 #'   colData = data.frame(
 #'     Cell_ID = paste0("RHC", seq(30)),
-#'     Cell_Type = sample(x = paste0("CellType", seq(4)), size = 30, 
+#'     Cell_Type = sample(x = paste0("CellType", seq(4)), size = 30,
 #'                        replace = TRUE)
 #'   ),
 #'   rowData = data.frame(

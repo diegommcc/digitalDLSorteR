@@ -58,7 +58,7 @@ will be performed by blocks (i.e subsets of determined size), which may
 result in longer execution times. \code{NULL} by default.}
 
 \item{name.dataset.backend}{Name of the dataset of the HDF5 file to be used.
-Note that it cannot exist. If \code{NULL} (by default), a random datset
+Note that it cannot exist. If \code{NULL} (by default), a random dataset
 name will be used.}
 
 \item{compression.level}{The compression level used if \code{file.backend} is
@@ -95,7 +95,7 @@ RNA-seq data provided loaded into the \code{single.cell.real} slot as a
 Create a \code{\linkS4class{DigitalDLSorter}} object from single-cell RNA-seq
 data from files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5)
 or a \code{\linkS4class{SingleCellExperiment}} object. The data will be
-stored in \code{single.cell.real} slot. Tha data provided should consist of
+stored in \code{single.cell.real} slot. The data provided should consist of
 three pieces of information: \itemize{ \item Single-cell counts: genes as
 rows and cells as columns. \item Cells metadata: annotations (columns) for
 each cell (rows). \item Genes metadata: annotations (columns) for each gene
@@ -112,19 +112,19 @@ any transformation (e.g. log-transformation) and raw counts are preferred.
 This data can be used to simulate new single-cell profiles using the
 ZINB-WaVE framework with the \code{\link{estimateZinbwaveParams}} function.
 In this way, it is possible to increase the signal of cell types that are
-underrepresented in the original dataset. If this step is not neccesary,
+underrepresented in the original dataset. If this step is not necessary,
 these profiles will be used directly to simulate pseudo-bulk RNA-seq samples
 with known cell composition.
 }
 \examples{
 sce <- SingleCellExperiment::SingleCellExperiment(
   matrix(
-    rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+    rpois(100, lambda = 5), nrow = 40, ncol = 30,
     dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
   ),
   colData = data.frame(
     Cell_ID = paste0("RHC", seq(30)),
-    Cell_Type = sample(x = paste0("CellType", seq(4)), size = 30, 
+    Cell_Type = sample(x = paste0("CellType", seq(4)), size = 30,
                        replace = TRUE)
   ),
   rowData = data.frame(
