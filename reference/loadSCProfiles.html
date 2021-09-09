@@ -54,7 +54,7 @@ data — loadSCProfiles" />
 <meta property="og:description" content="Create a DigitalDLSorter object from single-cell RNA-seq
 data from files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5)
 or a SingleCellExperiment object. The data will be
-stored in single.cell.real slot. Tha data provided should consist of
+stored in single.cell.real slot. The data provided should consist of
 three pieces of information:
 Single-cell counts: genes as
 rows and cells as columns.
@@ -180,7 +180,7 @@ data</h1>
     <p>Create a <code><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></code> object from single-cell RNA-seq
 data from files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5)
 or a <code>SingleCellExperiment</code> object. The data will be
-stored in <code>single.cell.real</code> slot. Tha data provided should consist of
+stored in <code>single.cell.real</code> slot. The data provided should consist of
 three pieces of information:</p><ul>
 <li><p>Single-cell counts: genes as
 rows and cells as columns.</p></li>
@@ -271,7 +271,7 @@ result in longer execution times. <code>NULL</code> by default.</p></td>
     <tr>
       <th>name.dataset.backend</th>
       <td><p>Name of the dataset of the HDF5 file to be used.
-Note that it cannot exist. If <code>NULL</code> (by default), a random datset
+Note that it cannot exist. If <code>NULL</code> (by default), a random dataset
 name will be used.</p></td>
     </tr>
     <tr>
@@ -321,7 +321,7 @@ RNA-seq data provided loaded into the <code>single.cell.real</code> slot as a
     <p>This data can be used to simulate new single-cell profiles using the
 ZINB-WaVE framework with the <code><a href='estimateZinbwaveParams.html'>estimateZinbwaveParams</a></code> function.
 In this way, it is possible to increase the signal of cell types that are
-underrepresented in the original dataset. If this step is not neccesary,
+underrepresented in the original dataset. If this step is not necessary,
 these profiles will be used directly to simulate pseudo-bulk RNA-seq samples
 with known cell composition.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
@@ -332,12 +332,12 @@ with known cell composition.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>SingleCellExperiment</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a></span><span class='op'>(</span></span>
 <span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span></span>
-<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='fl'>100</span>, lambda <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>40</span>, ncol <span class='op'>=</span> <span class='fl'>30</span>, </span>
+<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='fl'>100</span>, lambda <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>40</span>, ncol <span class='op'>=</span> <span class='fl'>30</span>,</span>
 <span class='r-in'>    dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Gene"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>40</span><span class='op'>)</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"RHC"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>30</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='op'>)</span>,</span>
 <span class='r-in'>  colData <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
 <span class='r-in'>    Cell_ID <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"RHC"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>30</span><span class='op'>)</span><span class='op'>)</span>,</span>
-<span class='r-in'>    Cell_Type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"CellType"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>, size <span class='op'>=</span> <span class='fl'>30</span>, </span>
+<span class='r-in'>    Cell_Type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"CellType"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>, size <span class='op'>=</span> <span class='fl'>30</span>,</span>
 <span class='r-in'>                       replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='op'>)</span>,</span>
 <span class='r-in'>  rowData <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
