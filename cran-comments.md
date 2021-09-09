@@ -24,9 +24,6 @@ trainDigitalDLSorterModel: no visible binding for '<<-' assignment to
   '<<-' assigment used in trainDigitalDLSorterModel function to assign a 
   function to a variable depending on 'on.the.fly' argument.
 
-In case digitalDLSorteRdata and/or digitalDLSorteRmodels (the data packages for 
-digitalDLSorteR) are not installed, there will be one more note:
-
 Additional considerations:
     
 * digitalDLSorteRmodels is the data package for digitalDLSorteR, so the latter 
