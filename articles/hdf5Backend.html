@@ -98,7 +98,7 @@
 
       
 
-      </header><script src="hdf5Backend_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
+      </header><script src="hdf5Backend_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>HDF5 files as back-end</h1>
@@ -111,12 +111,12 @@
 
     
     
-<p>The Hierarchical Data Format version 5 (HDF5) is an open source file format that supports large, complex, heterogeneous data. This format has different advantages that make it very suitable for storing large datasets together with their metadata in a way that allows to access quickly all the information. As <strong>digitalDLSorteR</strong> needs to simulate large amounts of pseudo-bulk samples to reach a good training and uses as input single-cell RNA-Seq datasets whose size is getting much bigger over time, it implements a set of functionalities that offer the possibility to use HDF5 files as back-end for each step where large data are required:</p>
+<p>The Hierarchical Data Format version 5 (HDF5) is an open source file format that supports large, complex, heterogeneous data. This format has different advantages that make it very suitable to store large datasets together with their metadata in a way that allows to access quickly all the information. As <strong>digitalDLSorteR</strong> needs to simulate large amounts of pseudo-bulk samples to reach a good training and uses as input single-cell RNA-Seq datasets whose size is getting much bigger over time, it implements a set of functionalities that offer the possibility to use HDF5 files as back-end for each step where large data are required:</p>
 <ul>
 <li>
 <code>loadSCProfiles</code>: when single-cell data is loaded. It allows to keep large datasets that do not fit in RAM.</li>
 <li>
-<code>simSCProfiles</code>: when new single-cell profiles are simulated. Moreover, this function allows to create those profiles by batch without creating large matrices that don’t fit in memory.</li>
+<code>simSCProfiles</code>: when new single-cell profiles are simulated. Moreover, this function allows to create them by batch without creating large matrices that do not fit in RAM.</li>
 <li>
 <code>simBulkProfiles</code>: this is the most delicate step where HDF5 files can be very useful. As <code>simSCProfiles</code>, this function is able to create the simulated pseudo-bulk profiles without loading all of them into RAM.</li>
 </ul>
@@ -129,7 +129,7 @@
 <li>
 <code>file.backend</code>: it is the file path in which the HDF5 file will be stored.</li>
 <li>
-<code>name.dataset.backend</code>: as HDF5 files use a “file directory” like structure, it is possible to store more than one dataset in a single file. To do so, to change the name of the dataset is needed. If it is not provided, a random dataset name will be used.</li>
+<code>name.dataset.backend</code>: as HDF5 files use a “file directory”-like structure, it is possible to store more than one dataset in a single file. To do so, changing the name of the dataset is needed. If it is not provided, a random dataset name will be used.</li>
 <li>
 <code>compression.level</code>: it allows to change the level of compression that HDF5 file will have. It is an integer value between 0 and 9. Note that the greater the compression level, the slower the processes and the longer the runtimes.</li>
 <li>

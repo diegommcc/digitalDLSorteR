@@ -323,7 +323,7 @@ doi: <a href='https://doi.org/10.1186/s13059-017-1305-0'>10.1186/s13059-017-1305
 <span class='r-in'>  cell.type.column <span class='op'>=</span> <span class='st'>"Cell_Type"</span>,</span>
 <span class='r-in'>  cell.ID.column <span class='op'>=</span> <span class='st'>"Cell_ID"</span>,</span>
 <span class='r-in'>  gene.ID.column <span class='op'>=</span> <span class='st'>"Gene_ID"</span>, </span>
-<span class='r-in'>  subset.cells <span class='op'>=</span> <span class='fl'>4</span>,</span>
+<span class='r-in'>  subset.cells <span class='op'>=</span> <span class='fl'>2</span>,</span>
 <span class='r-in'>  verbose <span class='op'>=</span> <span class='cn'>TRUE</span></span>
 <span class='r-in'><span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> === Set parallel environment to 1 thread(s)</span>
@@ -331,10 +331,10 @@ doi: <a href='https://doi.org/10.1186/s13059-017-1305-0'>10.1186/s13059-017-1305
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> === Create cell model matrix based on Cell_Type columns:</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> 	~Cell_Type</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> === Number of cells for each cell type:</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType1: 3</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType1: 1</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType2: 1</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> === Create gene model matrix without gene covariates</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> === Run estimation process (Start time 01:17:06 PM) </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> === Run estimation process (Start time 02:16:48 PM) </span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Removing all zero genes...</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Fitting model...</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Create model:</span>
@@ -343,34 +343,34 @@ doi: <a href='https://doi.org/10.1186/s13059-017-1305-0'>10.1186/s13059-017-1305
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> ok</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Optimize parameters:</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Iteration 1</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> penalized log-likelihood = -153.540385340646</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> After dispersion optimization = -112.798478904757</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> penalized log-likelihood = -77.907828237386</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> After dispersion optimization = -54.766110420107</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>    user  system elapsed </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   0.093   0.000   0.094 </span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> After right optimization = -110.253578710315</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> After orthogonalization = -110.253578710315</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   0.086   0.000   0.086 </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> After right optimization = -52.4973402009328</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> After orthogonalization = -52.4973402009328</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>    user  system elapsed </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   0.035   0.000   0.035 </span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> After left optimization = -110.192806922142</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> After orthogonalization = -110.192806922142</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   0.014   0.000   0.014 </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> After left optimization = -52.4948680680859</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> After orthogonalization = -52.4948680680859</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Iteration 2</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> penalized log-likelihood = -110.192806922142</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> After dispersion optimization = -110.192807156396</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> penalized log-likelihood = -52.4948680680859</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> After dispersion optimization = -52.4948681235184</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>    user  system elapsed </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   0.107   0.000   0.107 </span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> After right optimization = -110.191451762593</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> After orthogonalization = -110.191451762593</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   0.077   0.000   0.077 </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> After right optimization = -52.4932724288572</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> After orthogonalization = -52.4932724288572</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>    user  system elapsed </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   0.022   0.000   0.022 </span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> After left optimization = -110.190374929655</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> After orthogonalization = -110.190374929655</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   0.012   0.000   0.012 </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> After left optimization = -52.492133739404</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> After orthogonalization = -52.492133739404</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Iteration 3</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> penalized log-likelihood = -110.190374929655</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> penalized log-likelihood = -52.492133739404</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> ok</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> DONE</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Invested time: 3.75</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Invested time: 3.36</span>
 <span class='r-in'></span>
 </code></pre></div>
   </div>
