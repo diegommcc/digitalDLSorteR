@@ -23,16 +23,17 @@ This is a helper function to install Python dependencies needed: a Python
 interpreter with TensorFlow Python library and its dependencies. It is
 performed using the \pkg{reticulate} package and the installer of the
 \pkg{tensorflow} R package. The available options are virtual or conda
-environments. The are named digitaldlsorter. In any case, it can be manually
-done as it is explained in
-\url{https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html}.
+environments. The new environment is called digitaldlsorter-env. In any case,
+this installation can be manually done as it is explained in
+\url{https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html},
+but we recommend using this function.
 }
 \details{
 This function is intended to make easier the installation of the requirements
 needed to use \pkg{digitalDLSorteR}. It will automatically install Miniconda
-(if wanted, see Parameters) and create an environment named
+(if wanted, see Parameters) and create an environment called
 'digitaldlsorter-env'. If you want to use other python/conda environment, see
-\code{?tensorflow::use_condaenv} and/or \code{('kerasIssues')}.
+\code{?tensorflow::use_condaenv} and/or the vignettes.
 }
 \examples{
 \dontrun{

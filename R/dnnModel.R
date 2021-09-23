@@ -2,9 +2,6 @@
 #' @importFrom tools file_path_sans_ext
 NULL
 
-globalVariables(c(".dataForDNN", "<<-"))
-# assign(".dataForDNN", NULL, envir = .GlobalEnv)
-
 ################################################################################
 ######################## Train and evaluate DNN model ##########################
 ################################################################################
@@ -312,18 +309,19 @@ trainDigitalDLSorterModel <- function(
     suffix.names <- "_Simul"
   }
   pattern <- suffix.names
-  # variable set ni order to avoid NOTE. File by default
-  # assign(.dataForDNN, .dataForDNN.file, inherits = TRUE, immediate = TRUE)
-  .dataForDNN <- .dataForDNN.file
   # set if samples will be generated on the fly
-  if (on.the.fly) {
+  if (!on.the.fly) {
+    # assign(.dataForDNN, .dataForDNN.file, inherits = TRUE, immediate = TRUE)
+    .dataForDNN <- .dataForDNN.file
+  } else {
     # assign(.dataForDNN, .dataForDNN.onFly, inherits = TRUE, immediate = TRUE)
-    .dataForDNN <<- .dataForDNN.onFly
+    .dataForDNN <- .dataForDNN.onFly
   }
   if (verbose) 
     message(paste("\n=== Training DNN with", n.train, "samples:\n"))
   gen.train <- .trainGenerator(
     object = object, 
+    funGen = .dataForDNN,
     prob.matrix = prob.matrix.train,
     type.data = "train",
     batch.size = batch.size,
@@ -349,6 +347,7 @@ trainDigitalDLSorterModel <- function(
   # evaluation of the model: set by default, no options?
   gen.test <- .predictGenerator(
     object,
+    funGen = .dataForDNN,
     target = TRUE,
     prob.matrix = prob.matrix.test,
     batch.size = batch.size,
@@ -368,6 +367,7 @@ trainDigitalDLSorterModel <- function(
   }
   gen.predict <- .predictGenerator(
     object,
+    funGen = .dataForDNN,
     target = FALSE,
     prob.matrix = prob.matrix.test,
     batch.size = batch.size,
@@ -399,6 +399,7 @@ trainDigitalDLSorterModel <- function(
 
 .trainGenerator <- function(
   object,
+  funGen,
   prob.matrix,
   type.data,
   batch.size,
@@ -431,7 +432,7 @@ trainDigitalDLSorterModel <- function(
     if (shuffle) {
       shuffling <- sample(seq_along(data.index))
       sel.data <- prob.matrix[data.index, , drop = FALSE]
-      counts <- .dataForDNN(
+      counts <- funGen(
         object = object, 
         sel.data = sel.data, 
         pattern = pattern,
@@ -445,7 +446,7 @@ trainDigitalDLSorterModel <- function(
     } else {
       sel.data <- prob.matrix[data.index, , drop = FALSE]
       # message("AQUI SIIIIIIIIIIIIIIIIIIIII")
-      counts <- .dataForDNN(
+      counts <- funGen(
         object = object, 
         sel.data = sel.data, 
         pattern = pattern,
@@ -461,6 +462,7 @@ trainDigitalDLSorterModel <- function(
 
 .predictGenerator <- function(
   object,
+  funGen,
   prob.matrix,
   target,
   batch.size,
@@ -478,7 +480,7 @@ trainDigitalDLSorterModel <- function(
       nb <<- 0
     }
     sel.data <- prob.matrix[data.index, , drop = FALSE]
-    counts <- .dataForDNN(
+    counts <- funGen(
       object = object, 
       sel.data = sel.data, 
       pattern = pattern,

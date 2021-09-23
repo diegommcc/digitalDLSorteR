@@ -61,9 +61,9 @@ NULL
 #'   \itemize{ \item A cell type column with the same name of the cell type
 #'   column in cells metadata (\code{cell.type.column}). If the name of the
 #'   column is not the same, the function will return an error. All cell types
-#'   must appear in the cells metadata. \item A second column named
+#'   must appear in the cells metadata. \item A second column called
 #'   \code{'from'} with the start frequency for each cell type. \item A third
-#'   column named \code{'to'} with the ending frequency for each cell type.}
+#'   column called \code{'to'} with the ending frequency for each cell type.}
 #' @param num.bulk.samples Number of bulk RNA-Seq sample proportions (and thus
 #'   simulated bulk RNA-Seq samples) to be generated taking into account
 #'   training and test data. We recommend seting this value according to the

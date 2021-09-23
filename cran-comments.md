@@ -29,8 +29,8 @@ data have been pre-computed in order to make them available.
 and keras R packages. As a functional Python interpreter with all these 
 dependencies covered is needed, some examples/tests will not run unless these 
 system requirements are available. SystemRequirements is in DESCRIPTION. A 
-helper function has been implemented in order to make easier the installation 
-and configuration of tensorflow-python:
+helper function has been implemented in order to make the installation
+and configuration of tensorflow-python easier:
 
 ```r
 installTFpython(install.conda = TRUE)

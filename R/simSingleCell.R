@@ -97,7 +97,7 @@ NULL
 #'   cell.type.column = "Cell_Type",
 #'   cell.ID.column = "Cell_ID",
 #'   gene.ID.column = "Gene_ID", 
-#'   subset.cells = 4,
+#'   subset.cells = 2,
 #'   verbose = TRUE
 #' )
 #'

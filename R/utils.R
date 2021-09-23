@@ -619,15 +619,16 @@ listToDDLS <- function(listTo) {
 #' interpreter with TensorFlow Python library and its dependencies. It is
 #' performed using the \pkg{reticulate} package and the installer of the
 #' \pkg{tensorflow} R package. The available options are virtual or conda
-#' environments. The are named digitaldlsorter. In any case, it can be manually
-#' done as it is explained in
-#' \url{https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html}.
+#' environments. The new environment is called digitaldlsorter-env. In any case,
+#' this installation can be manually done as it is explained in
+#' \url{https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html},
+#' but we recommend using this function.
 #'
 #' This function is intended to make easier the installation of the requirements
 #' needed to use \pkg{digitalDLSorteR}. It will automatically install Miniconda
-#' (if wanted, see Parameters) and create an environment named
+#' (if wanted, see Parameters) and create an environment called
 #' 'digitaldlsorter-env'. If you want to use other python/conda environment, see
-#' \code{?tensorflow::use_condaenv} and/or \code{('kerasIssues')}.
+#' \code{?tensorflow::use_condaenv} and/or the vignettes.
 #'
 #' @param conda Path to a conda executable. Use \code{"auto"} (by default)
 #'   allows \pkg{reticulate} to automatically find an appropriate conda binary.
@@ -669,7 +670,8 @@ installTFpython <- function(
     )
     if (isTRUE(status1)) {
       stop(
-        "Error during the installation. Please see vignette('kerasIssues')",
+        "Error during the installation. Please see the website of the ",
+        "package and/or the vignettes for more details",
         call. = FALSE
       )
     }
@@ -687,7 +689,8 @@ installTFpython <- function(
   )
   if (isTRUE(status2)) {
     stop(
-      "Error during the creation of the environment. Please see vignette('kerasIssues')",
+      "Error during the installation. Please see the website of the ",
+      "package and/or the vignettes for more details",
       call. = FALSE
     )
   }
@@ -705,7 +708,8 @@ installTFpython <- function(
   )
   if (isTRUE(status3)) {
     stop(
-      "Error during the installation of tensorflow. Please see vignette('kerasIssues')",
+      "Error during the installation. Please see the website of the ",
+      "package and/or the vignettes for more details",
       call. = FALSE
     )
   }
