@@ -387,7 +387,6 @@ NULL
 ) { 
   if (verbose) {
     message("\n=== Processing data in HDF5 by blocks\n")
-    DelayedArray:::set_verbose_block_processing(TRUE)
   }
   ##############################################################################
   ################################# ATTENTION ##################################
