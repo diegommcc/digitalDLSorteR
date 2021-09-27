@@ -10,6 +10,7 @@ tensorflow::tf$compat$v1$disable_eager_execution()
 ################################################################################
 
 # simulating data
+set.seed(123)
 sce <- SingleCellExperiment(
   matrix(
     stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 

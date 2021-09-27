@@ -1,6 +1,7 @@
 context("Utils (helper functions): utils.R")
 
 # simulating data
+set.seed(123)
 sce <- SingleCellExperiment(
   matrix(
     stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 
