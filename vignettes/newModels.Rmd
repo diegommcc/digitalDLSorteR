@@ -16,8 +16,7 @@ fontsize: 12pt
 ```{r setup, include=FALSE}
 # suppressMessages(library(digitalDLSorteR))
 knitr::opts_chunk$set(
-  echo = TRUE, dpi = 80, fig.width = 8, fig.height = 4.5, 
-  base.dir = ".", fig.path = "", fig.align = "center",
+  echo = TRUE, dpi = 80, fig.width = 8, fig.height = 4.5, fig.align = "center",
   eval = digitalDLSorteR:::.checkPythonDependencies(alert = "none")
 )
 ```
