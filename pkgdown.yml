@@ -1,11 +1,11 @@
-pandoc: 2.11.4
+pandoc: 2.14.0.3
 pkgdown: 1.6.1.9001
-pkgdown_sha: 9ac9c8d5a6ca30325100205161441df8cf427035
+pkgdown_sha: 632889250b23aae88d6b3adcc0afd48160cb17ca
 articles:
   hdf5Backend: hdf5Backend.html
   kerasIssues: kerasIssues.html
   newModels: newModels.html
   pretrainedModels: pretrainedModels.html
   realModelExample: realModelExample.html
-last_built: 2021-09-27T07:52Z
+last_built: 2021-09-29T10:25Z
 
