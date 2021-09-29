@@ -248,7 +248,24 @@ are generated without any parameter introduced by the user.</p>
 <span class='r-in'><span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> === The number of bulk RNA-Seq samples that will be generated is equal to 60</span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in generateBulkCellMatrix(object = DDLS, cell.ID.column = "Cell_ID",     cell.type.column = "Cell_Type", prob.design = probMatrix,     num.bulk.samples = 60)</span> Not all cell types considered in DigitalDLSorter object are in test data. digitalDLSorteR needs to have all cell types in both subsets (training and test). Please, provide a bigger single-cell experiment or consider simulate new single-cell profiles with 'estimateZinbwaveParams' and 'simSCProfiles' functions</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> === Training set cells by type:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType1: 5</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType2: 5</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType3: 6</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType4: 4</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> === Test set cells by type:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType1: 3</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType2: 2</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType3: 2</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType4: 3</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> === Probability matrix for training data:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - Bulk RNA-Seq samples: 40</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - Cell types: 4</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> === Probability matrix for test data:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - Bulk RNA-Seq samples: 20</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - Cell types: 4</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> DONE</span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span></span>
 <span class='r-in'>  X <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>6</span>, FUN <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>{</span></span>
 <span class='r-in'>      <span class='fu'>showProbPlot</span><span class='op'>(</span></span>
@@ -259,7 +276,24 @@ are generated without any parameter introduced by the user.</p>
 <span class='r-in'>      <span class='op'>)</span></span>
 <span class='r-in'>    <span class='op'>}</span></span>
 <span class='r-in'>  <span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in showProbPlot(DDLS, type.data = "train", set = x, type.plot = "boxplot")</span> 'prob.cell.types' slot is empty</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[1]]</span>
+<span class='r-plt'><img src='showProbPlot-1.png' alt='' width='700' height='433' /></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[2]]</span>
+<span class='r-plt'><img src='showProbPlot-2.png' alt='' width='700' height='433' /></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[3]]</span>
+<span class='r-plt'><img src='showProbPlot-3.png' alt='' width='700' height='433' /></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[4]]</span>
+<span class='r-plt'><img src='showProbPlot-4.png' alt='' width='700' height='433' /></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[5]]</span>
+<span class='r-plt'><img src='showProbPlot-5.png' alt='' width='700' height='433' /></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[6]]</span>
+<span class='r-plt'><img src='showProbPlot-6.png' alt='' width='700' height='433' /></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-in'>  </span>
 </code></pre></div>
   </div>

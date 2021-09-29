@@ -233,7 +233,7 @@ Workflow to build new context-specific deconvolution models
 ##     - CellType4: 7
 ##     - CellType5: 6</code></pre>
 <pre><code>## === Create gene model matrix without gene covariates</code></pre>
-<pre><code>## === Run estimation process (Start time 10:25:57 AM)</code></pre>
+<pre><code>## === Run estimation process (Start time 10:30:26 AM)</code></pre>
 <pre><code>## Removing all zero genes...</code></pre>
 <pre><code>## Fitting model...</code></pre>
 <pre><code>## Create model:</code></pre>
@@ -245,22 +245,22 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## penalized log-likelihood = -54085.7356583502</code></pre>
 <pre><code>## After dispersion optimization = -43320.8019735184</code></pre>
 <pre><code>##    user  system elapsed 
-##   5.359   0.028   5.386</code></pre>
+##   6.120   0.036   6.156</code></pre>
 <pre><code>## After right optimization = -42718.0963333899</code></pre>
 <pre><code>## After orthogonalization = -42718.0963333899</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.301   0.000   0.301</code></pre>
+##   0.374   0.000   0.374</code></pre>
 <pre><code>## After left optimization = -42710.2243757023</code></pre>
 <pre><code>## After orthogonalization = -42710.2243757023</code></pre>
 <pre><code>## Iteration 2</code></pre>
 <pre><code>## penalized log-likelihood = -42710.2243757023</code></pre>
 <pre><code>## After dispersion optimization = -42710.2246200143</code></pre>
 <pre><code>##    user  system elapsed 
-##   4.656   0.016   4.672</code></pre>
+##   5.441   0.008   5.448</code></pre>
 <pre><code>## After right optimization = -42708.2394778232</code></pre>
 <pre><code>## After orthogonalization = -42708.2394778232</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.247   0.000   0.247</code></pre>
+##   0.315   0.000   0.316</code></pre>
 <pre><code>## After left optimization = -42706.8950844827</code></pre>
 <pre><code>## After orthogonalization = -42706.8950844827</code></pre>
 <pre><code>## Iteration 3</code></pre>
@@ -269,7 +269,7 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## 
 ## DONE</code></pre>
 <pre><code>## 
-## Invested time: 29.54</code></pre>
+## Invested time: 33.1</code></pre>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSToy</span></code></pre></div>
 <pre><code>## An object of class DigitalDLSorter 
@@ -580,10 +580,10 @@ Workflow to build new context-specific deconvolution models
 ## === Training DNN with 267 samples:</code></pre>
 <pre><code>## 
 ## === Evaluating DNN in test data (133 samples)</code></pre>
-<pre><code>##    - loss: 0.9242
-##    - accuracy: 0.5038
-##    - mean_absolute_error: 0.2164
-##    - categorical_accuracy: 0.5038</code></pre>
+<pre><code>##    - loss: 0.957
+##    - accuracy: 0.4211
+##    - mean_absolute_error: 0.224
+##    - categorical_accuracy: 0.4211</code></pre>
 <pre><code>## 
 ## === Generating prediction results using test data</code></pre>
 <pre><code>## DONE</code></pre>
@@ -618,15 +618,15 @@ Workflow to build new context-specific deconvolution models
 ##     colnames: Bulk_65 Bulk_46 Bulk_76 ... Bulk_76 Bulk_53 Bulk_77 Bulk_67 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.2503
-##     accuracy: 0.9375
-##     mean_absolute_error: 0.0903
-##     categorical_accuracy: 0.9375
+##     loss: 0.263
+##     accuracy: 0.9281
+##     mean_absolute_error: 0.0935
+##     categorical_accuracy: 0.9281
 ##   Evaluation metrics on test data:
-##     loss: 0.9242
-##     accuracy: 0.5038
-##     mean_absolute_error: 0.2164
-##     categorical_accuracy: 0.5038 
+##     loss: 0.957
+##     accuracy: 0.4211
+##     mean_absolute_error: 0.224
+##     categorical_accuracy: 0.4211 
 ## Project: ToyExampleBreast</code></pre>
 <p>As this is a ‘toy’ example, results are not very accurate. For a real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a> vignette.</p>
 <div id="on-the-fly-argument" class="section level4">
