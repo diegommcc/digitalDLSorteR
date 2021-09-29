@@ -233,7 +233,7 @@ Workflow to build new context-specific deconvolution models
 ##     - CellType4: 7
 ##     - CellType5: 6</code></pre>
 <pre><code>## === Create gene model matrix without gene covariates</code></pre>
-<pre><code>## === Run estimation process (Start time 10:30:26 AM)</code></pre>
+<pre><code>## === Run estimation process (Start time 11:04:51 AM)</code></pre>
 <pre><code>## Removing all zero genes...</code></pre>
 <pre><code>## Fitting model...</code></pre>
 <pre><code>## Create model:</code></pre>
@@ -245,22 +245,22 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## penalized log-likelihood = -54085.7356583502</code></pre>
 <pre><code>## After dispersion optimization = -43320.8019735184</code></pre>
 <pre><code>##    user  system elapsed 
-##   6.120   0.036   6.156</code></pre>
+##   5.581   0.024   5.606</code></pre>
 <pre><code>## After right optimization = -42718.0963333899</code></pre>
 <pre><code>## After orthogonalization = -42718.0963333899</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.374   0.000   0.374</code></pre>
+##   0.312   0.000   0.312</code></pre>
 <pre><code>## After left optimization = -42710.2243757023</code></pre>
 <pre><code>## After orthogonalization = -42710.2243757023</code></pre>
 <pre><code>## Iteration 2</code></pre>
 <pre><code>## penalized log-likelihood = -42710.2243757023</code></pre>
 <pre><code>## After dispersion optimization = -42710.2246200143</code></pre>
 <pre><code>##    user  system elapsed 
-##   5.441   0.008   5.448</code></pre>
+##   4.899   0.004   4.903</code></pre>
 <pre><code>## After right optimization = -42708.2394778232</code></pre>
 <pre><code>## After orthogonalization = -42708.2394778232</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.315   0.000   0.316</code></pre>
+##   0.249   0.004   0.252</code></pre>
 <pre><code>## After left optimization = -42706.8950844827</code></pre>
 <pre><code>## After orthogonalization = -42706.8950844827</code></pre>
 <pre><code>## Iteration 3</code></pre>
@@ -269,7 +269,7 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## 
 ## DONE</code></pre>
 <pre><code>## 
-## Invested time: 33.1</code></pre>
+## Invested time: 30.6</code></pre>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSToy</span></code></pre></div>
 <pre><code>## An object of class DigitalDLSorter 
@@ -452,22 +452,22 @@ Workflow to build new context-specific deconvolution models
   <span class="op">}</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## [[1]]</code></pre>
-<p><img src="showProbPlot_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/showProbPlot_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <pre><code>## 
 ## [[2]]</code></pre>
-<p><img src="showProbPlot_newModels-2.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/showProbPlot_newModels-2.png" width="640" style="display: block; margin: auto;"></p>
 <pre><code>## 
 ## [[3]]</code></pre>
-<p><img src="showProbPlot_newModels-3.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/showProbPlot_newModels-3.png" width="640" style="display: block; margin: auto;"></p>
 <pre><code>## 
 ## [[4]]</code></pre>
-<p><img src="showProbPlot_newModels-4.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/showProbPlot_newModels-4.png" width="640" style="display: block; margin: auto;"></p>
 <pre><code>## 
 ## [[5]]</code></pre>
-<p><img src="showProbPlot_newModels-5.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/showProbPlot_newModels-5.png" width="640" style="display: block; margin: auto;"></p>
 <pre><code>## 
 ## [[6]]</code></pre>
-<p><img src="showProbPlot_newModels-6.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/showProbPlot_newModels-6.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 <div id="simul-bulk" class="section level3">
 <h3 class="hasAnchor">
@@ -580,10 +580,10 @@ Workflow to build new context-specific deconvolution models
 ## === Training DNN with 267 samples:</code></pre>
 <pre><code>## 
 ## === Evaluating DNN in test data (133 samples)</code></pre>
-<pre><code>##    - loss: 0.957
-##    - accuracy: 0.4211
-##    - mean_absolute_error: 0.224
-##    - categorical_accuracy: 0.4211</code></pre>
+<pre><code>##    - loss: 0.9046
+##    - accuracy: 0.4662
+##    - mean_absolute_error: 0.2143
+##    - categorical_accuracy: 0.4662</code></pre>
 <pre><code>## 
 ## === Generating prediction results using test data</code></pre>
 <pre><code>## DONE</code></pre>
@@ -618,15 +618,15 @@ Workflow to build new context-specific deconvolution models
 ##     colnames: Bulk_65 Bulk_46 Bulk_76 ... Bulk_76 Bulk_53 Bulk_77 Bulk_67 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.263
-##     accuracy: 0.9281
-##     mean_absolute_error: 0.0935
-##     categorical_accuracy: 0.9281
+##     loss: 0.2487
+##     accuracy: 0.9062
+##     mean_absolute_error: 0.0904
+##     categorical_accuracy: 0.9062
 ##   Evaluation metrics on test data:
-##     loss: 0.957
-##     accuracy: 0.4211
-##     mean_absolute_error: 0.224
-##     categorical_accuracy: 0.4211 
+##     loss: 0.9046
+##     accuracy: 0.4662
+##     mean_absolute_error: 0.2143
+##     categorical_accuracy: 0.4662 
 ## Project: ToyExampleBreast</code></pre>
 <p>As this is a ‘toy’ example, results are not very accurate. For a real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a> vignette.</p>
 <div id="on-the-fly-argument" class="section level4">
@@ -659,7 +659,7 @@ Workflow to build new context-specific deconvolution models
   type <span class="op">=</span> <span class="st">"boxplot"</span>,
   size.point <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="distErr1_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/distErr1_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>Now, if you want to know if there is a bias toward a specific cell type, yo can use <code>facet.by</code> parameter to split the plot by cell type:</p>
 <div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
@@ -670,7 +670,7 @@ Workflow to build new context-specific deconvolution models
   type <span class="op">=</span> <span class="st">"violinplot"</span>,
   size.point <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="distErr2_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/distErr2_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>It is also possible to represent errors by number of different cell types in the samples:</p>
 <div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
@@ -681,11 +681,11 @@ Workflow to build new context-specific deconvolution models
   type <span class="op">=</span> <span class="st">"boxplot"</span>,
   size.point <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="distErr3_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/distErr3_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>Finally, with <code>barErrorPlot</code>, the mean error values with their corresponding dispersion ranges can be plotted:</p>
 <div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/barErrorPlot.html">barErrorPlot</a></span><span class="op">(</span><span class="va">DDLSToy</span>, error <span class="op">=</span> <span class="st">"MAE"</span>, by <span class="op">=</span> <span class="st">"CellType"</span><span class="op">)</span></code></pre></div>
-<p><img src="barError_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/barError_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 <div id="corr-err" class="section level4">
 <h4 class="hasAnchor">
@@ -699,7 +699,7 @@ Workflow to build new context-specific deconvolution models
   corr <span class="op">=</span> <span class="st">"both"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
-<p><img src="corr1_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/corr1_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>As in the previous case, the plots can be split according to different variables. Now, let’s split the results by <code>CellType</code> and <code>nCellTypes</code> as an example:</p>
 <div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
@@ -711,7 +711,7 @@ Workflow to build new context-specific deconvolution models
   corr <span class="op">=</span> <span class="st">"both"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
-<p><img src="corr2_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/corr2_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
   <span class="va">DDLSToy</span>,
@@ -721,7 +721,7 @@ Workflow to build new context-specific deconvolution models
   corr <span class="op">=</span> <span class="st">"both"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
-<p><img src="corr3_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/corr3_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 <div id="bland-err" class="section level4">
 <h4 class="hasAnchor">
@@ -736,7 +736,7 @@ Workflow to build new context-specific deconvolution models
   filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,
   density <span class="op">=</span> <span class="cn">TRUE</span>,
 <span class="op">)</span></code></pre></div>
-<p><img src="bland1_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/bland1_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>In addition, this function has the same behaviour as the previous ones, as it is possible to split the plots:</p>
 <div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
@@ -748,7 +748,7 @@ Workflow to build new context-specific deconvolution models
   filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,
   density <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="bland2_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/bland2_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div id="new-bulk" class="section level3">
@@ -783,7 +783,7 @@ Workflow to build new context-specific deconvolution models
   <span class="va">DDLSToy</span>, name.data <span class="op">=</span> <span class="st">"Simulated.example"</span>, 
   rm.x.text <span class="op">=</span> <span class="cn">TRUE</span>, color.line <span class="op">=</span> <span class="st">"black"</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="resultsBarPlot_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
+<p><img src="newModels_files/figure-html/resultsBarPlot_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 <div id="save" class="section level3">
 <h3 class="hasAnchor">
