@@ -260,19 +260,29 @@ the element that stores the results in the <code>deconv.results</code> slot.</p>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A ggplot object with the provided cell proportions represented as a
+bar plot.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='deconvDigitalDLSorter.html'>deconvDigitalDLSorter</a></code>
 <code><a href='deconvDigitalDLSorterObj.html'>deconvDigitalDLSorterObj</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='co'># Using a matrix</span></span>
-<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='fu'>barPlotCellTypes</span><span class='op'>(</span><span class='va'>deconvResults</span><span class='op'>)</span></span>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='co'># matrix of simulated proportions (same estructure as deconvolution results)</span></span>
+<span class='r-in'><span class='va'>deconvResults</span> <span class='op'>&lt;-</span> <span class='fu'>gtools</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gtools/man/dirichlet.html'>rdirichlet</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>20</span>, alpha <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0.5</span>, <span class='fl'>0.1</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>deconvResults</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"CellType"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span><span class='op'>(</span><span class='va'>deconvResults</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>deconvResults</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"BulkSample"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>deconvResults</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>barPlotCellTypes</span><span class='op'>(</span><span class='va'>deconvResults</span><span class='op'>)</span></span>
+<span class='r-plt'><img src='barPlotCellTypes-1.png' alt='' width='700' height='433' /></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Using a DigitalDLSorter object</span></span>
-<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span class='r-in'>  <span class='fu'>barPlotCellTypes</span><span class='op'>(</span><span class='va'>DDLSChung</span>, name.data <span class='op'>=</span> <span class='st'>"TCGA.breast"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'><span class='va'>DDLS</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DigitalDLSorter-class.html'>DigitalDLSorter</a></span><span class='op'>(</span>deconv.results <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>Example <span class='op'>=</span> <span class='va'>deconvResults</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>barPlotCellTypes</span><span class='op'>(</span><span class='va'>DDLS</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> 'name.data' not provided. By default, first results are used</span>
+<span class='r-plt'><img src='barPlotCellTypes-2.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
 </code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -267,6 +267,10 @@ displayed (<code>TRUE</code> by default).</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A ggplot object with Bland-Altman agreement plots between expected
+and actual proportions.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='calculateEvalMetrics.html'>calculateEvalMetrics</a></code> <code><a href='corrExpPredPlot.html'>corrExpPredPlot</a></code>
@@ -274,28 +278,65 @@ displayed (<code>TRUE</code> by default).</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"digitalDLSorteRdata"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span class='r-in'>  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/diegommcc/digitalDLSorteRdata'>digitalDLSorteRdata</a></span><span class='op'>)</span></span>
-<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>DDLSLi.list</span><span class='op'>)</span></span>
-<span class='r-in'>  <span class='va'>DDLSLi</span> <span class='op'>&lt;-</span> <span class='fu'><a href='listToDDLS.html'>listToDDLS</a></span><span class='op'>(</span><span class='va'>DDLSLi.list</span><span class='op'>)</span></span>
-<span class='r-in'>  <span class='va'>DDLSLi</span> <span class='op'>&lt;-</span> <span class='fu'><a href='calculateEvalMetrics.html'>calculateEvalMetrics</a></span><span class='op'>(</span></span>
-<span class='r-in'>    object <span class='op'>=</span> <span class='va'>DDLSLi</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>SingleCellExperiment</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a></span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='fl'>30</span>, lambda <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>15</span>, ncol <span class='op'>=</span> <span class='fl'>20</span>,</span>
+<span class='r-in'>    dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Gene"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>15</span><span class='op'>)</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"RHC"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span>,</span>
+<span class='r-in'>  colData <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
+<span class='r-in'>    Cell_ID <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"RHC"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>    Cell_Type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"CellType"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>6</span><span class='op'>)</span><span class='op'>)</span>, size <span class='op'>=</span> <span class='fl'>20</span>,</span>
+<span class='r-in'>                       replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span>,</span>
+<span class='r-in'>  rowData <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
+<span class='r-in'>    Gene_ID <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Gene"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>15</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'>  <span class='op'>)</span></span>
-<span class='r-in'>  <span class='co'># Bland-Altman plot by cell type</span></span>
-<span class='r-in'>  <span class='fu'>blandAltmanLehPlot</span><span class='op'>(</span></span>
-<span class='r-in'>    object <span class='op'>=</span> <span class='va'>DDLSLi</span>,</span>
-<span class='r-in'>    facet.by <span class='op'>=</span> <span class='st'>"CellType"</span>,</span>
-<span class='r-in'>    color.by <span class='op'>=</span> <span class='st'>"CellType"</span></span>
-<span class='r-in'>  <span class='op'>)</span></span>
-<span class='r-in'>  <span class='co'># Bland-Altman plot of all samples mixed</span></span>
-<span class='r-in'>  <span class='fu'>blandAltmanLehPlot</span><span class='op'>(</span></span>
-<span class='r-in'>    object <span class='op'>=</span> <span class='va'>DDLSLi</span>,</span>
-<span class='r-in'>    facet.by <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
-<span class='r-in'>    color.by <span class='op'>=</span> <span class='st'>"CellType"</span>,</span>
-<span class='r-in'>    alpha.point <span class='op'>=</span> <span class='fl'>0.3</span>,</span>
-<span class='r-in'>    log2 <span class='op'>=</span> <span class='cn'>TRUE</span></span>
-<span class='r-in'>  <span class='op'>)</span></span>
-<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>DDLS</span> <span class='op'>&lt;-</span> <span class='fu'><a href='loadSCProfiles.html'>loadSCProfiles</a></span><span class='op'>(</span></span>
+<span class='r-in'>  single.cell.data <span class='op'>=</span> <span class='va'>sce</span>,</span>
+<span class='r-in'>  cell.ID.column <span class='op'>=</span> <span class='st'>"Cell_ID"</span>,</span>
+<span class='r-in'>  gene.ID.column <span class='op'>=</span> <span class='st'>"Gene_ID"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>probMatrixValid</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
+<span class='r-in'>  Cell_Type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"CellType"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>6</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>  from <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>15</span>, <span class='fl'>15</span>, <span class='fl'>30</span><span class='op'>)</span>,</span>
+<span class='r-in'>  to <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>15</span>, <span class='fl'>15</span>, <span class='fl'>30</span>, <span class='fl'>50</span>, <span class='fl'>50</span>, <span class='fl'>70</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>DDLS</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generateBulkCellMatrix.html'>generateBulkCellMatrix</a></span><span class='op'>(</span></span>
+<span class='r-in'>  object <span class='op'>=</span> <span class='va'>DDLS</span>,</span>
+<span class='r-in'>  cell.ID.column <span class='op'>=</span> <span class='st'>"Cell_ID"</span>,</span>
+<span class='r-in'>  cell.type.column <span class='op'>=</span> <span class='st'>"Cell_Type"</span>,</span>
+<span class='r-in'>  prob.design <span class='op'>=</span> <span class='va'>probMatrixValid</span>,</span>
+<span class='r-in'>  num.bulk.samples <span class='op'>=</span> <span class='fl'>50</span>,</span>
+<span class='r-in'>  verbose <span class='op'>=</span> <span class='cn'>TRUE</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># training of DDLS model</span></span>
+<span class='r-in'><span class='fu'>tensorflow</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/tensorflow/man/tf.html'>tf</a></span><span class='op'>$</span><span class='va'>compat</span><span class='op'>$</span><span class='va'>v1</span><span class='op'>$</span><span class='fu'>disable_eager_execution</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>DDLS</span> <span class='op'>&lt;-</span> <span class='fu'><a href='trainDigitalDLSorterModel.html'>trainDigitalDLSorterModel</a></span><span class='op'>(</span></span>
+<span class='r-in'>  object <span class='op'>=</span> <span class='va'>DDLS</span>,</span>
+<span class='r-in'>  on.the.fly <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
+<span class='r-in'>  batch.size <span class='op'>=</span> <span class='fl'>15</span>,</span>
+<span class='r-in'>  num.epochs <span class='op'>=</span> <span class='fl'>5</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># evaluation using test data</span></span>
+<span class='r-in'><span class='va'>DDLS</span> <span class='op'>&lt;-</span> <span class='fu'><a href='calculateEvalMetrics.html'>calculateEvalMetrics</a></span><span class='op'>(</span></span>
+<span class='r-in'>  object <span class='op'>=</span> <span class='va'>DDLS</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># Bland-Altman plot by cell type</span></span>
+<span class='r-in'><span class='fu'>blandAltmanLehPlot</span><span class='op'>(</span></span>
+<span class='r-in'>  object <span class='op'>=</span> <span class='va'>DDLS</span>,</span>
+<span class='r-in'>  facet.by <span class='op'>=</span> <span class='st'>"CellType"</span>,</span>
+<span class='r-in'>  color.by <span class='op'>=</span> <span class='st'>"CellType"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># Bland-Altman plot of all samples mixed</span></span>
+<span class='r-in'><span class='fu'>blandAltmanLehPlot</span><span class='op'>(</span></span>
+<span class='r-in'>  object <span class='op'>=</span> <span class='va'>DDLS</span>,</span>
+<span class='r-in'>  facet.by <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span class='r-in'>  color.by <span class='op'>=</span> <span class='st'>"CellType"</span>,</span>
+<span class='r-in'>  alpha.point <span class='op'>=</span> <span class='fl'>0.3</span>,</span>
+<span class='r-in'>  log2 <span class='op'>=</span> <span class='cn'>TRUE</span></span>
+<span class='r-in'><span class='op'>)</span></span>
 <span class='r-in'><span class='op'>}</span></span>
 <span class='r-in'></span>
 </code></pre></div>

@@ -233,7 +233,7 @@ Workflow to build new context-specific deconvolution models
 ##     - CellType4: 7
 ##     - CellType5: 6</code></pre>
 <pre><code>## === Create gene model matrix without gene covariates</code></pre>
-<pre><code>## === Run estimation process (Start time 11:04:51 AM)</code></pre>
+<pre><code>## === Run estimation process (Start time 06:56:29 PM)</code></pre>
 <pre><code>## Removing all zero genes...</code></pre>
 <pre><code>## Fitting model...</code></pre>
 <pre><code>## Create model:</code></pre>
@@ -245,22 +245,22 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## penalized log-likelihood = -54085.7356583502</code></pre>
 <pre><code>## After dispersion optimization = -43320.8019735184</code></pre>
 <pre><code>##    user  system elapsed 
-##   5.581   0.024   5.606</code></pre>
+##   5.467   0.028   5.494</code></pre>
 <pre><code>## After right optimization = -42718.0963333899</code></pre>
 <pre><code>## After orthogonalization = -42718.0963333899</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.312   0.000   0.312</code></pre>
+##   0.303   0.000   0.303</code></pre>
 <pre><code>## After left optimization = -42710.2243757023</code></pre>
 <pre><code>## After orthogonalization = -42710.2243757023</code></pre>
 <pre><code>## Iteration 2</code></pre>
 <pre><code>## penalized log-likelihood = -42710.2243757023</code></pre>
 <pre><code>## After dispersion optimization = -42710.2246200143</code></pre>
 <pre><code>##    user  system elapsed 
-##   4.899   0.004   4.903</code></pre>
+##   4.733   0.020   4.756</code></pre>
 <pre><code>## After right optimization = -42708.2394778232</code></pre>
 <pre><code>## After orthogonalization = -42708.2394778232</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.249   0.004   0.252</code></pre>
+##   0.255   0.000   0.254</code></pre>
 <pre><code>## After left optimization = -42706.8950844827</code></pre>
 <pre><code>## After orthogonalization = -42706.8950844827</code></pre>
 <pre><code>## Iteration 3</code></pre>
@@ -269,14 +269,14 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## 
 ## DONE</code></pre>
 <pre><code>## 
-## Invested time: 30.6</code></pre>
+## Invested time: 30.18</code></pre>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSToy</span></code></pre></div>
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   500 features and 100 cells
-##   rownames: Gene239 Gene349 Gene182 ... Gene182 Gene207 Gene206 Gene147 
-##   colnames: RHC54 RHC79 RHC42 ... RHC42 RHC90 RHC93 RHC67 
+##   rownames: Gene313 Gene61 Gene260 ... Gene260 Gene40 Gene484 Gene173 
+##   colnames: RHC29 RHC59 RHC62 ... RHC62 RHC34 RHC91 RHC93 
 ## ZinbParams object:
 ##   40 samples;   500 genes.
 ##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);
@@ -319,8 +319,8 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   500 features and 100 cells
-##   rownames: Gene55 Gene6 Gene362 ... Gene362 Gene388 Gene396 Gene33 
-##   colnames: RHC100 RHC8 RHC11 ... RHC11 RHC51 RHC9 RHC74 
+##   rownames: Gene130 Gene245 Gene373 ... Gene373 Gene402 Gene344 Gene240 
+##   colnames: RHC11 RHC55 RHC6 ... RHC6 RHC4 RHC12 RHC33 
 ## ZinbParams object:
 ##   40 samples;   500 genes.
 ##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);
@@ -328,8 +328,8 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Simulated single-cell profiles:
 ##   500 features and 50 cells
-##   rownames: Gene490 Gene140 Gene290 ... Gene290 Gene200 Gene64 Gene369 
-##   colnames: CellType2_Simul3 CellType2_Simul6 CellType4_Simul22 ... CellType4_Simul22 CellType1_Simul41 CellType5_Simul37 CellType4_Simul29 
+##   rownames: Gene100 Gene8 Gene11 ... Gene11 Gene127 Gene179 Gene137 
+##   colnames: CellType2_Simul10 CellType1_Simul42 CellType3_Simul12 ... CellType3_Simul12 CellType5_Simul34 CellType2_Simul8 CellType2_Simul3 
 ## Project: ToyExampleBreast</code></pre>
 <p>In this step, it is also possible to store the new simulated single-cell profiles in a HDF5 file. Indeed, they can be simulated in batches, avoiding loading all data into RAM. The code would be as follows:</p>
 <div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
@@ -580,10 +580,10 @@ Workflow to build new context-specific deconvolution models
 ## === Training DNN with 267 samples:</code></pre>
 <pre><code>## 
 ## === Evaluating DNN in test data (133 samples)</code></pre>
-<pre><code>##    - loss: 0.9046
-##    - accuracy: 0.4662
-##    - mean_absolute_error: 0.2143
-##    - categorical_accuracy: 0.4662</code></pre>
+<pre><code>##    - loss: 0.8881
+##    - accuracy: 0.4812
+##    - mean_absolute_error: 0.2062
+##    - categorical_accuracy: 0.4812</code></pre>
 <pre><code>## 
 ## === Generating prediction results using test data</code></pre>
 <pre><code>## DONE</code></pre>
@@ -618,15 +618,15 @@ Workflow to build new context-specific deconvolution models
 ##     colnames: Bulk_65 Bulk_46 Bulk_76 ... Bulk_76 Bulk_53 Bulk_77 Bulk_67 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.2487
-##     accuracy: 0.9062
+##     loss: 0.2495
+##     accuracy: 0.9125
 ##     mean_absolute_error: 0.0904
-##     categorical_accuracy: 0.9062
+##     categorical_accuracy: 0.9125
 ##   Evaluation metrics on test data:
-##     loss: 0.9046
-##     accuracy: 0.4662
-##     mean_absolute_error: 0.2143
-##     categorical_accuracy: 0.4662 
+##     loss: 0.8881
+##     accuracy: 0.4812
+##     mean_absolute_error: 0.2062
+##     categorical_accuracy: 0.4812 
 ## Project: ToyExampleBreast</code></pre>
 <p>As this is a ‘toy’ example, results are not very accurate. For a real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a> vignette.</p>
 <div id="on-the-fly-argument" class="section level4">
@@ -764,11 +764,11 @@ Workflow to build new context-specific deconvolution models
 <p>And load them into the object:</p>
 <div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-<span class="va">se.TCGA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html" class="external-link">SummarizedExperiment</a></span><span class="op">(</span>assay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">countsBulk</span><span class="op">)</span><span class="op">)</span>
+<span class="va">seExample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html" class="external-link">SummarizedExperiment</a></span><span class="op">(</span>assay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">countsBulk</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadDeconvData.html">loadDeconvData</a></span><span class="op">(</span>
   object <span class="op">=</span> <span class="va">DDLSToy</span>,
-  data <span class="op">=</span> <span class="va">se.TCGA</span>, 
+  data <span class="op">=</span> <span class="va">seExample</span>, 
   name.data <span class="op">=</span> <span class="st">"Simulated.example"</span>
 <span class="op">)</span></code></pre></div>
 <p>Then, with the <code>deconvDigitalDLSorterObj</code> function, these new samples can be deconvoluted into the cell types considered by the model and the predicted proportions can be represented by the <code>barPlotCellTypes</code> function. The cell composition matrix is stored in the <code>deconv.results</code> slot.</p>
