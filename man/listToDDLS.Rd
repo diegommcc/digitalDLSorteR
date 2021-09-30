@@ -20,17 +20,6 @@ object. This function allows to generate the examples and the vignettes of
 \pkg{digitalDLSorteR} package as these are the data used. These data are
 stored in the digitalDLSorteRdata package.
 }
-\examples{
-\dontrun{
-if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  library(digitalDLSorteRdata)
-  data("DDLSLi.list")
-  DDLSLiObj <- listToDDLS(DDLSLi.list)
-  DDLSLiObj
-}
-}
-  
-}
 \seealso{
 \code{\link{listToDDLSDNN}}
 }

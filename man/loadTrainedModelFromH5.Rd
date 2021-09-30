@@ -19,7 +19,7 @@ contain other slots (\code{FALSE} by default).}
 }
 \value{
 \code{\linkS4class{DigitalDLSorter}} object with \code{trained.model}
-slot with the new model loaded
+slot with the new keras DNN model incorporated.
 }
 \description{
 Load from an HDF5 file a trained Deep Neural Network model into a

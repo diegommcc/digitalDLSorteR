@@ -14,7 +14,7 @@ NULL
 #'   \code{prob.cell.types} slot.
 #' @param type.data Subset of data to e shown: \code{train} or \code{test}.
 #'
-#' @return A matrix object.
+#' @return A matrix object with the desired cell proportion matrix.
 #'
 #' @export
 #'
@@ -57,7 +57,7 @@ getProbMatrix <- function(object, type.data) {
 #'   display. It can be \code{'boxplot'}, \code{'violinplot'}, \code{'linesplot'} or
 #'   \code{'ncelltypes'}. See Description for more information.
 #'
-#' @return \code{ggplot} object.
+#' @return A ggplot object.
 #'
 #' @export
 #'
@@ -153,6 +153,12 @@ showProbPlot <- function(
 #' @param object \code{\linkS4class{DigitalDLSorter}} object with the
 #'   \code{trained.data} slot.
 #'
+#' @return A \code{\linkS4class{DigitalDLSorter}} or
+#'   \code{\linkS4class{DigitalDLSorterDNN}} object with its trained keras model
+#'   transformed from a \code{keras.engine.sequential.Sequential} class into a
+#'   \code{list} with the architecture as a JSON-like character object and the
+#'   weights as a list.
+#'
 #' @export
 #'
 #' @seealso \code{\link{saveRDS}} \code{\link{saveTrainedModelAsH5}}
@@ -239,6 +245,9 @@ preparingToSave <- function(
 #' @param file.path Valid file path where to save the model to.
 #' @param overwrite Overwrite file if it already exists.
 #'
+#' @return No return value, saves a keras DNN trained model as HDF5 file on
+#'   disk.
+#'
 #' @export
 #'
 #' @seealso \code{\link{trainDigitalDLSorterModel}}
@@ -308,7 +317,7 @@ saveTrainedModelAsH5 <- function(
 #'   contain other slots (\code{FALSE} by default).
 #'
 #' @return \code{\linkS4class{DigitalDLSorter}} object with \code{trained.model}
-#'   slot with the new model loaded
+#'   slot with the new keras DNN model incorporated.
 #'
 #' @export
 #'
@@ -375,6 +384,9 @@ loadTrainedModelFromH5 <- function(
 #'   metrics available in the \code{\linkS4class{DigitalDLSorterDNN}} object
 #'   will be plotted.
 #'
+#' @return A ggplot object with the progression of the selected metrics during
+#'   training.
+#'
 #' @export
 #'
 #' @seealso \code{\link{trainDigitalDLSorterModel}}
@@ -422,29 +434,19 @@ DigitalDLSorterTheme <- function() {
 #'
 #' Transform DigitalDLSorterDNN-like list into an actual
 #' \code{DigitalDLSorterDNN} object. This function allows to use pre-trained
-#' models in the \pkg{digitalDLSorteR} package. These models are stored in 
-#' the digitalDLSorteRmodels package.
+#' models in the \pkg{digitalDLSorteR} package. These models are stored in the
+#' digitalDLSorteRmodels package.
 #'
 #' @param listTo A list in which each element must correspond to each slot of an
 #'   \code{DigitalDLSorterDNN} object. The names must be the same as the slot
 #'   names.
 #'
-#' @return \code{DigitalDLSorterDNN} object the data provided in the original
-#'   list.
+#' @return \code{DigitalDLSorterDNN} object with the data provided in the
+#'   original list.
 #'
 #' @export
 #'
 #' @seealso \code{\link{listToDDLS}}
-#'
-#' @examples
-#' \dontrun{
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   library(digitalDLSorteRmodels)
-#'   data("colorectal.li")
-#'   DDLSDNNObj <- listToDDLSDNN(colorectal.li)
-#'   DDLSDNNObj
-#' }
-#' }
 #' 
 listToDDLSDNN <- function(listTo) {
   if (any(!names(listTo) %in% c(
@@ -482,16 +484,6 @@ listToDDLSDNN <- function(listTo) {
 #' @export
 #'
 #' @seealso \code{\link{listToDDLSDNN}}
-#'
-#' @examples
-#' \dontrun{
-#' if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   library(digitalDLSorteRdata)
-#'   data("DDLSLi.list")
-#'   DDLSLiObj <- listToDDLS(DDLSLi.list)
-#'   DDLSLiObj
-#' }
-#' }
 #'   
 listToDDLS <- function(listTo) {
   if (any(!names(listTo) %in% c(

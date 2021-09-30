@@ -467,7 +467,6 @@ estimateZinbwaveParams <- function(
   return(list.data)
 }
 
-      
 # function for check if slot is correct
 .checkSlot <- function(object, slot) {
   ss <- eval(parse(text = paste0(slot, "(",
@@ -479,8 +478,6 @@ estimateZinbwaveParams <- function(
   }
 }
 
-# check if the number of cells of each cell type is possible, i.e. if there are
-# enough cells for each cell type
 .checkNumCellTypes <- function(
   num.cells, 
   total.subset,

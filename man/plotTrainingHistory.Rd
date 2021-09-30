@@ -20,6 +20,10 @@ plotTrainingHistory(
 metrics available in the \code{\linkS4class{DigitalDLSorterDNN}} object
 will be plotted.}
 }
+\value{
+A ggplot object with the progression of the selected metrics during
+training.
+}
 \description{
 Plot training history of a trained DigitalDLSorter Deep Neural Network model.
 }

@@ -11,6 +11,13 @@ preparingToSave(object)
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object with the
 \code{trained.data} slot.}
 }
+\value{
+A \code{\linkS4class{DigitalDLSorter}} or
+\code{\linkS4class{DigitalDLSorterDNN}} object with its trained keras model
+transformed from a \code{keras.engine.sequential.Sequential} class into a
+\code{list} with the architecture as a JSON-like character object and the
+weights as a list.
+}
 \description{
 Prepare a \code{\linkS4class{DigitalDLSorter}} object that has a
 \code{\linkS4class{DigitalDLSorterDNN}} object with a trained DNN model.

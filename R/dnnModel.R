@@ -110,24 +110,48 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   install.packages(
-#'     "digitalDLSorteRdata",
-#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+#' sce <- SingleCellExperiment::SingleCellExperiment(
+#'   matrix(
+#'     rpois(30, lambda = 5), nrow = 15, ncol = 10,
+#'     dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(10)))
+#'   ),
+#'   colData = data.frame(
+#'     Cell_ID = paste0("RHC", seq(10)),
+#'     Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10,
+#'                        replace = TRUE)
+#'   ),
+#'   rowData = data.frame(
+#'     Gene_ID = paste0("Gene", seq(15))
 #'   )
-#' }
-#' library(digitalDLSorteRdata)
-#' data(DDLiComp.list)
-#' DDLiComp <- listToDDLS(DDLiComp.list)
-#' # to ensure compatibility
+#' )
+#' DDLS <- loadSCProfiles(
+#'   single.cell.data = sce,
+#'   cell.ID.column = "Cell_ID",
+#'   gene.ID.column = "Gene_ID"
+#' )
+#' probMatrixValid <- data.frame(
+#'   Cell_Type = paste0("CellType", seq(2)),
+#'   from = c(1, 30),
+#'   to = c(15, 70)
+#' )
+#' DDLS <- generateBulkCellMatrix(
+#'   object = DDLS,
+#'   cell.ID.column = "Cell_ID",
+#'   cell.type.column = "Cell_Type",
+#'   prob.design = probMatrixValid,
+#'   num.bulk.samples = 30,
+#'   verbose = TRUE
+#' )
+#' # training of DDLS model
 #' tensorflow::tf$compat$v1$disable_eager_execution()
-#' DDLiComp <- trainDigitalDLSorterModel(
-#'   object = DDLiComp,
+#' DDLS <- trainDigitalDLSorterModel(
+#'   object = DDLS,
 #'   on.the.fly = TRUE,
-#'   batch.size = 24,
-#'   num.epochs = 5 # 20
+#'   batch.size = 12,
+#'   num.epochs = 5
 #' )
 #' }
+#' 
 #' @references Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq
 #'   data. Frontiers in Genetics 10, 978. doi: \doi{10.3389/fgene.2019.00978}
@@ -159,7 +183,7 @@ trainDigitalDLSorterModel <- function(
     stop("'prob.cell.types' slot is empty")
   } else if (num.epochs <= 1) {
     stop("'num.epochs' argument must be greater than or equal to 2")
-  } else if (batch.size <= 10) {
+  } else if (batch.size < 10) {
     stop("'batch.size' argument must be greater than or equal to 10")
   } 
   if (!any(combine %in% c("both", "bulk", "single-cell"))) {
@@ -711,7 +735,6 @@ trainDigitalDLSorterModel <- function(
                          dimnames = list(genes.out, NULL))
     return(cbind(x, rbind(y, zero.genes)[rownames(x), , drop = FALSE]))  
   }
-  
 }
 
 .mergePropsSort <- function(m.small, m.big) {
@@ -882,44 +905,74 @@ trainDigitalDLSorterModel <- function(
 #'
 #' @examples
 #' \dontrun{
-#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   install.packages(
-#'     "digitalDLSorteRdata", 
-#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+#' set.seed(123)
+#' sce <- SingleCellExperiment::SingleCellExperiment(
+#'   matrix(
+#'     rpois(30, lambda = 5), nrow = 15, ncol = 20,
+#'     dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+#'   ),
+#'   colData = data.frame(
+#'     Cell_ID = paste0("RHC", seq(20)),
+#'     Cell_Type = sample(x = paste0("CellType", seq(6)), size = 20,
+#'                        replace = TRUE)
+#'   ),
+#'   rowData = data.frame(
+#'     Gene_ID = paste0("Gene", seq(15))
 #'   )
-#' }
-#' if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
-#'   install.packages(
-#'     "digitalDLSorteRmodels", 
-#'     repos = "https://diegommcc.github.io/digitalDLSorteRmodelsRepo/"
-#'   )
-#' }
-#' library(digitalDLSorteRdata)
-#' library(digitalDLSorteRmodels)
-#' # to ensure compatibility
+#' )
+#' DDLS <- loadSCProfiles(
+#'   single.cell.data = sce,
+#'   cell.ID.column = "Cell_ID",
+#'   gene.ID.column = "Gene_ID"
+#' )
+#' probMatrixValid <- data.frame(
+#'   Cell_Type = paste0("CellType", seq(6)),
+#'   from = c(1, 1, 1, 15, 15, 30),
+#'   to = c(15, 15, 30, 50, 50, 70)
+#' )
+#' DDLS <- generateBulkCellMatrix(
+#'   object = DDLS,
+#'   cell.ID.column = "Cell_ID",
+#'   cell.type.column = "Cell_Type",
+#'   prob.design = probMatrixValid,
+#'   num.bulk.samples = 50,
+#'   verbose = TRUE
+#' )
+#' # training of DDLS model
 #' tensorflow::tf$compat$v1$disable_eager_execution()
-#' library(digitalDLSorteRdata)
-#' data(breast.chung.specific)
-#' data(TCGA.breast.small)
+#' DDLS <- trainDigitalDLSorterModel(
+#'   object = DDLS,
+#'   on.the.fly = TRUE,
+#'   batch.size = 15,
+#'   num.epochs = 5
+#' )
+#' # simulating bulk RNA-Seq data
+#' countsBulk <- matrix(
+#'   stats::rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)),
+#'   nrow = 40, ncol = 15,
+#'   dimnames = list(paste0("Gene", seq(40)), paste0("Bulk", seq(15)))
+#' )
+#' # this is only an example. See vignettes to see how to use pre-trained models
+#' # from the digitalDLSorteRmodels data package
 #' results1 <- deconvDigitalDLSorter(
-#'   data = TCGA.breast.small,
-#'   model = breast.chung.specific,
+#'   data = countsBulk,
+#'   model = trained.model(DDLS),
 #'   normalize = TRUE
 #' )
 #' # simplify arguments
-#' simplify <- list(Tumor = c("ER+", "HER2+", "ER+/HER2+", "TNBC"),
-#'                  Bcells = c("Bmem", "BGC"))
+#' simplify <- list(CellGroup1 = c("CellType1", "CellType2", "CellType4"),
+#'                  CellGroup2 = c("CellType3", "CellType5"))
 #' # in this case the names of the list will be the new labels
 #' results2 <- deconvDigitalDLSorter(
-#'   TCGA.breast.small,
-#'   model = breast.chung.specific,
+#'   countsBulk,
+#'   model = trained.model(DDLS),
 #'   normalize = TRUE,
 #'   simplify.set = simplify
 #' )
 #' # in this case the cell type with the highest proportion will be the new label
 #' results3 <- deconvDigitalDLSorter(
-#'   TCGA.breast.small,
-#'   model = breast.chung.specific,
+#'   countsBulk,
+#'   model = trained.model(DDLS),
 #'   normalize = TRUE,
 #'   simplify.majority = simplify
 #' )
@@ -1040,27 +1093,65 @@ deconvDigitalDLSorter <- function(
 #'
 #' @examples
 #' \dontrun{
-#' if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-#'   install.packages(
-#'     "digitalDLSorteRdata", 
-#'     repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+#' set.seed(123)
+#' sce <- SingleCellExperiment::SingleCellExperiment(
+#'   matrix(
+#'     rpois(30, lambda = 5), nrow = 15, ncol = 20,
+#'     dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+#'   ),
+#'   colData = data.frame(
+#'     Cell_ID = paste0("RHC", seq(20)),
+#'     Cell_Type = sample(x = paste0("CellType", seq(6)), size = 20,
+#'                        replace = TRUE)
+#'   ),
+#'   rowData = data.frame(
+#'     Gene_ID = paste0("Gene", seq(15))
 #'   )
-#' }
-#' library(digitalDLSorteRdata)
-#' data(DDLSLi.list)
-#' DDLSLi <- listToDDLS(DDLSLi.list)
-#' data(TCGA.colon.se)
-#' # to ensure compatibility
-#' tensorflow::tf$compat$v1$disable_eager_execution()
-#' # simplify arguments
-#' simplify = list(Macrophages = c("Mc", "M"))
-#' DDLSLi <- loadDeconvData(
-#'   object = DDLSLi, data = TCGA.colon.se,
-#'   name.data = "TCGA.colon"
 #' )
-#' DDLSLi <- deconvDigitalDLSorterObj(
-#'   object = DDLSLi,
-#'   name.data = "TCGA.colon",
+#' DDLS <- loadSCProfiles(
+#'   single.cell.data = sce,
+#'   cell.ID.column = "Cell_ID",
+#'   gene.ID.column = "Gene_ID"
+#' )
+#' probMatrixValid <- data.frame(
+#'   Cell_Type = paste0("CellType", seq(6)),
+#'   from = c(1, 1, 1, 15, 15, 30),
+#'   to = c(15, 15, 30, 50, 50, 70)
+#' )
+#' DDLS <- generateBulkCellMatrix(
+#'   object = DDLS,
+#'   cell.ID.column = "Cell_ID",
+#'   cell.type.column = "Cell_Type",
+#'   prob.design = probMatrixValid,
+#'   num.bulk.samples = 50,
+#'   verbose = TRUE
+#' )
+#' # training of DDLS model
+#' tensorflow::tf$compat$v1$disable_eager_execution()
+#' DDLS <- trainDigitalDLSorterModel(
+#'   object = DDLS,
+#'   on.the.fly = TRUE,
+#'   batch.size = 15,
+#'   num.epochs = 5
+#' )
+#' # simulating bulk RNA-Seq data
+#' countsBulk <- matrix(
+#'   stats::rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)),
+#'   nrow = 40, ncol = 15,
+#'   dimnames = list(paste0("Gene", seq(40)), paste0("Bulk", seq(15)))
+#' )
+#' seBulk <- SummarizedExperiment(assay = list(counts = countsBulk)) 
+#' DDLS <- loadDeconvData(
+#'   object = DDLS, 
+#'   data = seBulk,
+#'   name.data = "Example"
+#' )
+#' # simplify arguments
+#' simplify <- list(CellGroup1 = c("CellType1", "CellType2", "CellType4"),
+#'                  CellGroup2 = c("CellType3", "CellType5"))
+#' DDLS <- deconvDigitalDLSorterObj(
+#'   object = DDLS,
+#'   name.data = "Example",
 #'   simplify.set = simplify,
 #'   simplify.majority = simplify
 #' )

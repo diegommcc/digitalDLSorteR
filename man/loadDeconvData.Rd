@@ -25,7 +25,7 @@ path and \code{name.data} is not provided, the base name of file will be
 used.}
 }
 \value{
-\code{\linkS4class{DigitalDLSorter}} object with \code{deconv.data}
+A \code{\linkS4class{DigitalDLSorter}} object with \code{deconv.data}
 slot with the new bulk-RNA-Seq samples loaded.
 }
 \description{

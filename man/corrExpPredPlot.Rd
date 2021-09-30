@@ -75,6 +75,10 @@ default).}
 \item{...}{Additional arguments for the \link[ggplot2]{facet_wrap} function
 from \pkg{ggplot2} if \code{facet.by} is not \code{NULL}.}
 }
+\value{
+A ggplot object with the correlation plots between expected and
+actual proportions.
+}
 \description{
 Generate correlation plot between predicted and expected cell type
 proportions from test data. Correlation plots can be displayed all mixed or
@@ -86,30 +90,67 @@ details.
 }
 \examples{
 \dontrun{
-if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  library(digitalDLSorteRdata)
-  data(DDLSLi.list)
-  DDLSLi <- listToDDLS(DDLSLi.list)
-  DDLSLi <- calculateEvalMetrics(
-    object = DDLSLi
+set.seed(123)
+sce <- SingleCellExperiment::SingleCellExperiment(
+  matrix(
+    rpois(30, lambda = 5), nrow = 15, ncol = 20,
+    dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+  ),
+  colData = data.frame(
+    Cell_ID = paste0("RHC", seq(20)),
+    Cell_Type = sample(x = paste0("CellType", seq(6)), size = 20,
+                       replace = TRUE)
+  ),
+  rowData = data.frame(
+    Gene_ID = paste0("Gene", seq(15))
   )
-  # correlations by cell type
-  corrExpPredPlot(
-    object = DDLSLi,
-    facet.by = "CellType",
-    color.by = "CellType",
-    corr = "both"
-  )
-  # correlations of all samples mixed
-  corrExpPredPlot(
-    object = DDLSLi,
-    facet.by = NULL,
-    color.by = "CellType",
-    corr = "ccc",
-    pos.x.label = 0.2,
-    alpha.point = 0.3
-  )
-}
+)
+DDLS <- loadSCProfiles(
+  single.cell.data = sce,
+  cell.ID.column = "Cell_ID",
+  gene.ID.column = "Gene_ID"
+)
+probMatrixValid <- data.frame(
+  Cell_Type = paste0("CellType", seq(6)),
+  from = c(1, 1, 1, 15, 15, 30),
+  to = c(15, 15, 30, 50, 50, 70)
+)
+DDLS <- generateBulkCellMatrix(
+  object = DDLS,
+  cell.ID.column = "Cell_ID",
+  cell.type.column = "Cell_Type",
+  prob.design = probMatrixValid,
+  num.bulk.samples = 50,
+  verbose = TRUE
+)
+# training of DDLS model
+tensorflow::tf$compat$v1$disable_eager_execution()
+DDLS <- trainDigitalDLSorterModel(
+  object = DDLS,
+  on.the.fly = TRUE,
+  batch.size = 15,
+  num.epochs = 5
+)
+# evaluation using test data
+DDLS <- calculateEvalMetrics(
+  object = DDLS
+)
+# correlations by cell type
+corrExpPredPlot(
+  object = DDLS,
+  facet.by = "CellType",
+  color.by = "CellType",
+  corr = "both"
+)
+# correlations of all samples mixed
+corrExpPredPlot(
+  object = DDLS,
+  facet.by = NULL,
+  color.by = "CellType",
+  corr = "ccc",
+  pos.x.label = 0.2,
+  alpha.point = 0.3
+)
 }
 
 }

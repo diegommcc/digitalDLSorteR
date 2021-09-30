@@ -77,17 +77,24 @@ for \code{\linkS4class{DigitalDLSorter}} objects.}
 \item{name.data}{If a \code{\linkS4class{DigitalDLSorter}} is given, name of
 the element that stores the results in the \code{deconv.results} slot.}
 }
+\value{
+A ggplot object with the provided cell proportions represented as a
+bar plot.
+}
 \description{
 Bar plot of deconvoluted cell type proportions in bulk RNA-Seq samples.
 }
 \examples{
-# Using a matrix
-\dontrun{barPlotCellTypes(deconvResults)}
+# matrix of simulated proportions (same estructure as deconvolution results)
+deconvResults <- gtools::rdirichlet(n = 20, alpha = c(1, 1, 1, 0.5, 0.1))
+colnames(deconvResults) <- paste("CellType", seq(ncol(deconvResults)))
+rownames(deconvResults) <- paste("BulkSample", seq(nrow(deconvResults)))
+barPlotCellTypes(deconvResults)
 
 # Using a DigitalDLSorter object
-\dontrun{
-  barPlotCellTypes(DDLSChung, name.data = "TCGA.breast")
-}
+DDLS <- DigitalDLSorter(deconv.results = list(Example = deconvResults))
+barPlotCellTypes(DDLS)
+
 }
 \seealso{
 \code{\link{deconvDigitalDLSorter}}

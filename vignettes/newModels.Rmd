@@ -465,11 +465,11 @@ And load them into the object:
 
 ```{r deconvoluteNewBulk_newModels}
 suppressMessages(library(SummarizedExperiment, quietly = TRUE))
-se.TCGA <- SummarizedExperiment(assay = list(counts = countsBulk))
+seExample <- SummarizedExperiment(assay = list(counts = countsBulk))
 
 DDLSToy <- loadDeconvData(
   object = DDLSToy,
-  data = se.TCGA, 
+  data = seExample, 
   name.data = "Simulated.example"
 )
 ```

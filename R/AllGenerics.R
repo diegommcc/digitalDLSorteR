@@ -15,7 +15,6 @@ NULL
 #' @rdname prob.matrix
 #' @aliases prob.matrix,ProbMatrixCellTypes-method
 #' 
-#' 
 #' @param object \code{\linkS4class{ProbMatrixCellTypes}} object.
 #'
 #' @export prob.matrix
@@ -1055,6 +1054,9 @@ setMethod(
 #' @param file File path where the object will be saved
 #' @inheritParams base::saveRDS
 #'
+#' @return No return value, saves a \code{\linkS4class{DigitalDLSorter}} object
+#'   as an RDS file on disk.
+#'
 #' @export
 #'
 #' @seealso \code{\linkS4class{DigitalDLSorter}}
@@ -1168,16 +1170,22 @@ setMethod(
 #' @param theme \pkg{ggplot2} theme.
 #' @param ... Other arguments for specific methods.
 #'
+#' @return A ggplot object with the provided cell proportions represented as a
+#'   bar plot.
+#'
 #' @export
 #'
 #' @examples
-#' # Using a matrix
-#' \dontrun{barPlotCellTypes(deconvResults)}
+#' # matrix of simulated proportions (same estructure as deconvolution results)
+#' deconvResults <- gtools::rdirichlet(n = 20, alpha = c(1, 1, 1, 0.5, 0.1))
+#' colnames(deconvResults) <- paste("CellType", seq(ncol(deconvResults)))
+#' rownames(deconvResults) <- paste("BulkSample", seq(nrow(deconvResults)))
+#' barPlotCellTypes(deconvResults)
 #'
 #' # Using a DigitalDLSorter object
-#' \dontrun{
-#'   barPlotCellTypes(DDLSChung, name.data = "TCGA.breast")
-#' }
+#' DDLS <- DigitalDLSorter(deconv.results = list(Example = deconvResults))
+#' barPlotCellTypes(DDLS)
+#' 
 #' @rdname barPlotCellTypes
 #'
 #' @seealso \code{\link{deconvDigitalDLSorter}}
@@ -1319,7 +1327,7 @@ setMethod(
 #'   path and \code{name.data} is not provided, the base name of file will be
 #'   used.
 #'
-#' @return \code{\linkS4class{DigitalDLSorter}} object with \code{deconv.data}
+#' @return A \code{\linkS4class{DigitalDLSorter}} object with \code{deconv.data}
 #'   slot with the new bulk-RNA-Seq samples loaded.
 #'
 #' @export

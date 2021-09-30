@@ -13,7 +13,7 @@ getProbMatrix(object, type.data)
 \item{type.data}{Subset of data to e shown: \code{train} or \code{test}.}
 }
 \value{
-A matrix object.
+A matrix object with the desired cell proportion matrix.
 }
 \description{
 Getter function for the cell composition matrix. This function allows to

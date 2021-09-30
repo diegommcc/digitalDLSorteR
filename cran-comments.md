@@ -11,3 +11,38 @@ There were no ERRORs or WARNINGs. There was 1 NOTE:
 Maintainer: ‘Diego Mañanes <dmananesc@cnic.es>’
 
 New submission
+
+## First release 
+
+    Please do not start the description with "This package", package name,
+    title or similar.
+
+    Please add \value to .Rd files regarding exported methods and explain
+    the functions results in the documentation. Please write about the
+    structure of the output (class) and also what the output means. (If a
+    function does not return a value, please document that too, e.g.
+    \value{No return value, called for side effects} or similar)
+    Missing Rd-tags:
+        barErrorPlot.Rd: \value
+        barPlotCellTypes.Rd: \value
+        blandAltmanLehPlot.Rd: \value
+        corrExpPredPlot.Rd: \value
+        installTFpython.Rd: \value
+        plotTrainingHistory.Rd: \value
+        preparingToSave.Rd: \value
+        saveTrainedModelAsH5.Rd: \value
+
+    \dontrun{} should only be used if the example really cannot be executed
+    (e.g. because of missing additional software, missing API keys, ...) by
+    the user. That's why wrapping examples in \dontrun{} adds the comment
+    ("# Not run:") as a warning for the user.
+    Does not seem necessary.
+
+    Please unwrap the examples if they are executable in < 5 sec, or replace
+    \dontrun{} with \donttest{}.
+
+    If you use a package which is only needed in examples, please list it in
+    'Suggests' and wrap these examples in if(requireNamespace("pkgname")){}
+    instead. However please omit the \dontrun{} warp around those examples.
+
+Everything has been solved.

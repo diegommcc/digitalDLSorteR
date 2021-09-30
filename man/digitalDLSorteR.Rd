@@ -10,10 +10,10 @@ scRNA-Seq data based on Deep Learning}
 method to enumerate and quantify the cell type composition of bulk RNA-Seq
 samples from the same environment. Our method makes use of Deep Neural
 Network (DNN) models to adjust any cell type composition starting from
-single-cell RNA-Seq (scRNA-Seq) data. Each model will be context-specific, as
-each one must be generated from scRNA-Seq data from the environment itself
-(i.e. breast cancer). This means that each model will be able to accurately
-deconvolute new bulk samples from the same environment.
+single-cell RNA-Seq (scRNA-Seq) data. The resulting models are
+context-specific, meaining that each model can predict cell proportions of
+samples from the same environment as the original scRNA-Seq data (i.e. breast
+cancer).
 }
 \details{
 The foundation of the method consists of a process that starts from scRNA-Seq
@@ -30,11 +30,10 @@ of other methods, as stromal and immune cells change significantly their
 profiles depending on the tissue and disease context.
 
 The package can be used by two ways: to deconvolute bulk RNA-Seq samples
-using a pre-trained model available at \pkg{digitalDLSOrteRdata} package or
+using pre-trained models available at the digitalDLSOrteRmodels R package or
 to build your own models trained with your own scRNA-Seq data. These new
 models may be published to make them available for other users working with
-similar data (e.g. neural environment, prostate cancer environment, etc.). At
-the moment, the available models allows the deconvolution of TILs from breast
-cancer and colorectal cancer. See the vignettes and
+similar data. So far, the available models allows the deconvolution of TILs
+from breast cancer and colorectal cancer. See the vignettes and
 \url{https://diegommcc.github.io/digitalDLSorteR/} for more details.
 }

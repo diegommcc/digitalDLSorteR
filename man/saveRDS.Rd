@@ -56,6 +56,10 @@ saveRDS(
 
 \item{refhook}{a hook function for handling reference objects.}
 }
+\value{
+No return value, saves a \code{\linkS4class{DigitalDLSorter}} object
+as an RDS file on disk.
+}
 \description{
 Save \code{\linkS4class{DigitalDLSorter}} and
 \code{\linkS4class{DigitalDLSorterDNN}} objects as RDS files. \pkg{keras}

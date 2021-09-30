@@ -13,25 +13,14 @@ listToDDLSDNN(listTo)
 names.}
 }
 \value{
-\code{DigitalDLSorterDNN} object the data provided in the original
-list.
+\code{DigitalDLSorterDNN} object with the data provided in the
+original list.
 }
 \description{
 Transform DigitalDLSorterDNN-like list into an actual
 \code{DigitalDLSorterDNN} object. This function allows to use pre-trained
-models in the \pkg{digitalDLSorteR} package. These models are stored in
-the digitalDLSorteRmodels package.
-}
-\examples{
-\dontrun{
-if (requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  library(digitalDLSorteRmodels)
-  data("colorectal.li")
-  DDLSDNNObj <- listToDDLSDNN(colorectal.li)
-  DDLSDNNObj
-}
-}
-
+models in the \pkg{digitalDLSorteR} package. These models are stored in the
+digitalDLSorteRmodels package.
 }
 \seealso{
 \code{\link{listToDDLS}}

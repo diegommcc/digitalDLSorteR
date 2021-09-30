@@ -15,6 +15,10 @@ saveTrainedModelAsH5(object, file.path, overwrite = FALSE)
 
 \item{overwrite}{Overwrite file if it already exists.}
 }
+\value{
+No return value, saves a keras DNN trained model as HDF5 file on
+disk.
+}
 \description{
 Save a trained \code{\linkS4class{DigitalDLSorter}} Deep Neural Network model
 to disk as an HDF5 file. Note that this function does not save the

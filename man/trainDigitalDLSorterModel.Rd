@@ -139,24 +139,48 @@ considered cell types.
 }
 \examples{
 \dontrun{
-if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
-  install.packages(
-    "digitalDLSorteRdata",
-    repos = "https://diegommcc.github.io/digitalDLSorteRdataRepo/"
+sce <- SingleCellExperiment::SingleCellExperiment(
+  matrix(
+    rpois(30, lambda = 5), nrow = 15, ncol = 10,
+    dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(10)))
+  ),
+  colData = data.frame(
+    Cell_ID = paste0("RHC", seq(10)),
+    Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10,
+                       replace = TRUE)
+  ),
+  rowData = data.frame(
+    Gene_ID = paste0("Gene", seq(15))
   )
-}
-library(digitalDLSorteRdata)
-data(DDLiComp.list)
-DDLiComp <- listToDDLS(DDLiComp.list)
-# to ensure compatibility
+)
+DDLS <- loadSCProfiles(
+  single.cell.data = sce,
+  cell.ID.column = "Cell_ID",
+  gene.ID.column = "Gene_ID"
+)
+probMatrixValid <- data.frame(
+  Cell_Type = paste0("CellType", seq(2)),
+  from = c(1, 30),
+  to = c(15, 70)
+)
+DDLS <- generateBulkCellMatrix(
+  object = DDLS,
+  cell.ID.column = "Cell_ID",
+  cell.type.column = "Cell_Type",
+  prob.design = probMatrixValid,
+  num.bulk.samples = 30,
+  verbose = TRUE
+)
+# training of DDLS model
 tensorflow::tf$compat$v1$disable_eager_execution()
-DDLiComp <- trainDigitalDLSorterModel(
-  object = DDLiComp,
+DDLS <- trainDigitalDLSorterModel(
+  object = DDLS,
   on.the.fly = TRUE,
-  batch.size = 24,
-  num.epochs = 5 # 20
+  batch.size = 12,
+  num.epochs = 5
 )
 }
+
 }
 \references{
 Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
