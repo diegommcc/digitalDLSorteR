@@ -338,9 +338,11 @@ data. Frontiers in Genetics 10, 978. doi: doi: <a href='https://doi.org/10.3389/
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='co'># simulated data</span></span>
 <span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>SingleCellExperiment</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a></span><span class='op'>(</span></span>
-<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span></span>
-<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='fl'>30</span>, lambda <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>15</span>, ncol <span class='op'>=</span> <span class='fl'>10</span>, </span>
-<span class='r-in'>    dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Gene"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>15</span><span class='op'>)</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"RHC"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'>  assays <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>    counts <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span></span>
+<span class='r-in'>      <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='fl'>30</span>, lambda <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>15</span>, ncol <span class='op'>=</span> <span class='fl'>10</span>, </span>
+<span class='r-in'>      dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Gene"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>15</span><span class='op'>)</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"RHC"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
 <span class='r-in'>  <span class='op'>)</span>,</span>
 <span class='r-in'>  colData <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
 <span class='r-in'>    Cell_ID <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"RHC"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>,</span>
@@ -373,11 +375,11 @@ data. Frontiers in Genetics 10, 978. doi: doi: <a href='https://doi.org/10.3389/
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> === The number of bulk RNA-Seq samples that will be generated is equal to 10</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> === Training set cells by type:</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType1: 3</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType2: 4</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> === Test set cells by type:</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType1: 2</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType2: 1</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType2: 5</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> === Test set cells by type:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType1: 1</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     - CellType2: 2</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> === Probability matrix for training data:</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span>     - Bulk RNA-Seq samples: 7</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span>     - Cell types: 2</span>
