@@ -39,9 +39,11 @@ are generated without any parameter introduced by the user.
 \examples{
 # simulating data
 sce <- SingleCellExperiment::SingleCellExperiment(
-  matrix(
-    rpois(100, lambda = 5), nrow = 40, ncol = 30, 
-    dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
+  assays = list(
+    counts = matrix(
+      rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+      dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
+    )
   ),
   colData = data.frame(
     Cell_ID = paste0("RHC", seq(30)),

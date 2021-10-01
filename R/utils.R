@@ -66,9 +66,11 @@ getProbMatrix <- function(object, type.data) {
 #' @examples
 #' # simulating data
 #' sce <- SingleCellExperiment::SingleCellExperiment(
-#'   matrix(
-#'     rpois(100, lambda = 5), nrow = 40, ncol = 30, 
-#'     dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
+#'   assays = list(
+#'     counts = matrix(
+#'       rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+#'       dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
+#'     )
 #'   ),
 #'   colData = data.frame(
 #'     Cell_ID = paste0("RHC", seq(30)),
@@ -630,6 +632,9 @@ listToDDLS <- function(listTo) {
 #' @param miniconda.path If \code{install.conda} is \code{TRUE}, you can set the
 #'   path where miniconda will be installed. If \code{NULL}, conda will find
 #'   automatically the proper place.
+#'
+#' @return No return value, called for side effects: installation of conda
+#'   environment with a Python interpreter and Tensorflow
 #'
 #' @export
 #'

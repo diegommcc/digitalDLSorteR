@@ -5,9 +5,11 @@ skip_if_not(.checkPythonDependencies(alert = "none"))
 # simulating data
 set.seed(123)
 sce <- SingleCellExperiment(
-  matrix(
-    stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 
-    dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
+  assays = list(
+    counts = matrix(
+      stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 
+      dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
+    )
   ),
   colData = data.frame(
     Cell_ID = paste0("RHC", seq(30)),

@@ -61,9 +61,11 @@ default.colors <- function() {
 #' \dontrun{
 #' set.seed(123)
 #' sce <- SingleCellExperiment::SingleCellExperiment(
-#'   matrix(
-#'     rpois(30, lambda = 5), nrow = 15, ncol = 20,
-#'     dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+#'   assays = list(
+#'     counts = matrix(
+#'       rpois(30, lambda = 5), nrow = 15, ncol = 20,
+#'       dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+#'     )
 #'   ),
 #'   colData = data.frame(
 #'     Cell_ID = paste0("RHC", seq(20)),
@@ -368,9 +370,11 @@ se <- function(x) sqrt(var(x)/length(x))
 #' \dontrun{
 #' set.seed(123)
 #' sce <- SingleCellExperiment::SingleCellExperiment(
-#'   matrix(
-#'     rpois(30, lambda = 5), nrow = 15, ncol = 20,
-#'     dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+#'   assays = list(
+#'     counts = matrix(
+#'       rpois(30, lambda = 5), nrow = 15, ncol = 20,
+#'       dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+#'     )
 #'   ),
 #'   colData = data.frame(
 #'     Cell_ID = paste0("RHC", seq(20)),
@@ -647,9 +651,11 @@ distErrorPlot <- function(
 #' \dontrun{
 #' set.seed(123)
 #' sce <- SingleCellExperiment::SingleCellExperiment(
-#'   matrix(
-#'     rpois(30, lambda = 5), nrow = 15, ncol = 20,
-#'     dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+#'   assays = list(
+#'     counts = matrix(
+#'       rpois(30, lambda = 5), nrow = 15, ncol = 20,
+#'       dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+#'     )
 #'   ),
 #'   colData = data.frame(
 #'     Cell_ID = paste0("RHC", seq(20)),
@@ -910,9 +916,11 @@ corrExpPredPlot <- function(
 #' \dontrun{
 #' set.seed(123)
 #' sce <- SingleCellExperiment::SingleCellExperiment(
-#'   matrix(
-#'     rpois(30, lambda = 5), nrow = 15, ncol = 20,
-#'     dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+#'   assays = list(
+#'     counts = matrix(
+#'       rpois(30, lambda = 5), nrow = 15, ncol = 20,
+#'       dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+#'     )
 #'   ),
 #'   colData = data.frame(
 #'     Cell_ID = paste0("RHC", seq(20)),
@@ -1089,7 +1097,7 @@ blandAltmanLehPlot <- function(
 #' @param title Title of the plot.
 #' @param theme \pkg{ggplot2} theme.
 #'
-#' @return A ggplot object with the mean and dispersion of errors
+#' @return A ggplot object with the mean and dispersion of the errors
 #'
 #' @export
 #'
@@ -1100,9 +1108,11 @@ blandAltmanLehPlot <- function(
 #' \dontrun{
 #' set.seed(123)
 #' sce <- SingleCellExperiment::SingleCellExperiment(
-#'   matrix(
-#'     rpois(30, lambda = 5), nrow = 15, ncol = 20,
-#'     dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+#'   assays = list(
+#'     counts = matrix(
+#'       rpois(30, lambda = 5), nrow = 15, ncol = 20,
+#'       dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+#'     )
 #'   ),
 #'   colData = data.frame(
 #'     Cell_ID = paste0("RHC", seq(20)),

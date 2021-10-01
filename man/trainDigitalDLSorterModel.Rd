@@ -140,9 +140,11 @@ considered cell types.
 \examples{
 \dontrun{
 sce <- SingleCellExperiment::SingleCellExperiment(
-  matrix(
-    rpois(30, lambda = 5), nrow = 15, ncol = 10,
-    dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(10)))
+  assays = list(
+    counts = matrix(
+      rpois(30, lambda = 5), nrow = 15, ncol = 10,
+      dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(10)))
+    )
   ),
   colData = data.frame(
     Cell_ID = paste0("RHC", seq(10)),

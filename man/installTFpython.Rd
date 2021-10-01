@@ -18,6 +18,10 @@ using \pkg{reticulate}. If \code{TRUE}, \code{conda} argument is ignored.
 path where miniconda will be installed. If \code{NULL}, conda will find
 automatically the proper place.}
 }
+\value{
+No return value, called for side effects: installation of conda
+environment with a Python interpreter and Tensorflow
+}
 \description{
 This is a helper function to install Python dependencies needed: a Python
 interpreter with TensorFlow Python library and its dependencies. It is

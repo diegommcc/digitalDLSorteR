@@ -66,9 +66,11 @@ model to deconvolute your samples, see \code{?\link{deconvDigitalDLSorter}}.
 \dontrun{
 set.seed(123)
 sce <- SingleCellExperiment::SingleCellExperiment(
-  matrix(
-    rpois(30, lambda = 5), nrow = 15, ncol = 20,
-    dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+  assays = list(
+    counts = matrix(
+      rpois(30, lambda = 5), nrow = 15, ncol = 20,
+      dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(20)))
+    )
   ),
   colData = data.frame(
     Cell_ID = paste0("RHC", seq(20)),
