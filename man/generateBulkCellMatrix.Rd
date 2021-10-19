@@ -128,6 +128,7 @@ each method during the process, they can be visualized by the
 \code{\link{showProbPlot}} function (see Documentation).
 }
 \examples{
+set.seed(123) # reproducibility
 # simulated data
 sce <- SingleCellExperiment::SingleCellExperiment(
   assays = list(

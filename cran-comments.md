@@ -12,7 +12,7 @@ Maintainer: ‘Diego Mañanes <dmananesc@cnic.es>’
 
 New submission
 
-## First release 
+## digitalDLSorteR 0.1.0 (2021-10-08)
 
     Please do not start the description with "This package", package name,
     title or similar.
@@ -46,3 +46,24 @@ New submission
     instead. However please omit the \dontrun{} warp around those examples.
 
 Everything has been solved.
+
+    Problem with tests on SolarisOS:
+
+  Error in `splatter::zinbEstimate(counts = ceiling(as.matrix(list.data[[1]])),
+      BPPARAM = parallelEnv, design.samples = sdm, design.genes = gdm,
+      O_mu = matrix(0, nrow = ncol(list.data[[1]]), ncol = nrow(list.data[[1]]),
+          dimnames = list(rownames = seq(ncol(list.data[[1]])),
+              colnames = rownames(list.data[[1]]))), O_pi = matrix(0,
+          nrow = ncol(list.data[[1]]), ncol = nrow(list.data[[1]]),
+          dimnames = list(rownames = seq(ncol(list.data[[1]])),
+              colnames = rownames(list.data[[1]]))), beta_mu = matrix(0,
+          nrow = sdm.ncol, ncol = nrow(list.data[[1]]), dimnames = list(rownames = sdm.colnames,
+              colnames = rownames(list.data[[1]]))), beta_pi = matrix(0,
+          nrow = sdm.ncol, ncol = nrow(list.data[[1]]), dimnames = list(rownames = sdm.colnames,
+              colnames = rownames(list.data[[1]]))), alpha_mu = matrix(0,
+          nrow = 0, ncol = nrow(list.data[[1]]), dimnames = list(rownames = NULL,
+              colnames = rownames(list.data[[1]]))), alpha_pi = matrix(0,
+          nrow = 0, ncol = nrow(list.data[[1]]), dimnames = list(rownames = NULL,
+              colnames = rownames(list.data[[1]]))), verbose = verbose)`: object 'parallelEnv' not found
+
+`parellelEnv` variable is now available on Solaris OS.

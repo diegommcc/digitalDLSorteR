@@ -72,7 +72,8 @@ NULL
 #'
 #' @seealso \code{\link{simSCProfiles}}
 #'
-#' @examples
+#' @examples 
+#' set.seed(123) # reproducibility
 #' sce <- SingleCellExperiment::SingleCellExperiment(
 #'   assays = list(
 #'     counts = matrix(
@@ -226,24 +227,28 @@ estimateZinbwaveParams <- function(
   # set configuration of parallel computations 
   if (threads <= 0) threads <- 1
   if (threads > 1 && !requireNamespace("BiocParallel", quietly = TRUE)) {
-    message("=== Set parallel environment to ", threads, " thread(s). BiocParallel package is not available\n")
+    message("=== Setting parallel environment to 1 thread. BiocParallel package is not available\n")
   } else {
     if (verbose) {
-      message("=== Set parallel environment to ", threads, " thread(s)\n")
+      message("=== Setting parallel environment to ", threads, " thread(s)\n")
     }  
     switch(
       Sys.info()[['sysname']],
-      Windows= {
+      Windows = {
         parallelEnv <- BiocParallel::SnowParam(
           workers = threads, type = "SOCK"
         )
       },
-      Linux  = {
+      Linux = {
         parallelEnv <- BiocParallel::MulticoreParam(workers = threads)
       },
       Darwin = {
         parallelEnv <- BiocParallel::MulticoreParam(workers = threads)
-      }
+      },
+      SunOS = {
+        parallelEnv <- BiocParallel::MulticoreParam(workers = threads)
+      },
+      parallelEnv <- BiocParallel::MulticoreParam(workers = threads)
     )
   }
   # set cell types that will be estimated
@@ -253,8 +258,8 @@ estimateZinbwaveParams <- function(
         paste("~", paste(cell.type.column, collapse = "+"))
       ) 
       if (verbose) {
-        message("=== Estimate parameters for all cell types in the experiment\n")
-        message(paste("=== Create cell model matrix based on", 
+        message("=== Estimating parameters for all cell types in the experiment\n")
+        message(paste("=== Creating cell model matrix based on", 
                       cell.type.column, "columns:"))
         message("\t", formula.cell.model, "\n")
       }
@@ -263,8 +268,8 @@ estimateZinbwaveParams <- function(
         paste("~", paste(c(cell.cov.columns, cell.type.column), collapse = "+"))
       )  
       if (verbose) {
-        message("=== Estimate parameters for all cell types in the experiment\n")
-        message(paste("=== Create cell model matrix based on", 
+        message("=== Estimating parameters for all cell types in the experiment\n")
+        message(paste("=== Creating cell model matrix based on", 
                       paste(cell.cov.columns, collapse = ", "),
                       "and", cell.type.column, "columns:"))
         message("\t", formula.cell.model, "\n")
@@ -304,9 +309,9 @@ estimateZinbwaveParams <- function(
         paste("~", paste(cell.type.column, collapse = "+"))
       )  
       if (verbose) {
-        message("=== Estimate parameters for ", paste(set.type, collapse = ", "), 
+        message("=== Estimating parameters for ", paste(set.type, collapse = ", "), 
                 " cell type(s) from the experiment\n")
-        message(paste("=== Create cell model matrix based on", 
+        message(paste("=== Creating cell model matrix based on", 
                       cell.type.column, "columns:"))
         message("\t", formula.cell.model, "\n")
       }
@@ -315,9 +320,9 @@ estimateZinbwaveParams <- function(
         paste("~", paste(c(cell.cov.columns, cell.type.column), collapse = "+"))
       )  
       if (verbose) {
-        message("=== Estimate parameters for ", paste(set.type, collapse = ", "), 
+        message("=== Estimating parameters for ", paste(set.type, collapse = ", "), 
                 " cell type(s) from the experiment\n")
-        message(paste("=== Create cell model matrix based on", 
+        message(paste("=== Creating cell model matrix based on", 
                       paste(cell.cov.columns, collapse = ", "),
                       "and", cell.type.column, "columns:"))
         message("\t", formula.cell.model, "\n")
@@ -354,7 +359,7 @@ estimateZinbwaveParams <- function(
   # covariates for genes
   if (missing(gene.cov.columns) || is.null(gene.cov.columns)) {
     if (verbose) 
-      message("=== Create gene model matrix without gene covariates\n")
+      message("=== Creating gene model matrix without gene covariates\n")
     gdm <- model.matrix(
       ~ 1, data = list.data[[3]][match(rownames(list.data[[1]]),
                                        list.data[[3]][, gene.ID.column]), ,
@@ -365,7 +370,7 @@ estimateZinbwaveParams <- function(
       paste("~", paste(gene.cov.columns, collapse = "+"))
     )
     if (verbose) {
-      message("=== Create gene model matrix with ", 
+      message("=== Creating gene model matrix with ", 
               gene.cov.columns, " covariate(s)")
       message("\t", formula.gene.model, "\n")
     }
@@ -377,7 +382,7 @@ estimateZinbwaveParams <- function(
   rownames(gdm) <- rownames(list.data[[1]])
   if (verbose) {
     start_time <- Sys.time()
-    message("=== Run estimation process ",
+    message("=== Running estimation process ",
             paste("(Start time", format(start_time, "%X)"), "\n"))
   }
   # why ceiling
@@ -723,6 +728,7 @@ estimateZinbwaveParams <- function(
 #' @seealso \code{\link{estimateZinbwaveParams}}
 #'
 #' @examples 
+#' set.seed(123) # reproducibility
 #' sce <- SingleCellExperiment::SingleCellExperiment(
 #'   assays = list(
 #'     counts = matrix(
@@ -863,12 +869,16 @@ simSCProfiles <- function(
   list.data[[2]]$Simulated <- FALSE
   # cell types in model
   cell.set.names <- NULL
-  model.cell.types <- grep(pattern = cell.type.column,
-                           x = colnames(zinb.object@model@X),
-                           value = T)
-  cell.type.names <- sub(pattern = cell.type.column,
-                         replacement = "",
-                         x = model.cell.types)
+  model.cell.types <- grep(
+    pattern = cell.type.column,
+    x = colnames(zinb.object@model@X),
+    value = T
+  )
+  cell.type.names <- sub(
+    pattern = cell.type.column,
+    replacement = "",
+    x = model.cell.types
+  )
   if (!is.null(cell.types)) {
     if (!all(cell.types %in% cell.types.used)) {
       stop("Cell type(s) provided in 'cell.types' not found in ZINB-WaVE model.",
@@ -887,15 +897,17 @@ simSCProfiles <- function(
     nams <- sample(cell.index, size = n.cells, replace = T)
     if (is.null(cell.set.names)) {
       cell.set.names <- nams
-      names(cell.set.names) <- paste(cell.type.name, suffix.names,
-                                     seq(from = 1, to = n.cells), sep = "")
+      names(cell.set.names) <- paste(
+        cell.type.name, suffix.names, seq(from = 1, to = n.cells), sep = ""
+      )
     } else {
       ns <- names(cell.set.names)
       cell.set.names <- c(cell.set.names, nams)
       names(cell.set.names) <- c(
-        ns, paste(cell.type.name, suffix.names, 
-                  seq(from = length(ns) + 1, to = length(ns) + n.cells), 
-                  sep = "")
+        ns, paste(
+          cell.type.name, suffix.names, 
+          seq(from = length(ns) + 1, to = length(ns) + n.cells), sep = ""
+        )
       )
     }
   }
@@ -933,7 +945,7 @@ simSCProfiles <- function(
   J <- zinbwave::nFeatures(zinb.object@model)
   if (verbose) {
     # message about parameters
-    message("=== Get parameters from model:")
+    message("=== Getting parameters from model:")
     message("    - mu: ", paste(dim(mu), collapse = ", "))
     message("    - pi: ", paste(dim(pi), collapse = ", "))
     message("    - Theta: ", length(theta), "\n")

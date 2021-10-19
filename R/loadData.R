@@ -714,6 +714,7 @@ NULL
 #'   \code{\link{generateBulkCellMatrix}}
 #'
 #' @examples
+#' set.seed(123) # reproducibility
 #' sce <- SingleCellExperiment::SingleCellExperiment(
 #'   assays = list(
 #'     counts = matrix(

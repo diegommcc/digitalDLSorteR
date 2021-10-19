@@ -105,6 +105,7 @@ NULL
 #'   \code{\linkS4class{ProbMatrixCellTypes}}
 #'
 #' @examples
+#' set.seed(123) # reproducibility
 #' # simulated data
 #' sce <- SingleCellExperiment::SingleCellExperiment(
 #'   assays = list(
@@ -1045,6 +1046,7 @@ setCount <- function(
 #'   \code{\link{trainDigitalDLSorterModel}}
 #'
 #' @examples
+#' set.seed(123) # reproducibility
 #' # simulated data
 #' sce <- SingleCellExperiment::SingleCellExperiment(
 #'   assays = list(
@@ -1134,7 +1136,7 @@ simBulkProfiles <- function(
   }
   if (threads <= 0) threads <- 1
   if (verbose) {
-    message(paste("=== Set parallel environment to", threads, "thread(s)"))
+    message(paste("=== Setting parallel environment to", threads, "thread(s)"))
   }
   if (type.data == "both") {
     if (!is.null(object@bulk.simul)) {

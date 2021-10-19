@@ -114,6 +114,7 @@ generated 'on the fly' during the neural network training. For more details,
 see \code{?\link{trainDigitalDLSorterModel}}.
 }
 \examples{
+set.seed(123) # reproducibility
 # simulated data
 sce <- SingleCellExperiment::SingleCellExperiment(
   assays = list(

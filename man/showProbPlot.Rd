@@ -38,6 +38,7 @@ are generated without any parameter introduced by the user.
 }
 \examples{
 # simulating data
+set.seed(123) # reproducibility
 sce <- SingleCellExperiment::SingleCellExperiment(
   assays = list(
     counts = matrix(

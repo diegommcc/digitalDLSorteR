@@ -18,7 +18,13 @@ The **digitalDLSorteR** R package provides a set of tools to deconvolute and inf
 
 ## Installation
 
-**digitalDLSorteR** can be installed from GitHub, but will soon be available at CRAN.
+**digitalDLSorteR** is available on CRAN and can be installed as follows:
+
+```r
+install.packages("digitalDLSorteR")
+```
+
+The development version is availale on Gihub and can be installed in R as well:
 
 ```r
 if (!requireNamespace("devtools", quietly = TRUE))

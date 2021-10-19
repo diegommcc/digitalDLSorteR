@@ -94,6 +94,7 @@ function from the \pkg{zinbwave} package (Risso et al., 2018). For more
 details about the model, see Risso et al., 2018.
 }
 \examples{
+set.seed(123) # reproducibility
 sce <- SingleCellExperiment::SingleCellExperiment(
   assays = list(
     counts = matrix(

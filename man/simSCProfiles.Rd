@@ -120,6 +120,7 @@ written to HDF5 files in blocks of \code{block.size} size by setting
 \code{block.processing = TRUE}.
 }
 \examples{
+set.seed(123) # reproducibility
 sce <- SingleCellExperiment::SingleCellExperiment(
   assays = list(
     counts = matrix(

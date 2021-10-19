@@ -117,6 +117,7 @@ these profiles will be used directly to simulate pseudo-bulk RNA-seq samples
 with known cell composition.
 }
 \examples{
+set.seed(123) # reproducibility
 sce <- SingleCellExperiment::SingleCellExperiment(
   assays = list(
     counts = matrix(
