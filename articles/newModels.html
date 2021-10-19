@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
       </span>
     </div>
 
@@ -98,7 +98,7 @@
 
       
 
-      </header><script src="newModels_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Building new deconvolution models</h1>
@@ -129,9 +129,9 @@
 Workflow to build new context-specific deconvolution models
 </p>
 </div>
-<div id="load" class="section level3">
-<h3 class="hasAnchor">
-<a href="#load" class="anchor" aria-hidden="true"></a>Loading data into a <code>DigitalDLSorter</code> object</h3>
+<div class="section level3">
+<h3 id="load">Loading data into a <code>DigitalDLSorter</code> object<a class="anchor" aria-label="anchor" href="#load"></a>
+</h3>
 <p>First, we have to load scRNA-Seq data into a <code>DigitalDLSorter</code> object. This S4 class contains all the slots needed to store the different data generated during the construction of new deconvolution models. The information to be provided consists of three elements:</p>
 <ul>
 <li>Counts matrix: a matrix with genes as rows and cells as columns.</li>
@@ -203,13 +203,13 @@ Workflow to build new context-specific deconvolution models
   project <span class="op">=</span> <span class="st">"ToyExampleBreast"</span>
 <span class="op">)</span></code></pre></div>
 </div>
-<div id="oversample" class="section level3">
-<h3 class="hasAnchor">
-<a href="#oversample" class="anchor" aria-hidden="true"></a>Oversampling of single-cell profiles</h3>
+<div class="section level3">
+<h3 id="oversample">Oversampling of single-cell profiles<a class="anchor" aria-label="anchor" href="#oversample"></a>
+</h3>
 <p><strong>digitalDLSorteR</strong> offers the possibility to simulate new single-cell profiles from real ones to increase signal and variability in small datasets or when under-represented cell types are present. This step is optional but recommended in these situations. The <code>estimateZinbwaveParams</code> and <code>simSCProfiles</code> functions are used for this purpose.</p>
-<div id="zinb" class="section level4">
-<h4 class="hasAnchor">
-<a href="#zinb" class="anchor" aria-hidden="true"></a>Estimating of ZINB-WaVE model parameters to simulate new single-cell profiles</h4>
+<div class="section level4">
+<h4 id="zinb">Estimating of ZINB-WaVE model parameters to simulate new single-cell profiles<a class="anchor" aria-label="anchor" href="#zinb"></a>
+</h4>
 <p>The first step is to estimate a set of parameters that fit the real single-cell data to simulate new realistic single-cell profiles. We chose the ZINB-WaVE framework <span class="citation">(Risso et al. 2018)</span> that estimates the parameters of a ZINB (zero-inflated negative binomial) distribution. It was chosen for its ability to accommodate not only variability within a particular cell type, but also variability within the entire experiment.</p>
 <p>This process is performed by the <code>estimateZinbwaveParams</code> function, which makes use of the <a href="https://bioconductor.org/packages/release/bioc/html/splatter.html" class="external-link">splatter</a> package, a wrapper of the original <a href="https://bioconductor.org/packages/release/bioc/html/zinbwave.html" class="external-link">zinbwave</a> package. You must specify the column corresponding to cell types in the cells metadata, and other cell/gene covariates can be added based on your experimental design, such as patient, gender or gene length. This process may take a few minutes to run because it is not very optimized in the original packages, so be patient. In any case, you can adjust the number of threads used in some steps during the estimation with the <code>threads</code> argument depending on your computational resources. This is done by the <a href="https://www.bioconductor.org/packages/release/bioc/html/BiocParallel.html" class="external-link">BiocParallel</a> package. In the case of large datasets with some cell types under-represented, the <code>subset.cells</code> parameter allows to make a subset of cells to increase the speed of the process. Here, we have used this parameter to speed up the process. With the following code, a total of 40 cells will be taken from the original scRNA-Seq data and used to fit a ZINB-WaVE model.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -222,9 +222,9 @@ Workflow to build new context-specific deconvolution models
   threads <span class="op">=</span> <span class="fl">1</span>,
   verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
-<pre><code>## === Set parallel environment to 1 thread(s)</code></pre>
-<pre><code>## === Estimate parameters for all cell types in the experiment</code></pre>
-<pre><code>## === Create cell model matrix based on Cell_Type columns:</code></pre>
+<pre><code>## === Setting parallel environment to 1 thread(s)</code></pre>
+<pre><code>## === Estimating parameters for all cell types in the experiment</code></pre>
+<pre><code>## === Creating cell model matrix based on Cell_Type columns:</code></pre>
 <pre><code>##  ~Cell_Type</code></pre>
 <pre><code>## === Number of cells for each cell type:
 ##     - CellType1: 11
@@ -232,8 +232,8 @@ Workflow to build new context-specific deconvolution models
 ##     - CellType3: 10
 ##     - CellType4: 7
 ##     - CellType5: 6</code></pre>
-<pre><code>## === Create gene model matrix without gene covariates</code></pre>
-<pre><code>## === Run estimation process (Start time 10:49:14 AM)</code></pre>
+<pre><code>## === Creating gene model matrix without gene covariates</code></pre>
+<pre><code>## === Running estimation process (Start time 08:46:27 AM)</code></pre>
 <pre><code>## Removing all zero genes...</code></pre>
 <pre><code>## Fitting model...</code></pre>
 <pre><code>## Create model:</code></pre>
@@ -245,22 +245,22 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## penalized log-likelihood = -54085.7356583502</code></pre>
 <pre><code>## After dispersion optimization = -43320.8019735184</code></pre>
 <pre><code>##    user  system elapsed 
-##   7.184   0.024   7.208</code></pre>
+##   6.092   0.008   6.100</code></pre>
 <pre><code>## After right optimization = -42718.0963333899</code></pre>
 <pre><code>## After orthogonalization = -42718.0963333899</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.407   0.000   0.407</code></pre>
+##   0.309   0.000   0.309</code></pre>
 <pre><code>## After left optimization = -42710.2243757023</code></pre>
 <pre><code>## After orthogonalization = -42710.2243757023</code></pre>
 <pre><code>## Iteration 2</code></pre>
 <pre><code>## penalized log-likelihood = -42710.2243757023</code></pre>
 <pre><code>## After dispersion optimization = -42710.2246200143</code></pre>
 <pre><code>##    user  system elapsed 
-##   5.807   0.012   5.821</code></pre>
+##   4.931   0.008   4.939</code></pre>
 <pre><code>## After right optimization = -42708.2394778232</code></pre>
 <pre><code>## After orthogonalization = -42708.2394778232</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.321   0.000   0.321</code></pre>
+##   0.266   0.000   0.266</code></pre>
 <pre><code>## After left optimization = -42706.8950844827</code></pre>
 <pre><code>## After orthogonalization = -42706.8950844827</code></pre>
 <pre><code>## Iteration 3</code></pre>
@@ -269,7 +269,7 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## 
 ## DONE</code></pre>
 <pre><code>## 
-## Invested time: 36.41</code></pre>
+## Invested time: 31.84</code></pre>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSToy</span></code></pre></div>
 <pre><code>## An object of class DigitalDLSorter 
@@ -284,9 +284,9 @@ Workflow to build new context-specific deconvolution models
 ##   0 latent factor(s).
 ## Project: ToyExampleBreast</code></pre>
 </div>
-<div id="simul-sc" class="section level4">
-<h4 class="hasAnchor">
-<a href="#simul-sc" class="anchor" aria-hidden="true"></a>Simulating new single-cell profiles from the estimated parameters</h4>
+<div class="section level4">
+<h4 id="simul-sc">Simulating new single-cell profiles from the estimated parameters<a class="anchor" aria-label="anchor" href="#simul-sc"></a>
+</h4>
 <p>Once the ZINB-WaVE parameters have been estimated, the <code>simSCProfiles</code> function uses them to simulate new single-cell profiles based on the real ones. It is done by randomly sampling from a negative binomial distribution with the estimated ZINB parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\theta\)</span>, and introducing dropouts by sampling from a binomial distribution with the estimated probability <span class="math inline">\(\pi\)</span>. You must specify the number of cell profiles per cell type to be generated (<code>n.cells</code>). For example, if your data set is composed of 5 cell types and <code>n.cells</code> is equal to 10, the number of simulated profiles will be 50.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simSCProfiles.html">simSCProfiles</a></span><span class="op">(</span>
@@ -297,7 +297,7 @@ Workflow to build new context-specific deconvolution models
   suffix.names <span class="op">=</span> <span class="st">"_Simul"</span>,
   verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
-<pre><code>## === Get parameters from model:</code></pre>
+<pre><code>## === Getting parameters from model:</code></pre>
 <pre><code>##     - mu: 40, 500</code></pre>
 <pre><code>##     - pi: 40, 500</code></pre>
 <pre><code>##     - Theta: 500</code></pre>
@@ -346,9 +346,9 @@ Workflow to build new context-specific deconvolution models
 <span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div id="cell-prop" class="section level3">
-<h3 class="hasAnchor">
-<a href="#cell-prop" class="anchor" aria-hidden="true"></a>Generation of the cell composition matrix of pseudo-bulk RNA-Seq samples</h3>
+<div class="section level3">
+<h3 id="cell-prop">Generation of the cell composition matrix of pseudo-bulk RNA-Seq samples<a class="anchor" aria-label="anchor" href="#cell-prop"></a>
+</h3>
 <p>To simulate pseudo-bulk samples with a known cell composition, it is necessary to generate a cell composition matrix that determines the proportion of each cell type in each sample. This is carried out using the <code>generateBulkCellMatrix</code> function that stores these results in the <code>prob.cell.types</code> slot as a <code>ProbMatrixCellTypes</code> object.</p>
 <p>This process starts with the division of the single-cell profiles into training and test data (see <code>train.freq.cells</code> argument in the documentation). Each subset will be used to generate each subset of bulk samples (training and test) in order to avoid any distortion of the results during model evaluation. Then, proportions are generated using six different methods to avoid biases during training due to the cellular composition of the simulated bulk RNA-Seq samples:</p>
 <ol style="list-style-type: decimal">
@@ -469,9 +469,9 @@ Workflow to build new context-specific deconvolution models
 ## [[6]]</code></pre>
 <p><img src="newModels_files/figure-html/showProbPlot_newModels-6.png" width="640" style="display: block; margin: auto;"></p>
 </div>
-<div id="simul-bulk" class="section level3">
-<h3 class="hasAnchor">
-<a href="#simul-bulk" class="anchor" aria-hidden="true"></a>Simulation of pseudo-bulk RNA-Seq samples with known cell composition</h3>
+<div class="section level3">
+<h3 id="simul-bulk">Simulation of pseudo-bulk RNA-Seq samples with known cell composition<a class="anchor" aria-label="anchor" href="#simul-bulk"></a>
+</h3>
 <p>Now, the simulated cell proportions are used to create the pseudo-bulk samples. They are simulated by aggregating single-cell profiles of each cell type according to these proportions. The idea is to simulate a real bulk RNA-Seq data in which the gene expression levels of each cell are aggregated into a single sample. Therefore, this expression matrix will be generated according to the following equation:</p>
 <p><span class="math display">\[\begin{equation}
   T_{ij} = \sum_{k = 1}^{K} \sum_{z = 1}^Z C_{izk} 
@@ -489,7 +489,7 @@ Workflow to build new context-specific deconvolution models
 <p>where <span class="math inline">\(T_{ij}\)</span> is the expression level of gene <span class="math inline">\(i\)</span> in bulk sample <span class="math inline">\(j\)</span>; <span class="math inline">\(C_{izk}\)</span> is the expression level of gene <span class="math inline">\(i\)</span> in cell <span class="math inline">\(z\)</span> in bulk sample <span class="math inline">\(j\)</span>; and <span class="math inline">\(P_{kj}\)</span> is the proportion of cell type <span class="math inline">\(k\)</span> in bulk sample <span class="math inline">\(j\)</span> (the cell composition matrix generated in the previous step). <span class="math inline">\(Z\)</span> represents the number of cells that will make up the proportion of cell type <span class="math inline">\(k\)</span> in the bulk sample <span class="math inline">\(j\)</span> and corresponds to the <code>n.cells</code> parameter from the <code>generateBulkCellMatrix</code> function. Cells are randomly sampled based on their cell type and how they were divided into training and test subsets. This step is performed by <code>simBulkProfiles</code> as follows:</p>
 <div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simBulkProfiles.html">simBulkProfiles</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span></code></pre></div>
-<pre><code>## === Set parallel environment to 1 thread(s)</code></pre>
+<pre><code>## === Setting parallel environment to 1 thread(s)</code></pre>
 <pre><code>## 
 ## === Generating train bulk samples:</code></pre>
 <pre><code>## 
@@ -537,9 +537,9 @@ Workflow to build new context-specific deconvolution models
   threads <span class="op">=</span> <span class="fl">2</span>
 <span class="op">)</span></code></pre></div>
 </div>
-<div id="dnn" class="section level3">
-<h3 class="hasAnchor">
-<a href="#dnn" class="anchor" aria-hidden="true"></a>Training and evaluation of the Deep Neural Network</h3>
+<div class="section level3">
+<h3 id="dnn">Training and evaluation of the Deep Neural Network<a class="anchor" aria-label="anchor" href="#dnn"></a>
+</h3>
 <p>Once the pseudo-bulk samples have been generated, the DNN model can be trained and evaluated. <code>trainDigitalDLSorterModel</code> is the function in charge of both steps and uses the <a href="https://cran.r-project.org/package=keras" class="external-link">keras</a> package with <a href="https://cran.r-project.org/package=tensorflow" class="external-link">tensorflow</a> as back-end. If you want more information about <a href="https://cran.r-project.org/package=keras" class="external-link">keras</a> or have any problems during its installation, please see <a href="kerasIssues.html">Keras/TensorFlow installation and configuration</a> vignette. In any case, the <code>installTFpython</code> function automates this process, so we recommend its use.</p>
 <p>In terms of architecture and model parameters, <code>trainDigitalDLSorterModel</code> implements by default two hidden layers with 200 neurons each, although any of these parameters can be modified through the <code>trainDigitalDLSorterModel</code> parameters. In addition, for a more customized model, it is possible to provide a pre-built model in the <code>custom.model</code> parameter. See the documentation for more details.</p>
 <p>The code with the default parameters is as follows:</p>
@@ -580,10 +580,10 @@ Workflow to build new context-specific deconvolution models
 ## === Training DNN with 267 samples:</code></pre>
 <pre><code>## 
 ## === Evaluating DNN in test data (133 samples)</code></pre>
-<pre><code>##    - loss: 0.8413
-##    - accuracy: 0.5038
-##    - mean_absolute_error: 0.2022
-##    - categorical_accuracy: 0.5038</code></pre>
+<pre><code>##    - loss: 0.8166
+##    - accuracy: 0.6241
+##    - mean_absolute_error: 0.1983
+##    - categorical_accuracy: 0.6241</code></pre>
 <pre><code>## 
 ## === Generating prediction results using test data</code></pre>
 <pre><code>## DONE</code></pre>
@@ -618,36 +618,38 @@ Workflow to build new context-specific deconvolution models
 ##     colnames: Bulk_65 Bulk_46 Bulk_76 ... Bulk_76 Bulk_53 Bulk_77 Bulk_67 
 ## Trained model: 10 epochs
 ##   Training metrics (last epoch):
-##     loss: 0.2526
-##     accuracy: 0.925
-##     mean_absolute_error: 0.0903
-##     categorical_accuracy: 0.925
+##     loss: 0.2562
+##     accuracy: 0.9344
+##     mean_absolute_error: 0.0916
+##     categorical_accuracy: 0.9344
 ##   Evaluation metrics on test data:
-##     loss: 0.8413
-##     accuracy: 0.5038
-##     mean_absolute_error: 0.2022
-##     categorical_accuracy: 0.5038 
+##     loss: 0.8166
+##     accuracy: 0.6241
+##     mean_absolute_error: 0.1983
+##     categorical_accuracy: 0.6241 
 ## Project: ToyExampleBreast</code></pre>
 <p>As this is a ‘toy’ example, results are not very accurate. For a real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a> vignette.</p>
-<div id="on-the-fly-argument" class="section level4">
-<h4 class="hasAnchor">
-<a href="#on-the-fly-argument" class="anchor" aria-hidden="true"></a><code>on.the.fly</code> argument</h4>
+<div class="section level4">
+<h4 id="on-the-fly-argument">
+<code>on.the.fly</code> argument<a class="anchor" aria-label="anchor" href="#on-the-fly-argument"></a>
+</h4>
 <p>The <code>on.the.fly</code> argument of <code>trainDigitalDLSorterModel</code> allows the generation of pseudo-bulk samples used for training and testing ‘on the fly.’ This means that it is possible to skip the simulation of pseudo-bulk samples performed by the <code>simBulkProfiles</code> function, and create samples at the same time as the DNN model is being trained. Of course, runtimes during training may increase, but data is not loaded into RAM or stored in large HDF5 files. To use this functionality, it is only necessary to set <code>on.the.fly = TRUE</code> as follows:</p>
 <div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDigitalDLSorterModel.html">trainDigitalDLSorterModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, on.the.fly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div id="eval" class="section level3">
-<h3 class="hasAnchor">
-<a href="#eval" class="anchor" aria-hidden="true"></a>Evaluation of the deconvolution model on test data: visualization of results</h3>
+<div class="section level3">
+<h3 id="eval">Evaluation of the deconvolution model on test data: visualization of results<a class="anchor" aria-label="anchor" href="#eval"></a>
+</h3>
 <p>While the metrics from the prediction results on test data are informative about the performance of the model, a more comprehensive analysis is needed. For this task, <strong>digitalDLSorteR</strong> provides a set of visualization functions to represent a variety of error metrics in different ways.</p>
 <p>First, <code>calculateEvalMetrics</code> is needed to calculate the error metrics to be plotted. By default, absolute error (<code>AbsErr</code>), proportional absolute error (<code>ppAbsErr</code>), squared error (<code>SqrErr</code>) and proportional squared error (<code>ppSqrErr</code>) are calculated for each sample of test data. Furthermore, they are all aggregated using their average values according to three criteria: each cell type (<code>CellType</code>), proportion bins of 0.1 (<code>pBin</code>) and number of different cell types (<code>nCellTypes</code>).</p>
 <div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateEvalMetrics.html">calculateEvalMetrics</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span><span class="op">)</span></code></pre></div>
 <p>Now, these results can be plotted by the following battery of functions.</p>
-<div id="dist-err" class="section level4">
-<h4 class="hasAnchor">
-<a href="#dist-err" class="anchor" aria-hidden="true"></a><code>distErrorPlot</code> and <code>barErrorPlot</code>: error distributions</h4>
+<div class="section level4">
+<h4 id="dist-err">
+<code>distErrorPlot</code> and <code>barErrorPlot</code>: error distributions<a class="anchor" aria-label="anchor" href="#dist-err"></a>
+</h4>
 <p>The <code>distErrorPlot</code> function allows to plot in different ways how errors are distributed. Moreover, it allows to split the plots in different panels representing how the errors are distributed by a given variable. The available variables are cell types (<code>CellType</code>) and number of cell types present in the samples (<code>nCellTypes</code>). In the following example, we will represent the overall errors by cell types.</p>
 <div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
@@ -687,9 +689,10 @@ Workflow to build new context-specific deconvolution models
 <code class="sourceCode R"><span class="fu"><a href="../reference/barErrorPlot.html">barErrorPlot</a></span><span class="op">(</span><span class="va">DDLSToy</span>, error <span class="op">=</span> <span class="st">"MAE"</span>, by <span class="op">=</span> <span class="st">"CellType"</span><span class="op">)</span></code></pre></div>
 <p><img src="newModels_files/figure-html/barError_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
-<div id="corr-err" class="section level4">
-<h4 class="hasAnchor">
-<a href="#corr-err" class="anchor" aria-hidden="true"></a><code>corrExpPredPlot</code>: correlation plots between predicted and expected proportions</h4>
+<div class="section level4">
+<h4 id="corr-err">
+<code>corrExpPredPlot</code>: correlation plots between predicted and expected proportions<a class="anchor" aria-label="anchor" href="#corr-err"></a>
+</h4>
 <p>Ideally, the model should provide predictions that linearly match the actual proportions. Therefore, you can generate correlations plots to assess the model. By default, the Pearson’s coefficient correlation (<span class="math inline">\(R\)</span>) and the concordance correlation coefficient (CCC) are shown as annotations on the plots. The latter is a more realistic measure as it decreases as the points move away from the identity.</p>
 <div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
@@ -723,9 +726,10 @@ Workflow to build new context-specific deconvolution models
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
 <p><img src="newModels_files/figure-html/corr3_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
-<div id="bland-err" class="section level4">
-<h4 class="hasAnchor">
-<a href="#bland-err" class="anchor" aria-hidden="true"></a><code>blandAltmanLehPlot</code>: Bland-Altman agreement plots</h4>
+<div class="section level4">
+<h4 id="bland-err">
+<code>blandAltmanLehPlot</code>: Bland-Altman agreement plots<a class="anchor" aria-label="anchor" href="#bland-err"></a>
+</h4>
 <p>The <code>blandAltmanLehPlot</code> function allows to display Bland-Altman agreement plots. This is a kind of graphical method for comparing the level of agreement between two different sets of values. The differences between the predictions and the actual proportions are plotted against their means. The central dashed line represents the mean difference, while the two red dashed lines are the limits of agreement, which are defined as the mean difference plus and minus 1.96 times the standard deviation of the differences. 95% of the differences are expected to fall between these two limits, so the wider the margins, the worse the performance. It is also possible to display it in <span class="math inline">\(log_2\)</span> space.</p>
 <div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
@@ -751,9 +755,9 @@ Workflow to build new context-specific deconvolution models
 <p><img src="newModels_files/figure-html/bland2_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 </div>
-<div id="new-bulk" class="section level3">
-<h3 class="hasAnchor">
-<a href="#new-bulk" class="anchor" aria-hidden="true"></a>Loading new bulk RNA-Seq samples to deconvolute them</h3>
+<div class="section level3">
+<h3 id="new-bulk">Loading new bulk RNA-Seq samples to deconvolute them<a class="anchor" aria-label="anchor" href="#new-bulk"></a>
+</h3>
 <p>Once the model has been evaluated, new bulk RNA-seq data can be loaded into the <code>DigitalDLSorter</code> object to be deconvoluted. Here, we are going to simulate bulk RNA-Seq data from a Poisson distribution:</p>
 <div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">countsBulk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span>
@@ -785,9 +789,9 @@ Workflow to build new context-specific deconvolution models
 <span class="op">)</span></code></pre></div>
 <p><img src="newModels_files/figure-html/resultsBarPlot_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
-<div id="save" class="section level3">
-<h3 class="hasAnchor">
-<a href="#save" class="anchor" aria-hidden="true"></a>Saving <code>DigitalDLSorter</code> object and trained models</h3>
+<div class="section level3">
+<h3 id="save">Saving <code>DigitalDLSorter</code> object and trained models<a class="anchor" aria-label="anchor" href="#save"></a>
+</h3>
 <p><strong>digitalDLSorteR</strong> provides different ways to save models to disk and to retrieve them in the <code>DigitalDLSorter</code> object. First, you can save <code>DigitalDLSorter</code> objects as RDS files. Since this type of files only accepts native R objects, they are not able to store complex data structures such as keras Python objects (<code>keras.engine.sequential.Sequential</code> class). To make it possible, <strong>digitalDLSorteR</strong> implements a <code>saveRDS</code> generic function that converts the keras model object into a list with the network architecture and the weights after training. These two pieces of information are the minimal part needed to perform new predictions. When the model is to be used, it is compiled back to a <code>keras.engine.sequential.Sequential</code> object.</p>
 <div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## this code will not be run</span>
@@ -798,9 +802,9 @@ Workflow to build new context-specific deconvolution models
 <span class="fu"><a href="../reference/saveTrainedModelAsH5.html">saveTrainedModelAsH5</a></span><span class="op">(</span><span class="va">DDLSToy</span>, file.path <span class="op">=</span> <span class="st">"valid/path"</span><span class="op">)</span>
 <span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadTrainedModelFromH5.html">loadTrainedModelFromH5</a></span><span class="op">(</span><span class="va">DDLSToy</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="references" class="section level2">
-<h2 class="hasAnchor">
-<a href="#references" class="anchor" aria-hidden="true"></a>References</h2>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <!-- ## Session info {.unnumbered} -->
 <!-- ```{r sessionInfo, echo=FALSE} -->
 <!-- sessionInfo() -->
@@ -830,7 +834,7 @@ Risso, D., F. Perraudeau, S. Gribkova, S. Dudoit, and J. P. Vert. 2018. <span>�
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.9000.9000.9000.</p>
 </div>
 
       </footer>

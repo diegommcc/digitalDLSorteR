@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
       </span>
     </div>
 
@@ -98,7 +98,7 @@
 
       
 
-      </header><script src="realModelExample_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Performance of a real model: deconvolution of colorectal cancer samples</h1>
@@ -112,9 +112,9 @@
     
     
 <p>In <a href="newModels.html">Building new deconvolution models</a> was shown the necessary workflow to build new deconvolution models. However, a ‘toy’ example was used in order to avoid long run times. In this vignette, the performance of a real model is shown in order to serve as a guide on how to assess whether a model has been trained correctly and can be used to deconvolute new bulk RNA-Seq samples.</p>
-<div id="loading-and-inspection-of-the-model" class="section level2">
-<h2 class="hasAnchor">
-<a href="#loading-and-inspection-of-the-model" class="anchor" aria-hidden="true"></a>Loading and inspection of the model</h2>
+<div class="section level2">
+<h2 id="loading-and-inspection-of-the-model">Loading and inspection of the model<a class="anchor" aria-label="anchor" href="#loading-and-inspection-of-the-model"></a>
+</h2>
 <p>The model to be shown has been built with data from <span class="citation">Li et al. (2017)</span> (<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861" class="external-link">GSE81861</a>), so it can be used to deconvolute samples from colorectal cancer. It is loaded from <strong>digitalDLSorteRdata</strong> package, and it is a <code>DigitalDLSorter</code> object with <code>prob.cell.matrix</code> and <code>trained.model</code> slots.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span><span class="op">)</span>
@@ -153,9 +153,9 @@
 <p>As shown above, the model was trained 30 epochs with a total of 20,000 pseudo-bulk samples (13,334 for training and 6,666 for testing). Now, evaluation metrics will be calculated by the <code>calculateEvalMetrics</code> function in test data to explore its performance in depth.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSLiComp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateEvalMetrics.html">calculateEvalMetrics</a></span><span class="op">(</span><span class="va">DDLSLiComp</span><span class="op">)</span></code></pre></div>
-<div id="how-errors-are-distributed" class="section level3">
-<h3 class="hasAnchor">
-<a href="#how-errors-are-distributed" class="anchor" aria-hidden="true"></a>How errors are distributed</h3>
+<div class="section level3">
+<h3 id="how-errors-are-distributed">How errors are distributed<a class="anchor" aria-label="anchor" href="#how-errors-are-distributed"></a>
+</h3>
 <p>With <code>distErrorPlot</code>, we can plot in different ways how errors are distributed. In this case, we can see the absolute error (<code>AbsErr</code>) by cell type (<code>CellType</code>). CD4 T cell proportions are predicted worse than the other cell types, but still have a median error close to zero.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
@@ -196,9 +196,9 @@
 <p><img src="distErr3_realModelExample-1.png" title="plot of chunk distErr3_realModelExample" alt="plot of chunk distErr3_realModelExample" style="display: block; margin: auto;"></p>
 <p>As can be seen, most of the failures in CD4 T cell proportions occurs at high proportions (between 0.5 and 1), and the mean absolute errors (<code>MAbsErr</code>) shown as annotations on each panel are very low in all the cases.</p>
 </div>
-<div id="correlation-between-actual-and-expected-proportions" class="section level3">
-<h3 class="hasAnchor">
-<a href="#correlation-between-actual-and-expected-proportions" class="anchor" aria-hidden="true"></a>Correlation between actual and expected proportions</h3>
+<div class="section level3">
+<h3 id="correlation-between-actual-and-expected-proportions">Correlation between actual and expected proportions<a class="anchor" aria-label="anchor" href="#correlation-between-actual-and-expected-proportions"></a>
+</h3>
 <p>Another way to visualize how the model works is to use the <code>corrExpPredPlot</code> function. Like <code>distErrorPlot</code>, we can see how the proportions are correlated by different variables. Here, we can see the same trend observed above: the model performs worse estimating CD4 T cell proportions with the lowest concordance correlation and Pearson’s coefficients (<span class="math inline">\(R = 0.95\)</span> and <span class="math inline">\(CCC = 0.794\)</span>, respectively). In fact, we can observe that the model tends to under-estimate these proportions, although these values are still good. For the rest of cell types, the results show a very good performance with high coefficients (between 0.97 and 0.99).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
@@ -233,9 +233,9 @@
 <pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
 <p><img src="corr3_realModelExample-1.png" title="plot of chunk corr3_realModelExample" alt="plot of chunk corr3_realModelExample" style="display: block; margin: auto;"></p>
 </div>
-<div id="bland-altman-agreement-plots" class="section level3">
-<h3 class="hasAnchor">
-<a href="#bland-altman-agreement-plots" class="anchor" aria-hidden="true"></a>Bland-Altman agreement plots</h3>
+<div class="section level3">
+<h3 id="bland-altman-agreement-plots">Bland-Altman agreement plots<a class="anchor" aria-label="anchor" href="#bland-altman-agreement-plots"></a>
+</h3>
 <p>The last way to graphically represent results is to use <code>blandAltmanLehPlot</code>. It generates a Bland-Altman agreement plot, a method for analyzing the level of agreement between two variables, in that case expected vs predicted cell proportions. As shown, most of the proportions fall close to zero (note the blue density lines) and the dashed red lines are very close to the mean, although we can observe again the aforementioned problem in the estimate of T CD4 cell proportions.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
@@ -260,9 +260,10 @@
 <p><img src="bland2_realModelExample-1.png" title="plot of chunk bland2_realModelExample" alt="plot of chunk bland2_realModelExample" style="display: block; margin: auto;"></p>
 </div>
 </div>
-<div id="digitaldlsorter-dealing-with-real-data-from-tcga-project" class="section level2">
-<h2 class="hasAnchor">
-<a href="#digitaldlsorter-dealing-with-real-data-from-tcga-project" class="anchor" aria-hidden="true"></a><strong>digitalDLSorteR</strong> dealing with real data from TCGA project</h2>
+<div class="section level2">
+<h2 id="digitaldlsorter-dealing-with-real-data-from-tcga-project">
+<strong>digitalDLSorteR</strong> dealing with real data from TCGA project<a class="anchor" aria-label="anchor" href="#digitaldlsorter-dealing-with-real-data-from-tcga-project"></a>
+</h2>
 <p>Now, to show the performance of this model on real data, colorectal cancer samples from The Cancer Genome Atlas (TCGA) project <span class="citation">(Koboldt et al. 2012; Ciriello et al. 2015)</span> will be used. This dataset consists of 521 samples and includes different subtypes of tumors and healthy samples.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.colon.se</span><span class="op">)</span>
@@ -323,9 +324,9 @@
 <p><img src="boxplotsTypes_realModelExample-1.png" title="plot of chunk boxplotsTypes_realModelExample" alt="plot of chunk boxplotsTypes_realModelExample" style="display: block; margin: auto;"></p>
 <p><strong>digitalDLSorteR</strong> correctly estimates the proportion of tumor cells (<code>CRC</code>) and epithelial/fibroblast cells (<code>Ep</code> and <code>Fb</code>) according to sample type. Further analysis can be performed to better understand and evaluate the performance of the model on these data (correlation analysis between estimated cell proportions, comparisons with other published tools, etc.).</p>
 </div>
-<div id="references" class="section level2 unnumbered">
-<h2 class="hasAnchor">
-<a href="#references" class="anchor" aria-hidden="true"></a>References</h2>
+<div class="section level2 unnumbered">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Ciriello2015" class="csl-entry">
 Ciriello, G., M. L. Gatza, A. H. Beck, M. D. Wilkerson, S. K. Rhie, A. Pastore, H. Zhang, et al. 2015. <span>“<span class="nocase"><span>C</span>omprehensive molecular portraits of invasive lobular breast cancer</span>.”</span> <em>Cell</em> 163 (2): 506–19.
@@ -357,7 +358,7 @@ Li, H., E. T. Courtois, D. Sengupta, Y. Tan, K. H. Chen, J. J. L. Goh, S. L. Kon
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.9000.9000.9000.</p>
 </div>
 
       </footer>

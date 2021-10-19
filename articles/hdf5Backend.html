@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
       </span>
     </div>
 
@@ -98,7 +98,7 @@
 
       
 
-      </header><script src="hdf5Backend_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>HDF5 files as back-end</h1>
@@ -121,9 +121,9 @@
 <code>simBulkProfiles</code>: this is the most delicate step where HDF5 files can be very useful. As <code>simSCProfiles</code>, this function is able to create the simulated pseudo-bulk profiles without loading all of them into RAM.</li>
 </ul>
 <p>To use this format, <strong>digitalDLSorteR</strong> uses mainly the <a href="https://bioconductor.org/packages/release/bioc/html/HDF5Array.html" class="external-link">HDF5Array</a> and <a href="https://bioconductor.org/packages/release/bioc/html/DelayedArray.html" class="external-link">DelayedArray</a> packages, although some functionalities have been implemented using directly <a href="https://www.bioconductor.org/packages/release/bioc/html/rhdf5.html" class="external-link">rhdf5</a>. For more information about these packages, we recommend their corresponding vignettes and this workshop by Peter Hickey: <a href="https://petehaitch.github.io/BioC2020_DelayedArray_workshop/articles/Effectively_using_the_DelayedArray_framework_for_users.html" class="external-link">Effectively using the DelayedArray framework to support the analysis of large datasets</a>.</p>
-<div id="general-usage" class="section level2">
-<h2 class="hasAnchor">
-<a href="#general-usage" class="anchor" aria-hidden="true"></a>General usage</h2>
+<div class="section level2">
+<h2 id="general-usage">General usage<a class="anchor" aria-label="anchor" href="#general-usage"></a>
+</h2>
 <p>In <a href="newModels.html">Building new deconvolution models</a>, some examples of its usage are shown. On the whole, the important parameters that must be considered are the following ones:</p>
 <ul>
 <li>
@@ -141,9 +141,9 @@
 </ul>
 <p>The simplest way to use it is by setting just the <code>file.backend</code> parameter as in the examples provided in <a href="newModels.html">Building new deconvolution models</a>.</p>
 </div>
-<div id="disclaimer" class="section level2">
-<h2 class="hasAnchor">
-<a href="#disclaimer" class="anchor" aria-hidden="true"></a>Disclaimer</h2>
+<div class="section level2">
+<h2 id="disclaimer">Disclaimer<a class="anchor" aria-label="anchor" href="#disclaimer"></a>
+</h2>
 <p>HDF5 files are a very useful tool that allows to work with large datasets that in other way would be impossible. However, it is important to keep in mind that runtimes can be longer when they are used, as to access data from RAM is always faster than from disk. Therefore, we recommend using this functionality only in the case of having very large datasets and limited computational resources. As the <a href="https://bioconductor.org/packages/release/bioc/html/HDF5Array.html" class="external-link">HDF5Array</a> and <a href="https://bioconductor.org/packages/release/bioc/html/DelayedArray.html" class="external-link">DelayedArray</a> authors point: <strong>If you can load your data into memory and still compute on it, then you’re always going to have a better time doing it that way</strong>.</p>
 </div>
   </div>
@@ -165,7 +165,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.9000.9000.9000.</p>
 </div>
 
       </footer>
