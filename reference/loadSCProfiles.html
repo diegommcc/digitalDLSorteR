@@ -37,7 +37,7 @@ any transformation (e.g. log-transformation) and raw counts are preferred."><met
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -74,7 +74,7 @@ any transformation (e.g. log-transformation) and raw counts are preferred."><met
   <a href="../reference/index.html">Functions</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/diegommcc/digitalDLSorteR">
+  <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -90,7 +90,7 @@ any transformation (e.g. log-transformation) and raw counts are preferred."><met
     <div class="page-header">
     <h1>Create a <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object from single-cell RNA-seq
 data</h1>
-    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/loadData.R"><code>R/loadData.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/loadData.R" class="external-link"><code>R/loadData.R</code></a></small>
     <div class="hidden name"><code>loadSCProfiles.Rd</code></div>
     </div>
 
@@ -115,7 +115,8 @@ and genes metadata in the <code>rowData</code>. The data must be provided withou
 any transformation (e.g. log-transformation) and raw counts are preferred.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="fu">loadSCProfiles</span><span class="op">(</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">loadSCProfiles</span><span class="op">(</span>
   <span class="va">single.cell.data</span>,
   <span class="va">cell.ID.column</span>,
   <span class="va">gene.ID.column</span>,
@@ -131,74 +132,74 @@ any transformation (e.g. log-transformation) and raw counts are preferred.</p>
   verbose <span class="op">=</span> <span class="cn">TRUE</span>,
   project <span class="op">=</span> <span class="st">"DigitalDLSorterProject"</span>
 <span class="op">)</span></code></pre></div>
+    </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <table class="ref-arguments"><colgroup><col class="name"><col class="desc"></colgroup><tr><th>single.cell.data</th>
-      <td><p>If data is provided from files,
+    <dl><dt>single.cell.data</dt>
+<dd><p>If data is provided from files,
 <code>single.cell.real</code> must be a vector of three elements: single-cell
 counts, cells metadata and genes metadata. If data is provided from a
 <code>SingleCellExperiment</code> object, single-cell counts must
 be present in the <code>assay</code> slot, cells metadata in the <code>colData</code>
-slot and genes metadata in the <code>rowData</code> slot.</p></td>
-    </tr><tr><th>cell.ID.column</th>
-      <td><p>Name or number of the column in the cells metadata
-corresponding to cell names in expression matrix.</p></td>
-    </tr><tr><th>gene.ID.column</th>
-      <td><p>Name or number of the column in the genes metadata
-corresponding to the names used for features/genes.</p></td>
-    </tr><tr><th>name.dataset.h5</th>
-      <td><p>Name of the data set if HDF5 file is provided.</p></td>
-    </tr><tr><th>min.counts</th>
-      <td><p>Minimum gene counts to filter (0 by default).</p></td>
-    </tr><tr><th>min.cells</th>
-      <td><p>Minimum of cells with more than <code>min.counts</code> (0 by
-default).</p></td>
-    </tr><tr><th>fun.aggregate</th>
-      <td><p>In case of duplicated genes, it is possible to set the
+slot and genes metadata in the <code>rowData</code> slot.</p></dd>
+<dt>cell.ID.column</dt>
+<dd><p>Name or number of the column in the cells metadata
+corresponding to cell names in expression matrix.</p></dd>
+<dt>gene.ID.column</dt>
+<dd><p>Name or number of the column in the genes metadata
+corresponding to the names used for features/genes.</p></dd>
+<dt>name.dataset.h5</dt>
+<dd><p>Name of the data set if HDF5 file is provided.</p></dd>
+<dt>min.counts</dt>
+<dd><p>Minimum gene counts to filter (0 by default).</p></dd>
+<dt>min.cells</dt>
+<dd><p>Minimum of cells with more than <code>min.counts</code> (0 by
+default).</p></dd>
+<dt>fun.aggregate</dt>
+<dd><p>In case of duplicated genes, it is possible to set the
 function used to aggregate them. Allowed functions: <code>'sum'</code>,
 <code>'mean'</code>, <code>'median'</code>. Note that this functionality only works
 when data are provided from an mtx file (sparse matrices) that allows
-duplicated rownames. Otherwise, R does not allow duplicated rownames.</p></td>
-    </tr><tr><th>file.backend</th>
-      <td><p>Valid file path where to store the loaded data as HDF5
+duplicated rownames. Otherwise, R does not allow duplicated rownames.</p></dd>
+<dt>file.backend</dt>
+<dd><p>Valid file path where to store the loaded data as HDF5
 file. If provided, data is stored in HDF5 files as back-end using
 <span class="pkg">DelayedArray</span> and <span class="pkg">HDF5Array</span> packages instead of being loaded
 into RAM. This is suitable for situations where you have large amounts of
 data that cannot be stored in memory. Note that operations on these data
 will be performed by blocks (i.e subsets of determined size), which may
-result in longer execution times. <code>NULL</code> by default.</p></td>
-    </tr><tr><th>name.dataset.backend</th>
-      <td><p>Name of the dataset of the HDF5 file to be used.
+result in longer execution times. <code>NULL</code> by default.</p></dd>
+<dt>name.dataset.backend</dt>
+<dd><p>Name of the dataset of the HDF5 file to be used.
 Note that it cannot exist. If <code>NULL</code> (by default), a random dataset
-name will be used.</p></td>
-    </tr><tr><th>compression.level</th>
-      <td><p>The compression level used if <code>file.backend</code> is
+name will be used.</p></dd>
+<dt>compression.level</dt>
+<dd><p>The compression level used if <code>file.backend</code> is
 provided. It is an integer value between 0 (no compression) and 9 (highest
 and slowest compression). See
-<code>?<a href="https://rdrr.io/pkg/HDF5Array/man/dump-management.html">getHDF5DumpCompressionLevel</a></code> from the
-<span class="pkg">HDF5Array</span> package for more information.</p></td>
-    </tr><tr><th>chunk.dims</th>
-      <td><p>Specifies dimensions that HDF5 chunk will have. If
+<code>?<a href="https://rdrr.io/pkg/HDF5Array/man/dump-management.html" class="external-link">getHDF5DumpCompressionLevel</a></code> from the
+<span class="pkg">HDF5Array</span> package for more information.</p></dd>
+<dt>chunk.dims</dt>
+<dd><p>Specifies dimensions that HDF5 chunk will have. If
 <code>NULL</code>, the default value is a vector of two items: the number of
 genes considered by <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object during the
 simulation, and only one sample in order to increase read times in the
 following steps. A larger number of columns written in each chunk may lead
-to longer read times.</p></td>
-    </tr><tr><th>block.processing</th>
-      <td><p>Boolean indicating whether data should be treated as
+to longer read times.</p></dd>
+<dt>block.processing</dt>
+<dd><p>Boolean indicating whether data should be treated as
 blocks (only if data is provided as HDF5 file). <code>FALSE</code> by default.
 Note that using this functionality is suitable for cases where is not
 possible to load the data into RAM and therefore execution times will be
-longer.</p></td>
-    </tr><tr><th>verbose</th>
-      <td><p>Show informative messages during the execution (<code>TRUE</code> by
-default).</p></td>
-    </tr><tr><th>project</th>
-      <td><p>Name of the project for <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code>
-object.</p></td>
-    </tr></table></div>
-
+longer.</p></dd>
+<dt>verbose</dt>
+<dd><p>Show informative messages during the execution (<code>TRUE</code> by
+default).</p></dd>
+<dt>project</dt>
+<dd><p>Name of the project for <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code>
+object.</p></dd>
+</dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>A <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with the single-cell
@@ -220,23 +221,23 @@ with known cell composition.</p>
 <code><a href="generateBulkCellMatrix.html">generateBulkCellMatrix</a></code></p></div>
     </div>
 
-    <div id="examples">
+    <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># reproducibility</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a></span><span class="op">(</span></span>
-<span class="r-in">  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
-<span class="r-in">    counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span></span>
-<span class="r-in">      <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span><span class="op">(</span><span class="fl">100</span>, lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">40</span>, ncol <span class="op">=</span> <span class="fl">30</span>,</span>
-<span class="r-in">      dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># reproducibility</span></span>
+<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span></span>
+<span class="r-in">  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span class="r-in">    counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
+<span class="r-in">      <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">100</span>, lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">40</span>, ncol <span class="op">=</span> <span class="fl">30</span>,</span>
+<span class="r-in">      dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">    Cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">    Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">30</span>,</span>
+<span class="r-in">  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span class="r-in">    Cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">    Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">30</span>,</span>
 <span class="r-in">                       replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in">  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span class="r-in">    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu">loadSCProfiles</span><span class="op">(</span></span>
@@ -262,7 +263,7 @@ with known cell composition.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

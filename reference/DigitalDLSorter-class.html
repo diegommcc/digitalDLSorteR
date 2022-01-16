@@ -22,7 +22,7 @@ and the package digitalDLSorteRdata."><meta property="og:image" content="/logo.p
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -59,7 +59,7 @@ and the package digitalDLSorteRdata."><meta property="og:image" content="/logo.p
   <a href="../reference/index.html">Functions</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/diegommcc/digitalDLSorteR">
+  <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -74,7 +74,7 @@ and the package digitalDLSorteRdata."><meta property="og:image" content="/logo.p
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>The DigitalDLSorter Class</h1>
-    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/AllClasses.R"><code>R/AllClasses.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/AllClasses.R" class="external-link"><code>R/AllClasses.R</code></a></small>
     <div class="hidden name"><code>DigitalDLSorter-class.Rd</code></div>
     </div>
 
@@ -86,7 +86,6 @@ in the case of building new deconvolution models. To deconvolute bulk samples
 using pre-trained models, see <code><a href="deconvDigitalDLSorter.html">deconvDigitalDLSorter</a></code> function
 and the package <span class="pkg">digitalDLSorteRdata</span>.</p>
     </div>
-
 
 
     <div id="details">
@@ -125,42 +124,62 @@ to save it as RDS or HDF5 files. Please see
     <h2>Slots</h2>
     
 
-<dl><dt><code>single.cell.real</code></dt><dd><p>Real single-cell data stored in a
+<dl><dt><code>single.cell.real</code></dt>
+<dd><p>Real single-cell data stored in a
 <code>SingleCellExperiment</code> object. The count matrix is stored as
 <code>dgCMatrix</code> or <code>HDF5Array</code> objects.</p></dd>
 
-<dt><code>zinb.params</code></dt><dd><p><code>ZINBParams</code> object with estimated
+
+<dt><code>zinb.params</code></dt>
+<dd><p><code>ZINBParams</code> object with estimated
 parameters for the simulation of new single-cell expression profiles.</p></dd>
 
-<dt><code>single.cell.simul</code></dt><dd><p>Simulated single-cell expression profiles from the
+
+<dt><code>single.cell.simul</code></dt>
+<dd><p>Simulated single-cell expression profiles from the
 ZINB-WaVE model.</p></dd>
 
-<dt><code>prob.cell.types</code></dt><dd><p><code><a href="ProbMatrixCellTypes-class.html">ProbMatrixCellTypes</a></code> class with
+
+<dt><code>prob.cell.types</code></dt>
+<dd><p><code><a href="ProbMatrixCellTypes-class.html">ProbMatrixCellTypes</a></code> class with
 cell composition matrices built for the simulation of pseudo-bulk RNA-Seq
 profiles with known cell composition.</p></dd>
 
-<dt><code>bulk.simul</code></dt><dd><p>A list of simulated train and test bulk RNA-Seq samples.
+
+<dt><code>bulk.simul</code></dt>
+<dd><p>A list of simulated train and test bulk RNA-Seq samples.
 Each entry is a <code>SummarizedExperiment</code> object. The count
 matrices can be stored as <code>HDF5Array</code> files using HDF5 files as
 back-end in case of RAM limitations.</p></dd>
 
-<dt><code>trained.model</code></dt><dd><p><code><a href="DigitalDLSorterDNN-class.html">DigitalDLSorterDNN</a></code> object with all
+
+<dt><code>trained.model</code></dt>
+<dd><p><code><a href="DigitalDLSorterDNN-class.html">DigitalDLSorterDNN</a></code> object with all
 the information related to the trained model. See
 <code>?<a href="DigitalDLSorterDNN-class.html">DigitalDLSorterDNN</a></code> for more details.</p></dd>
 
-<dt><code>deconv.data</code></dt><dd><p>List of <code>SummarizedExperiment</code> objects
+
+<dt><code>deconv.data</code></dt>
+<dd><p>List of <code>SummarizedExperiment</code> objects
 where it is possible to store new bulk RNA-Seq experiments for
 deconvolution. The name of the entries corresponds to the name of the data
 provided. See <code><a href="deconvDigitalDLSorterObj.html">deconvDigitalDLSorterObj</a></code> for details.</p></dd>
 
-<dt><code>deconv.results</code></dt><dd><p>Slot containing the deconvolution results of applying
+
+<dt><code>deconv.results</code></dt>
+<dd><p>Slot containing the deconvolution results of applying
 the deconvolution model to the data present in the
 <code><a href="deconv.data.html">deconv.data</a></code> slot. It is a list in which the names corresponds
 to the data from which they come.</p></dd>
 
-<dt><code>project</code></dt><dd><p>Name of the project.</p></dd>
 
-<dt><code>version</code></dt><dd><p>Version of DigitalDLSorteR this object was built under.</p></dd>
+<dt><code>project</code></dt>
+<dd><p>Name of the project.</p></dd>
+
+
+<dt><code>version</code></dt>
+<dd><p>Version of DigitalDLSorteR this object was built under.</p></dd>
+
 
 </dl></div>
 
@@ -176,7 +195,7 @@ to the data from which they come.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

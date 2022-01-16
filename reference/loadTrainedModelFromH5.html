@@ -21,7 +21,7 @@ valid trained model (keras object)."><meta property="og:image" content="/logo.pn
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -58,7 +58,7 @@ valid trained model (keras object)."><meta property="og:image" content="/logo.pn
   <a href="../reference/index.html">Functions</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/diegommcc/digitalDLSorteR">
+  <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -74,7 +74,7 @@ valid trained model (keras object)."><meta property="og:image" content="/logo.pn
     <div class="page-header">
     <h1>Load from an HDF5 file a trained Deep Neural Network model into a
 <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object</h1>
-    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/utils.R"><code>R/utils.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/utils.R" class="external-link"><code>R/utils.R</code></a></small>
     <div class="hidden name"><code>loadTrainedModelFromH5.Rd</code></div>
     </div>
 
@@ -84,25 +84,25 @@ valid trained model (keras object)."><meta property="og:image" content="/logo.pn
 valid trained model (<span class="pkg">keras</span> object).</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="fu">loadTrainedModelFromH5</span><span class="op">(</span><span class="va">object</span>, <span class="va">file.path</span>, reset.slot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">loadTrainedModelFromH5</span><span class="op">(</span><span class="va">object</span>, <span class="va">file.path</span>, reset.slot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <table class="ref-arguments"><colgroup><col class="name"><col class="desc"></colgroup><tr><th>object</th>
-      <td><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
-<code>trained.model</code> slot.</p></td>
-    </tr><tr><th>file.path</th>
-      <td><p>Valid file path where the model are stored.</p></td>
-    </tr><tr><th>reset.slot</th>
-      <td><p>Deletes <code>trained.slot</code> if it already exists. A new
+    <dl><dt>object</dt>
+<dd><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
+<code>trained.model</code> slot.</p></dd>
+<dt>file.path</dt>
+<dd><p>Valid file path where the model are stored.</p></dd>
+<dt>reset.slot</dt>
+<dd><p>Deletes <code>trained.slot</code> if it already exists. A new
 <code><a href="DigitalDLSorterDNN-class.html">DigitalDLSorterDNN</a></code> object will be formed, but will not
-contain other slots (<code>FALSE</code> by default).</p></td>
-    </tr></table></div>
-
+contain other slots (<code>FALSE</code> by default).</p></dd>
+</dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with <code>trained.model</code>
-slot with the new keras DNN model incorporated.</p>
+    <p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with <code>trained.model</code>slot with the new keras DNN model incorporated.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -122,7 +122,7 @@ slot with the new keras DNN model incorporated.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

@@ -24,7 +24,7 @@ but we recommend using this function."><meta property="og:image" content="/logo.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -61,7 +61,7 @@ but we recommend using this function."><meta property="og:image" content="/logo.
   <a href="../reference/index.html">Functions</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/diegommcc/digitalDLSorteR">
+  <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -76,7 +76,7 @@ but we recommend using this function."><meta property="og:image" content="/logo.
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Install Python dependencies for digitalDLSorteR</h1>
-    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/utils.R"><code>R/utils.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/utils.R" class="external-link"><code>R/utils.R</code></a></small>
     <div class="hidden name"><code>installTFpython.Rd</code></div>
     </div>
 
@@ -87,27 +87,28 @@ performed using the <span class="pkg">reticulate</span> package and the installe
 <span class="pkg">tensorflow</span> R package. The available options are virtual or conda
 environments. The new environment is called digitaldlsorter-env. In any case,
 this installation can be manually done as it is explained in
-<a href="https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html">https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html</a>,
+<a href="https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html" class="external-link">https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html</a>,
 but we recommend using this function.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="fu">installTFpython</span><span class="op">(</span>conda <span class="op">=</span> <span class="st">"auto"</span>, install.conda <span class="op">=</span> <span class="cn">FALSE</span>, miniconda.path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">installTFpython</span><span class="op">(</span>conda <span class="op">=</span> <span class="st">"auto"</span>, install.conda <span class="op">=</span> <span class="cn">FALSE</span>, miniconda.path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <table class="ref-arguments"><colgroup><col class="name"><col class="desc"></colgroup><tr><th>conda</th>
-      <td><p>Path to a conda executable. Use <code>"auto"</code> (by default)
-allows <span class="pkg">reticulate</span> to automatically find an appropriate conda binary.</p></td>
-    </tr><tr><th>install.conda</th>
-      <td><p>Boolean indicating if install miniconda automatically
+    <dl><dt>conda</dt>
+<dd><p>Path to a conda executable. Use <code>"auto"</code> (by default)
+allows <span class="pkg">reticulate</span> to automatically find an appropriate conda binary.</p></dd>
+<dt>install.conda</dt>
+<dd><p>Boolean indicating if install miniconda automatically
 using <span class="pkg">reticulate</span>. If <code>TRUE</code>, <code>conda</code> argument is ignored.
-<code>FALSE</code> by default.</p></td>
-    </tr><tr><th>miniconda.path</th>
-      <td><p>If <code>install.conda</code> is <code>TRUE</code>, you can set the
+<code>FALSE</code> by default.</p></dd>
+<dt>miniconda.path</dt>
+<dd><p>If <code>install.conda</code> is <code>TRUE</code>, you can set the
 path where miniconda will be installed. If <code>NULL</code>, conda will find
-automatically the proper place.</p></td>
-    </tr></table></div>
-
+automatically the proper place.</p></dd>
+</dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>No return value, called for side effects: installation of conda
@@ -119,12 +120,12 @@ environment with a Python interpreter and Tensorflow</p>
 needed to use <span class="pkg">digitalDLSorteR</span>. It will automatically install Miniconda
 (if wanted, see Parameters) and create an environment called
 'digitaldlsorter-env'. If you want to use other python/conda environment, see
-<code><a href="https://rdrr.io/pkg/reticulate/man/use_python.html">?tensorflow::use_condaenv</a></code> and/or the vignettes.</p>
+<code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">?tensorflow::use_condaenv</a></code> and/or the vignettes.</p>
     </div>
 
-    <div id="examples">
+    <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="va">notesInstallation</span> <span class="op">&lt;-</span> <span class="fu">installTFpython</span><span class="op">(</span></span>
 <span class="r-in">  method <span class="op">=</span> <span class="st">"auto"</span>, conda <span class="op">=</span> <span class="st">"auto"</span>, install.conda <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span class="r-in"><span class="op">)</span></span>
@@ -144,7 +145,7 @@ needed to use <span class="pkg">digitalDLSorteR</span>. It will automatically in
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

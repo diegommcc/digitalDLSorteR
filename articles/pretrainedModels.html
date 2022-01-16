@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -111,7 +111,7 @@
 
     
     
-<p><strong>digitalDLSorteR</strong> offers the possibility to use pre-trained context-specific deconvolution models included in <strong>digitalDLSorteRmodels</strong> package (<a href="https://github.com/diegommcc/digitalDLSorteRmodels" class="external-link uri">https://github.com/diegommcc/digitalDLSorteRmodels</a>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use <strong>digitalDLSorteR</strong> and only requires loading into R a raw bulk RNA-Seq matrix with genes as rows (annotated as <em>SYMBOL</em>) and samples as columns, and selecting the desired model. This is done by the <code>deconvDigitalDLSorter</code> function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. After the process, estimated cell composition of each sample can be explored as a bar chart using the <code>barPlotCellTypes</code> function (workflow summarized in the figure below).</p>
+<p><strong>digitalDLSorteR</strong> offers the possibility to use pre-trained context-specific deconvolution models included in <strong>digitalDLSorteRmodels</strong> package (<a href="https://github.com/diegommcc/digitalDLSorteRmodels" class="external-link uri">https://github.com/diegommcc/digitalDLSorteRmodels</a>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use <strong>digitalDLSorteR</strong> and only requires loading into R (a raw bulk RNA-Seq matrix with genes as rows (annotated as <em>SYMBOL</em>) and samples as columns) and selecting the desired model. This is done by the <code>deconvDigitalDLSorter</code> function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. Afterwards, estimated cell composition of each sample can be explored as a bar chart using the <code>barPlotCellTypes</code> function (workflow summarized in the figure below).</p>
 <p><img src="workflow_pretrained_models.png" title="**Workflow to use pre-trained models**" alt="**Workflow to use pre-trained models**" style="display: block; margin: auto;"></p>
 <!-- ![(#fig:workflow) Workflow to use pre-trained models](workflow_pretrained_models.png) -->
 <div class="section level2">
@@ -121,12 +121,12 @@
 <div class="section level3">
 <h3 id="breast-cancer-models">Breast cancer models<a class="anchor" aria-label="anchor" href="#breast-cancer-models"></a>
 </h3>
-<p>There are two different deconvolution models for breast cancer samples that differ in the level of specificity. Both have been trained using data from <span class="citation">Chung et al. (2017)</span> (<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688" class="external-link">GSE75688</a>).</p>
+<p>There are two deconvolution models for breast cancer samples that differ in the level of specificity. Both have been trained using data from <span class="citation">Chung et al. (2017)</span> (<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688" class="external-link">GSE75688</a>).</p>
 <ul>
 <li>
-<code>breast.chung.generic</code>: this model considers 13 cell types, four of them being the intrinsic molecular subtypes of breast cancer (<code>ER+</code>, <code>HER2+</code>, <code>ER+/HER2+</code> and <code>TNBC</code>) and the rest immune and stromal cells (<code>Stromal</code>, <code>Monocyte</code>, <code>TCD4mem</code> (memory CD4+ T cells), <code>BGC</code> (germinal center B cells), <code>Bmem</code> (memory B cells), <code>DC</code> (dendritic cells), <code>Macrophage</code>, <code>TCD8</code> (CD8+ T cells) and <code>TCD4reg</code> (regulatory CD4+ T cells)).</li>
+<code>breast.chung.generic</code>: it considers 13 cell types, four of them being the intrinsic molecular subtypes of breast cancer (<code>ER+</code>, <code>HER2+</code>, <code>ER+/HER2+</code> and <code>TNBC</code>) and the rest immune and stromal cells (<code>Stromal</code>, <code>Monocyte</code>, <code>TCD4mem</code> (memory CD4+ T cells), <code>BGC</code> (germinal center B cells), <code>Bmem</code> (memory B cells), <code>DC</code> (dendritic cells), <code>Macrophage</code>, <code>TCD8</code> (CD8+ T cells) and <code>TCD4reg</code> (regulatory CD4+ T cells)).</li>
 <li>
-<code>breast.chung.generic</code>: this model considers 7 cell types, being generic groups of the cell types considered by the specific version: B cells (<code>Bcell</code>), T CD4+ cells (<code>TcellCD4</code>), T CD8+ cells (<code>TcellCD8</code>), monocytes (<code>Monocyte</code>), dendritic cells (<code>DCs</code>), stromal cells (<code>Stromal</code>) and tumor cells (<code>Tumor</code>).</li>
+<code>breast.chung.generic</code>: this model considers 7 cell types that are generic groups of the cell types considered by the specific version: B cells (<code>Bcell</code>), T CD4+ cells (<code>TcellCD4</code>), T CD8+ cells (<code>TcellCD8</code>), monocytes (<code>Monocyte</code>), dendritic cells (<code>DCs</code>), stromal cells (<code>Stromal</code>) and tumor cells (<code>Tumor</code>).</li>
 </ul>
 </div>
 <div class="section level3">
@@ -162,24 +162,24 @@
 <span class="co"># loading model and example data from digitalDLSorteRdata</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">breast.chung.generic</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.breast.small</span><span class="op">)</span></code></pre></div>
-<p><code>breast.chung.generic</code> is a DigitalDLSorterDNN-like list (list with the same structure as a <code>DigitalDLSorterDNN</code> object) that can be inspected to check which cell types are considered by the model, how well it performed on test data, etc. As the <strong>digitalDLSorteRmodels</strong> package stores all these objects as DigitalDLSorterDNN-like lists in order to remove its dependency on <strong>digitalDLSorteR</strong>, if you want to inspect the models you have to transform these lists into actual <code>DigitalDLSorterDNN</code> objects. This is done with the <code>listToDDLSDNN</code> function.</p>
+<p><code>breast.chung.generic</code> is a DigitalDLSorterDNN-like list (list with the same structure as a <code>DigitalDLSorterDNN</code> object) that can be inspected to check which cell types are considered by the model, how well it performed on test data, etc. As the <strong>digitalDLSorteRmodels</strong> package stores all these objects as DigitalDLSorterDNN-like lists in order to remove its dependency on <strong>digitalDLSorteR</strong>, you have to transform these lists into actual <code>DigitalDLSorterDNN</code> objects if you want to inspect the models. This is done with the <code>listToDDLSDNN</code> function.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">breast.chung.generic</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/listToDDLSDNN.html">listToDDLSDNN</a></span><span class="op">(</span><span class="va">breast.chung.generic</span><span class="op">)</span>
 <span class="va">breast.chung.generic</span></code></pre></div>
-<pre><code>## Trained model: 20 epochs
-##   Training metrics (last epoch):
-##     loss: 0.0222
-##     accuracy: 0.9051
-##     mean_absolute_error: 0.0186
-##     categorical_accuracy: 0.9051
-##   Evaluation metrics on test data:
-##     loss: 0.0154
-##     accuracy: 0.9629
-##     mean_absolute_error: 0.0112
-##     categorical_accuracy: 0.9629</code></pre>
+<pre><code><span class="co">## Trained model: 20 epochs</span>
+<span class="co">##   Training metrics (last epoch):</span>
+<span class="co">##     loss: 0.0222</span>
+<span class="co">##     accuracy: 0.9051</span>
+<span class="co">##     mean_absolute_error: 0.0186</span>
+<span class="co">##     categorical_accuracy: 0.9051</span>
+<span class="co">##   Evaluation metrics on test data:</span>
+<span class="co">##     loss: 0.0154</span>
+<span class="co">##     accuracy: 0.9629</span>
+<span class="co">##     mean_absolute_error: 0.0112</span>
+<span class="co">##     categorical_accuracy: 0.9629</span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/cell.types.html">cell.types</a></span><span class="op">(</span><span class="va">breast.chung.generic</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "Tumor"    "Stromal"  "Monocyte" "TcellCD4" "Bcell"    "DCs"      "TcellCD8"</code></pre>
+<pre><code><span class="co">## [1] "Tumor"    "Stromal"  "Monocyte" "TcellCD4" "Bcell"    "DCs"      "TcellCD8"</span></code></pre>
 <p>Now, we can use it to deconvolute <code>TCGA.breast.small</code> samples as follows:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># deconvolution</span>
@@ -188,21 +188,21 @@
   model <span class="op">=</span> <span class="va">breast.chung.generic</span>,
   normalize <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
-<pre><code>## === Filtering 32876 features in data that are not present in trained model</code></pre>
-<pre><code>## === Setting 11305 features that are not present in trained model to zero</code></pre>
-<pre><code>## === Normalizing data</code></pre>
-<pre><code>## === Predicting cell types present in the provided samples</code></pre>
-<pre><code>## DONE</code></pre>
+<pre><code><span class="co">## === Filtering 32876 features in data that are not present in trained model</span></code></pre>
+<pre><code><span class="co">## === Setting 11305 features that are not present in trained model to zero</span></code></pre>
+<pre><code><span class="co">## === Normalizing data</span></code></pre>
+<pre><code><span class="co">## === Predicting cell types present in the provided samples</span></code></pre>
+<pre><code><span class="co">## DONE</span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span></code></pre></div>
-<pre><code>##              Tumor     Stromal   Monocyte     TcellCD4        Bcell       DCs   TcellCD8
-## Sample_1 0.5716878 0.009549672 0.02705323 0.0009312485 2.085090e-05 0.2735238 0.11723338
-## Sample_2 0.4737065 0.015726041 0.01532314 0.0008934758 1.881223e-05 0.3624099 0.13192214
-## Sample_3 0.5632827 0.011810658 0.02118549 0.0009122477 2.213673e-05 0.3083327 0.09445395
-## Sample_4 0.4798905 0.013469697 0.01989893 0.0007664507 4.999202e-05 0.3453780 0.14054649
-## Sample_5 0.6283218 0.015287977 0.07622542 0.0022742257 3.257442e-06 0.1749347 0.10295264
-## Sample_6 0.4960882 0.015261916 0.02924263 0.0010657815 1.409765e-05 0.3112173 0.14710997</code></pre>
+<pre><code><span class="co">##              Tumor     Stromal   Monocyte     TcellCD4        Bcell       DCs   TcellCD8</span>
+<span class="co">## Sample_1 0.5716878 0.009549672 0.02705323 0.0009312485 2.085090e-05 0.2735238 0.11723338</span>
+<span class="co">## Sample_2 0.4737065 0.015726041 0.01532314 0.0008934758 1.881223e-05 0.3624099 0.13192214</span>
+<span class="co">## Sample_3 0.5632827 0.011810658 0.02118549 0.0009122477 2.213673e-05 0.3083327 0.09445395</span>
+<span class="co">## Sample_4 0.4798905 0.013469697 0.01989893 0.0007664507 4.999202e-05 0.3453780 0.14054649</span>
+<span class="co">## Sample_5 0.6283218 0.015287977 0.07622542 0.0022742257 3.257442e-06 0.1749347 0.10295264</span>
+<span class="co">## Sample_6 0.4960882 0.015261916 0.02924263 0.0010657815 1.409765e-05 0.3112173 0.14710997</span></code></pre>
 <p><code>deconvDigitalDLSorter</code> returns a data frame with the samples as rows (<span class="math inline">\(k\)</span>) and the cell types considered by the model as columns (<span class="math inline">\(j\)</span>). Each entry corresponds to the proportion of cell type <span class="math inline">\(k\)</span> in sample <span class="math inline">\(i\)</span>. To visually evaluate these results using a bar chart, you can use the <code>barplotCellTypes</code> function as follows:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span>
@@ -220,11 +220,11 @@
   normalize <span class="op">=</span> <span class="cn">TRUE</span>,
   simplify.set <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>MPS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DCs"</span>, <span class="st">"Monocyte"</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
-<pre><code>## === Filtering 32876 features in data that are not present in trained model</code></pre>
-<pre><code>## === Setting 11305 features that are not present in trained model to zero</code></pre>
-<pre><code>## === Normalizing data</code></pre>
-<pre><code>## === Predicting cell types present in the provided samples</code></pre>
-<pre><code>## DONE</code></pre>
+<pre><code><span class="co">## === Filtering 32876 features in data that are not present in trained model</span></code></pre>
+<pre><code><span class="co">## === Setting 11305 features that are not present in trained model to zero</span></code></pre>
+<pre><code><span class="co">## === Normalizing data</span></code></pre>
+<pre><code><span class="co">## === Predicting cell types present in the provided samples</span></code></pre>
+<pre><code><span class="co">## DONE</span></code></pre>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">deconvResultsSum</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span>
 <span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span>
@@ -239,7 +239,7 @@
 <div class="section level2">
 <h2 id="contribute-your-own-models">Contribute your own models<a class="anchor" aria-label="anchor" href="#contribute-your-own-models"></a>
 </h2>
-<p>New models are planned to be published soon, but you can contribute your own models by making them available to other users. Please do not hesitate to contact us! We’ll check the models and include them in the <strong>digitalDLSorteRmodels</strong> package.</p>
+<p>New models are planned to be published soon, but you can contribute your own models by making them available to other users. Please do not hesitate to contact us! We will check the models and include them in the <strong>digitalDLSorteRmodels</strong> package.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -277,12 +277,12 @@ Li, H., E. T. Courtois, D. Sengupta, Y. Tan, K. H. Chen, J. J. L. Goh, S. L. Kon
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="https://github.com/diegommcc" class="external-link external-link">Diego Mañanes</a>, <a href="https://www.cnic.es/en/carlos-torroja" class="external-link external-link">Carlos Torroja</a>, <a href="https://www.cnic.es/en/fatima-sanchez-cabo" class="external-link external-link">Fatima Sanchez-Cabo</a>.</p>
+<p>Developed by <a href="https://github.com/diegommcc" class="external-link">Diego Mañanes</a>, <a href="https://www.cnic.es/en/carlos-torroja" class="external-link">Carlos Torroja</a>, <a href="https://www.cnic.es/en/fatima-sanchez-cabo" class="external-link">Fatima Sanchez-Cabo</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.9000.9000.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer>

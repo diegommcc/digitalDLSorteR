@@ -24,7 +24,7 @@ pseudo-bulk profiles at the same time as the training/evaluation is performed
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -61,7 +61,7 @@ pseudo-bulk profiles at the same time as the training/evaluation is performed
   <a href="../reference/index.html">Functions</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/diegommcc/digitalDLSorteR">
+  <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -76,7 +76,7 @@ pseudo-bulk profiles at the same time as the training/evaluation is performed
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Train Deep Neural Network model</h1>
-    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/dnnModel.R"><code>R/dnnModel.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/dnnModel.R" class="external-link"><code>R/dnnModel.R</code></a></small>
     <div class="hidden name"><code>trainDigitalDLSorterModel.Rd</code></div>
     </div>
 
@@ -91,95 +91,115 @@ pseudo-bulk profiles at the same time as the training/evaluation is performed
 (see Details).</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="fu">trainDigitalDLSorterModel</span><span class="op">(</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">trainDigitalDLSorterModel</span><span class="op">(</span>
   <span class="va">object</span>,
-  on.the.fly <span class="op">=</span> <span class="cn">FALSE</span>,
   combine <span class="op">=</span> <span class="st">"both"</span>,
   batch.size <span class="op">=</span> <span class="fl">64</span>,
   num.epochs <span class="op">=</span> <span class="fl">10</span>,
   num.hidden.layers <span class="op">=</span> <span class="fl">2</span>,
-  num.units <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,
+  num.units <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,
   activation.fun <span class="op">=</span> <span class="st">"relu"</span>,
   dropout.rate <span class="op">=</span> <span class="fl">0.25</span>,
   loss <span class="op">=</span> <span class="st">"kullback_leibler_divergence"</span>,
-  metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"accuracy"</span>, <span class="st">"mean_absolute_error"</span>, <span class="st">"categorical_accuracy"</span><span class="op">)</span>,
+  metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"accuracy"</span>, <span class="st">"mean_absolute_error"</span>, <span class="st">"categorical_accuracy"</span><span class="op">)</span>,
+  scaling <span class="op">=</span> <span class="st">"standarize"</span>,
   custom.model <span class="op">=</span> <span class="cn">NULL</span>,
   shuffle <span class="op">=</span> <span class="cn">FALSE</span>,
+  on.the.fly <span class="op">=</span> <span class="cn">FALSE</span>,
+  pseudobulk.function <span class="op">=</span> <span class="st">"MeanCPM"</span>,
   threads <span class="op">=</span> <span class="fl">1</span>,
   view.metrics.plot <span class="op">=</span> <span class="cn">TRUE</span>,
   verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
+    </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <table class="ref-arguments"><colgroup><col class="name"><col class="desc"></colgroup><tr><th>object</th>
-      <td><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
+    <dl><dt>object</dt>
+<dd><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
 <code>single.cell.real</code>/<code>single.cell.simul</code>, <code>prob.cell.matrix</code>
-and <code>bulk.simul</code> slots.</p></td>
-    </tr><tr><th>on.the.fly</th>
-      <td><p>Boolean indicating whether data will be generated 'on the
-fly' during training (<code>FALSE</code> by default).</p></td>
-    </tr><tr><th>combine</th>
-      <td><p>Type of profiles to be used for training. Can be
+and <code>bulk.simul</code> slots.</p></dd>
+<dt>combine</dt>
+<dd><p>Type of profiles to be used for training. Can be
 <code>'both'</code>, <code>'single-cell'</code> or <code>'bulk'</code> (<code>'both'</code> by
-default). For test data, both types of profiles will be used.</p></td>
-    </tr><tr><th>batch.size</th>
-      <td><p>Number of samples per gradient update. If not specified,
-<code>batch.size</code> will default to 64.</p></td>
-    </tr><tr><th>num.epochs</th>
-      <td><p>Number of epochs to train the model (10 by default).</p></td>
-    </tr><tr><th>num.hidden.layers</th>
-      <td><p>Number of hidden layers of the neural network (2 by
+default). For test data, both types of profiles will be used.</p></dd>
+<dt>batch.size</dt>
+<dd><p>Number of samples per gradient update. If not specified,
+<code>batch.size</code> will default to 64.</p></dd>
+<dt>num.epochs</dt>
+<dd><p>Number of epochs to train the model (10 by default).</p></dd>
+<dt>num.hidden.layers</dt>
+<dd><p>Number of hidden layers of the neural network (2 by
 default). This number must be equal to the length of <code>num.units</code>
-argument.</p></td>
-    </tr><tr><th>num.units</th>
-      <td><p>Vector indicating the number of neurons per hidden layer
+argument.</p></dd>
+<dt>num.units</dt>
+<dd><p>Vector indicating the number of neurons per hidden layer
 (<code>c(200, 200)</code> by default). The length of this vector must be equal to
-<code>num.hidden.layers</code> argument.</p></td>
-    </tr><tr><th>activation.fun</th>
-      <td><p>Activation function to use (<code>'relu'</code> by default).
+<code>num.hidden.layers</code> argument.</p></dd>
+<dt>activation.fun</dt>
+<dd><p>Activation function to use (<code>'relu'</code> by default).
 See the
-<a href="https://keras.rstudio.com/reference/activation_relu.html">keras
-documentation</a> to know available activation functions.</p></td>
-    </tr><tr><th>dropout.rate</th>
-      <td><p>Float between 0 and 1 indicating the fraction of the
+<a href="https://keras.rstudio.com/reference/activation_relu.html" class="external-link">keras
+documentation</a> to know available activation functions.</p></dd>
+<dt>dropout.rate</dt>
+<dd><p>Float between 0 and 1 indicating the fraction of the
 input neurons to drop in layer dropouts (0.25 by default). By default,
-<span class="pkg">digitalDLSorteR</span> implements 1 dropout layer per hidden layer.</p></td>
-    </tr><tr><th>loss</th>
-      <td><p>Character indicating loss function selected for model training
+<span class="pkg">digitalDLSorteR</span> implements 1 dropout layer per hidden layer.</p></dd>
+<dt>loss</dt>
+<dd><p>Character indicating loss function selected for model training
 (<code>'kullback_leibler_divergence'</code> by default). See the
-<a href="https://keras.rstudio.com/reference/loss_mean_squared_error.html">keras
-documentation</a> to know available loss functions.</p></td>
-    </tr><tr><th>metrics</th>
-      <td><p>Vector of metrics used to assess model performance during
+<a href="https://keras.rstudio.com/reference/loss_mean_squared_error.html" class="external-link">keras
+documentation</a> to know available loss functions.</p></dd>
+<dt>metrics</dt>
+<dd><p>Vector of metrics used to assess model performance during
 training and evaluation (<code>c("accuracy", "mean_absolute_error",
   "categorical_accuracy")</code> by default). See the
-<a href="https://keras.rstudio.com/reference/metric_binary_accuracy.html">keras
-documentation</a> to know available performance metrics.</p></td>
-    </tr><tr><th>custom.model</th>
-      <td><p>Allows to use a custom neural network. It must be a
+<a href="https://keras.rstudio.com/reference/metric_binary_accuracy.html" class="external-link">keras
+documentation</a> to know available performance metrics.</p></dd>
+<dt>scaling</dt>
+<dd><p>How to scale data before training. It may be:
+<code>"standarize"</code> (values are centered around the mean with a unit
+standard deviation) or <code>"rescale"</code> (values are shifted and rescaled so
+that they end up ranging between 0 and 1).</p></dd>
+<dt>custom.model</dt>
+<dd><p>Allows to use a custom neural network. It must be a
 <code>keras.engine.sequential.Sequential</code> object in which the number of
 input neurons is equal to the number of considered features/genes, and the
 number of output neurons is equal to the number of cell types considered
 (<code>NULL</code> by default). If provided, the arguments related to the neural
-network architecture will be ignored.</p></td>
-    </tr><tr><th>shuffle</th>
-      <td><p>Boolean indicating whether data will be shuffled (<code>TRUE</code>
+network architecture will be ignored.</p></dd>
+<dt>shuffle</dt>
+<dd><p>Boolean indicating whether data will be shuffled (<code>TRUE</code>
 by default). Note that if <code>bulk.simul</code> is not <code>NULL</code>, the data
-already has been shuffled and <code>shuffle</code> will be ignored.</p></td>
-    </tr><tr><th>threads</th>
-      <td><p>Number of threads used during simulation of pseudo-bulk
-samples if <code>on.the.fly = TRUE</code> (1 by default).</p></td>
-    </tr><tr><th>view.metrics.plot</th>
-      <td><p>Boolean indicating whether to show plots of loss and
+already has been shuffled and <code>shuffle</code> will be ignored.</p></dd>
+<dt>on.the.fly</dt>
+<dd><p>Boolean indicating whether data will be generated 'on the
+fly' during training (<code>FALSE</code> by default).</p></dd>
+<dt>pseudobulk.function</dt>
+<dd><p>Function used to build pseudo-bulk samples. It may
+be:</p><ul><li><p><code>"MeanCPM"</code>: single-cell profiles (raw counts) are
+transformed into CPMs and cross-cell averages are calculated. Then,
+<code>log2(CPM + 1)</code> is calculated.</p></li>
+<li><p><code>"AddCPM"</code>: single-cell
+profiles (raw counts) are transformed into CPMs and are added up across
+cells. Then, log-CPMs are calculated.</p></li>
+<li><p><code>"AddRawCount"</code>:
+single-cell profiles (raw counts) are added up across cells. Then, log-CPMs
+are calculated.</p></li>
+</ul></dd>
+<dt>threads</dt>
+<dd><p>Number of threads used during simulation of pseudo-bulk
+samples if <code>on.the.fly = TRUE</code> (1 by default).</p></dd>
+<dt>view.metrics.plot</dt>
+<dd><p>Boolean indicating whether to show plots of loss and
 metrics progression during training (<code>TRUE</code> by default). <span class="pkg">keras</span>
 for R allows to see the progression of the model during training if you are
-working in RStudio.</p></td>
-    </tr><tr><th>verbose</th>
-      <td><p>Boolean indicating whether to display model progression during
-training and model architecture information (<code>TRUE</code> by default).</p></td>
-    </tr></table></div>
-
+working in RStudio.</p></dd>
+<dt>verbose</dt>
+<dd><p>Boolean indicating whether to display model progression during
+training and model architecture information (<code>TRUE</code> by default).</p></dd>
+</dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>A <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
@@ -193,7 +213,7 @@ the structure of this class, see <code>?<a href="DigitalDLSorterDNN-class.html">
 <p>All Deep Learning related steps in the <span class="pkg">digitalDLSorteR</span> package are
 performed by using the <span class="pkg">keras</span> package, an API in R for <span class="pkg">keras</span> in
 Python available on CRAN. We recommend using the installation guide available
-at <a href="https://keras.rstudio.com/">https://keras.rstudio.com/</a> in order to set a more customized
+at <a href="https://keras.rstudio.com/" class="external-link">https://keras.rstudio.com/</a> in order to set a more customized
 configuration.</p>
 <p><strong>Simulation of bulk RNA-Seq profiles 'on the fly'</strong></p>
 <p><code>trainDigitalDLSorterModel</code> allows to avoid storing bulk RNA-Seq
@@ -218,7 +238,7 @@ considered cell types.</p>
     <h2>References</h2>
     <p>Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 Learning algorithm to quantify immune cell populations based on scRNA-Seq
-data. Frontiers in Genetics 10, 978. doi: doi: <a href="https://doi.org/10.3389/fgene.2019.00978">10.3389/fgene.2019.00978</a></p>
+data. Frontiers in Genetics 10, 978. doi: doi: <a href="https://doi.org/10.3389/fgene.2019.00978" class="external-link">10.3389/fgene.2019.00978</a></p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -226,24 +246,24 @@ data. Frontiers in Genetics 10, 978. doi: doi: <a href="https://doi.org/10.3389/
 <code><a href="deconvDigitalDLSorter.html">deconvDigitalDLSorter</a></code> <code><a href="deconvDigitalDLSorterObj.html">deconvDigitalDLSorterObj</a></code></p></div>
     </div>
 
-    <div id="examples">
+    <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># reproducibility</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a></span><span class="op">(</span></span>
-<span class="r-in">  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
-<span class="r-in">    counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span></span>
-<span class="r-in">      <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span><span class="op">(</span><span class="fl">30</span>, lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">15</span>, ncol <span class="op">=</span> <span class="fl">10</span>,</span>
-<span class="r-in">      dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># reproducibility</span></span>
+<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span></span>
+<span class="r-in">  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span class="r-in">    counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
+<span class="r-in">      <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">30</span>, lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">15</span>, ncol <span class="op">=</span> <span class="fl">10</span>,</span>
+<span class="r-in">      dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">    Cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">    Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">10</span>,</span>
+<span class="r-in">  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span class="r-in">    Cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">    Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">10</span>,</span>
 <span class="r-in">                       replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in">  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span class="r-in">    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span></span>
@@ -251,10 +271,10 @@ data. Frontiers in Genetics 10, 978. doi: doi: <a href="https://doi.org/10.3389/
 <span class="r-in">  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
 <span class="r-in">  gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">probMatrixValid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">30</span><span class="op">)</span>,</span>
-<span class="r-in">  to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">70</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">probMatrixValid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span class="r-in">  Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">30</span><span class="op">)</span>,</span>
+<span class="r-in">  to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">70</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="generateBulkCellMatrix.html">generateBulkCellMatrix</a></span><span class="op">(</span></span>
 <span class="r-in">  object <span class="op">=</span> <span class="va">DDLS</span>,</span>
@@ -265,7 +285,7 @@ data. Frontiers in Genetics 10, 978. doi: doi: <a href="https://doi.org/10.3389/
 <span class="r-in">  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"><span class="co"># training of DDLS model</span></span>
-<span class="r-in"><span class="fu">tensorflow</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/tensorflow/man/tf.html">tf</a></span><span class="op">$</span><span class="va">compat</span><span class="op">$</span><span class="va">v1</span><span class="op">$</span><span class="fu">disable_eager_execution</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">tensorflow</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/tensorflow/man/tf.html" class="external-link">tf</a></span><span class="op">$</span><span class="va">compat</span><span class="op">$</span><span class="va">v1</span><span class="op">$</span><span class="fu">disable_eager_execution</span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu">trainDigitalDLSorterModel</span><span class="op">(</span></span>
 <span class="r-in">  object <span class="op">=</span> <span class="va">DDLS</span>,</span>
 <span class="r-in">  on.the.fly <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -288,7 +308,7 @@ data. Frontiers in Genetics 10, 978. doi: doi: <a href="https://doi.org/10.3389/
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

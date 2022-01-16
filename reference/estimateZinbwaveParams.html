@@ -26,7 +26,7 @@ profiles. See ?simSCProfiles for more information."><meta property="og:image" co
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -63,7 +63,7 @@ profiles. See ?simSCProfiles for more information."><meta property="og:image" co
   <a href="../reference/index.html">Functions</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/diegommcc/digitalDLSorteR">
+  <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -79,7 +79,7 @@ profiles. See ?simSCProfiles for more information."><meta property="og:image" co
     <div class="page-header">
     <h1>Estimate the parameters of the ZINB-WaVE model to simulate new single-cell
 RNA-Seq expression profiles</h1>
-    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/simSingleCell.R"><code>R/simSingleCell.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/simSingleCell.R" class="external-link"><code>R/simSingleCell.R</code></a></small>
     <div class="hidden name"><code>estimateZinbwaveParams.Rd</code></div>
     </div>
 
@@ -94,7 +94,8 @@ function will use the estimated parameters to simulate new single-cell
 profiles. See <code>?<a href="simSCProfiles.html">simSCProfiles</a></code> for more information.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="fu">estimateZinbwaveParams</span><span class="op">(</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">estimateZinbwaveParams</span><span class="op">(</span>
   <span class="va">object</span>,
   <span class="va">cell.type.column</span>,
   <span class="va">cell.ID.column</span>,
@@ -107,59 +108,58 @@ profiles. See <code>?<a href="simSCProfiles.html">simSCProfiles</a></code> for m
   threads <span class="op">=</span> <span class="fl">1</span>,
   verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
+    </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <table class="ref-arguments"><colgroup><col class="name"><col class="desc"></colgroup><tr><th>object</th>
-      <td><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with a
-<code>single.cell.real</code> slot.</p></td>
-    </tr><tr><th>cell.type.column</th>
-      <td><p>Name or column number corresponding to the cell type
-of each cell in cells metadata.</p></td>
-    </tr><tr><th>cell.ID.column</th>
-      <td><p>Name or column number corresponding to the cell names
-of expression matrix in cells metadata.</p></td>
-    </tr><tr><th>gene.ID.column</th>
-      <td><p>Name or column number corresponding to the notation
-used for features/genes in genes metadata.</p></td>
-    </tr><tr><th>cell.cov.columns</th>
-      <td><p>Name or column number(s) in cells metadata to be used
+    <dl><dt>object</dt>
+<dd><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with a
+<code>single.cell.real</code> slot.</p></dd>
+<dt>cell.type.column</dt>
+<dd><p>Name or column number corresponding to the cell type
+of each cell in cells metadata.</p></dd>
+<dt>cell.ID.column</dt>
+<dd><p>Name or column number corresponding to the cell names
+of expression matrix in cells metadata.</p></dd>
+<dt>gene.ID.column</dt>
+<dd><p>Name or column number corresponding to the notation
+used for features/genes in genes metadata.</p></dd>
+<dt>cell.cov.columns</dt>
+<dd><p>Name or column number(s) in cells metadata to be used
 as covariates during model fitting (if no covariates are used, set to empty
-or <code>NULL</code>).</p></td>
-    </tr><tr><th>gene.cov.columns</th>
-      <td><p>Name or column number(s) in genes metadata that will
+or <code>NULL</code>).</p></dd>
+<dt>gene.cov.columns</dt>
+<dd><p>Name or column number(s) in genes metadata that will
 be used as covariates during model fitting (if no covariates are used, set
-to empty or <code>NULL</code>).</p></td>
-    </tr><tr><th>subset.cells</th>
-      <td><p>Number of cells to fit the ZINB-WaVE model. Useful when
+to empty or <code>NULL</code>).</p></dd>
+<dt>subset.cells</dt>
+<dd><p>Number of cells to fit the ZINB-WaVE model. Useful when
 the original data set is too large to fit the model. Set a value according
 to the original data set and the resources available on your computer. If
 <code>NULL</code> (by default), all cells will be used. Must be an integer
 greater than or equal to the number of cell types considered and less than
-or equal to the total number of cells.</p></td>
-    </tr><tr><th>proportional</th>
-      <td><p>If <code>TRUE</code>, the original cell type proportions in the
+or equal to the total number of cells.</p></dd>
+<dt>proportional</dt>
+<dd><p>If <code>TRUE</code>, the original cell type proportions in the
 subset of cells generated by <code>subset.cells</code> will not be altered as far
 as possible. If <code>FALSE</code>, all cell types will have the same number of
-cells as far as possible (<code>TRUE</code> by default).</p></td>
-    </tr><tr><th>set.type</th>
-      <td><p>Cell type(s) to evaluate (<code>'All'</code> by default). It is
+cells as far as possible (<code>TRUE</code> by default).</p></dd>
+<dt>set.type</dt>
+<dd><p>Cell type(s) to evaluate (<code>'All'</code> by default). It is
 recommended fitting the model to all cell types rather than using only a
 subset of them to capture the total variability present in the original
-experiment even if only a subset of cell types is simulated.</p></td>
-    </tr><tr><th>threads</th>
-      <td><p>Number of threads used for estimation (1 by default). To set
+experiment even if only a subset of cell types is simulated.</p></dd>
+<dt>threads</dt>
+<dd><p>Number of threads used for estimation (1 by default). To set
 up the parallel environment, the <span class="pkg">BiocParallel</span> package must be
-installed.</p></td>
-    </tr><tr><th>verbose</th>
-      <td><p>Show informative messages during the execution (<code>TRUE</code> by
-default).</p></td>
-    </tr></table></div>
-
+installed.</p></dd>
+<dt>verbose</dt>
+<dd><p>Show informative messages during the execution (<code>TRUE</code> by
+default).</p></dd>
+</dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with <code>zinb.params</code>
-slot containing a <code>ZINBParams</code> object. This object
+    <p>A <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with <code>zinb.params</code>slot containing a <code>ZINBParams</code> object. This object
 contains the estimated ZINB-WaVE parameters from the real single-cell
 RNA-Se`q data.</p>
     </div>
@@ -172,8 +172,8 @@ zero-inflated negative binomial (ZINB) distribution. The estimated parameters
 will be used for the simulation of new single-cell expression profiles by
 sampling a negative binomial distribution and inserting dropouts from a
 binomial distribution. To do so, <span class="pkg">digitalDLSorteR</span> uses the
-<code><a href="https://rdrr.io/pkg/splatter/man/zinbEstimate.html">zinbEstimate</a></code> function from the <span class="pkg">splatter</span> package
-(Zappia et al., 2017), a wrapper around the <code><a href="https://rdrr.io/pkg/zinbwave/man/zinbFit.html">zinbFit</a></code>
+<code><a href="https://rdrr.io/pkg/splatter/man/zinbEstimate.html" class="external-link">zinbEstimate</a></code> function from the <span class="pkg">splatter</span> package
+(Zappia et al., 2017), a wrapper around the <code><a href="https://rdrr.io/pkg/zinbwave/man/zinbFit.html" class="external-link">zinbFit</a></code>
 function from the <span class="pkg">zinbwave</span> package (Risso et al., 2018). For more
 details about the model, see Risso et al., 2018.</p>
     </div>
@@ -181,15 +181,15 @@ details about the model, see Risso et al., 2018.</p>
     <h2>References</h2>
     <p>Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
 and flexible method for signal extraction from single-cell RNA-seq data.
-Nat Commun 9, 284. doi: doi: <a href="https://doi.org/10.1038/s41467-017-02554-5">10.1038/s41467-017-02554-5</a>
+Nat Commun 9, 284. doi: doi: <a href="https://doi.org/10.1038/s41467-017-02554-5" class="external-link">10.1038/s41467-017-02554-5</a>
 .</p>
 <p>Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 algorithm to quantify immune cell populations based on scRNA-Seq data.
-Frontiers in Genetics 10, 978. doi: doi: <a href="https://doi.org/10.3389/fgene.2019.00978">10.3389/fgene.2019.00978</a>
+Frontiers in Genetics 10, 978. doi: doi: <a href="https://doi.org/10.3389/fgene.2019.00978" class="external-link">10.3389/fgene.2019.00978</a>
 .</p>
 <p>Zappia, L., Phipson, B. and Oshlack, A. Splatter: simulation of single-cell
 RNA sequencing data. Genome Biol. 2017; 18: 174. doi:
-doi: <a href="https://doi.org/10.1186/s13059-017-1305-0">10.1186/s13059-017-1305-0</a>
+doi: <a href="https://doi.org/10.1186/s13059-017-1305-0" class="external-link">10.1186/s13059-017-1305-0</a>
 .</p>
     </div>
     <div id="see-also">
@@ -197,23 +197,23 @@ doi: <a href="https://doi.org/10.1186/s13059-017-1305-0">10.1186/s13059-017-1305
     <div class="dont-index"><p><code><a href="simSCProfiles.html">simSCProfiles</a></code></p></div>
     </div>
 
-    <div id="examples">
+    <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># reproducibility</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a></span><span class="op">(</span></span>
-<span class="r-in">  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
-<span class="r-in">    counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span></span>
-<span class="r-in">      <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span><span class="op">(</span><span class="fl">30</span>, lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">15</span>, ncol <span class="op">=</span> <span class="fl">10</span>, </span>
-<span class="r-in">      dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># reproducibility</span></span>
+<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span></span>
+<span class="r-in">  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span class="r-in">    counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
+<span class="r-in">      <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">30</span>, lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">15</span>, ncol <span class="op">=</span> <span class="fl">10</span>, </span>
+<span class="r-in">      dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">    Cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">    Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">10</span>, </span>
+<span class="r-in">  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span class="r-in">    Cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">    Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">10</span>, </span>
 <span class="r-in">                       replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in">  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span class="r-in">    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span></span>
@@ -237,7 +237,7 @@ doi: <a href="https://doi.org/10.1186/s13059-017-1305-0">10.1186/s13059-017-1305
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     - CellType1: 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     - CellType2: 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> === Creating gene model matrix without gene covariates</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> === Running estimation process (Start time 08:45:52 AM) </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> === Running estimation process (Start time 11:31:57 PM) </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Removing all zero genes...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Fitting model...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Create model:</span>
@@ -249,22 +249,22 @@ doi: <a href="https://doi.org/10.1186/s13059-017-1305-0">10.1186/s13059-017-1305
 <span class="r-msg co"><span class="r-pr">#&gt;</span> penalized log-likelihood = -83.1203291378805</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> After dispersion optimization = -56.1335588623031</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.088   0.003   0.092 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.094   0.000   0.094 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> After right optimization = -54.6057641481274</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> After orthogonalization = -54.6057641481274</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.016   0.004   0.020 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.024   0.000   0.024 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> After left optimization = -54.6055360468269</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> After orthogonalization = -54.6055360468269</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Iteration 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> penalized log-likelihood = -54.6055360468269</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> After dispersion optimization = -54.6055360468269</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.083   0.001   0.083 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.086   0.000   0.086 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> After right optimization = -54.6055279954711</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> After orthogonalization = -54.6055279954711</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.014   0.000   0.015 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.019   0.000   0.019 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> After left optimization = -54.6055197876521</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> After orthogonalization = -54.6055197876521</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Iteration 3</span>
@@ -273,7 +273,7 @@ doi: <a href="https://doi.org/10.1186/s13059-017-1305-0">10.1186/s13059-017-1305
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> DONE</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Invested time: 3.64</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Invested time: 3.31</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
@@ -289,7 +289,7 @@ doi: <a href="https://doi.org/10.1186/s13059-017-1305-0">10.1186/s13059-017-1305
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

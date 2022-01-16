@@ -22,7 +22,7 @@ for details)."><meta property="og:image" content="/logo.png"><!-- mathjax --><sc
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -59,7 +59,7 @@ for details)."><meta property="og:image" content="/logo.png"><!-- mathjax --><sc
   <a href="../reference/index.html">Functions</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/diegommcc/digitalDLSorteR">
+  <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -74,7 +74,7 @@ for details)."><meta property="og:image" content="/logo.png"><!-- mathjax --><sc
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>The DigitalDLSorterDNN Class</h1>
-    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/AllClasses.R"><code>R/AllClasses.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/AllClasses.R" class="external-link"><code>R/AllClasses.R</code></a></small>
     <div class="hidden name"><code>DigitalDLSorterDNN-class.Rd</code></div>
     </div>
 
@@ -86,7 +86,6 @@ and the results of prediction on test data. After running
 evaluation of the model on test data (see <code>?<a href="calculateEvalMetrics.html">calculateEvalMetrics</a></code>
 for details).</p>
     </div>
-
 
 
     <div id="details">
@@ -106,30 +105,44 @@ see <code>?<a href="preparingToSave.html">preparingToSave</a></code>.</p>
     <h2>Slots</h2>
     
 
-<dl><dt><code>model</code></dt><dd><p>Trained Deep Neural Network. This slot can contain an R6
+<dl><dt><code>model</code></dt>
+<dd><p>Trained Deep Neural Network. This slot can contain an R6
 <code>keras.engine.sequential.Sequential</code> object or a list with two
 elements: the architecture of the model and the resulting weights after
 training.</p></dd>
 
-<dt><code>training.history</code></dt><dd><p>List with the evolution of the selected metrics during
+
+<dt><code>training.history</code></dt>
+<dd><p>List with the evolution of the selected metrics during
 training.</p></dd>
 
-<dt><code>test.metrics</code></dt><dd><p>Performance of the model on test data.</p></dd>
 
-<dt><code>test.pred</code></dt><dd><p>Deconvolution results on test data. Columns are cell types,
+<dt><code>test.metrics</code></dt>
+<dd><p>Performance of the model on test data.</p></dd>
+
+
+<dt><code>test.pred</code></dt>
+<dd><p>Deconvolution results on test data. Columns are cell types,
 rows are samples and each entry corresponds to the proportion of this cell
 type in this sample.</p></dd>
 
-<dt><code>cell.types</code></dt><dd><p>Vector with cell types to deconvolute.</p></dd>
 
-<dt><code>features</code></dt><dd><p>Vector with the features used during training. These features
+<dt><code>cell.types</code></dt>
+<dd><p>Vector with cell types to deconvolute.</p></dd>
+
+
+<dt><code>features</code></dt>
+<dd><p>Vector with the features used during training. These features
 will be used in subsequent predictions (the nomenclature used in new bulk
 RNA-Seq samples must be the same).</p></dd>
 
-<dt><code>test.deconv.metrics</code></dt><dd><p>Performance of the model on each sample of test data
+
+<dt><code>test.deconv.metrics</code></dt>
+<dd><p>Performance of the model on each sample of test data
 compared to known cell proportions. This slot is used after
 <code><a href="calculateEvalMetrics.html">calculateEvalMetrics</a></code> (see
 <code>?<a href="calculateEvalMetrics.html">calculateEvalMetrics</a></code> for more details).</p></dd>
+
 
 </dl></div>
 
@@ -145,7 +158,7 @@ compared to known cell proportions. This slot is used after
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

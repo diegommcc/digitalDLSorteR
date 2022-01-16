@@ -22,7 +22,7 @@ estimateZinbwaveParams function."><meta property="og:image" content="/logo.png">
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -59,7 +59,7 @@ estimateZinbwaveParams function."><meta property="og:image" content="/logo.png">
   <a href="../reference/index.html">Functions</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/diegommcc/digitalDLSorteR">
+  <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -75,7 +75,7 @@ estimateZinbwaveParams function."><meta property="og:image" content="/logo.png">
     <div class="page-header">
     <h1>Simulate new single-cell RNA-Seq expression profiles using the ZINB-WaVE
 model parameters</h1>
-    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/simSingleCell.R"><code>R/simSingleCell.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/R/simSingleCell.R" class="external-link"><code>R/simSingleCell.R</code></a></small>
     <div class="hidden name"><code>simSCProfiles.Rd</code></div>
     </div>
 
@@ -86,7 +86,8 @@ distribution using the ZINB-WaVE parameters estimated by the
 <code><a href="estimateZinbwaveParams.html">estimateZinbwaveParams</a></code> function.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="fu">simSCProfiles</span><span class="op">(</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">simSCProfiles</span><span class="op">(</span>
   <span class="va">object</span>,
   <span class="va">cell.ID.column</span>,
   <span class="va">cell.type.column</span>,
@@ -101,74 +102,74 @@ distribution using the ZINB-WaVE parameters estimated by the
   chunk.dims <span class="op">=</span> <span class="cn">NULL</span>,
   verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
+    </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <table class="ref-arguments"><colgroup><col class="name"><col class="desc"></colgroup><tr><th>object</th>
-      <td><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
-<code>single.cell.real</code> and <code>zinb.params</code> slots.</p></td>
-    </tr><tr><th>cell.ID.column</th>
-      <td><p>Name or column number corresponding to the cell names
-of expression matrix in cells metadata.</p></td>
-    </tr><tr><th>cell.type.column</th>
-      <td><p>Name or column number corresponding to the cell type
-of each cell in cells metadata.</p></td>
-    </tr><tr><th>n.cells</th>
-      <td><p>Number of simulated cells generated per cell type (i.e. if you
+    <dl><dt>object</dt>
+<dd><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
+<code>single.cell.real</code> and <code>zinb.params</code> slots.</p></dd>
+<dt>cell.ID.column</dt>
+<dd><p>Name or column number corresponding to the cell names
+of expression matrix in cells metadata.</p></dd>
+<dt>cell.type.column</dt>
+<dd><p>Name or column number corresponding to the cell type
+of each cell in cells metadata.</p></dd>
+<dt>n.cells</dt>
+<dd><p>Number of simulated cells generated per cell type (i.e. if you
 have 10 different cell types in your dataset, if <code>n.cells = 100</code>, then
-1000 cell profiles will be simulated).</p></td>
-    </tr><tr><th>suffix.names</th>
-      <td><p>Suffix used on simulated cells. This suffix must be
+1000 cell profiles will be simulated).</p></dd>
+<dt>suffix.names</dt>
+<dd><p>Suffix used on simulated cells. This suffix must be
 unique in the simulated cells, so make sure that this suffix does not
-appear in the real cell names.</p></td>
-    </tr><tr><th>cell.types</th>
-      <td><p>Vector indicating the cell types to simulate. If
+appear in the real cell names.</p></dd>
+<dt>cell.types</dt>
+<dd><p>Vector indicating the cell types to simulate. If
 <code>NULL</code> (by default), <code>n.cells</code> single-cell profiles for all cell
-types will be simulated.</p></td>
-    </tr><tr><th>file.backend</th>
-      <td><p>Valid file path to store the simulated single-cell
+types will be simulated.</p></dd>
+<dt>file.backend</dt>
+<dd><p>Valid file path to store the simulated single-cell
 expression profiles as an HDF5 file (<code>NULL</code> by default). If provided,
 the data is stored in HDF5 files used as back-end by using the
 <span class="pkg">DelayedArray</span>, <span class="pkg">HDF5Array</span> and <span class="pkg">rhdf5</span> packages instead of
 loading all data into RAM memory. This is suitable for situations where you
 have large amounts of data that cannot be loaded into memory. Note that
 operations on this data will be performed in blocks (i.e subsets of
-determined size) which may result in longer execution times.</p></td>
-    </tr><tr><th>name.dataset.backend</th>
-      <td><p>Name of the dataset in HDF5 file to be used. Note
+determined size) which may result in longer execution times.</p></dd>
+<dt>name.dataset.backend</dt>
+<dd><p>Name of the dataset in HDF5 file to be used. Note
 that it cannot exist. If <code>NULL</code> (by default), a random dataset name
-will be used.</p></td>
-    </tr><tr><th>compression.level</th>
-      <td><p>The compression level used if <code>file.backend</code> is
+will be used.</p></dd>
+<dt>compression.level</dt>
+<dd><p>The compression level used if <code>file.backend</code> is
 provided. It is an integer value between 0 (no compression) and 9 (highest
 and slowest compression). See
-<code>?<a href="https://rdrr.io/pkg/HDF5Array/man/dump-management.html">getHDF5DumpCompressionLevel</a></code> from the
-<span class="pkg">HDF5Array</span> package for more information.</p></td>
-    </tr><tr><th>block.processing</th>
-      <td><p>Boolean indicating whether the data should be
+<code>?<a href="https://rdrr.io/pkg/HDF5Array/man/dump-management.html" class="external-link">getHDF5DumpCompressionLevel</a></code> from the
+<span class="pkg">HDF5Array</span> package for more information.</p></dd>
+<dt>block.processing</dt>
+<dd><p>Boolean indicating whether the data should be
 simulated in blocks (only if <code>file.backend</code> is used, <code>FALSE</code> by
 default). This functionality is suitable for cases where is not possible to
-load all data into memory and it leads to larger execution times.</p></td>
-    </tr><tr><th>block.size</th>
-      <td><p>Only if <code>block.processing = TRUE</code>. Number of
+load all data into memory and it leads to larger execution times.</p></dd>
+<dt>block.size</dt>
+<dd><p>Only if <code>block.processing = TRUE</code>. Number of
 single-cell expression profiles that will be simulated in each iteration
 during the process. Larger numbers result in higher memory usage but
 shorter execution times. Set according to available computational resources
 (1000 by default). Note that it cannot be greater than the total number of
-simulated cells.</p></td>
-    </tr><tr><th>chunk.dims</th>
-      <td><p>Specifies the dimensions that HDF5 chunk will have. If
+simulated cells.</p></dd>
+<dt>chunk.dims</dt>
+<dd><p>Specifies the dimensions that HDF5 chunk will have. If
 <code>NULL</code>, the default value is a vector of two items: the number of
 genes considered by the ZINB-WaVE model during the simulation and a single
 sample in order to reduce read times in the following steps. A larger
 number of columns written in each chunk can lead to longer read times in
 subsequent steps. Note that it cannot be greater than the dimensions of the
-simulated matrix.</p></td>
-    </tr><tr><th>verbose</th>
-      <td><p>Show informative messages during the execution (<code>TRUE</code> by
-default).</p></td>
-    </tr></table></div>
-
+simulated matrix.</p></dd>
+<dt>verbose</dt>
+<dd><p>Show informative messages during the execution (<code>TRUE</code> by
+default).</p></dd>
+</dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>A <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
@@ -202,11 +203,11 @@ written to HDF5 files in blocks of <code>block.size</code> size by setting
     <h2>References</h2>
     <p>Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
 and flexible method for signal extraction from single-cell RNA-seq data.
-Nat Commun 9, 284. doi: doi: <a href="https://doi.org/10.1038/s41467-017-02554-5">10.1038/s41467-017-02554-5</a>
+Nat Commun 9, 284. doi: doi: <a href="https://doi.org/10.1038/s41467-017-02554-5" class="external-link">10.1038/s41467-017-02554-5</a>
 .</p>
 <p>Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 algorithm to quantify immune cell populations based on scRNA-Seq data.
-Frontiers in Genetics 10, 978. doi: doi: <a href="https://doi.org/10.3389/fgene.2019.00978">10.3389/fgene.2019.00978</a>
+Frontiers in Genetics 10, 978. doi: doi: <a href="https://doi.org/10.3389/fgene.2019.00978" class="external-link">10.3389/fgene.2019.00978</a>
 .</p>
     </div>
     <div id="see-also">
@@ -214,23 +215,23 @@ Frontiers in Genetics 10, 978. doi: doi: <a href="https://doi.org/10.3389/fgene.
     <div class="dont-index"><p><code><a href="estimateZinbwaveParams.html">estimateZinbwaveParams</a></code></p></div>
     </div>
 
-    <div id="examples">
+    <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># reproducibility</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a></span><span class="op">(</span></span>
-<span class="r-in">  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
-<span class="r-in">    counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span></span>
-<span class="r-in">      <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span><span class="op">(</span><span class="fl">30</span>, lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">15</span>, ncol <span class="op">=</span> <span class="fl">10</span>, </span>
-<span class="r-in">      dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># reproducibility</span></span>
+<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span></span>
+<span class="r-in">  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span class="r-in">    counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
+<span class="r-in">      <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">30</span>, lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">15</span>, ncol <span class="op">=</span> <span class="fl">10</span>, </span>
+<span class="r-in">      dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">    Cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">    Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">10</span>, </span>
+<span class="r-in">  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span class="r-in">    Cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">    Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">10</span>, </span>
 <span class="r-in">                       replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in">  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span class="r-in">    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span></span>
@@ -281,7 +282,7 @@ Frontiers in Genetics 10, 978. doi: doi: <a href="https://doi.org/10.3389/fgene.
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

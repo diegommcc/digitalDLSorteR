@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/diegommcc/digitalDLSorteR">
+  <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -121,20 +121,21 @@ An R package to deconvolute bulk RNA-Seq from scRNA-Seq data based on Deep Learn
 <p><strong>digitalDLSorteR</strong> is available on CRAN and can be installed as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"digitalDLSorteR"</span><span class="op">)</span></code></pre></div>
-<p>The development version is availale on Gihub and can be installed in R as well:</p>
+<p>The development version is available on GitHub and can be also installed in R:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"devtools"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"diegommcc/digitalDLSorteR"</span><span class="op">)</span></code></pre></div>
-<p>It depends on the <a href="https://cran.r-project.org/package=tensorflow" class="external-link">tensorflow</a> R package, so a working Python interpreter with the Tensorflow Python library installed is needed. The <code>installTFpython</code> function provides an easy way to install a conda environment called <code>digitaldlsorter-env</code> with all the needed dependencies covered. We recommend installing the TensorFlow Python library in this way, although a custom installation is possible. See the <a href="https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html" class="external-link">Keras/TensorFlow installation and configuration</a> article of the package website for more details.</p>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"diegommcc/digitalDLSorteR"</span><span class="op">)</span></code></pre></div>
+<p>The package depends on the <a href="https://cran.r-project.org/package=tensorflow" class="external-link">tensorflow</a> R package, so a working Python interpreter with the Tensorflow Python library installed is needed. The <code>installTFpython</code> function provides an easy way to install a conda environment called <code>digitaldlsorter-env</code> with all necessary dependencies covered. We recommend installing the TensorFlow Python library in this way, although a custom installation is possible. See the <a href="https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html" class="external-link">Keras/TensorFlow installation and configuration</a> article of the package website for more details.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://diegommcc.github.io/digitalDLSorteR/" class="external-link">"digitalDLSorteR"</a></span><span class="op">)</span>
 <span class="fu"><a href="reference/installTFpython.html">installTFpython</a></span><span class="op">(</span>install.conda <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="rationale-of-digitaldlsorter">Rationale of <strong>digitalDLSorteR</strong><a class="anchor" aria-label="anchor" href="#rationale-of-digitaldlsorter"></a>
+<h2 id="rationale-of-digitaldlsorter">Rationale of <strong>digitalDLSorteR</strong>
+<a class="anchor" aria-label="anchor" href="#rationale-of-digitaldlsorter"></a>
 </h2>
-<p>This algorithm consists of training Deep Neural Network (DNN) models with simulated bulk RNA-Seq samples whose cell composition is known. These pseudo-bulk RNA-Seq samples are generated by aggregating pre-characterized scRNA-Seq data from specific biological environments. These models are able to accurately deconvolute new bulk RNA-Seq samples from the same environment, as they are able to account for possible environmental-dependent transcriptional changes of specific cells, such as immune cells in complex diseases (e.g., specific subtypes of cancer or atherosclerosis). This aspect overcomes this limitation present in other methods. For instance, in the case of immune cells, published methods often rely on purified transcriptional profiles from peripheral blood mononuclear cells despite the fact these cells are highly variable depending on enviromental conditions. Therefore, considering this feature together with the use of powerful DNN models and the fact that the improvement of scRNA-Seq datasets over time will lead to build more accurate models, <strong>digitalDLSorteR</strong> offers a good alternative to classical methods based on linear models with pre-defined markers and unreliable transcriptional references.</p>
+<p>The algorithm consists of training Deep Neural Network (DNN) models with simulated bulk RNA-Seq samples whose cell composition is known. These pseudo-bulk RNA-Seq samples are generated by aggregating pre-characterized scRNA-Seq data from specific biological environments. These models are able to accurately deconvolute new bulk RNA-Seq samples from the same environment, as they are able to account for possible environmental-dependent transcriptional changes of specific cells, such as immune cells in complex diseases (e.g., specific subtypes of cancer or atherosclerosis). This aspect overcomes this limitation present in other methods. For instance, in the case of immune cells, published methods often rely on purified transcriptional profiles from peripheral blood mononuclear cells despite the fact these cells are highly variable depending on enviromental conditions. Therefore, considering this feature together with the use of powerful DNN models and the fact that the improvement of scRNA-Seq datasets over time will lead to build more accurate models, <strong>digitalDLSorteR</strong> offers a good alternative to classical methods based on linear models with pre-defined markers and unreliable transcriptional references.</p>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -147,15 +148,11 @@ An R package to deconvolute bulk RNA-Seq from scRNA-Seq data based on Deep Learn
 <p><img src="reference/figures/workflow_readme.png"></p>
 <p>To use pre-trained context specific deconvolution models, <strong>digitalDLSorteR</strong> depends on <strong>digitalDLSorteRmodels</strong> data package as it makes them available. Therefore, it should be installed together with <strong>digitalDLSorteR</strong> if this functionality wants to be used. To do so, it can be installed from GitHub using devtools:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"digitalDLSorteRmodels"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"diegommcc/digitalDLSorteRmodels"</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"diegommcc/digitalDLSorteRmodels"</span><span class="op">)</span></code></pre></div>
 <p>Once <strong>digitalDLSorteRmodels</strong> is loaded, the pre-trained models are available. See the article <a href="https://diegommcc.github.io/digitalDLSorteR/articles/pretrainedModels.html" class="external-link">Using pre-trained context-specific deconvolution models</a> for some examples.</p>
 <p>In addition, some examples and the vignettes of <strong>digitalDLSorteR</strong> make use of pre-computed datasets from the <strong>digitalDLSorteRdata</strong> R package. If you want to inspect these pre-computed <em>DigitalDLSorter</em> objects, you can install it from GitHub using devtools as follows. See <a href="https://diegommcc.github.io/digitalDLSorteR/articles/realModelExample.html" class="external-link">Performance of a real model: deconvolution of colorectal cancer samples</a> for an example.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"digitalDLSorteRdata"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"diegommcc/digitalDLSorteRdata"</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"diegommcc/digitalDLSorteRdata"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="final-remarks">Final remarks<a class="anchor" aria-label="anchor" href="#final-remarks"></a>
@@ -197,21 +194,18 @@ Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning algor
     <div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=digitalDLSorteR">https://​cloud.r-project.org/​package=digitalDLSorteR</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/diegommcc/digitalDLSorteR/">https://​github.com/​diegommcc/​digitalDLSorteR/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/diegommcc/digitalDLSorteR/issues">https://​github.com/​diegommcc/​digitalDLSorteR/​issues</a>
-</li>
-<li>digitalDLSorteRdata: data and objects for digitalDLSorteR at <br><a href="https://github.com/diegommcc/digitalDLSorteRdata">https://​github.com/​diegommcc/​digitalDLSorteRdata</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=digitalDLSorteR" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/diegommcc/digitalDLSorteR/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/diegommcc/digitalDLSorteR/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/diegommcc/digitalDLSorteRmodels" class="external-link">digitalDLSorteRmodels: pre-trained models for digitalDLSorteR</a></li>
+<li><a href="https://github.com/diegommcc/digitalDLSorteRdata" class="external-link">digitalDLSorteRdata: example data for digitalDLSorteR</a></li>
 </ul>
 </div>
 
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></li>
+<li><a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a></li>
 </ul>
 </div>
 
@@ -219,7 +213,7 @@ Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning algor
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html">Citing digitalDLSorteR</a></li>
+<li><a href="authors.html#citation">Citing digitalDLSorteR</a></li>
 </ul>
 </div>
 
@@ -227,11 +221,11 @@ Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning algor
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://github.com/diegommcc">Diego Mañanes</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-7247-6794" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<a href="https://github.com/diegommcc" class="external-link">Diego Mañanes</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-7247-6794" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>
-<a href="https://www.cnic.es/en/carlos-torroja">Carlos Torroja</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-8914-3400" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<a href="https://www.cnic.es/en/carlos-torroja" class="external-link">Carlos Torroja</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-8914-3400" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>
-<a href="https://www.cnic.es/en/fatima-sanchez-cabo">Fatima Sanchez-Cabo</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-1881-1664" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<a href="https://www.cnic.es/en/fatima-sanchez-cabo" class="external-link">Fatima Sanchez-Cabo</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-1881-1664" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
 
@@ -254,7 +248,7 @@ Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning algor
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer>
