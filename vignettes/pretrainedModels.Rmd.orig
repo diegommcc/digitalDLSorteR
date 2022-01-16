@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-**digitalDLSorteR** offers the possibility to use pre-trained context-specific deconvolution models included in **digitalDLSorteRmodels** package (<https://github.com/diegommcc/digitalDLSorteRmodels>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use **digitalDLSorteR** and only requires loading into R a raw bulk RNA-Seq matrix with genes as rows (annotated as _SYMBOL_) and samples as columns, and selecting the desired model. This is done by the `deconvDigitalDLSorter` function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. After the process, estimated cell composition of each sample can be explored as a bar chart using the `barPlotCellTypes` function (workflow summarized in the figure below).
+**digitalDLSorteR** offers the possibility to use pre-trained context-specific deconvolution models included in **digitalDLSorteRmodels** package (<https://github.com/diegommcc/digitalDLSorteRmodels>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use **digitalDLSorteR** and only requires loading into R (a raw bulk RNA-Seq matrix with genes as rows (annotated as _SYMBOL_) and samples as columns) and selecting the desired model. This is done by the `deconvDigitalDLSorter` function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. Afterwards, estimated cell composition of each sample can be explored as a bar chart using the `barPlotCellTypes` function (workflow summarized in the figure below).
 
 ```{r workflow, fig.cap = "**Workflow to use pre-trained models**", echo = FALSE}
 knitr::include_graphics("workflow_pretrained_models.png")
@@ -34,10 +34,10 @@ So far, available models just cover two possible biological environments: breast
 
 ### Breast cancer models
 
-There are two different deconvolution models for breast cancer samples that differ in the level of specificity. Both have been trained using data from @Chung2017 ([GSE75688](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688)).
+There are two deconvolution models for breast cancer samples that differ in the level of specificity. Both have been trained using data from @Chung2017 ([GSE75688](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688)).
 
-* `breast.chung.generic`: this model considers 13 cell types, four of them being the intrinsic molecular subtypes of breast cancer (`ER+`, `HER2+`, `ER+/HER2+` and `TNBC`) and the rest immune and stromal cells (`Stromal`, `Monocyte`, `TCD4mem` (memory CD4+ T cells), `BGC` (germinal center B cells), `Bmem` (memory B cells), `DC` (dendritic cells), `Macrophage`, `TCD8` (CD8+ T cells) and `TCD4reg` (regulatory CD4+ T cells)).
-* `breast.chung.generic`: this model considers 7 cell types, being generic groups of the cell types considered by the specific version: B cells (`Bcell`), T CD4+ cells (`TcellCD4`), T CD8+ cells (`TcellCD8`), monocytes (`Monocyte`), dendritic cells (`DCs`), stromal cells (`Stromal`) and tumor cells (`Tumor`).
+* `breast.chung.generic`: it considers 13 cell types, four of them being the intrinsic molecular subtypes of breast cancer (`ER+`, `HER2+`, `ER+/HER2+` and `TNBC`) and the rest immune and stromal cells (`Stromal`, `Monocyte`, `TCD4mem` (memory CD4+ T cells), `BGC` (germinal center B cells), `Bmem` (memory B cells), `DC` (dendritic cells), `Macrophage`, `TCD8` (CD8+ T cells) and `TCD4reg` (regulatory CD4+ T cells)).
+* `breast.chung.generic`: this model considers 7 cell types that are generic groups of the cell types considered by the specific version: B cells (`Bcell`), T CD4+ cells (`TcellCD4`), T CD8+ cells (`TcellCD8`), monocytes (`Monocyte`), dendritic cells (`DCs`), stromal cells (`Stromal`) and tumor cells (`Tumor`).
 
 ### Colorectal cancer model
 
@@ -72,7 +72,7 @@ data(breast.chung.generic)
 data(TCGA.breast.small)
 ```
 
-`breast.chung.generic` is a DigitalDLSorterDNN-like list (list with the same structure as a `DigitalDLSorterDNN` object) that can be inspected to check which cell types are considered by the model, how well it performed on test data, etc. As the **digitalDLSorteRmodels** package stores all these objects as DigitalDLSorterDNN-like lists in order to remove its dependency on **digitalDLSorteR**, if you want to inspect the models you have to transform these lists into actual `DigitalDLSorterDNN` objects. This is done with the `listToDDLSDNN` function.
+`breast.chung.generic` is a DigitalDLSorterDNN-like list (list with the same structure as a `DigitalDLSorterDNN` object) that can be inspected to check which cell types are considered by the model, how well it performed on test data, etc. As the **digitalDLSorteRmodels** package stores all these objects as DigitalDLSorterDNN-like lists in order to remove its dependency on **digitalDLSorteR**, you have to transform these lists into actual `DigitalDLSorterDNN` objects if you want to inspect the models. This is done with the `listToDDLSDNN` function.
 
 ```{r}
 breast.chung.generic <- listToDDLSDNN(breast.chung.generic)
@@ -129,7 +129,7 @@ On the other hand, `simplify.majority` does not create new classes but sums the 
 
 ## Contribute your own models
 
-New models are planned to be published soon, but you can contribute your own models by making them available to other users. Please do not hesitate to contact us! We'll check the models and include them in the **digitalDLSorteRmodels** package.
+New models are planned to be published soon, but you can contribute your own models by making them available to other users. Please do not hesitate to contact us! We will check the models and include them in the **digitalDLSorteRmodels** package.
 
 ## References
 

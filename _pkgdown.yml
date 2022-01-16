@@ -15,7 +15,9 @@ authors:
 
 home:
   links:
-  - text: "digitalDLSorteRdata: data and objects for digitalDLSorteR"
+  - text: "digitalDLSorteRmodels: pre-trained models for digitalDLSorteR"
+    href: https://github.com/diegommcc/digitalDLSorteRmodels
+  - text: "digitalDLSorteRdata: example data for digitalDLSorteR"
     href: https://github.com/diegommcc/digitalDLSorteRdata
 
 navbar:

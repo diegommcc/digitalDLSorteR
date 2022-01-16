@@ -7,6 +7,7 @@
 simBulkProfiles(
   object,
   type.data = "both",
+  pseudobulk.function = "MeanCPM",
   file.backend = NULL,
   compression.level = NULL,
   block.processing = FALSE,
@@ -23,6 +24,15 @@ slots.}
 
 \item{type.data}{Type of data to generate between \code{'train'},
 \code{'test'} or \code{'both'} (the last by default).}
+
+\item{pseudobulk.function}{Function used to build pseudo-bulk samples. It may
+be: \itemize{ \item \code{"MeanCPM"}: single-cell profiles (raw counts) are
+transformed into CPMs and cross-cell averages are calculated. Then,
+\code{log2(CPM + 1)} is calculated. \item \code{"AddCPM"}: single-cell
+profiles (raw counts) are transformed into CPMs and are added up across
+cells. Then, log-CPMs are calculated. \item \code{"AddRawCount"}:
+single-cell profiles (raw counts) are added up across cells. Then, log-CPMs
+are calculated.}}
 
 \item{file.backend}{Valid file path to store the simulated single-cell
 expression profiles as an HDF5 file (\code{NULL} by default). If provided,
@@ -125,7 +135,7 @@ sce <- SingleCellExperiment::SingleCellExperiment(
   ),
   colData = data.frame(
     Cell_ID = paste0("RHC", seq(10)),
-    Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10, 
+    Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10,
                        replace = TRUE)
   ),
   rowData = data.frame(

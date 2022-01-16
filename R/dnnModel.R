@@ -50,8 +50,6 @@ NULL
 #' @param object \code{\linkS4class{DigitalDLSorter}} object with
 #'   \code{single.cell.real}/\code{single.cell.simul}, \code{prob.cell.matrix}
 #'   and \code{bulk.simul} slots.
-#' @param on.the.fly Boolean indicating whether data will be generated 'on the
-#'   fly' during training (\code{FALSE} by default).
 #' @param combine Type of profiles to be used for training. Can be
 #'   \code{'both'}, \code{'single-cell'} or \code{'bulk'} (\code{'both'} by
 #'   default). For test data, both types of profiles will be used.
@@ -80,6 +78,10 @@ NULL
 #'   "categorical_accuracy")} by default). See the
 #'   \href{https://keras.rstudio.com/reference/metric_binary_accuracy.html}{keras
 #'    documentation} to know available performance metrics.
+#' @param scaling How to scale data before training. It may be:
+#'   \code{"standarize"} (values are centered around the mean with a unit
+#'   standard deviation) or \code{"rescale"} (values are shifted and rescaled so
+#'   that they end up ranging between 0 and 1).
 #' @param custom.model Allows to use a custom neural network. It must be a
 #'   \code{keras.engine.sequential.Sequential} object in which the number of
 #'   input neurons is equal to the number of considered features/genes, and the
@@ -89,6 +91,16 @@ NULL
 #' @param shuffle Boolean indicating whether data will be shuffled (\code{TRUE}
 #'   by default). Note that if \code{bulk.simul} is not \code{NULL}, the data
 #'   already has been shuffled and \code{shuffle} will be ignored.
+#' @param on.the.fly Boolean indicating whether data will be generated 'on the
+#'   fly' during training (\code{FALSE} by default).
+#' @param pseudobulk.function Function used to build pseudo-bulk samples. It may
+#'   be: \itemize{ \item \code{"MeanCPM"}: single-cell profiles (raw counts) are
+#'   transformed into CPMs and cross-cell averages are calculated. Then,
+#'   \code{log2(CPM + 1)} is calculated. \item \code{"AddCPM"}: single-cell
+#'   profiles (raw counts) are transformed into CPMs and are added up across
+#'   cells. Then, log-CPMs are calculated. \item \code{"AddRawCount"}:
+#'   single-cell profiles (raw counts) are added up across cells. Then, log-CPMs
+#'   are calculated.}
 #' @param threads Number of threads used during simulation of pseudo-bulk
 #'   samples if \code{on.the.fly = TRUE} (1 by default).
 #' @param view.metrics.plot Boolean indicating whether to show plots of loss and
@@ -154,14 +166,13 @@ NULL
 #'   num.epochs = 5
 #' )
 #' }
-#' 
+#'
 #' @references Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep
 #'   Learning algorithm to quantify immune cell populations based on scRNA-Seq
 #'   data. Frontiers in Genetics 10, 978. doi: \doi{10.3389/fgene.2019.00978}
 #'   
 trainDigitalDLSorterModel <- function(
   object,
-  on.the.fly = FALSE,
   combine = "both",
   batch.size = 64,
   num.epochs = 10,
@@ -172,8 +183,11 @@ trainDigitalDLSorterModel <- function(
   loss = "kullback_leibler_divergence",
   metrics = c("accuracy", "mean_absolute_error",
               "categorical_accuracy"),
+  scaling = "standarize",
   custom.model = NULL,
   shuffle = FALSE,
+  on.the.fly = FALSE,
+  pseudobulk.function = "MeanCPM",
   threads = 1,
   view.metrics.plot = TRUE,
   verbose = TRUE
@@ -200,6 +214,15 @@ trainDigitalDLSorterModel <- function(
          "or 'single.cell.simul') as trainDigitalDLSorterModel evaluates ", 
          "DNN model on both types of profiles: bulk and single-cell")
   }
+  if (!scaling %in% c("standarize", "rescale")) {
+    stop("'scaling' argument must be one of the following options: 'standarize', 'rescale'")
+  } else {
+    if (scaling == "standarize") {
+      scaling.fun <- base::scale
+    } else if (scaling == "rescale") {
+      scaling.fun <- rescale.function
+    }
+  }
   if (!on.the.fly) {
     if (verbose) message("=== Training and test from stored data was selected")
     if ((combine == "both" && is.null(bulk.simul(object)) ||
@@ -214,12 +237,25 @@ trainDigitalDLSorterModel <- function(
            "profiles: bulk and single-cell. Therefore, bulk data for test ", 
            "must be provided")
     }
+    .pseudobulk.fun <- NULL
   } else {
     if (verbose) message("=== Training and test on the fly was selected")
     if (combine == "both" && (is.null(single.cell.real(object)) && 
                                is.null(single.cell.simul(object)))) {
       stop("If 'combine = both' is selected, at least ",
            "one single cell slot must be provided")
+    }
+    ## just in case of on.the.fly = TRUE
+    if (!pseudobulk.function %in% c("MeanCPM", "AddCPM", "AddRawCount")) {
+      stop("'pseudobulk.function' must be one of the following options: 'MeanCPM', 'AddCPM', 'AddRawCount'")
+    } else {
+      if (pseudobulk.function == "MeanCPM") {
+        .pseudobulk.fun <- pseudobulk.fun.mean.cpm
+      } else if (pseudobulk.function == "AddCPM") {
+        .pseudobulk.fun <- pseudobulk.fun.add.cpm
+      } else if (pseudobulk.function == "AddRawCount") {
+        .pseudobulk.fun <- pseudobulk.fun.add.raw.counts
+      }
     }
   }
   # single-cell must e provided independently of on.the.fly
@@ -338,10 +374,8 @@ trainDigitalDLSorterModel <- function(
   pattern <- suffix.names
   # set if samples will be generated on the fly
   if (!on.the.fly) {
-    # assign(.dataForDNN, .dataForDNN.file, inherits = TRUE, immediate = TRUE)
     .dataForDNN <- .dataForDNN.file
   } else {
-    # assign(.dataForDNN, .dataForDNN.onFly, inherits = TRUE, immediate = TRUE)
     .dataForDNN <- .dataForDNN.onFly
   }
   if (verbose) 
@@ -351,6 +385,8 @@ trainDigitalDLSorterModel <- function(
     funGen = .dataForDNN,
     prob.matrix = prob.matrix.train,
     type.data = "train",
+    fun.pseudobulk = .pseudobulk.fun,
+    scaling = scaling.fun,
     batch.size = batch.size,
     combine = combine,
     shuffle = shuffle,
@@ -377,6 +413,8 @@ trainDigitalDLSorterModel <- function(
     funGen = .dataForDNN,
     target = TRUE,
     prob.matrix = prob.matrix.test,
+    fun.pseudobulk = .pseudobulk.fun,
+    scaling = scaling.fun,
     batch.size = batch.size,
     pattern = pattern,
     threads = threads,
@@ -397,6 +435,8 @@ trainDigitalDLSorterModel <- function(
     funGen = .dataForDNN,
     target = FALSE,
     prob.matrix = prob.matrix.test,
+    fun.pseudobulk = .pseudobulk.fun,
+    scaling = scaling.fun,
     batch.size = batch.size,
     pattern = pattern,
     threads = threads,
@@ -429,6 +469,8 @@ trainDigitalDLSorterModel <- function(
   funGen,
   prob.matrix,
   type.data,
+  fun.pseudobulk,
+  scaling,
   batch.size,
   combine,
   shuffle,
@@ -464,6 +506,8 @@ trainDigitalDLSorterModel <- function(
         sel.data = sel.data, 
         pattern = pattern,
         type.data = type.data,
+        fun.pseudobulk = fun.pseudobulk,
+        scaling = scaling,
         threads = threads
       )
       return(list( 
@@ -472,16 +516,17 @@ trainDigitalDLSorterModel <- function(
       ))
     } else {
       sel.data <- prob.matrix[data.index, , drop = FALSE]
-      # message("AQUI SIIIIIIIIIIIIIIIIIIIII")
       counts <- funGen(
         object = object, 
         sel.data = sel.data, 
         pattern = pattern,
         type.data = type.data,
+        fun.pseudobulk = fun.pseudobulk,
+        scaling = scaling,
         threads = threads
       )
-      attr(counts, "scaled:center") <- NULL
-      attr(counts, "scaled:scale") <- NULL
+      # attr(counts, "scaled:center") <- NULL
+      # attr(counts, "scaled:scale") <- NULL
       return(list(counts, sel.data))
     }
   }
@@ -492,6 +537,8 @@ trainDigitalDLSorterModel <- function(
   funGen,
   prob.matrix,
   target,
+  fun.pseudobulk,
+  scaling,
   batch.size,
   pattern,
   threads,
@@ -512,6 +559,8 @@ trainDigitalDLSorterModel <- function(
       sel.data = sel.data, 
       pattern = pattern,
       type.data = "test",
+      fun.pseudobulk = fun.pseudobulk,
+      scaling = scaling,
       threads = threads
     )
     if (target) return(list(counts, sel.data))
@@ -524,6 +573,8 @@ trainDigitalDLSorterModel <- function(
   sel.data,
   pattern,
   type.data,
+  fun.pseudobulk,
+  scaling,
   threads
 ) {
   bulk.data <- grepl(pattern = "Bulk_", rownames(sel.data))
@@ -561,15 +612,19 @@ trainDigitalDLSorterModel <- function(
   }
   # return final matrix counts
   if (any(bulk.data) && any(!bulk.data)) {
+    cell.samples <- edgeR::cpm.default(
+      y = cell.samples, log = TRUE, prior.count = 1
+    )
     counts <- cbind(bulk.samples, cell.samples)[, rownames(sel.data), drop = FALSE]
   } else if (any(bulk.data)) {
     counts <- bulk.samples[, rownames(sel.data), drop = FALSE]
   } else if (any(!bulk.data)) {
-    counts <- cell.samples[, rownames(sel.data), drop = FALSE]
+    counts <- edgeR::cpm.default(
+      y = cell.samples[, rownames(sel.data), drop = FALSE], 
+      log = TRUE, prior.count = 1
+    )
   }
-  # normalize data for training and testing
-  counts <- edgeR::cpm.default(y = counts, log = TRUE, prior.count = 1)
-  return(t(scale(counts)))
+  return(t(scaling(counts)))
 }
 
 .dataForDNN.onFly <- function(
@@ -577,6 +632,8 @@ trainDigitalDLSorterModel <- function(
   sel.data,
   pattern,
   type.data,
+  fun.pseudobulk,
+  scaling,
   threads
 ) {
   bulk.data <- grepl(pattern = "Bulk_", rownames(sel.data))
@@ -588,7 +645,8 @@ trainDigitalDLSorterModel <- function(
       MARGIN = 1,
       FUN = .setBulk,
       object = object,
-      pattern = pattern
+      pattern = pattern,
+      fun.pseudobulk = fun.pseudobulk
     )
   } 
   if (any(!bulk.data))  {
@@ -619,15 +677,19 @@ trainDigitalDLSorterModel <- function(
   }
   # return final matrix counts
   if (any(bulk.data) && any(!bulk.data)) {
-    counts <- cbind(bulk.samples, cell.samples)[, rownames(sel.data)] 
+    cell.samples <- edgeR::cpm.default(
+      y = cell.samples, log = TRUE, prior.count = 1
+    )
+    counts <- cbind(bulk.samples, cell.samples)[, rownames(sel.data), drop = FALSE]
   } else if (any(bulk.data)) {
-    counts <- bulk.samples[, rownames(sel.data)]
+    counts <- bulk.samples[, rownames(sel.data), drop = FALSE]
   } else if (any(!bulk.data)) {
-    counts <- cell.samples[, rownames(sel.data)]
+    counts <- edgeR::cpm.default(
+      y = cell.samples[, rownames(sel.data), drop = FALSE], 
+      log = TRUE, prior.count = 1
+    )
   }
-  # normalize data for training and testing
-  counts <- edgeR::cpm.default(y = counts, log = TRUE, prior.count = 1)
-  return(t(scale(counts)))
+  return(t(scaling(counts)))
 }
 
 .targetForDNN <- function(
@@ -889,6 +951,11 @@ trainDigitalDLSorterModel <- function(
 #'  deconvolution process. If not specified, \code{batch.size} will be set to
 #'  128.
 #'@param normalize Normalize data before deconvolution (\code{TRUE} by default).
+#'@param scaling How to scale data before training. It may be:
+#'  \code{"standarize"} (values are centered around the mean with a unit
+#'  standard deviation) or \code{"rescale"} (values are shifted and rescaled so
+#'  that they end up ranging between 0 and 1). If \code{normalize = FALSE}, data
+#'  is not scaled.
 #'@param simplify.set List specifying which cell types should be compressed into
 #'  a new label whose name will be the list name item. See examples and
 #'  vignettes for details.
@@ -993,6 +1060,7 @@ deconvDigitalDLSorter <- function(
   model = NULL,
   batch.size = 128,
   normalize = TRUE,
+  scaling = "standarize",
   simplify.set = NULL,
   simplify.majority = NULL,
   verbose = TRUE
@@ -1011,6 +1079,15 @@ deconvDigitalDLSorter <- function(
       stop("'model' is not an object of DigitalDLSorterDNN class. Please ",
            "see available models in digitalDLSorteRdata package and ?deconvDigitalDLSorter")
   }
+  if (!scaling %in% c("standarize", "rescaling")) {
+    stop("'scaling' argument must be one of the following options: 'standarize', 'rescaling'")
+  } else {
+    if (scaling == "standarize") {
+      scaling.fun <- base::scale
+    } else if (scaling == "rescaling") {
+      scaling.fun <- rescale.function
+    }
+  }
   model.dnn <- model
   if (is.list(model.dnn@model)) {
     model.dnn <- .loadModelFromJSON(model.dnn)  
@@ -1021,6 +1098,7 @@ deconvDigitalDLSorter <- function(
     model = model.dnn,
     batch.size = batch.size,
     normalize = normalize,
+    scaling = scaling.fun,
     verbose = verbose
   )
   if (!is.null(simplify.set) && !is.null(simplify.majority)) {
@@ -1071,6 +1149,11 @@ deconvDigitalDLSorter <- function(
 #'   \code{batch.size} will default to 128.
 #' @param normalize Normalize data before deconvolution (\code{TRUE} by
 #'   default).
+#' @param scaling How to scale data before training. It may be:
+#'   \code{"standarize"} (values are centered around the mean with a unit
+#'   standard deviation) or \code{"rescale"} (values are shifted and rescaled so
+#'   that they end up ranging between 0 and 1). If \code{normalize = FALSE},
+#'   data is not scaled.
 #' @param simplify.set List specifying which cell types should be compressed
 #'   into a new label whose name will be the list item. See examples for
 #'   details. If provided, results are stored in a list with 'raw' and
@@ -1147,9 +1230,9 @@ deconvDigitalDLSorter <- function(
 #'   nrow = 40, ncol = 15,
 #'   dimnames = list(paste0("Gene", seq(40)), paste0("Bulk", seq(15)))
 #' )
-#' seBulk <- SummarizedExperiment(assay = list(counts = countsBulk)) 
+#' seBulk <- SummarizedExperiment(assay = list(counts = countsBulk))
 #' DDLS <- loadDeconvData(
-#'   object = DDLS, 
+#'   object = DDLS,
 #'   data = seBulk,
 #'   name.data = "Example"
 #' )
@@ -1172,6 +1255,7 @@ deconvDigitalDLSorterObj <- function(
   name.data,
   batch.size = 128,
   normalize = TRUE,
+  scaling = "standarize",
   simplify.set = NULL,
   simplify.majority = NULL,
   verbose = TRUE
@@ -1184,6 +1268,15 @@ deconvDigitalDLSorterObj <- function(
     stop("There is not trained model in DigitalDLSorter object")
   } else if (!name.data %in% names(deconv.data(object))) {
     stop("'name.data' provided is not present in DigitalDLSorter object")
+  }
+  if (!scaling %in% c("standarize", "rescaling")) {
+    stop("'scaling' argument must be one of the following options: 'standarize', 'rescaling'")
+  } else {
+    if (scaling == "standarize") {
+      scaling.fun <- base::scale
+    } else if (scaling == "rescaling") {
+      scaling.fun <- rescale.function
+    }
   }
   # checking if model is json format or compiled
   if (is.list(trained.model(object)@model)) {
@@ -1201,6 +1294,7 @@ deconvDigitalDLSorterObj <- function(
     model = trained.model(object),
     batch.size = batch.size,
     normalize = normalize,
+    scaling = scaling.fun,
     verbose = verbose
   )
 
@@ -1240,6 +1334,7 @@ deconvDigitalDLSorterObj <- function(
   model,
   batch.size,
   normalize,
+  scaling,
   verbose
 ) {
   if (is.null(rownames(deconv.counts))) {
@@ -1263,10 +1358,9 @@ deconvDigitalDLSorterObj <- function(
                   "features that are not present in trained model to zero\n"))
   }
   if (normalize) {
-    if (verbose) message("=== Normalizing data\n")
+    if (verbose) message("=== Normalizing and scaling data\n")
     deconv.counts <- edgeR::cpm.default(deconv.counts)
-    # deconv.counts <- rescale(deconv.counts)
-    deconv.counts <- scale(deconv.counts)
+    deconv.counts <- scaling(deconv.counts)
   }
   deconv.counts <- t(deconv.counts)
   deconv.generator <- .predictDeconvDataGenerator(
@@ -1317,6 +1411,10 @@ deconvDigitalDLSorterObj <- function(
                        ncol = n.features,
                        nrow = length(data.index))))
   }
+}
+
+rescale.function <- function(x) {
+  apply(X = x, MARGIN = 2, FUN = function(x) (x - min(x)) / (max(x) - min(x)))
 }
 
 .loadModelFromJSON <- function(object) {

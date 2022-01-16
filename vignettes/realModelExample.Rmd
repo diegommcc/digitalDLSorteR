@@ -16,12 +16,11 @@ fontsize: 12pt
 
 
 
-
 In [Building new deconvolution models](newModels.html) was shown the necessary workflow to build new deconvolution models. However, a 'toy' example was used in order to avoid long run times. In this vignette, the performance of a real model is shown in order to serve as a guide on how to assess whether a model has been trained correctly and can be used to deconvolute new bulk RNA-Seq samples.
 
 ## Loading and inspection of the model
 
-The model to be shown has been built with data from @Li2017 ([GSE81861](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861)), so it can be used to deconvolute samples from colorectal cancer. It is loaded from **digitalDLSorteRdata** package, and it is a `DigitalDLSorter` object with `prob.cell.matrix` and `trained.model` slots.
+The model to be shown has been built with data from @Li2017 ([GSE81861](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861)), so it can be used to deconvolute samples from colorectal cancer. It is loaded from **digitalDLSorteRdata** package and the corresponding trained model can be used through the **digitalDLSorteRmodels** package. 
 
 
 ```r
@@ -72,7 +71,7 @@ DDLSLiComp <- calculateEvalMetrics(DDLSLiComp)
 
 ### How errors are distributed
 
-With `distErrorPlot`, we can plot in different ways how errors are distributed. In this case, we can see the absolute error (`AbsErr`) by cell type (`CellType`). CD4 T cell proportions are predicted worse than the other cell types, but still have a median error close to zero. 
+With `distErrorPlot`, we can plot in different ways how errors are distributed. In this case, absolute error (`AbsErr`) by cell type (`CellType`) is shown. CD4 T cell proportions are predicted worse than the other cell types, but still have a median error close to zero. 
 
 
 ```r
@@ -89,7 +88,7 @@ distErrorPlot(
 
 <img src="distErr1_realModelExample-1.png" title="plot of chunk distErr1_realModelExample" alt="plot of chunk distErr1_realModelExample" style="display: block; margin: auto;" />
 
-In order to see the mean error values, we can check it with `barErrorPlot`:
+In order to see mean error values, we can check it with `barErrorPlot`:
 
 
 ```r
@@ -98,8 +97,7 @@ barErrorPlot(DDLSLiComp, error = "MAE", by = "CellType")
 
 <img src="barError_realModelExample-1.png" title="plot of chunk barError_realModelExample" alt="plot of chunk barError_realModelExample" style="display: block; margin: auto;" />
 
-
-Now, we can see in which proportions the model is failing more by changing the `x.by` argument to `"pBin"` and optionally setting `facet.by = "CellType"`:
+Now, we can see in which proportions the model is failing most by changing the `x.by` argument to `"pBin"` and optionally setting `facet.by = "CellType"`:
 
 
 ```r
@@ -130,12 +128,11 @@ distErrorPlot(
 
 <img src="distErr3_realModelExample-1.png" title="plot of chunk distErr3_realModelExample" alt="plot of chunk distErr3_realModelExample" style="display: block; margin: auto;" />
 
-
-As can be seen, most of the failures in CD4 T cell proportions occurs at high proportions (between 0.5 and 1), and the mean absolute errors (`MAbsErr`) shown as annotations on each panel are very low in all the cases.
+As can be seen, most of the failures in CD4 T cell proportions occur at high proportions (between 0.5 and 1), and mean absolute errors (`MAbsErr`) shown as annotations in each panel are very low in all cases.
 
 ### Correlation between actual and expected proportions
 
-Another way to visualize how the model works is to use the `corrExpPredPlot` function. Like `distErrorPlot`, we can see how the proportions are correlated by different variables. Here, we can see the same trend observed above: the model performs worse estimating CD4 T cell proportions with the lowest concordance correlation and Pearson's coefficients ($R = 0.95$ and $CCC = 0.794$, respectively). In fact, we can observe that the model tends to under-estimate these proportions, although these values are still good. For the rest of cell types, the results show a very good performance with high coefficients (between 0.97 and 0.99).
+Another way to visualize how the model works is to use the `corrExpPredPlot` function. Like `distErrorPlot`, we can see how proportions are correlated with each other by different variables. Here, we can see the same trend observed above: the model performs worst estimating CD4+ T cell proportions with the lowest concordance correlation and Pearson's coefficients ($R = 0.95$ and $CCC = 0.794$, respectively). In fact, we can observe that the model tends to underestimate these proportions, although these values are still good. For the rest of cell types, the results show a very good performance with high coefficients (between 0.97 and 0.99).
 
 
 ```r
@@ -154,7 +151,7 @@ corrExpPredPlot(
 
 <img src="corr1_realModelExample-1.png" title="plot of chunk corr1_realModelExample" alt="plot of chunk corr1_realModelExample" style="display: block; margin: auto;" />
 
-It is very important to note that these results only show the estimated proportions of pseudo-bulk samples. If we don't filter out single-cell profiles, the results improve in general, showing that the model is able to deal with pure samples as well.
+It is important to note that these results only show the estimated proportions of pseudo-bulk samples. If we don't filter out single-cell profiles, the results improve in general, showing that the model is able to deal with pure samples as well.
 
 
 ```r
@@ -173,7 +170,6 @@ corrExpPredPlot(
 ```
 
 <img src="corr2_realModelExample-1.png" title="plot of chunk corr2_realModelExample" alt="plot of chunk corr2_realModelExample" style="display: block; margin: auto;" />
-
 
 In the end, we can see the overall results without splitting the graph. As can be seen, both coefficients present also high values when all proportions are considered.
 
@@ -196,7 +192,7 @@ corrExpPredPlot(
 
 ### Bland-Altman agreement plots
 
-The last way to graphically represent results is to use `blandAltmanLehPlot`. It generates a Bland-Altman agreement plot, a method for analyzing the level of agreement between two variables, in that case expected vs predicted cell proportions. As shown, most of the proportions fall close to zero (note the blue density lines) and the dashed red lines are very close to the mean, although we can observe again the aforementioned problem in the estimate of T CD4 cell proportions. 
+The last way to graphically represent results is to use `blandAltmanLehPlot`. It generates a Bland-Altman agreement plot, a method for analyzing the level of agreement between two variables, in that case expected vs predicted cell proportions. As shown, most of the proportions fall close to zero (note blue density lines) and the dashed red lines are very close to the mean, although we can observe again the aforementioned problem in the estimate of T CD4 cell proportions. 
 
 
 
@@ -212,7 +208,7 @@ blandAltmanLehPlot(
 
 <img src="bland1_realModelExample-1.png" title="plot of chunk bland1_realModelExample" alt="plot of chunk bland1_realModelExample" style="display: block; margin: auto;" />
 
-Finally, we can generate the same plot but spliting the information by the number of different cell types present in each pseudo-bulk sample. The smaller the number of cell types, the larger the error made by the model. In any case, considering the results from `distErrorPlot` and `corrExpPredPlot`, we can conclude that the model performs well on the test data.
+Finally, we can generate the same plot but spliting the information by number of different cell types present in each pseudo-bulk sample. The smaller the number of cell types, the larger the error made by the model. In any case, considering the results from `distErrorPlot` and `corrExpPredPlot`, we can conclude that the model performs well on test data.
 
 
 ```r
@@ -247,8 +243,7 @@ TCGA.colon.se
 ## assays(1): counts
 ## rownames(59085): 5S_RRNA 7SK ... ZZEF1 ZZZ3
 ## rowData names(0):
-## colnames(521): X0096f6b3.94f5.49d9.aa43.66d9ab6b2b5c X01f5a228.a2cf.444f.8102.a9d4a2d9a27d
-##   ... ff016e44.7a4d.4423.822e.aa6aa6df0ef2 ffbe7115.06be.4592.91d0.3dad62e3c73a
+## colnames(521): X0096f6b3.94f5.49d9.aa43.66d9ab6b2b5c X01f5a228.a2cf.444f.8102.a9d4a2d9a27d ... ff016e44.7a4d.4423.822e.aa6aa6df0ef2 ffbe7115.06be.4592.91d0.3dad62e3c73a
 ## colData names(2): Bulk Tumor_Type
 ```
 
@@ -263,7 +258,7 @@ DDLSLiComp <- loadDeconvData(
 )
 ```
 
-Then, with the `deconvDigitalDLSorterObj` function, these new samples can be deconvoluted into the cell types considered by the model and the predicted proportions can be represented by the `barPlotCellTypes` function. 
+Then, with the `deconvDigitalDLSorterObj` function, these new samples can be deconvoluted into the cell types considered by the model and predicted proportions can be represented by the `barPlotCellTypes` function. 
 
 
 ```r
@@ -291,7 +286,7 @@ barPlotCellTypes(
 
 <img src="barPlotResults20_realModelExample-1.png" title="plot of chunk barPlotResults20_realModelExample" alt="plot of chunk barPlotResults20_realModelExample" style="display: block; margin: auto;" />
 
-Finally, to check whether the predicted estimates make sense with the type of sample they come from (metastatic, normal, primary and recurrent), we will inspect the predicted proportions of tumor cells, epithelial cells and fibroblasts.
+Finally, to check whether predicted estimates make sense with the type of sample they come from (metastatic, normal, primary, or recurrent), we will inspect predicted proportions of tumor cells, epithelial cells and fibroblasts.
 
 
 ```r

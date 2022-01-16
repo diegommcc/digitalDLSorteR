@@ -112,6 +112,17 @@ test_that(
       ), 
       regexp = "Training and test on the fly was selected"
     )
+    # check function to generate pseudo-bulk samples
+    expect_error(
+      trainDigitalDLSorterModel(
+        object = DDLS,
+        on.the.fly = TRUE,
+        pseudobulk.function = "Invalid",
+        batch.size = 12,
+        view.metrics.plot = FALSE
+      ), 
+      regexp = "'pseudobulk.function' must be one of the following options"
+    )
   }
 )
 
@@ -226,6 +237,43 @@ test_that(
       expect_true(
         any(grepl("cosine_similarity", names(trained.model(DDLS)@test.metrics)))
       )
+      # check scaling parameters
+      expect_error(
+        object = trainDigitalDLSorterModel(
+          object = DDLS,
+          batch.size = 28,
+          scaling = "invalid",
+          verbose = FALSE
+        ), 
+        regexp = "'scaling' argument must be one of the following options"
+      )
+      # check behaviour
+      DDLS@trained.model <- NULL
+      DDLS.standarize <- trainDigitalDLSorterModel(
+        object = DDLS,
+        batch.size = 28,
+        scaling = "standarize",
+        verbose = FALSE
+      )
+      DDLS.rescale <- trainDigitalDLSorterModel(
+        object = DDLS,
+        batch.size = 28,
+        scaling = "rescale",
+        verbose = FALSE
+      )
+      samp.stand <- as.numeric(gsub(
+        pattern = "Bulk_|CellType\\d\\_Simul|RH|C", 
+        replacement = "", 
+        x = rownames(DDLS.standarize@trained.model@test.pred)
+      )) %>% order()
+      samp.rescale <- as.numeric(gsub(
+        pattern = "Bulk_|CellType\\d\\_Simul|RH|C", 
+        replacement = "", 
+        x = rownames(DDLS.rescale@trained.model@test.pred)
+      )) %>% order()
+      stand <- DDLS.standarize@trained.model@test.pred[samp.stand, ]
+      rescale <- DDLS.rescale@trained.model@test.pred[samp.rescale, ]
+      expect_false(object = all(stand == rescale))
     }
 )
 

@@ -8,3 +8,9 @@
 environment in `estimateZinbwaveParams` function).
 * Some changes related to information about the package: messages during 
 execution, README.
+
+# digitalDLSorteR 0.2.0 (2022-01-10)
+
+* Implemented different ways to generate pseudo-bulk samples: MeanCPM, AddCPM, and AddRawCount (`simBulkProfiles` function).
+* Implemented different ways to scale data before training: standarization and rescaling (`trainDigitalDLSorterModel` function).
+* Vignettes updated.

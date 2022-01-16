@@ -9,6 +9,7 @@ deconvDigitalDLSorter(
   model = NULL,
   batch.size = 128,
   normalize = TRUE,
+  scaling = "standarize",
   simplify.set = NULL,
   simplify.majority = NULL,
   verbose = TRUE
@@ -30,6 +31,12 @@ deconvolution process. If not specified, \code{batch.size} will be set to
 128.}
 
 \item{normalize}{Normalize data before deconvolution (\code{TRUE} by default).}
+
+\item{scaling}{How to scale data before training. It may be:
+\code{"standarize"} (values are centered around the mean with a unit
+standard deviation) or \code{"rescale"} (values are shifted and rescaled so
+that they end up ranging between 0 and 1). If \code{normalize = FALSE}, data
+is not scaled.}
 
 \item{simplify.set}{List specifying which cell types should be compressed into
 a new label whose name will be the list name item. See examples and

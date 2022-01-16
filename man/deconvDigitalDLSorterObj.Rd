@@ -9,6 +9,7 @@ deconvDigitalDLSorterObj(
   name.data,
   batch.size = 128,
   normalize = TRUE,
+  scaling = "standarize",
   simplify.set = NULL,
   simplify.majority = NULL,
   verbose = TRUE
@@ -26,6 +27,12 @@ object. If not provided, the first data set will be used.}
 
 \item{normalize}{Normalize data before deconvolution (\code{TRUE} by
 default).}
+
+\item{scaling}{How to scale data before training. It may be:
+\code{"standarize"} (values are centered around the mean with a unit
+standard deviation) or \code{"rescale"} (values are shifted and rescaled so
+that they end up ranging between 0 and 1). If \code{normalize = FALSE},
+data is not scaled.}
 
 \item{simplify.set}{List specifying which cell types should be compressed
 into a new label whose name will be the list item. See examples for
@@ -113,9 +120,9 @@ countsBulk <- matrix(
   nrow = 40, ncol = 15,
   dimnames = list(paste0("Gene", seq(40)), paste0("Bulk", seq(15)))
 )
-seBulk <- SummarizedExperiment(assay = list(counts = countsBulk)) 
+seBulk <- SummarizedExperiment(assay = list(counts = countsBulk))
 DDLS <- loadDeconvData(
-  object = DDLS, 
+  object = DDLS,
   data = seBulk,
   name.data = "Example"
 )

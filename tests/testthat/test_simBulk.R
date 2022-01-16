@@ -416,6 +416,36 @@ test_that(
       dim(bulk.simul(DDLS, type.data = "train"))[2] == 
         dim(prob.cell.types(DDLS, type.data = "train")@prob.matrix)[1]
     )
+    # chcek how pseudo-bulks are generated
+    DDLS@bulk.simul <- NULL
+    expect_error(
+      object = simBulkProfiles(
+        object = DDLS, type.data = "train", 
+        pseudobulk.function = "Invalid", verbose = FALSE
+      ), 
+      regexp = "'pseudobulk.function' must be one of the following options"
+    )
+    # check if pseudo-bulks are different
+    DDLS.meanCPM <- simBulkProfiles(
+      object = DDLS, type.data = "train", 
+      pseudobulk.function = "MeanCPM", verbose = FALSE
+    )
+    DDLS.addCPM <- simBulkProfiles(
+      object = DDLS, type.data = "train", 
+      pseudobulk.function = "AddCPM", verbose = FALSE
+    )
+    DDLS.addCounts <- simBulkProfiles(
+      object = DDLS, type.data = "train", 
+      pseudobulk.function = "AddRawCount", verbose = FALSE
+    )
+    expect_false(
+      all(assay(DDLS.meanCPM@bulk.simul$train) == 
+            assay(DDLS.addCPM@bulk.simul$train))
+    )
+    expect_false(
+      all(assay(DDLS.addCounts@bulk.simul$train) == 
+            assay(DDLS.addCPM@bulk.simul$train))
+    )
   }
 )
 

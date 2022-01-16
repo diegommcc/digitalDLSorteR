@@ -998,6 +998,14 @@ setCount <- function(
 #'   slots.
 #' @param type.data Type of data to generate between \code{'train'},
 #'   \code{'test'} or \code{'both'} (the last by default).
+#' @param pseudobulk.function Function used to build pseudo-bulk samples. It may
+#'   be: \itemize{ \item \code{"MeanCPM"}: single-cell profiles (raw counts) are
+#'   transformed into CPMs and cross-cell averages are calculated. Then,
+#'   \code{log2(CPM + 1)} is calculated. \item \code{"AddCPM"}: single-cell
+#'   profiles (raw counts) are transformed into CPMs and are added up across
+#'   cells. Then, log-CPMs are calculated. \item \code{"AddRawCount"}:
+#'   single-cell profiles (raw counts) are added up across cells. Then, log-CPMs
+#'   are calculated.}
 #' @param file.backend Valid file path to store the simulated single-cell
 #'   expression profiles as an HDF5 file (\code{NULL} by default). If provided,
 #'   the data is stored in HDF5 files used as back-end by using the
@@ -1057,7 +1065,7 @@ setCount <- function(
 #'   ),
 #'   colData = data.frame(
 #'     Cell_ID = paste0("RHC", seq(10)),
-#'     Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10, 
+#'     Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10,
 #'                        replace = TRUE)
 #'   ),
 #'   rowData = data.frame(
@@ -1097,6 +1105,7 @@ setCount <- function(
 simBulkProfiles <- function(
   object,
   type.data = "both",
+  pseudobulk.function = "MeanCPM",
   file.backend = NULL,
   compression.level = NULL,
   block.processing = FALSE,
@@ -1113,6 +1122,17 @@ simBulkProfiles <- function(
     stop("'prob.cell.types' slot is empty")
   } else if (!any(type.data == c("train", "test", "both"))) {
     stop("'type.data' argument must be one of the following options: 'train', 'test' or 'both'")
+  }
+  if (!pseudobulk.function %in% c("MeanCPM", "AddCPM", "AddRawCount")) {
+    stop("'pseudobulk.function' must be one of the following options: 'MeanCPM', 'AddCPM', 'AddRawCount'")
+  } else {
+    if (pseudobulk.function == "MeanCPM") {
+      .pseudobulk.fun <- pseudobulk.fun.mean.cpm
+    } else if (pseudobulk.function == "AddCPM") {
+      .pseudobulk.fun <- pseudobulk.fun.add.cpm
+    } else if (pseudobulk.function == "AddRawCount") {
+      .pseudobulk.fun <- pseudobulk.fun.add.raw.counts
+    }
   }
   if (!is.null(file.backend)) {
     if (!requireNamespace("DelayedArray", quietly = TRUE) || 
@@ -1152,6 +1172,8 @@ simBulkProfiles <- function(
         .generateBulkProfiles(
           object = object,
           type.data = x,
+          fun.pseudobulk = .pseudobulk.fun,
+          unit = pseudobulk.function,
           file.backend = file.backend,
           compression.level = compression.level,
           block.processing = block.processing,
@@ -1176,6 +1198,8 @@ simBulkProfiles <- function(
     bulk.counts <- .generateBulkProfiles(
       object = object,
       type.data = type.data,
+      fun.pseudobulk = .pseudobulk.fun,
+      unit = pseudobulk.function,
       file.backend = file.backend,
       compression.level = compression.level,
       block.processing = block.processing,
@@ -1201,6 +1225,8 @@ simBulkProfiles <- function(
 .generateBulkProfiles <- function(
   object,
   type.data,
+  fun.pseudobulk,
+  unit,
   file.backend,
   compression.level,
   block.processing,
@@ -1258,6 +1284,7 @@ simBulkProfiles <- function(
         FUN = .setBulk,
         object = object,
         pattern = pattern,
+        fun.pseudobulk = fun.pseudobulk,
         cl = threads
       )
       if (iter == 1) {
@@ -1289,6 +1316,7 @@ simBulkProfiles <- function(
       FUN = .setBulk,
       object = object,
       pattern = pattern,
+      fun.pseudobulk = fun.pseudobulk,
       cl = threads
     )
   }
@@ -1296,8 +1324,7 @@ simBulkProfiles <- function(
   return(
     .createSEObject(
       counts = bulk.samples,
-      samples.metadata = prob.cell.types(object, type.data)@prob.matrix[
-        rownames(sel.bulk.cells), ],
+      samples.metadata = prob.cell.types(object, type.data)@prob.matrix[rownames(sel.bulk.cells), ],
       genes.metadata = rownames(assay(single.cell.real(object))),
       file.backend = file.backend,
       compression.level = compression.level,
@@ -1338,7 +1365,21 @@ simBulkProfiles <- function(
   )
 }
 
-.setBulk <- function(x, object, pattern) {
+pseudobulk.fun.mean.cpm <- function(x) {
+  log2(rowMeans(edgeR::cpm.default(y = x)) + 1)
+}
+
+pseudobulk.fun.add.cpm <- function(x) {
+  edgeR::cpm.default(
+    y = rowSums(edgeR::cpm.default(y = x)), log = TRUE, prior.count = 1
+  )
+}
+
+pseudobulk.fun.add.raw.counts <- function(x) {
+  edgeR::cpm.default(y = rowSums(x), log = TRUE, prior.count = 1)
+}
+
+.setBulk <- function(x, object, pattern, fun.pseudobulk) {
   sep.b <- grepl(pattern = pattern, x = x)
   if (any(sep.b)) {
     cols.sim <- match(
@@ -1351,12 +1392,11 @@ simBulkProfiles <- function(
     real.counts <- as.matrix(assay(single.cell.real(object))[, cols.real, drop = FALSE])
     counts <- .mergeMatrices(x = real.counts, y = sim.counts) # merge matrices
   } else if (all(sep.b)) {
-    cols <- match(x = x[sep.b], table = colnames(single.cell.simul(object))) %>%
-      sort()
+    cols <- sort(match(x = x[sep.b], table = colnames(single.cell.simul(object)))) 
     counts <- as.matrix(assay(single.cell.simul(object))[, cols, drop = FALSE])
   } else {
     cols <- match(x = x, table = colnames(single.cell.real(object))) %>% sort()
     counts <- as.matrix(assay(single.cell.real(object))[, cols, drop = FALSE])
   }
-  return(rowSums(edgeR::cpm.default(y = counts)))  
+  return(fun.pseudobulk(x = counts))
 }

@@ -6,7 +6,6 @@
 \usage{
 trainDigitalDLSorterModel(
   object,
-  on.the.fly = FALSE,
   combine = "both",
   batch.size = 64,
   num.epochs = 10,
@@ -16,8 +15,11 @@ trainDigitalDLSorterModel(
   dropout.rate = 0.25,
   loss = "kullback_leibler_divergence",
   metrics = c("accuracy", "mean_absolute_error", "categorical_accuracy"),
+  scaling = "standarize",
   custom.model = NULL,
   shuffle = FALSE,
+  on.the.fly = FALSE,
+  pseudobulk.function = "MeanCPM",
   threads = 1,
   view.metrics.plot = TRUE,
   verbose = TRUE
@@ -27,9 +29,6 @@ trainDigitalDLSorterModel(
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object with
 \code{single.cell.real}/\code{single.cell.simul}, \code{prob.cell.matrix}
 and \code{bulk.simul} slots.}
-
-\item{on.the.fly}{Boolean indicating whether data will be generated 'on the
-fly' during training (\code{FALSE} by default).}
 
 \item{combine}{Type of profiles to be used for training. Can be
 \code{'both'}, \code{'single-cell'} or \code{'bulk'} (\code{'both'} by
@@ -68,6 +67,11 @@ training and evaluation (\code{c("accuracy", "mean_absolute_error",
 \href{https://keras.rstudio.com/reference/metric_binary_accuracy.html}{keras
 documentation} to know available performance metrics.}
 
+\item{scaling}{How to scale data before training. It may be:
+\code{"standarize"} (values are centered around the mean with a unit
+standard deviation) or \code{"rescale"} (values are shifted and rescaled so
+that they end up ranging between 0 and 1).}
+
 \item{custom.model}{Allows to use a custom neural network. It must be a
 \code{keras.engine.sequential.Sequential} object in which the number of
 input neurons is equal to the number of considered features/genes, and the
@@ -78,6 +82,18 @@ network architecture will be ignored.}
 \item{shuffle}{Boolean indicating whether data will be shuffled (\code{TRUE}
 by default). Note that if \code{bulk.simul} is not \code{NULL}, the data
 already has been shuffled and \code{shuffle} will be ignored.}
+
+\item{on.the.fly}{Boolean indicating whether data will be generated 'on the
+fly' during training (\code{FALSE} by default).}
+
+\item{pseudobulk.function}{Function used to build pseudo-bulk samples. It may
+be: \itemize{ \item \code{"MeanCPM"}: single-cell profiles (raw counts) are
+transformed into CPMs and cross-cell averages are calculated. Then,
+\code{log2(CPM + 1)} is calculated. \item \code{"AddCPM"}: single-cell
+profiles (raw counts) are transformed into CPMs and are added up across
+cells. Then, log-CPMs are calculated. \item \code{"AddRawCount"}:
+single-cell profiles (raw counts) are added up across cells. Then, log-CPMs
+are calculated.}}
 
 \item{threads}{Number of threads used during simulation of pseudo-bulk
 samples if \code{on.the.fly = TRUE} (1 by default).}
