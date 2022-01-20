@@ -860,12 +860,14 @@ simSCProfiles <- function(
   cell.types.used <- list.data[[2]][rownames(zinb.object@model@X), 
                                     cell.type.column] %>% unique()
   # generate metadata for simulated cells
-  colnames(list.data[[1]]) <- paste(list.data[[2]][, cell.type.column],
-                                    list.data[[2]][, cell.ID.column],
-                                    sep = "_") 
-  list.data[[2]]$simCellName <- paste(list.data[[2]][, cell.type.column],
-                                      list.data[[2]][, cell.ID.column],
-                                      sep = "_")
+  colnames(list.data[[1]]) <- paste(
+    list.data[[2]][, cell.type.column], 
+    list.data[[2]][, cell.ID.column], sep = "_"
+  ) 
+  list.data[[2]]$simCellName <- paste(
+    list.data[[2]][, cell.type.column],
+    list.data[[2]][, cell.ID.column], sep = "_"
+  )
   list.data[[2]]$Simulated <- FALSE
   # cell types in model
   cell.set.names <- NULL
@@ -1069,6 +1071,20 @@ simSCProfiles <- function(
   if (any(colnames(sim.cells.metadata) == "suffix"))
     warning("\n'suffix' column in cells metadata is going to be overwritten")
   sim.cells.metadata$suffix <- suffix.names
+  
+  if (any(colSums(sim.counts) == 0)) {
+    warning(
+      paste(
+        "Some of simulated cells have a lirary size equal to zero.", 
+        "This may be because the original library size of these cells is", 
+        "too low. They will be removed for further analysis, so check your", 
+        "initial parameters when scRNA-seq data are loaded"
+      )
+    )
+    pos.cells <- which(colSums(sim.counts) != 0)
+    sim.counts <- sim.counts[, pos.cells]
+    cells.metadata <- cells.metadata[pos.cells, ]
+  }
   
   sim.sce <- .createSCEObject(
     counts = sim.counts,
