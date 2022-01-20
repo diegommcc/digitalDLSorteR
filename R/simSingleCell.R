@@ -1071,8 +1071,8 @@ simSCProfiles <- function(
   if (any(colnames(sim.cells.metadata) == "suffix"))
     warning("\n'suffix' column in cells metadata is going to be overwritten")
   sim.cells.metadata$suffix <- suffix.names
-  
-  if (any(colSums(sim.counts) == 0)) {
+  # return(sim.counts)
+  if (any(apply(sim.counts, MARGIN = 2, FUN = sum) == 0)) {
     warning(
       paste(
         "Some of simulated cells have a lirary size equal to zero.", 
@@ -1081,7 +1081,7 @@ simSCProfiles <- function(
         "initial parameters when scRNA-seq data are loaded"
       )
     )
-    pos.cells <- which(colSums(sim.counts) != 0)
+    pos.cells <- which(apply(sim.counts, MARGIN = 2, FUN = sum) != 0)
     sim.counts <- sim.counts[, pos.cells]
     cells.metadata <- cells.metadata[pos.cells, ]
   }
