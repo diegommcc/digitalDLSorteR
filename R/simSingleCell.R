@@ -1075,10 +1075,10 @@ simSCProfiles <- function(
   if (any(apply(sim.counts, MARGIN = 2, FUN = sum) == 0)) {
     warning(
       paste(
-        "Some of simulated cells have a lirary size equal to zero.", 
+        "Some of the simulated cells have a library size equal to zero.", 
         "This may be because the original library size of these cells is", 
         "too low. They will be removed for further analysis, so check your", 
-        "initial parameters when scRNA-seq data are loaded"
+        "initial parameters when loading scRNA-seq data"
       )
     )
     pos.cells <- which(apply(sim.counts, MARGIN = 2, FUN = sum) != 0)
