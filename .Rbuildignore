@@ -6,7 +6,10 @@
 ^pkgdown$
 ^\.travis\.yml$
 ^\.github$
+^\.git$
 cran-comments.md
 ^doc$
 ^Meta$
 ^vignettes/knitr_rendering\.R$
+^.*\.py$
+__pycache__
