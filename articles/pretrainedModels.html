@@ -54,7 +54,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -101,7 +101,8 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Using pre-trained context-specific deconvolution models</h1>
+      <h1 data-toc-skip>Using pre-trained context-specific deconvolution
+models</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/vignettes/pretrainedModels.Rmd" class="external-link"><code>vignettes/pretrainedModels.Rmd</code></a></small>
@@ -111,34 +112,77 @@
 
     
     
-<p><strong>digitalDLSorteR</strong> offers the possibility to use pre-trained context-specific deconvolution models included in <strong>digitalDLSorteRmodels</strong> package (<a href="https://github.com/diegommcc/digitalDLSorteRmodels" class="external-link uri">https://github.com/diegommcc/digitalDLSorteRmodels</a>) to deconvolute new bulk RNA-Seq samples from the same biological environment. This is the simplest way to use <strong>digitalDLSorteR</strong> and only requires loading into R (a raw bulk RNA-Seq matrix with genes as rows (annotated as <em>SYMBOL</em>) and samples as columns) and selecting the desired model. This is done by the <code>deconvDigitalDLSorter</code> function which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. Afterwards, estimated cell composition of each sample can be explored as a bar chart using the <code>barPlotCellTypes</code> function (workflow summarized in the figure below).</p>
+<p><strong>digitalDLSorteR</strong> offers the possibility to use
+pre-trained context-specific deconvolution models included in
+<strong>digitalDLSorteRmodels</strong> package (<a href="https://github.com/diegommcc/digitalDLSorteRmodels" class="external-link uri">https://github.com/diegommcc/digitalDLSorteRmodels</a>) to
+deconvolute new bulk RNA-Seq samples from the same biological
+environment. This is the simplest way to use
+<strong>digitalDLSorteR</strong> and only requires loading into R (a raw
+bulk RNA-Seq matrix with genes as rows (annotated as <em>SYMBOL</em>)
+and samples as columns) and selecting the desired model. This is done by
+the <code>deconvDigitalDLSorter</code> function which normalizes the new
+samples to counts per million (CPMs) by default, so this matrix must be
+provided as raw counts. Afterwards, estimated cell composition of each
+sample can be explored as a bar chart using the
+<code>barPlotCellTypes</code> function (workflow summarized in the
+figure below).</p>
 <p><img src="workflow_pretrained_models.png" title="**Workflow to use pre-trained models**" alt="**Workflow to use pre-trained models**" style="display: block; margin: auto;"></p>
 <!-- ![(#fig:workflow) Workflow to use pre-trained models](workflow_pretrained_models.png) -->
 <div class="section level2">
 <h2 id="available-models">Available models<a class="anchor" aria-label="anchor" href="#available-models"></a>
 </h2>
-<p>So far, available models just cover two possible biological environments: breast cancer and colorectal cancer. These models are able to accurately deconvolute new samples from the same environment as they have been trained (with transcriptional profiles from these specific contexts).</p>
+<p>So far, available models just cover two possible biological
+environments: breast cancer and colorectal cancer. These models are able
+to accurately deconvolute new samples from the same environment as they
+have been trained (with transcriptional profiles from these specific
+contexts).</p>
 <div class="section level3">
 <h3 id="breast-cancer-models">Breast cancer models<a class="anchor" aria-label="anchor" href="#breast-cancer-models"></a>
 </h3>
-<p>There are two deconvolution models for breast cancer samples that differ in the level of specificity. Both have been trained using data from <span class="citation">Chung et al. (2017)</span> (<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688" class="external-link">GSE75688</a>).</p>
+<p>There are two deconvolution models for breast cancer samples that
+differ in the level of specificity. Both have been trained using data
+from <span class="citation">Chung et al. (2017)</span> (<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688" class="external-link">GSE75688</a>).</p>
 <ul>
 <li>
-<code>breast.chung.generic</code>: it considers 13 cell types, four of them being the intrinsic molecular subtypes of breast cancer (<code>ER+</code>, <code>HER2+</code>, <code>ER+/HER2+</code> and <code>TNBC</code>) and the rest immune and stromal cells (<code>Stromal</code>, <code>Monocyte</code>, <code>TCD4mem</code> (memory CD4+ T cells), <code>BGC</code> (germinal center B cells), <code>Bmem</code> (memory B cells), <code>DC</code> (dendritic cells), <code>Macrophage</code>, <code>TCD8</code> (CD8+ T cells) and <code>TCD4reg</code> (regulatory CD4+ T cells)).</li>
+<code>breast.chung.generic</code>: it considers 13 cell types, four
+of them being the intrinsic molecular subtypes of breast cancer
+(<code>ER+</code>, <code>HER2+</code>, <code>ER+/HER2+</code> and
+<code>TNBC</code>) and the rest immune and stromal cells
+(<code>Stromal</code>, <code>Monocyte</code>, <code>TCD4mem</code>
+(memory CD4+ T cells), <code>BGC</code> (germinal center B cells),
+<code>Bmem</code> (memory B cells), <code>DC</code> (dendritic cells),
+<code>Macrophage</code>, <code>TCD8</code> (CD8+ T cells) and
+<code>TCD4reg</code> (regulatory CD4+ T cells)).</li>
 <li>
-<code>breast.chung.generic</code>: this model considers 7 cell types that are generic groups of the cell types considered by the specific version: B cells (<code>Bcell</code>), T CD4+ cells (<code>TcellCD4</code>), T CD8+ cells (<code>TcellCD8</code>), monocytes (<code>Monocyte</code>), dendritic cells (<code>DCs</code>), stromal cells (<code>Stromal</code>) and tumor cells (<code>Tumor</code>).</li>
+<code>breast.chung.generic</code>: this model considers 7 cell types
+that are generic groups of the cell types considered by the specific
+version: B cells (<code>Bcell</code>), T CD4+ cells
+(<code>TcellCD4</code>), T CD8+ cells (<code>TcellCD8</code>), monocytes
+(<code>Monocyte</code>), dendritic cells (<code>DCs</code>), stromal
+cells (<code>Stromal</code>) and tumor cells (<code>Tumor</code>).</li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="colorectal-cancer-model">Colorectal cancer model<a class="anchor" aria-label="anchor" href="#colorectal-cancer-model"></a>
 </h3>
-<p>This model was created with data from <span class="citation">Li et al. (2017)</span> (<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861" class="external-link">GSE81861</a>). It is called <code>colorectal.li</code> and considers 10 cell types: cancer cells (<code>CRC</code>), epithelial (<code>Ep</code>), monocytes (<code>M</code>), macrophages (<code>Mc</code>), fibroblasts (<code>Fb</code>), CD4 T cells (<code>CD4</code>), CD8 T cells (<code>CD8Gp</code>), CD8 T cells (<code>CD8Gn</code>), germinal center B cells (<code>gB</code>) and mature B cells (<code>pB</code>).</p>
+<p>This model was created with data from <span class="citation">Li et
+al. (2017)</span> (<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861" class="external-link">GSE81861</a>).
+It is called <code>colorectal.li</code> and considers 10 cell types:
+cancer cells (<code>CRC</code>), epithelial (<code>Ep</code>), monocytes
+(<code>M</code>), macrophages (<code>Mc</code>), fibroblasts
+(<code>Fb</code>), CD4 T cells (<code>CD4</code>), CD8 T cells
+(<code>CD8Gp</code>), CD8 T cells (<code>CD8Gn</code>), germinal center
+B cells (<code>gB</code>) and mature B cells (<code>pB</code>).</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="example-using-breast-cancer-samples-from-tcga-project">Example using breast cancer samples from TCGA project<a class="anchor" aria-label="anchor" href="#example-using-breast-cancer-samples-from-tcga-project"></a>
 </h2>
-<p>The following code chunk shows an example using <code>breast.chung.generic</code> model and a small portion of data from The Cancer Genome Atlas (TCGA) project <span class="citation">(Koboldt et al. 2012; Ciriello et al. 2015)</span> loaded from <code>digitalDLSorteRdata</code>:</p>
+<p>The following code chunk shows an example using
+<code>breast.chung.generic</code> model and a small portion of data from
+The Cancer Genome Atlas (TCGA) project <span class="citation">(Koboldt
+et al. 2012; Ciriello et al. 2015)</span> loaded from
+<code>digitalDLSorteRdata</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diegommcc.github.io/digitalDLSorteR/" class="external-link">digitalDLSorteR</a></span><span class="op">)</span><span class="op">)</span>
 <span class="co"># to load pre-trained models</span>
@@ -162,7 +206,16 @@
 <span class="co"># loading model and example data from digitalDLSorteRdata</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">breast.chung.generic</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.breast.small</span><span class="op">)</span></code></pre></div>
-<p><code>breast.chung.generic</code> is a DigitalDLSorterDNN-like list (list with the same structure as a <code>DigitalDLSorterDNN</code> object) that can be inspected to check which cell types are considered by the model, how well it performed on test data, etc. As the <strong>digitalDLSorteRmodels</strong> package stores all these objects as DigitalDLSorterDNN-like lists in order to remove its dependency on <strong>digitalDLSorteR</strong>, you have to transform these lists into actual <code>DigitalDLSorterDNN</code> objects if you want to inspect the models. This is done with the <code>listToDDLSDNN</code> function.</p>
+<p><code>breast.chung.generic</code> is a DigitalDLSorterDNN-like list
+(list with the same structure as a <code>DigitalDLSorterDNN</code>
+object) that can be inspected to check which cell types are considered
+by the model, how well it performed on test data, etc. As the
+<strong>digitalDLSorteRmodels</strong> package stores all these objects
+as DigitalDLSorterDNN-like lists in order to remove its dependency on
+<strong>digitalDLSorteR</strong>, you have to transform these lists into
+actual <code>DigitalDLSorterDNN</code> objects if you want to inspect
+the models. This is done with the <code>listToDDLSDNN</code>
+function.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">breast.chung.generic</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/listToDDLSDNN.html">listToDDLSDNN</a></span><span class="op">(</span><span class="va">breast.chung.generic</span><span class="op">)</span>
 <span class="va">breast.chung.generic</span></code></pre></div>
@@ -180,7 +233,8 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/cell.types.html">cell.types</a></span><span class="op">(</span><span class="va">breast.chung.generic</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## [1] "Tumor"    "Stromal"  "Monocyte" "TcellCD4" "Bcell"    "DCs"      "TcellCD8"</span></code></pre>
-<p>Now, we can use it to deconvolute <code>TCGA.breast.small</code> samples as follows:</p>
+<p>Now, we can use it to deconvolute <code>TCGA.breast.small</code>
+samples as follows:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># deconvolution</span>
 <span class="va">deconvResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDigitalDLSorter.html">deconvDigitalDLSorter</a></span><span class="op">(</span>
@@ -190,7 +244,7 @@
 <span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## === Filtering 32876 features in data that are not present in trained model</span></code></pre>
 <pre><code><span class="co">## === Setting 11305 features that are not present in trained model to zero</span></code></pre>
-<pre><code><span class="co">## === Normalizing data</span></code></pre>
+<pre><code><span class="co">## === Normalizing and scaling data</span></code></pre>
 <pre><code><span class="co">## === Predicting cell types present in the provided samples</span></code></pre>
 <pre><code><span class="co">## DONE</span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -203,7 +257,13 @@
 <span class="co">## Sample_4 0.4798905 0.013469697 0.01989893 0.0007664507 4.999202e-05 0.3453780 0.14054649</span>
 <span class="co">## Sample_5 0.6283218 0.015287977 0.07622542 0.0022742257 3.257442e-06 0.1749347 0.10295264</span>
 <span class="co">## Sample_6 0.4960882 0.015261916 0.02924263 0.0010657815 1.409765e-05 0.3112173 0.14710997</span></code></pre>
-<p><code>deconvDigitalDLSorter</code> returns a data frame with the samples as rows (<span class="math inline">\(k\)</span>) and the cell types considered by the model as columns (<span class="math inline">\(j\)</span>). Each entry corresponds to the proportion of cell type <span class="math inline">\(k\)</span> in sample <span class="math inline">\(i\)</span>. To visually evaluate these results using a bar chart, you can use the <code>barplotCellTypes</code> function as follows:</p>
+<p><code>deconvDigitalDLSorter</code> returns a data frame with the
+samples as rows (<span class="math inline">\(k\)</span>) and the cell
+types considered by the model as columns (<span class="math inline">\(j\)</span>). Each entry corresponds to the
+proportion of cell type <span class="math inline">\(k\)</span> in sample
+<span class="math inline">\(i\)</span>. To visually evaluate these
+results using a bar chart, you can use the <code>barplotCellTypes</code>
+function as follows:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span>
   <span class="va">deconvResults</span>, 
@@ -211,7 +271,12 @@
   title <span class="op">=</span> <span class="st">"Results of deconvolution of TCGA breast samples"</span>
 <span class="op">)</span></code></pre></div>
 <p><img src="resultsDeconvTCGA_pretrainedModels-1.png" title="plot of chunk resultsDeconvTCGA_pretrainedModels" alt="plot of chunk resultsDeconvTCGA_pretrainedModels" style="display: block; margin: auto;"></p>
-<p>Finally, <code>deconvDigitalDLSorterObj</code> also offers two parameters in case you want to simplify the results by aggregating cell proportions of similar cell types: <code>simplify.set</code> and <code>simplify.majority</code>. For instance, we can summarize dendritic cells (DCs) and monocytes in the new class mononuclear phagocyte system (MPS) using <code>simplify.set</code> as follows:</p>
+<p>Finally, <code>deconvDigitalDLSorterObj</code> also offers two
+parameters in case you want to simplify the results by aggregating cell
+proportions of similar cell types: <code>simplify.set</code> and
+<code>simplify.majority</code>. For instance, we can summarize dendritic
+cells (DCs) and monocytes in the new class mononuclear phagocyte system
+(MPS) using <code>simplify.set</code> as follows:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># deconvolution</span>
 <span class="va">deconvResultsSum</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDigitalDLSorter.html">deconvDigitalDLSorter</a></span><span class="op">(</span>
@@ -222,7 +287,7 @@
 <span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## === Filtering 32876 features in data that are not present in trained model</span></code></pre>
 <pre><code><span class="co">## === Setting 11305 features that are not present in trained model to zero</span></code></pre>
-<pre><code><span class="co">## === Normalizing data</span></code></pre>
+<pre><code><span class="co">## === Normalizing and scaling data</span></code></pre>
 <pre><code><span class="co">## === Predicting cell types present in the provided samples</span></code></pre>
 <pre><code><span class="co">## DONE</span></code></pre>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
@@ -234,12 +299,18 @@
   title <span class="op">=</span> <span class="st">"Results of deconvolution of TCGA breast samples (simplified)"</span>
 <span class="op">)</span></code></pre></div>
 <p><img src="resultsDeconvTCGASimpl_pretrainedModels-1.png" title="plot of chunk resultsDeconvTCGASimpl_pretrainedModels" alt="plot of chunk resultsDeconvTCGASimpl_pretrainedModels" style="display: block; margin: auto;"></p>
-<p>On the other hand, <code>simplify.majority</code> does not create new classes but sums the proportions to the most abundant cell type from those provided in each sample. See the documentation and examples for more details.</p>
+<p>On the other hand, <code>simplify.majority</code> does not create new
+classes but sums the proportions to the most abundant cell type from
+those provided in each sample. See the documentation and examples for
+more details.</p>
 </div>
 <div class="section level2">
 <h2 id="contribute-your-own-models">Contribute your own models<a class="anchor" aria-label="anchor" href="#contribute-your-own-models"></a>
 </h2>
-<p>New models are planned to be published soon, but you can contribute your own models by making them available to other users. Please do not hesitate to contact us! We will check the models and include them in the <strong>digitalDLSorteRmodels</strong> package.</p>
+<p>New models are planned to be published soon, but you can contribute
+your own models by making them available to other users. Please do not
+hesitate to contact us! We will check the models and include them in the
+<strong>digitalDLSorteRmodels</strong> package.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -250,16 +321,28 @@
 <!-- ``` -->
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Chung2017" class="csl-entry">
-Chung, W., H. H. Eum, H. O. Lee, K. M. Lee, H. B. Lee, K. T. Kim, H. S. Ryu, et al. 2017. <span>“<span class="nocase"><span>S</span>ingle-cell <span>R</span><span>N</span><span>A</span>-seq enables comprehensive tumour and immune cell profiling in primary breast cancer</span>.”</span> <em>Nat Commun</em> 8: 15081.
+Chung, W., H. H. Eum, H. O. Lee, K. M. Lee, H. B. Lee, K. T. Kim, H. S.
+Ryu, et al. 2017. <span>“<span class="nocase"><span>S</span>ingle-cell
+<span>R</span><span>N</span><span>A</span>-seq enables comprehensive
+tumour and immune cell profiling in primary breast
+cancer</span>.”</span> <em>Nat Commun</em> 8: 15081.
 </div>
 <div id="ref-Ciriello2015" class="csl-entry">
-Ciriello, G., M. L. Gatza, A. H. Beck, M. D. Wilkerson, S. K. Rhie, A. Pastore, H. Zhang, et al. 2015. <span>“<span class="nocase"><span>C</span>omprehensive molecular portraits of invasive lobular breast cancer</span>.”</span> <em>Cell</em> 163 (2): 506–19.
+Ciriello, G., M. L. Gatza, A. H. Beck, M. D. Wilkerson, S. K. Rhie, A.
+Pastore, H. Zhang, et al. 2015. <span>“<span class="nocase"><span>C</span>omprehensive molecular portraits of
+invasive lobular breast cancer</span>.”</span> <em>Cell</em> 163 (2):
+506–19.
 </div>
 <div id="ref-Koboldt2012" class="csl-entry">
-Koboldt, D. C., R. S. Fulton, M. D. McLellan, H. Schmidt, J. Kalicki-Veizer, J. F. McMichael, L. L. Fulton, et al. 2012. <span>“<span class="nocase"><span>C</span>omprehensive molecular portraits of human breast tumours</span>.”</span> <em>Nature</em> 490 (7418): 61–70.
+Koboldt, D. C., R. S. Fulton, M. D. McLellan, H. Schmidt, J.
+Kalicki-Veizer, J. F. McMichael, L. L. Fulton, et al. 2012. <span>“<span class="nocase"><span>C</span>omprehensive molecular portraits of human
+breast tumours</span>.”</span> <em>Nature</em> 490 (7418): 61–70.
 </div>
 <div id="ref-Li2017" class="csl-entry">
-Li, H., E. T. Courtois, D. Sengupta, Y. Tan, K. H. Chen, J. J. L. Goh, S. L. Kong, et al. 2017. <span>“<span class="nocase"><span>R</span>eference component analysis of single-cell transcriptomes elucidates cellular heterogeneity in human colorectal tumors</span>.”</span> <em>Nat Genet</em> 49 (5): 708–18.
+Li, H., E. T. Courtois, D. Sengupta, Y. Tan, K. H. Chen, J. J. L. Goh,
+S. L. Kong, et al. 2017. <span>“<span class="nocase"><span>R</span>eference component analysis of single-cell
+transcriptomes elucidates cellular heterogeneity in human colorectal
+tumors</span>.”</span> <em>Nat Genet</em> 49 (5): 708–18.
 </div>
 </div>
 </div>
@@ -277,12 +360,16 @@ Li, H., E. T. Courtois, D. Sengupta, Y. Tan, K. H. Chen, J. J. L. Goh, S. L. Kon
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="https://github.com/diegommcc" class="external-link">Diego Mañanes</a>, <a href="https://www.cnic.es/en/carlos-torroja" class="external-link">Carlos Torroja</a>, <a href="https://www.cnic.es/en/fatima-sanchez-cabo" class="external-link">Fatima Sanchez-Cabo</a>.</p>
+<p>Developed by <a href="https://github.com/diegommcc" class="external-link">Diego
+Mañanes</a>, <a href="https://www.cnic.es/en/carlos-torroja" class="external-link">Carlos
+Torroja</a>, <a href="https://www.cnic.es/en/fatima-sanchez-cabo" class="external-link">Fatima
+Sanchez-Cabo</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.9000.</p>
 </div>
 
       </footer>

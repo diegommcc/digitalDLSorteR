@@ -54,7 +54,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -101,7 +101,8 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Performance of a real model: deconvolution of colorectal cancer samples</h1>
+      <h1 data-toc-skip>Performance of a real model: deconvolution of
+colorectal cancer samples</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/diegommcc/digitalDLSorteR/vignettes/realModelExample.Rmd" class="external-link"><code>vignettes/realModelExample.Rmd</code></a></small>
@@ -111,11 +112,20 @@
 
     
     
-<p>In <a href="newModels.html">Building new deconvolution models</a> was shown the necessary workflow to build new deconvolution models. However, a ‘toy’ example was used in order to avoid long run times. In this vignette, the performance of a real model is shown in order to serve as a guide on how to assess whether a model has been trained correctly and can be used to deconvolute new bulk RNA-Seq samples.</p>
+<p>In <a href="newModels.html">Building new deconvolution models</a> was
+shown the necessary workflow to build new deconvolution models. However,
+a ‘toy’ example was used in order to avoid long run times. In this
+vignette, the performance of a real model is shown in order to serve as
+a guide on how to assess whether a model has been trained correctly and
+can be used to deconvolute new bulk RNA-Seq samples.</p>
 <div class="section level2">
 <h2 id="loading-and-inspection-of-the-model">Loading and inspection of the model<a class="anchor" aria-label="anchor" href="#loading-and-inspection-of-the-model"></a>
 </h2>
-<p>The model to be shown has been built with data from <span class="citation">Li et al. (2017)</span> (<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861" class="external-link">GSE81861</a>), so it can be used to deconvolute samples from colorectal cancer. It is loaded from <strong>digitalDLSorteRdata</strong> package and the corresponding trained model can be used through the <strong>digitalDLSorteRmodels</strong> package.</p>
+<p>The model to be shown has been built with data from <span class="citation">Li et al. (2017)</span> (<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861" class="external-link">GSE81861</a>),
+so it can be used to deconvolute samples from colorectal cancer. It is
+loaded from <strong>digitalDLSorteRdata</strong> package and the
+corresponding trained model can be used through the
+<strong>digitalDLSorteRmodels</strong> package.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diegommcc.github.io/digitalDLSorteR/" class="external-link">digitalDLSorteR</a></span><span class="op">)</span><span class="op">)</span>
@@ -150,13 +160,21 @@
 <span class="co">##     categorical_accuracy: 0.9297</span>
 <span class="co">##   Performance evaluation over each sample: MAE MSE </span>
 <span class="co">## Project: DigitalDLSorterProject</span></code></pre>
-<p>As shown above, the model was trained 30 epochs with a total of 20,000 pseudo-bulk samples (13,334 for training and 6,666 for testing). Now, evaluation metrics will be calculated by the <code>calculateEvalMetrics</code> function in test data to explore its performance in depth.</p>
+<p>As shown above, the model was trained 30 epochs with a total of
+20,000 pseudo-bulk samples (13,334 for training and 6,666 for testing).
+Now, evaluation metrics will be calculated by the
+<code>calculateEvalMetrics</code> function in test data to explore its
+performance in depth.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSLiComp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateEvalMetrics.html">calculateEvalMetrics</a></span><span class="op">(</span><span class="va">DDLSLiComp</span><span class="op">)</span></code></pre></div>
 <div class="section level3">
 <h3 id="how-errors-are-distributed">How errors are distributed<a class="anchor" aria-label="anchor" href="#how-errors-are-distributed"></a>
 </h3>
-<p>With <code>distErrorPlot</code>, we can plot in different ways how errors are distributed. In this case, absolute error (<code>AbsErr</code>) by cell type (<code>CellType</code>) is shown. CD4 T cell proportions are predicted worse than the other cell types, but still have a median error close to zero.</p>
+<p>With <code>distErrorPlot</code>, we can plot in different ways how
+errors are distributed. In this case, absolute error
+(<code>AbsErr</code>) by cell type (<code>CellType</code>) is shown. CD4
+T cell proportions are predicted worse than the other cell types, but
+still have a median error close to zero.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
   <span class="va">DDLSLiComp</span>,
@@ -168,11 +186,14 @@
   size.point <span class="op">=</span> <span class="fl">0.5</span>
 <span class="op">)</span></code></pre></div>
 <p><img src="distErr1_realModelExample-1.png" title="plot of chunk distErr1_realModelExample" alt="plot of chunk distErr1_realModelExample" style="display: block; margin: auto;"></p>
-<p>In order to see mean error values, we can check it with <code>barErrorPlot</code>:</p>
+<p>In order to see mean error values, we can check it with
+<code>barErrorPlot</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/barErrorPlot.html">barErrorPlot</a></span><span class="op">(</span><span class="va">DDLSLiComp</span>, error <span class="op">=</span> <span class="st">"MAE"</span>, by <span class="op">=</span> <span class="st">"CellType"</span><span class="op">)</span></code></pre></div>
 <p><img src="barError_realModelExample-1.png" title="plot of chunk barError_realModelExample" alt="plot of chunk barError_realModelExample" style="display: block; margin: auto;"></p>
-<p>Now, we can see in which proportions the model is failing most by changing the <code>x.by</code> argument to <code>"pBin"</code> and optionally setting <code>facet.by = "CellType"</code>:</p>
+<p>Now, we can see in which proportions the model is failing most by
+changing the <code>x.by</code> argument to <code>"pBin"</code> and
+optionally setting <code>facet.by = "CellType"</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
   <span class="va">DDLSLiComp</span>,
@@ -194,12 +215,24 @@
   type <span class="op">=</span> <span class="st">"boxplot"</span>
 <span class="op">)</span></code></pre></div>
 <p><img src="distErr3_realModelExample-1.png" title="plot of chunk distErr3_realModelExample" alt="plot of chunk distErr3_realModelExample" style="display: block; margin: auto;"></p>
-<p>As can be seen, most of the failures in CD4 T cell proportions occur at high proportions (between 0.5 and 1), and mean absolute errors (<code>MAbsErr</code>) shown as annotations in each panel are very low in all cases.</p>
+<p>As can be seen, most of the failures in CD4 T cell proportions occur
+at high proportions (between 0.5 and 1), and mean absolute errors
+(<code>MAbsErr</code>) shown as annotations in each panel are very low
+in all cases.</p>
 </div>
 <div class="section level3">
 <h3 id="correlation-between-actual-and-expected-proportions">Correlation between actual and expected proportions<a class="anchor" aria-label="anchor" href="#correlation-between-actual-and-expected-proportions"></a>
 </h3>
-<p>Another way to visualize how the model works is to use the <code>corrExpPredPlot</code> function. Like <code>distErrorPlot</code>, we can see how proportions are correlated with each other by different variables. Here, we can see the same trend observed above: the model performs worst estimating CD4+ T cell proportions with the lowest concordance correlation and Pearson’s coefficients (<span class="math inline">\(R = 0.95\)</span> and <span class="math inline">\(CCC = 0.794\)</span>, respectively). In fact, we can observe that the model tends to underestimate these proportions, although these values are still good. For the rest of cell types, the results show a very good performance with high coefficients (between 0.97 and 0.99).</p>
+<p>Another way to visualize how the model works is to use the
+<code>corrExpPredPlot</code> function. Like <code>distErrorPlot</code>,
+we can see how proportions are correlated with each other by different
+variables. Here, we can see the same trend observed above: the model
+performs worst estimating CD4+ T cell proportions with the lowest
+concordance correlation and Pearson’s coefficients (<span class="math inline">\(R = 0.95\)</span> and <span class="math inline">\(CCC = 0.794\)</span>, respectively). In fact, we
+can observe that the model tends to underestimate these proportions,
+although these values are still good. For the rest of cell types, the
+results show a very good performance with high coefficients (between
+0.97 and 0.99).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
   <span class="va">DDLSLiComp</span>,
@@ -210,7 +243,10 @@
 <span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## `geom_smooth()` using formula 'y ~ x'</span></code></pre>
 <p><img src="corr1_realModelExample-1.png" title="plot of chunk corr1_realModelExample" alt="plot of chunk corr1_realModelExample" style="display: block; margin: auto;"></p>
-<p>It is important to note that these results only show the estimated proportions of pseudo-bulk samples. If we don’t filter out single-cell profiles, the results improve in general, showing that the model is able to deal with pure samples as well.</p>
+<p>It is important to note that these results only show the estimated
+proportions of pseudo-bulk samples. If we don’t filter out single-cell
+profiles, the results improve in general, showing that the model is able
+to deal with pure samples as well.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
   <span class="va">DDLSLiComp</span>,
@@ -222,7 +258,9 @@
 <span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## `geom_smooth()` using formula 'y ~ x'</span></code></pre>
 <p><img src="corr2_realModelExample-1.png" title="plot of chunk corr2_realModelExample" alt="plot of chunk corr2_realModelExample" style="display: block; margin: auto;"></p>
-<p>In the end, we can see the overall results without splitting the graph. As can be seen, both coefficients present also high values when all proportions are considered.</p>
+<p>In the end, we can see the overall results without splitting the
+graph. As can be seen, both coefficients present also high values when
+all proportions are considered.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
   <span class="va">DDLSLiComp</span>,
@@ -236,7 +274,14 @@
 <div class="section level3">
 <h3 id="bland-altman-agreement-plots">Bland-Altman agreement plots<a class="anchor" aria-label="anchor" href="#bland-altman-agreement-plots"></a>
 </h3>
-<p>The last way to graphically represent results is to use <code>blandAltmanLehPlot</code>. It generates a Bland-Altman agreement plot, a method for analyzing the level of agreement between two variables, in that case expected vs predicted cell proportions. As shown, most of the proportions fall close to zero (note blue density lines) and the dashed red lines are very close to the mean, although we can observe again the aforementioned problem in the estimate of T CD4 cell proportions.</p>
+<p>The last way to graphically represent results is to use
+<code>blandAltmanLehPlot</code>. It generates a Bland-Altman agreement
+plot, a method for analyzing the level of agreement between two
+variables, in that case expected vs predicted cell proportions. As
+shown, most of the proportions fall close to zero (note blue density
+lines) and the dashed red lines are very close to the mean, although we
+can observe again the aforementioned problem in the estimate of T CD4
+cell proportions.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
   <span class="va">DDLSLiComp</span>, 
@@ -246,7 +291,12 @@
   density <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
 <p><img src="bland1_realModelExample-1.png" title="plot of chunk bland1_realModelExample" alt="plot of chunk bland1_realModelExample" style="display: block; margin: auto;"></p>
-<p>Finally, we can generate the same plot but spliting the information by number of different cell types present in each pseudo-bulk sample. The smaller the number of cell types, the larger the error made by the model. In any case, considering the results from <code>distErrorPlot</code> and <code>corrExpPredPlot</code>, we can conclude that the model performs well on test data.</p>
+<p>Finally, we can generate the same plot but spliting the information
+by number of different cell types present in each pseudo-bulk sample.
+The smaller the number of cell types, the larger the error made by the
+model. In any case, considering the results from
+<code>distErrorPlot</code> and <code>corrExpPredPlot</code>, we can
+conclude that the model performs well on test data.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
   <span class="va">DDLSLiComp</span>, 
@@ -262,9 +312,13 @@
 </div>
 <div class="section level2">
 <h2 id="digitaldlsorter-dealing-with-real-data-from-tcga-project">
-<strong>digitalDLSorteR</strong> dealing with real data from TCGA project<a class="anchor" aria-label="anchor" href="#digitaldlsorter-dealing-with-real-data-from-tcga-project"></a>
+<strong>digitalDLSorteR</strong> dealing with real data from TCGA
+project<a class="anchor" aria-label="anchor" href="#digitaldlsorter-dealing-with-real-data-from-tcga-project"></a>
 </h2>
-<p>Now, to show the performance of this model on real data, colorectal cancer samples from The Cancer Genome Atlas (TCGA) project <span class="citation">(Koboldt et al. 2012; Ciriello et al. 2015)</span> will be used. This dataset consists of 521 samples and includes different subtypes of tumors and healthy samples.</p>
+<p>Now, to show the performance of this model on real data, colorectal
+cancer samples from The Cancer Genome Atlas (TCGA) project <span class="citation">(Koboldt et al. 2012; Ciriello et al. 2015)</span> will
+be used. This dataset consists of 521 samples and includes different
+subtypes of tumors and healthy samples.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.colon.se</span><span class="op">)</span>
 <span class="va">TCGA.colon.se</span></code></pre></div>
@@ -274,16 +328,22 @@
 <span class="co">## assays(1): counts</span>
 <span class="co">## rownames(59085): 5S_RRNA 7SK ... ZZEF1 ZZZ3</span>
 <span class="co">## rowData names(0):</span>
-<span class="co">## colnames(521): X0096f6b3.94f5.49d9.aa43.66d9ab6b2b5c X01f5a228.a2cf.444f.8102.a9d4a2d9a27d ... ff016e44.7a4d.4423.822e.aa6aa6df0ef2 ffbe7115.06be.4592.91d0.3dad62e3c73a</span>
+<span class="co">## colnames(521): X0096f6b3.94f5.49d9.aa43.66d9ab6b2b5c X01f5a228.a2cf.444f.8102.a9d4a2d9a27d ...</span>
+<span class="co">##   ff016e44.7a4d.4423.822e.aa6aa6df0ef2 ffbe7115.06be.4592.91d0.3dad62e3c73a</span>
 <span class="co">## colData names(2): Bulk Tumor_Type</span></code></pre>
-<p>As shown in <a href="newModels.html">Building new deconvolution models</a>, we can load the data into the <code>DigitalDLSorter</code> object as follows:</p>
+<p>As shown in <a href="newModels.html">Building new deconvolution
+models</a>, we can load the data into the <code>DigitalDLSorter</code>
+object as follows:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSLiComp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadDeconvData.html">loadDeconvData</a></span><span class="op">(</span>
   object <span class="op">=</span> <span class="va">DDLSLiComp</span>,
   data <span class="op">=</span> <span class="va">TCGA.colon.se</span>, 
   name.data <span class="op">=</span> <span class="st">"TCGA.colon"</span>
 <span class="op">)</span></code></pre></div>
-<p>Then, with the <code>deconvDigitalDLSorterObj</code> function, these new samples can be deconvoluted into the cell types considered by the model and predicted proportions can be represented by the <code>barPlotCellTypes</code> function.</p>
+<p>Then, with the <code>deconvDigitalDLSorterObj</code> function, these
+new samples can be deconvoluted into the cell types considered by the
+model and predicted proportions can be represented by the
+<code>barPlotCellTypes</code> function.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSLiComp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDigitalDLSorterObj.html">deconvDigitalDLSorterObj</a></span><span class="op">(</span>
   object <span class="op">=</span> <span class="va">DDLSLiComp</span>, 
@@ -292,7 +352,9 @@
 <span class="op">)</span>
 <span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span><span class="va">DDLSLiComp</span>,  name.data <span class="op">=</span> <span class="st">"TCGA.colon"</span>, rm.x.text <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="barPlotResults_realModelExample-1.png" title="plot of chunk barPlotResults_realModelExample" alt="plot of chunk barPlotResults_realModelExample" style="display: block; margin: auto;"></p>
-<p>As the total number of samples is too high, we can see the results of some samples by taking the matrix with the proportions and plotting 20 random samples with <code>barPlotCellTypes</code>:</p>
+<p>As the total number of samples is too high, we can see the results of
+some samples by taking the matrix with the proportions and plotting 20
+random samples with <code>barPlotCellTypes</code>:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span>
 <span class="va">resDeconvTCGA</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconv.results.html">deconv.results</a></span><span class="op">(</span><span class="va">DDLSLiComp</span>, <span class="st">"TCGA.colon"</span><span class="op">)</span>
@@ -301,7 +363,10 @@
   title <span class="op">=</span> <span class="st">"Results of deconvolution (20 random samples)"</span>
 <span class="op">)</span></code></pre></div>
 <p><img src="barPlotResults20_realModelExample-1.png" title="plot of chunk barPlotResults20_realModelExample" alt="plot of chunk barPlotResults20_realModelExample" style="display: block; margin: auto;"></p>
-<p>Finally, to check whether predicted estimates make sense with the type of sample they come from (metastatic, normal, primary, or recurrent), we will inspect predicted proportions of tumor cells, epithelial cells and fibroblasts.</p>
+<p>Finally, to check whether predicted estimates make sense with the
+type of sample they come from (metastatic, normal, primary, or
+recurrent), we will inspect predicted proportions of tumor cells,
+epithelial cells and fibroblasts.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dfProp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
   Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">resDeconvTCGA</span><span class="op">)</span>,
@@ -321,20 +386,34 @@
     legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
 <p><img src="boxplotsTypes_realModelExample-1.png" title="plot of chunk boxplotsTypes_realModelExample" alt="plot of chunk boxplotsTypes_realModelExample" style="display: block; margin: auto;"></p>
-<p><strong>digitalDLSorteR</strong> correctly estimates the proportion of tumor cells (<code>CRC</code>) and epithelial/fibroblast cells (<code>Ep</code> and <code>Fb</code>) according to sample type. Further analysis can be performed to better understand and evaluate the performance of the model on these data (correlation analysis between estimated cell proportions, comparisons with other published tools, etc.).</p>
+<p><strong>digitalDLSorteR</strong> correctly estimates the proportion
+of tumor cells (<code>CRC</code>) and epithelial/fibroblast cells
+(<code>Ep</code> and <code>Fb</code>) according to sample type. Further
+analysis can be performed to better understand and evaluate the
+performance of the model on these data (correlation analysis between
+estimated cell proportions, comparisons with other published tools,
+etc.).</p>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Ciriello2015" class="csl-entry">
-Ciriello, G., M. L. Gatza, A. H. Beck, M. D. Wilkerson, S. K. Rhie, A. Pastore, H. Zhang, et al. 2015. <span>“<span class="nocase"><span>C</span>omprehensive molecular portraits of invasive lobular breast cancer</span>.”</span> <em>Cell</em> 163 (2): 506–19.
+Ciriello, G., M. L. Gatza, A. H. Beck, M. D. Wilkerson, S. K. Rhie, A.
+Pastore, H. Zhang, et al. 2015. <span>“<span class="nocase"><span>C</span>omprehensive molecular portraits of
+invasive lobular breast cancer</span>.”</span> <em>Cell</em> 163 (2):
+506–19.
 </div>
 <div id="ref-Koboldt2012" class="csl-entry">
-Koboldt, D. C., R. S. Fulton, M. D. McLellan, H. Schmidt, J. Kalicki-Veizer, J. F. McMichael, L. L. Fulton, et al. 2012. <span>“<span class="nocase"><span>C</span>omprehensive molecular portraits of human breast tumours</span>.”</span> <em>Nature</em> 490 (7418): 61–70.
+Koboldt, D. C., R. S. Fulton, M. D. McLellan, H. Schmidt, J.
+Kalicki-Veizer, J. F. McMichael, L. L. Fulton, et al. 2012. <span>“<span class="nocase"><span>C</span>omprehensive molecular portraits of human
+breast tumours</span>.”</span> <em>Nature</em> 490 (7418): 61–70.
 </div>
 <div id="ref-Li2017" class="csl-entry">
-Li, H., E. T. Courtois, D. Sengupta, Y. Tan, K. H. Chen, J. J. L. Goh, S. L. Kong, et al. 2017. <span>“<span class="nocase"><span>R</span>eference component analysis of single-cell transcriptomes elucidates cellular heterogeneity in human colorectal tumors</span>.”</span> <em>Nat Genet</em> 49 (5): 708–18.
+Li, H., E. T. Courtois, D. Sengupta, Y. Tan, K. H. Chen, J. J. L. Goh,
+S. L. Kong, et al. 2017. <span>“<span class="nocase"><span>R</span>eference component analysis of single-cell
+transcriptomes elucidates cellular heterogeneity in human colorectal
+tumors</span>.”</span> <em>Nat Genet</em> 49 (5): 708–18.
 </div>
 </div>
 </div>
@@ -352,12 +431,16 @@ Li, H., E. T. Courtois, D. Sengupta, Y. Tan, K. H. Chen, J. J. L. Goh, S. L. Kon
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="https://github.com/diegommcc" class="external-link">Diego Mañanes</a>, <a href="https://www.cnic.es/en/carlos-torroja" class="external-link">Carlos Torroja</a>, <a href="https://www.cnic.es/en/fatima-sanchez-cabo" class="external-link">Fatima Sanchez-Cabo</a>.</p>
+<p>Developed by <a href="https://github.com/diegommcc" class="external-link">Diego
+Mañanes</a>, <a href="https://www.cnic.es/en/carlos-torroja" class="external-link">Carlos
+Torroja</a>, <a href="https://www.cnic.es/en/fatima-sanchez-cabo" class="external-link">Fatima
+Sanchez-Cabo</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.9000.</p>
 </div>
 
       </footer>
