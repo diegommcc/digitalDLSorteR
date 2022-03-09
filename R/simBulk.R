@@ -383,21 +383,22 @@ generateBulkCellMatrix <- function(
     message(paste0("    - ", names(tb), ": ", tb, collapse = "\n"), "\n")
   }
   # take prob.design
-  prob.list <- apply(
-    X = prob.design, MARGIN = 1,
-    FUN = function (x) {
-      return(seq(from = x['from'], to = x['to']))
+  prob.list <- lapply(
+    split(prob.design, seq(nrow(prob.design))), 
+    FUN = function(x) {
+      return(seq(from = x[['from']], to = x[['to']]))
     }
   )
   names(prob.list) <- prob.design[, cell.type.column]
-  
   n.cell.types <- length(unique(train.types))
   functions.list <- list(
     .generateSet1, .generateSet2, .generateSet3, 
     .generateSet4, .generateSet5, .generateSet6
   )
   # TRAIN SETS #################################################################
-  train.prob.matrix <- matrix(NA_real_, nrow = sum(nums.train), ncol = n.cell.types)
+  train.prob.matrix <- matrix(
+    NA_real_, nrow = sum(nums.train), ncol = n.cell.types
+  )
   colnames(train.prob.matrix) <- names(prob.list)
   train.plots <- list()
   n <- 1
@@ -438,7 +439,14 @@ generateBulkCellMatrix <- function(
   rownames(train.prob.matrix) <- paste("Bulk", seq(dim(train.prob.matrix)[1]),
                                        sep = "_")
   train.plots <- train.plots[!unlist(lapply(train.plots, is.null))]
-  
+  train.method <- unlist(
+    mapply(
+      FUN = function(name.method, num.samp) rep(name.method, num.samp), 
+      name.method = paste("Method", seq(1, length(nums.train))), 
+      num.samp = nums.train
+    )
+  )
+  names(train.method) <- paste0("Bulk_", seq(sum(nums.train)))
   if (verbose) {
     message("=== Probability matrix for training data:")
     message(paste(c("    - Bulk RNA-Seq samples:", "    - Cell types:"),
@@ -489,7 +497,14 @@ generateBulkCellMatrix <- function(
   rownames(test.prob.matrix) <- paste("Bulk", seq(dim(test.prob.matrix)[1]),
                                       sep = "_")
   test.plots <- test.plots[!unlist(lapply(test.plots, is.null))]
-  
+  test.method <- unlist(
+    mapply(
+      FUN = function(name.method, num.samp) rep(name.method, num.samp), 
+      name.method = paste("Method", seq(1, length(nums.test))) , 
+      num.samp = nums.test
+    )
+  )
+  names(test.method) <- paste0("Bulk_", seq(sum(nums.test)))
   if (verbose) {
     message("=== Probability matrix for test data:")
     message(paste(c("    - Bulk RNA-Seq samples:", "    - Cell types:"),
@@ -521,6 +536,7 @@ generateBulkCellMatrix <- function(
     cell.names = train.prob.matrix.names,
     set.list = train.set.list,
     set = train.set,
+    method = train.method,
     plots = train.plots,
     type.data = "train"
   )
@@ -530,6 +546,7 @@ generateBulkCellMatrix <- function(
     cell.names = test.prob.matrix.names,
     set.list = test.set.list,
     set = test.set,
+    method = test.method,
     plots = test.plots,
     type.data = "test"
   )

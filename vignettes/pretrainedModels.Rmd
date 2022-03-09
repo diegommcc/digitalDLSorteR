@@ -118,7 +118,7 @@ deconvResults <- deconvDigitalDLSorter(
 ```
 
 ```
-## === Normalizing data
+## === Normalizing and scaling data
 ```
 
 ```
@@ -179,7 +179,7 @@ deconvResultsSum <- deconvDigitalDLSorter(
 ```
 
 ```
-## === Normalizing data
+## === Normalizing and scaling data
 ```
 
 ```

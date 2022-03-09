@@ -13,3 +13,5 @@ cran-comments.md
 ^vignettes/knitr_rendering\.R$
 ^.*\.py$
 __pycache__
+^vignettes/hdf5Backend\.Rmd$
+^vignettes/kerasIssues\.Rmd$

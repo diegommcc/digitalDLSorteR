@@ -71,6 +71,7 @@ ProbMatrixCellTypes <- setClass(
     cell.names = "MatrixOrNULL",
     set.list = "ListOrNULL",
     set = "CharacterOrNULL",
+    method = "CharacterOrNULL",
     plots = "ListOrNULL",
     type.data = "CharacterOrNULL"
   )
@@ -85,6 +86,7 @@ setMethod(
     cell.names = NULL,
     set.list = NULL,
     set = NULL,
+    method = NULL,
     plots = NULL,
     type.data = NULL
   ) {
@@ -92,6 +94,7 @@ setMethod(
     .Object@cell.names <- cell.names
     .Object@set.list <- set.list
     .Object@set <- set
+    .Object@method <- method
     .Object@plots <- plots
     .Object@type.data <- type.data
     return(.Object)

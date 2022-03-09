@@ -183,6 +183,48 @@ setMethod(
   }
 )
 
+# method
+
+#' @title Get and set \code{method} slot in a
+#'   \code{\linkS4class{ProbMatrixCellTypes}} object
+#'
+#' @docType methods
+#' @name method
+#' @rdname method
+#' @aliases method,ProbMatrixCellTypes-method
+#' 
+#' @param object \code{\linkS4class{ProbMatrixCellTypes}} object.
+#'
+#' @export method
+#'   
+setGeneric(name = "method", def = function(object) standardGeneric("method"))
+setMethod(
+  f = "method",
+  signature = "ProbMatrixCellTypes",
+  definition = function(object) object@method
+)
+
+#' @docType methods
+#' @rdname method
+#' @aliases method<-,ProbMatrixCellTypes-method
+#' 
+#' @param value Vector with names of cells present in the object.
+#'
+#' @export method<-
+#'
+setGeneric(
+  name = "method<-", def = function(object, value) standardGeneric("method<-")
+)
+setMethod(
+  f = "method<-",
+  signature = "ProbMatrixCellTypes",
+  definition = function(object, value) {
+    object@method <- value
+    return(object)
+  }
+)
+
+
 # plots
 
 #' @title Get and set \code{plots} slot in a
