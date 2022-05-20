@@ -392,7 +392,7 @@ NULL
   ################################# ATTENTION ##################################
   # duplicated genes means that there are duplicated rownames and this is not 
   # allowed by R, so I think that it is not necessary to implement. Check if 
-  # hdf5 files allow duplicated rownames (check with public data)
+  # hdf5 files allow duplicated rownames
   dup.genes <- duplicated(rownames(counts))
   if (any(dup.genes)) {
     if (verbose) {

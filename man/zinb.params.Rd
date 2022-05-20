@@ -16,8 +16,8 @@ zinb.params(object) <- value
 \arguments{
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object.}
 
-\item{value}{\code{\linkS4class{ZINBParams}} object with the ZiNB-WaVE
-parameters estimated from the real single-cell profiles.}
+\item{value}{\code{\linkS4class{ZinbParametersModel}} object with a valid
+\code{\linkS4class{ZinbModel}} object.}
 }
 \description{
 Get and set \code{zinb.params} slot in a

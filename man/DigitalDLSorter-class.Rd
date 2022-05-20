@@ -19,7 +19,7 @@ during the process: \itemize{ \item \code{\linkS4class{SingleCellExperiment}}
 class for single-cell RNA-Seq data, using sparse matrix from the \pkg{Matrix}
 package (\code{\linkS4class{dgCMatrix}} class) or \code{HDF5Array} class in
 the case of using HDF5 files as back-end (see below for more information).
-\item \code{\linkS4class{ZINBParams}} class with estimated parameters for the
+\item \code{\linkS4class{ZinbModel}} class with estimated parameters for the
 simulation of new single-cell profiles. \item
 \code{\linkS4class{SummarizedExperiment}} class for large bulk RNA-Seq data
 storage. \item \code{\linkS4class{ProbMatrixCellTypes}} class for the
@@ -53,7 +53,7 @@ to save it as RDS or HDF5 files. Please see
 \code{SingleCellExperiment} object. The count matrix is stored as
 \code{\linkS4class{dgCMatrix}} or \code{HDF5Array} objects.}
 
-\item{\code{zinb.params}}{\code{\linkS4class{ZINBParams}} object with estimated
+\item{\code{zinb.params}}{\code{\linkS4class{ZinbModel}} object with estimated
 parameters for the simulation of new single-cell expression profiles.}
 
 \item{\code{single.cell.simul}}{Simulated single-cell expression profiles from the

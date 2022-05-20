@@ -66,9 +66,9 @@ default).}
 }
 \value{
 A \code{\linkS4class{DigitalDLSorter}} object with \code{zinb.params}
-slot containing a \code{\linkS4class{ZINBParams}} object. This object
-contains the estimated ZINB-WaVE parameters from the real single-cell
-RNA-Se`q data.
+slot containing a \code{\linkS4class{ZinbParametersModel}} object. This
+object contains a slot with the estimated ZINB-WaVE parameters from the
+real single-cell RNA-Se`q data.
 }
 \description{
 Estimate the parameters of the ZINB-WaVE model using a real single-cell
@@ -88,23 +88,22 @@ zero-inflated negative binomial (ZINB) distribution. The estimated parameters
 will be used for the simulation of new single-cell expression profiles by
 sampling a negative binomial distribution and inserting dropouts from a
 binomial distribution. To do so, \pkg{digitalDLSorteR} uses the
-\code{\link[splatter]{zinbEstimate}} function from the \pkg{splatter} package
-(Zappia et al., 2017), a wrapper around the \code{\link[zinbwave]{zinbFit}}
-function from the \pkg{zinbwave} package (Risso et al., 2018). For more
-details about the model, see Risso et al., 2018.
+\code{\link[zinbwave]{zinbFit}} function from the \pkg{zinbwave} package
+(Risso et al., 2018). For more details about the model, see Risso et al.,
+2018.
 }
 \examples{
 set.seed(123) # reproducibility
 sce <- SingleCellExperiment::SingleCellExperiment(
   assays = list(
     counts = matrix(
-      rpois(30, lambda = 5), nrow = 15, ncol = 10, 
+      rpois(30, lambda = 5), nrow = 15, ncol = 10,
       dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(10)))
     )
   ),
   colData = data.frame(
     Cell_ID = paste0("RHC", seq(10)),
-    Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10, 
+    Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10,
                        replace = TRUE)
   ),
   rowData = data.frame(
@@ -120,7 +119,7 @@ DDLS <- estimateZinbwaveParams(
   object = DDLS,
   cell.type.column = "Cell_Type",
   cell.ID.column = "Cell_ID",
-  gene.ID.column = "Gene_ID", 
+  gene.ID.column = "Gene_ID",
   subset.cells = 2,
   verbose = TRUE
 )
@@ -134,10 +133,6 @@ Nat Commun 9, 284. doi: \doi{10.1038/s41467-017-02554-5}.
 Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 algorithm to quantify immune cell populations based on scRNA-Seq data.
 Frontiers in Genetics 10, 978. doi: \doi{10.3389/fgene.2019.00978}.
-
-Zappia, L., Phipson, B. and Oshlack, A. Splatter: simulation of single-cell
-RNA sequencing data. Genome Biol. 2017; 18: 174. doi:
-\doi{10.1186/s13059-017-1305-0}.
 }
 \seealso{
 \code{\link{simSCProfiles}}

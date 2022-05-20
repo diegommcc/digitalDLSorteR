@@ -48,9 +48,9 @@ type in this sample.}
 will be used in subsequent predictions (the nomenclature used in new bulk
 RNA-Seq samples must be the same).}
 
-\item{\code{test.deconv.metrics}}{Performance of the model on each sample of test data
-compared to known cell proportions. This slot is used after
-\code{\link{calculateEvalMetrics}} (see
-\code{?\link{calculateEvalMetrics}} for more details).}
+\item{\code{test.deconv.metrics}}{Performance of the model on each sample of test
+data compared to known cell proportions. This slot is used after
+\code{\link{calculateEvalMetrics}} (see \code{?\link{calculateEvalMetrics}}
+for more details).}
 }}
 

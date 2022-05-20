@@ -201,9 +201,7 @@ test_that(
       threads = 1,
       verbose = TRUE
     )
-    expect_s4_class(object = zinb.params(DDLS), class = "ZINBParams")
-    expect_true(zinb.params(DDLS)@nGenes == nrow(sce))
-    expect_true(zinb.params(DDLS)@nCells == ncol(sce))
+    expect_s4_class(object = zinb.params(DDLS), class = "ZinbParametersModel")
   }
 )
 

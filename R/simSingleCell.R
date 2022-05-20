@@ -25,10 +25,9 @@ NULL
 #' will be used for the simulation of new single-cell expression profiles by
 #' sampling a negative binomial distribution and inserting dropouts from a
 #' binomial distribution. To do so, \pkg{digitalDLSorteR} uses the
-#' \code{\link[splatter]{zinbEstimate}} function from the \pkg{splatter} package
-#' (Zappia et al., 2017), a wrapper around the \code{\link[zinbwave]{zinbFit}}
-#' function from the \pkg{zinbwave} package (Risso et al., 2018). For more
-#' details about the model, see Risso et al., 2018.
+#' \code{\link[zinbwave]{zinbFit}} function from the \pkg{zinbwave} package
+#' (Risso et al., 2018). For more details about the model, see Risso et al.,
+#' 2018.
 #'
 #' @param object \code{\linkS4class{DigitalDLSorter}} object with a
 #'   \code{single.cell.real} slot.
@@ -64,26 +63,26 @@ NULL
 #' @param verbose Show informative messages during the execution (\code{TRUE} by
 #'   default).
 #' @return A \code{\linkS4class{DigitalDLSorter}} object with \code{zinb.params}
-#'   slot containing a \code{\linkS4class{ZINBParams}} object. This object
-#'   contains the estimated ZINB-WaVE parameters from the real single-cell
-#'   RNA-Se`q data.
+#'   slot containing a \code{\linkS4class{ZinbParametersModel}} object. This
+#'   object contains a slot with the estimated ZINB-WaVE parameters from the
+#'   real single-cell RNA-Se`q data.
 #'
 #' @export
 #'
 #' @seealso \code{\link{simSCProfiles}}
 #'
-#' @examples 
+#' @examples
 #' set.seed(123) # reproducibility
 #' sce <- SingleCellExperiment::SingleCellExperiment(
 #'   assays = list(
 #'     counts = matrix(
-#'       rpois(30, lambda = 5), nrow = 15, ncol = 10, 
+#'       rpois(30, lambda = 5), nrow = 15, ncol = 10,
 #'       dimnames = list(paste0("Gene", seq(15)), paste0("RHC", seq(10)))
 #'     )
 #'   ),
 #'   colData = data.frame(
 #'     Cell_ID = paste0("RHC", seq(10)),
-#'     Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10, 
+#'     Cell_Type = sample(x = paste0("CellType", seq(2)), size = 10,
 #'                        replace = TRUE)
 #'   ),
 #'   rowData = data.frame(
@@ -99,7 +98,7 @@ NULL
 #'   object = DDLS,
 #'   cell.type.column = "Cell_Type",
 #'   cell.ID.column = "Cell_ID",
-#'   gene.ID.column = "Gene_ID", 
+#'   gene.ID.column = "Gene_ID",
 #'   subset.cells = 2,
 #'   verbose = TRUE
 #' )
@@ -111,10 +110,6 @@ NULL
 #'   Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning
 #'   algorithm to quantify immune cell populations based on scRNA-Seq data.
 #'   Frontiers in Genetics 10, 978. doi: \doi{10.3389/fgene.2019.00978}.
-#'
-#'   Zappia, L., Phipson, B. and Oshlack, A. Splatter: simulation of single-cell
-#'   RNA sequencing data. Genome Biol. 2017; 18: 174. doi:
-#'   \doi{10.1186/s13059-017-1305-0}.
 #'   
 estimateZinbwaveParams <- function(
   object,
@@ -143,7 +138,7 @@ estimateZinbwaveParams <- function(
   }
   if (!is.null(zinb.params(object = object))) {
     warning(
-      "'zinb.params' slot already has a ZINBParams object. Note that it will be overwritten\n",
+      "'zinb.params' slot already has a ZinbParametersModel object. Note that it will be overwritten\n",
       call. = FALSE, immediate. = TRUE
     )
   }
@@ -385,9 +380,8 @@ estimateZinbwaveParams <- function(
     message("=== Running estimation process ",
             paste("(Start time", format(start_time, "%X)"), "\n"))
   }
-  # why ceiling
-  zinbParamsObj <- splatter::zinbEstimate(
-    counts = ceiling(as.matrix(list.data[[1]])), 
+  zinbParamsObj <- .zinbWaveModel(
+    matrix.counts = ceiling(as.matrix(list.data[[1]])), 
     BPPARAM = parallelEnv, 
     design.samples = sdm, 
     design.genes = gdm, 
@@ -424,13 +418,49 @@ estimateZinbwaveParams <- function(
     verbose = verbose
   )
   # update slots
-  zinb.params(object) <- zinbParamsObj
+  zinb.params(object) <- ZinbParametersModel(zinbwave.model = zinbParamsObj)
   if (verbose) {
     message("\nDONE")
     end_time <- Sys.time()
     message("\nInvested time: ", round(end_time - start_time, 2))
   }
   return(object)
+}
+
+.zinbWaveModel <- function(
+  matrix.counts, 
+  design.samples = NULL,
+  design.genes = NULL, 
+  common.disp = TRUE,
+  iter.init = 2, 
+  iter.opt = 25, 
+  stop.opt = 1e-04,
+  verbose = TRUE,
+  BPPARAM = NULL, 
+  ...
+) {
+  if (verbose) message("=== Removing genes without expression in any cell")
+  matrix.counts <- matrix.counts[rowSums(matrix.counts) > 0, ]
+  args.list <- list(
+    Y = matrix.counts,
+    commondispersion = common.disp,
+    verbose = verbose,
+    nb.repeat.initialize = iter.init,
+    maxiter.optimize = iter.opt,
+    stop.epsilon.optimize = stop.opt,
+    BPPARAM = BPPARAM
+  )
+  if (!is.null(design.samples)) {
+    args.list$X <- design.samples
+  }
+  if (!is.null(design.genes)) {
+    args.list$V <- design.genes
+  }
+  args.list <- c(args.list, list(...))
+  
+  if (verbose) {message(">>> Fitting ZINB-WaVE model")}
+  model <- do.call(zinbwave::zinbFit, args.list)
+  return(model)
 }
 
 .reduceDataset <- function(
@@ -842,7 +872,7 @@ simSCProfiles <- function(
     cell.ID.column = cell.ID.column,
     new.data = FALSE
   )
-  zinb.object <- zinb.params(object)
+  zinb.object <- zinb.params(object)@zinbwave.model
   # check if cell.ID.column and cell.type.column are correct
   mapply(
     function(x, y) {
@@ -857,7 +887,7 @@ simSCProfiles <- function(
     c("'cell.ID.column'", "'cell.type.column'")
   )
   # for cases where estimation was performed in some cell types
-  cell.types.used <- list.data[[2]][rownames(zinb.object@model@X), 
+  cell.types.used <- list.data[[2]][rownames(zinb.object@X), 
                                     cell.type.column] %>% unique()
   # generate metadata for simulated cells
   colnames(list.data[[1]]) <- paste(
@@ -873,7 +903,7 @@ simSCProfiles <- function(
   cell.set.names <- NULL
   model.cell.types <- grep(
     pattern = cell.type.column,
-    x = colnames(zinb.object@model@X),
+    x = colnames(zinb.object@X),
     value = T
   )
   cell.type.names <- sub(
@@ -895,7 +925,7 @@ simSCProfiles <- function(
 
   for (s in model.cell.types) {
     cell.type.name <- cell.type.names[s]
-    cell.index <- rownames(zinb.object@model@X)[which(zinb.object@model@X[, s] == 1)]
+    cell.index <- rownames(zinb.object@X)[which(zinb.object@X[, s] == 1)]
     nams <- sample(cell.index, size = n.cells, replace = T)
     if (is.null(cell.set.names)) {
       cell.set.names <- nams
@@ -923,9 +953,9 @@ simSCProfiles <- function(
   }
   if (intercept.celltype) {
     # to get the intercept cell type the rowSum of all FinalCellType columns should be 0
-    cell.index <- rownames(zinb.object@model@X)[rowSums(
-      zinb.object@model@X[, grep(cell.type.column, 
-                                 colnames(zinb.object@model@X), 
+    cell.index <- rownames(zinb.object@X)[rowSums(
+      zinb.object@X[, grep(cell.type.column, 
+                                 colnames(zinb.object@X), 
                                  value = T), drop = FALSE]
     ) == 0]
     nams <- sample(cell.index, size = n.cells, replace = T)
@@ -939,12 +969,12 @@ simSCProfiles <- function(
     )
   }
   # getting parameters from zinb-wave model
-  mu <- zinbwave::getMu(zinb.object@model) # rows are cells
-  pi <- zinbwave::getPi(zinb.object@model) # rows are cells
-  theta <- zinbwave::getTheta(zinb.object@model) # for genes
+  mu <- zinbwave::getMu(zinb.object) # rows are cells
+  pi <- zinbwave::getPi(zinb.object) # rows are cells
+  theta <- zinbwave::getTheta(zinb.object) # for genes
   # setting dimensions of simulated matrix
   n <- length(cell.set.names) # as.numeric(nCells)
-  J <- zinbwave::nFeatures(zinb.object@model)
+  J <- zinbwave::nFeatures(zinb.object)
   if (verbose) {
     # message about parameters
     message("=== Getting parameters from model:")
@@ -1044,7 +1074,7 @@ simSCProfiles <- function(
       file = file.backend, 
       name = name.dataset.backend
     )
-    dimnames(sim.counts) <- list(rownames(zinb.object@model@V), 
+    dimnames(sim.counts) <- list(rownames(zinb.object@V), 
                                  names(cell.set.names))
   } else if (!block.processing) {
     i <- seq(n * J)
@@ -1059,7 +1089,7 @@ simSCProfiles <- function(
     sim.counts <- t(data.nb * (1 - data.dropout))
     sim.counts <- Matrix::Matrix(
       sim.counts, dimnames = list(
-        rownames = rownames(zinb.object@model@V),
+        rownames = rownames(zinb.object@V),
         colnames = names(cell.set.names))
     )  
   }

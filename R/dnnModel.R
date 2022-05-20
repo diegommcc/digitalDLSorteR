@@ -612,16 +612,13 @@ trainDigitalDLSorterModel <- function(
   }
   # return final matrix counts
   if (any(bulk.data) && any(!bulk.data)) {
-    cell.samples <- edgeR::cpm.default(
-      y = cell.samples, log = TRUE, prior.count = 1
-    )
+    cell.samples <- log2(.cpmCalculate(x = cell.samples + 1))
     counts <- cbind(bulk.samples, cell.samples)[, rownames(sel.data), drop = FALSE]
   } else if (any(bulk.data)) {
     counts <- bulk.samples[, rownames(sel.data), drop = FALSE]
   } else if (any(!bulk.data)) {
-    counts <- edgeR::cpm.default(
-      y = cell.samples[, rownames(sel.data), drop = FALSE], 
-      log = TRUE, prior.count = 1
+    counts <- log2(
+      .cpmCalculate(x = cell.samples[, rownames(sel.data), drop = FALSE] + 1)
     )
   }
   return(t(scaling(counts)))
@@ -677,16 +674,13 @@ trainDigitalDLSorterModel <- function(
   }
   # return final matrix counts
   if (any(bulk.data) && any(!bulk.data)) {
-    cell.samples <- edgeR::cpm.default(
-      y = cell.samples, log = TRUE, prior.count = 1
-    )
+    cell.samples <- log2(.cpmCalculate(x = cell.samples + 1))
     counts <- cbind(bulk.samples, cell.samples)[, rownames(sel.data), drop = FALSE]
   } else if (any(bulk.data)) {
     counts <- bulk.samples[, rownames(sel.data), drop = FALSE]
   } else if (any(!bulk.data)) {
-    counts <- edgeR::cpm.default(
-      y = cell.samples[, rownames(sel.data), drop = FALSE], 
-      log = TRUE, prior.count = 1
+    counts <- log2(
+      .cpmCalculate(x = cell.samples[, rownames(sel.data), drop = FALSE] + 1)
     )
   }
   return(t(scaling(counts)))
@@ -1359,7 +1353,7 @@ deconvDigitalDLSorterObj <- function(
   }
   if (normalize) {
     if (verbose) message("=== Normalizing and scaling data\n")
-    deconv.counts <- edgeR::cpm.default(deconv.counts)
+    deconv.counts <- log2(.cpmCalculate(x = deconv.counts + 1))
     deconv.counts <- scaling(deconv.counts)
   }
   deconv.counts <- t(deconv.counts)

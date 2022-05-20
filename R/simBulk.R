@@ -334,7 +334,7 @@ generateBulkCellMatrix <- function(
   # same order as are stored simulated cells in HDF5 file (unnecessary)
   if (!is.null(zinb.params(object))) {
     model.cell.types <- grep(pattern = cell.type.column,
-                             x = colnames(zinb.params(object)@model@X),
+                             x = colnames(zinb.params(object)@zinbwave.model@X),
                              value = T)
     cell.type.names <- sub(pattern = cell.type.column,
                            replacement = "",
@@ -1382,18 +1382,22 @@ simBulkProfiles <- function(
   )
 }
 
+## functions to calculate pseudo-bulk samples
+.cpmCalculate <- function(x) {
+  if (is.null(dim(x))) return((x / sum(x)) * 1e6)
+  else return(apply(X = x, MARGIN = 2, FUN = function(x) (x / sum(x)) * 1e6))
+}
+
 pseudobulk.fun.mean.cpm <- function(x) {
-  log2(rowMeans(edgeR::cpm.default(y = x)) + 1)
+  rowMeans(log2(.cpmCalculate(x = x + 1)))
 }
 
 pseudobulk.fun.add.cpm <- function(x) {
-  edgeR::cpm.default(
-    y = rowSums(edgeR::cpm.default(y = x)), log = TRUE, prior.count = 1
-  )
+  .cpmCalculate(x = rowSums(log2(.cpmCalculate(x = x + 1))))
 }
 
 pseudobulk.fun.add.raw.counts <- function(x) {
-  edgeR::cpm.default(y = rowSums(x), log = TRUE, prior.count = 1)
+  log2(.cpmCalculate(x = rowSums(x) + 1))
 }
 
 .setBulk <- function(x, object, pattern, fun.pseudobulk) {

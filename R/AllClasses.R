@@ -1,13 +1,12 @@
 #' @importFrom methods setClass setOldClass setClassUnion
 #' @importFrom utils packageVersion
 #' @import SingleCellExperiment SummarizedExperiment
-#' @importClassesFrom splatter ZINBParams
 #' @importClassesFrom Matrix dgCMatrix
 #' @importFrom keras keras_model_sequential layer_dense layer_batch_normalization layer_activation layer_dropout get_output_shape_at compile optimizer_adam fit_generator evaluate_generator predict_generator model_from_json set_weights model_to_json get_weights load_model_hdf5 save_model_hdf5
 NULL
 
 setOldClass(Classes = 'package_version')
-setOldClass(Classes = "keras_training_history")
+setClass("keras_training_history") # TODO: error with setOldClass, check what is going on
 setOldClass(Classes = "keras.engine.sequential.Sequential")
 
 setClassUnion(name = "MatrixOrNULL", members = c("matrix", "NULL"))
@@ -16,11 +15,73 @@ setClassUnion(name = "ListNumericOrNULL", members = c("list", "numeric", "NULL")
 setClassUnion(name = "CharacterOrNULL", members = c("character", "NULL"))
 setClassUnion(name = "SingleCellExperimentOrNULL", 
               members = c("SingleCellExperiment", "NULL"))
-setClassUnion(name = "ZINBParamsOrNULL", members = c("ZINBParams", "NULL"))
 setClassUnion(name = "KerasOrList", 
               members = c("keras.engine.sequential.Sequential", "list"))
 setClassUnion(name = "KerasTrainOrNULL", 
               members = c("keras_training_history", "NULL"))
+
+################################################################################
+######################## Wrapper class for ZinbModel ###########################
+################################################################################
+
+#' The Class ZinbParametersModel
+#'
+#' The ZinbParametersModel class is a wrapper class of the
+#' \code{\linkS4class{ZinbModel}} class from zinbwave package.
+#'
+#' This is a wrapper class of the \code{\linkS4class{ZinbModel}} class. It
+#' consists of only one slot (\code{zinbwave.mode}) that contains the
+#' \code{\linkS4class{ZinbModel}} object.
+#'
+#' @slot zinbwave.model A valid \code{\linkS4class{ZinbModel}} object.
+#'
+#' @references Risso, D., Perraudeau, F., Gribkova, S. et al. (2018). A general
+#'   and flexible method for signal extraction from single-cell RNA-seq data.
+#'   Nat Commun 9, 284. doi: \doi{10.1038/s41467-017-02554-5}.
+#'
+#' @export ZinbParametersModel
+#'   
+ZinbParametersModel <- setClass(
+  Class = "ZinbParametersModel",
+  slots = c(zinbwave.model = "ANY")
+)
+
+setMethod(
+  f = "initialize", 
+  signature = "ZinbParametersModel",
+  definition = function(
+    .Object,
+    zinbwave.model = NULL
+  ) {
+    .Object@zinbwave.model <- zinbwave.model
+    return(.Object)
+  }
+)
+
+setValidity(
+  Class = "ZinbParametersModel",
+  method = function(object) {
+    if (object@zinbwave.model != "ZinbModel") {
+      return(FALSE)
+    } else {
+      return(TRUE)
+    }
+  }
+)
+
+setMethod(
+  f = "show",
+  signature = "ZinbParametersModel",
+  definition = function(object) {
+    if (is.null(object@zinbwave.model)) {
+      cat("ZinbParametersModel object empty")
+    } else {
+      .zinbModelShow(object@zinbwave.model) # TODO: doesn't work, implement a show function
+    }
+  }
+)
+
+setClassUnion(name = "ZinbParametersModelOrNULL", members = c("ZinbParametersModel", "NULL"))
 
 ################################################################################
 ######################### ProbMatrixCellTypes class ############################
@@ -165,10 +226,10 @@ setMethod(
 #' @slot features Vector with the features used during training. These features
 #'   will be used in subsequent predictions (the nomenclature used in new bulk
 #'   RNA-Seq samples must be the same).
-#' @slot test.deconv.metrics Performance of the model on each sample of test data
-#'   compared to known cell proportions. This slot is used after
-#'   \code{\link{calculateEvalMetrics}} (see
-#'   \code{?\link{calculateEvalMetrics}} for more details).
+#' @slot test.deconv.metrics Performance of the model on each sample of test
+#'   data compared to known cell proportions. This slot is used after
+#'   \code{\link{calculateEvalMetrics}} (see \code{?\link{calculateEvalMetrics}}
+#'   for more details).
 #'
 #' @export DigitalDLSorterDNN
 #'   
@@ -259,7 +320,7 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #' class for single-cell RNA-Seq data, using sparse matrix from the \pkg{Matrix}
 #' package (\code{\linkS4class{dgCMatrix}} class) or \code{HDF5Array} class in
 #' the case of using HDF5 files as back-end (see below for more information).
-#' \item \code{\linkS4class{ZINBParams}} class with estimated parameters for the
+#' \item \code{\linkS4class{ZinbModel}} class with estimated parameters for the
 #' simulation of new single-cell profiles. \item
 #' \code{\linkS4class{SummarizedExperiment}} class for large bulk RNA-Seq data
 #' storage. \item \code{\linkS4class{ProbMatrixCellTypes}} class for the
@@ -289,7 +350,7 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #' @slot single.cell.real Real single-cell data stored in a
 #'   \code{SingleCellExperiment} object. The count matrix is stored as
 #'   \code{\linkS4class{dgCMatrix}} or \code{HDF5Array} objects.
-#' @slot zinb.params \code{\linkS4class{ZINBParams}} object with estimated
+#' @slot zinb.params \code{\linkS4class{ZinbModel}} object with estimated
 #'   parameters for the simulation of new single-cell expression profiles.
 #' @slot single.cell.simul Simulated single-cell expression profiles from the
 #'   ZINB-WaVE model.
@@ -322,7 +383,7 @@ DigitalDLSorter <- setClass(
   Class = "DigitalDLSorter",
   slots = c(
     single.cell.real = "SingleCellExperimentOrNULL",
-    zinb.params = "ZINBParamsOrNULL",
+    zinb.params = "ZinbParametersModelOrNULL",
     single.cell.simul = "SingleCellExperimentOrNULL",
     prob.cell.types = "ListOrNULL",
     bulk.simul = "ListOrNULL",
@@ -407,7 +468,7 @@ setMethod(
 .zinbModelShow <- function(zinb.model) {
   cat(
     paste0(
-      "ZinbParams object:\n",
+      "ZinbModel object:\n",
       "  ", zinbwave::nSamples(zinb.model), " samples; ",
       "  ", zinbwave::nFeatures(zinb.model), " genes.\n",
       "  ", NCOL(zinbwave::getX_mu(zinb.model)),
@@ -457,7 +518,7 @@ setMethod(
       .sceShow(S4Vectors::DataFrame())
     }
     if (!is.null(object@zinb.params)) {
-      .zinbModelShow(object@zinb.params@model)
+      .zinbModelShow(object@zinb.params@zinbwave.model)
     }
     if (!is.null(object@single.cell.simul)) {
       cat("Simulated single-cell profiles:\n")

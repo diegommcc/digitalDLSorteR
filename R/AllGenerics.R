@@ -675,8 +675,8 @@ setMethod(
 #' @rdname zinb.params
 #' @aliases zinb.params<-,DigitalDLSorter-method
 #'
-#' @param value \code{\linkS4class{ZINBParams}} object with the ZiNB-WaVE
-#'   parameters estimated from the real single-cell profiles.
+#' @param value \code{\linkS4class{ZinbParametersModel}} object with a valid
+#'   \code{\linkS4class{ZinbModel}} object.
 #'
 #' @export zinb.params<-
 #'   
@@ -1067,6 +1067,56 @@ setMethod(
   signature = "DigitalDLSorter",
   definition = function(object, value) {
     object@project <- value
+    return(object)
+  }
+)
+
+################################################################################
+############## getters and setters for ZinbParametersModel class ###############
+################################################################################
+
+# zinbwave.model
+
+#' @title Get and set \code{zinbwave.model} slot in a
+#'   \code{\linkS4class{ZinbParametersModel}} object
+#'
+#' @docType methods
+#' @name zinbwave.model
+#' @rdname zinbwave.model
+#' @aliases zinbwave.model,ZinbParametersModel-method
+#' 
+#' @param object \code{\linkS4class{ZinbParametersModel}} object.
+#'
+#' @export zinbwave.model
+#'   
+setGeneric(
+  name = "zinbwave.model", 
+  def = function(object) standardGeneric("zinbwave.model")
+)
+setMethod(
+  f = "zinbwave.model",
+  signature = "ZinbParametersModel",
+  definition = function(object) object@zinbwave.model
+)
+
+#' @docType methods
+#' @rdname zinbwave.model
+#' @aliases zinbwave.model<-,ZinbParametersModel-method
+#'
+#' @param value \code{\linkS4class{ZinbModel}} object with the estimated
+#'   parameters.
+#'
+#' @export zinbwave.model<-
+#'   
+setGeneric(
+  name = "zinbwave.model<-", 
+  def = function(object, value) standardGeneric("zinbwave.model<-")
+)
+setMethod(
+  f = "zinbwave.model<-",
+  signature = "ZinbParametersModel",
+  definition = function(object, value) {
+    object@zinbwave.model <- value
     return(object)
   }
 )
