@@ -17,14 +17,14 @@ and AddRawCount (`simBulkProfiles` function).
 rescaling (`trainDigitalDLSorterModel` function).
 * Vignettes updated.
 
-# digitalDLSorteR 0.3.0 (2022-05-20)
+# digitalDLSorteR 0.3.0 (2022-05-23)
 
-* `splatter` dependency removed: instead of using `splatter` as a wrapper, 
-`zinbFit` from the `zinbwave` package is used directly through the 
+* The `splatter` dependency has been removed: instead of using `splatter` as a 
+wrapper, `zinbFit` from the `zinbwave` package is used directly via the 
 `.zinbWaveModel` function + the `ZinbParametersModel` class. This change affects
 some functions in terms of classes/objects. Previous pre-trained models 
 (`digitalDLSorteRmodels` package) may not work properly. They will be 
 generated soon. 
-* `edgeR` dependency removed: calculations related to CPMs have been implemented
-(`.cpmCalculate` function). Now, results may be slightly different from the ones
-obtained with `edgeR`.
+* The `edgeR` dependency has been removed: CPM-related calculations have been 
+implemented (`.cpmCalculate` function). Now, results may be slightly different 
+from those obtained with `edgeR`.
