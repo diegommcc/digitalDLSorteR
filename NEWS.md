@@ -17,7 +17,7 @@ and AddRawCount (`simBulkProfiles` function).
 rescaling (`trainDigitalDLSorterModel` function).
 * Vignettes updated.
 
-# digitalDLSorteR 0.3.0 (2022-05-23)
+# digitalDLSorteR 0.3.0 (2022-05-24)
 
 * The `splatter` dependency has been removed: instead of using `splatter` as a 
 wrapper, `zinbFit` from the `zinbwave` package is used directly via the 
