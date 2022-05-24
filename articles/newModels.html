@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -134,8 +134,8 @@ ones already offered in <code>digitalDLSorteRmodels</code>. In any case,
 make this process easier and computationally cheaper in terms of RAM
 usage: batch processing of data and the use of the <a href="https://bioconductor.org/packages/release/bioc/html/HDF5Array.html" class="external-link">HDF5Array</a>
 and <a href="https://bioconductor.org/packages/release/bioc/html/DelayedArray.html" class="external-link">DelayedArray</a>
-packages (see the article <a href="hdf5Backend.html">HDF5 files as
-back-end</a> for more information). Furthermore, all steps are
+packages (see the article <a href="https://diegommcc.github.io/digitalDLSorteR/articles/hdf5Backend.html" class="external-link">HDF5
+files as back-end</a> for more information). Furthermore, all steps are
 centralized in the <code>DigitalDLSorter</code> S4-class, the core of
 <strong>digitalDLSorteR</strong>, to provide a good user experience and
 keep all the information tidy in the same object.</p>
@@ -295,8 +295,7 @@ negative binomial) distribution. It was chosen for its ability to
 accommodate not only variability within a particular cell type, but also
 variability within the entire experiment.</p>
 <p>This process is performed by the <code>estimateZinbwaveParams</code>
-function, which makes use of the <a href="https://bioconductor.org/packages/release/bioc/html/splatter.html" class="external-link">splatter</a>
-package, a wrapper of the original <a href="https://bioconductor.org/packages/release/bioc/html/zinbwave.html" class="external-link">zinbwave</a>
+function, which makes use of the <a href="https://bioconductor.org/packages/release/bioc/html/zinbwave.html" class="external-link">zinbwave</a>
 package. You must specify the column corresponding to cell types in the
 cells metadata, and other cell/gene covariates can be added based on
 your experimental design, such as patient, gender or gene length. This
@@ -330,9 +329,9 @@ used to fit a ZINB-WaVE model.</p>
 <span class="co">##     - CellType4: 7</span>
 <span class="co">##     - CellType5: 6</span></code></pre>
 <pre><code><span class="co">## === Creating gene model matrix without gene covariates</span></code></pre>
-<pre><code><span class="co">## === Running estimation process (Start time 02:45:12 PM)</span></code></pre>
-<pre><code><span class="co">## Removing all zero genes...</span></code></pre>
-<pre><code><span class="co">## Fitting model...</span></code></pre>
+<pre><code><span class="co">## === Running estimation process (Start time 10:56:59 AM)</span></code></pre>
+<pre><code><span class="co">## === Removing genes without expression in any cell</span></code></pre>
+<pre><code><span class="co">## &gt;&gt;&gt; Fitting ZINB-WaVE model</span></code></pre>
 <pre><code><span class="co">## Create model:</span></code></pre>
 <pre><code><span class="co">## ok</span></code></pre>
 <pre><code><span class="co">## Initialize parameters:</span></code></pre>
@@ -342,22 +341,22 @@ used to fit a ZINB-WaVE model.</p>
 <pre><code><span class="co">## penalized log-likelihood = -54085.7356583502</span></code></pre>
 <pre><code><span class="co">## After dispersion optimization = -43320.8019735184</span></code></pre>
 <pre><code><span class="co">##    user  system elapsed </span>
-<span class="co">##   8.721   0.016   8.737</span></code></pre>
+<span class="co">##   6.140   0.008   6.148</span></code></pre>
 <pre><code><span class="co">## After right optimization = -42718.0963333899</span></code></pre>
 <pre><code><span class="co">## After orthogonalization = -42718.0963333899</span></code></pre>
 <pre><code><span class="co">##    user  system elapsed </span>
-<span class="co">##   0.570   0.000   0.569</span></code></pre>
+<span class="co">##   0.369   0.000   0.369</span></code></pre>
 <pre><code><span class="co">## After left optimization = -42710.2243757023</span></code></pre>
 <pre><code><span class="co">## After orthogonalization = -42710.2243757023</span></code></pre>
 <pre><code><span class="co">## Iteration 2</span></code></pre>
 <pre><code><span class="co">## penalized log-likelihood = -42710.2243757023</span></code></pre>
 <pre><code><span class="co">## After dispersion optimization = -42710.2246200143</span></code></pre>
 <pre><code><span class="co">##    user  system elapsed </span>
-<span class="co">##   7.577   0.008   7.585</span></code></pre>
+<span class="co">##   4.979   0.004   4.982</span></code></pre>
 <pre><code><span class="co">## After right optimization = -42708.2394778232</span></code></pre>
 <pre><code><span class="co">## After orthogonalization = -42708.2394778232</span></code></pre>
 <pre><code><span class="co">##    user  system elapsed </span>
-<span class="co">##   1.177   0.000   1.177</span></code></pre>
+<span class="co">##   0.291   0.000   0.290</span></code></pre>
 <pre><code><span class="co">## After left optimization = -42706.8950844827</span></code></pre>
 <pre><code><span class="co">## After orthogonalization = -42706.8950844827</span></code></pre>
 <pre><code><span class="co">## Iteration 3</span></code></pre>
@@ -366,7 +365,7 @@ used to fit a ZINB-WaVE model.</p>
 <pre><code><span class="co">## </span>
 <span class="co">## DONE</span></code></pre>
 <pre><code><span class="co">## </span>
-<span class="co">## Invested time: 48.32</span></code></pre>
+<span class="co">## Invested time: 31.55</span></code></pre>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DDLSToy</span></code></pre></div>
 <pre><code><span class="co">## An object of class DigitalDLSorter </span>
@@ -374,7 +373,7 @@ used to fit a ZINB-WaVE model.</p>
 <span class="co">##   500 features and 100 cells</span>
 <span class="co">##   rownames: Gene313 Gene61 Gene260 ... Gene260 Gene40 Gene484 Gene173 </span>
 <span class="co">##   colnames: RHC29 RHC59 RHC62 ... RHC62 RHC34 RHC91 RHC93 </span>
-<span class="co">## ZinbParams object:</span>
+<span class="co">## ZinbModel object:</span>
 <span class="co">##   40 samples;   500 genes.</span>
 <span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span>
 <span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span>
@@ -430,7 +429,7 @@ RNA-Seq profiles with a known cell composition.</p>
 <span class="co">##   500 features and 100 cells</span>
 <span class="co">##   rownames: Gene130 Gene245 Gene373 ... Gene373 Gene402 Gene344 Gene240 </span>
 <span class="co">##   colnames: RHC11 RHC55 RHC6 ... RHC6 RHC4 RHC12 RHC33 </span>
-<span class="co">## ZinbParams object:</span>
+<span class="co">## ZinbModel object:</span>
 <span class="co">##   40 samples;   500 genes.</span>
 <span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span>
 <span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span>
@@ -554,7 +553,7 @@ be as follows:</p>
 <span class="co">##   500 features and 100 cells</span>
 <span class="co">##   rownames: Gene469 Gene244 Gene283 ... Gene283 Gene212 Gene34 Gene265 </span>
 <span class="co">##   colnames: RHC90 RHC77 RHC26 ... RHC26 RHC82 RHC65 RHC60 </span>
-<span class="co">## ZinbParams object:</span>
+<span class="co">## ZinbModel object:</span>
 <span class="co">##   40 samples;   500 genes.</span>
 <span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span>
 <span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span>
@@ -675,7 +674,7 @@ at any time:</p>
 <span class="co">##   500 features and 100 cells</span>
 <span class="co">##   rownames: Gene243 Gene118 Gene362 ... Gene362 Gene321 Gene26 Gene149 </span>
 <span class="co">##   colnames: RHC63 RHC70 RHC44 ... RHC44 RHC34 RHC49 RHC90 </span>
-<span class="co">## ZinbParams object:</span>
+<span class="co">## ZinbModel object:</span>
 <span class="co">##   40 samples;   500 genes.</span>
 <span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span>
 <span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span>
@@ -749,8 +748,8 @@ trained and evaluated. <code>trainDigitalDLSorterModel</code> is the
 function in charge of both steps and uses the <a href="https://cran.r-project.org/package=keras" class="external-link">keras</a> package with
 <a href="https://cran.r-project.org/package=tensorflow" class="external-link">tensorflow</a>
 as back-end. If you want more information about <a href="https://cran.r-project.org/package=keras" class="external-link">keras</a> or have any
-problems during its installation, please see <a href="kerasIssues.html">Keras/TensorFlow installation and
-configuration</a> vignette. In any case, the
+problems during its installation, please see <a href="https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html" class="external-link">Keras/TensorFlow
+installation and configuration</a> for more details. In any case, the
 <code>installTFpython</code> function automates this process, so we
 recommend its use.</p>
 <p>In terms of architecture and model parameters,
@@ -798,10 +797,10 @@ documentation for more details.</p>
 <span class="co">## === Training DNN with 267 samples:</span></code></pre>
 <pre><code><span class="co">## </span>
 <span class="co">## === Evaluating DNN in test data (133 samples)</span></code></pre>
-<pre><code><span class="co">##    - loss: 0.7643</span>
-<span class="co">##    - accuracy: 0.609</span>
-<span class="co">##    - mean_absolute_error: 0.193</span>
-<span class="co">##    - categorical_accuracy: 0.609</span></code></pre>
+<pre><code><span class="co">##    - loss: 0.7308</span>
+<span class="co">##    - accuracy: 0.6767</span>
+<span class="co">##    - mean_absolute_error: 0.1835</span>
+<span class="co">##    - categorical_accuracy: 0.6767</span></code></pre>
 <pre><code><span class="co">## </span>
 <span class="co">## === Generating prediction results using test data</span></code></pre>
 <pre><code><span class="co">## DONE</span></code></pre>
@@ -818,7 +817,7 @@ prediction results on test data.</p>
 <span class="co">##   500 features and 100 cells</span>
 <span class="co">##   rownames: Gene431 Gene278 Gene232 ... Gene232 Gene373 Gene237 Gene453 </span>
 <span class="co">##   colnames: RHC22 RHC56 RHC13 ... RHC13 RHC40 RHC83 RHC36 </span>
-<span class="co">## ZinbParams object:</span>
+<span class="co">## ZinbModel object:</span>
 <span class="co">##   40 samples;   500 genes.</span>
 <span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span>
 <span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span>
@@ -841,15 +840,15 @@ prediction results on test data.</p>
 <span class="co">##     colnames: Bulk_65 Bulk_46 Bulk_76 ... Bulk_76 Bulk_53 Bulk_77 Bulk_67 </span>
 <span class="co">## Trained model: 10 epochs</span>
 <span class="co">##   Training metrics (last epoch):</span>
-<span class="co">##     loss: 0.2482</span>
-<span class="co">##     accuracy: 0.9219</span>
-<span class="co">##     mean_absolute_error: 0.0892</span>
-<span class="co">##     categorical_accuracy: 0.9219</span>
+<span class="co">##     loss: 0.2501</span>
+<span class="co">##     accuracy: 0.9187</span>
+<span class="co">##     mean_absolute_error: 0.0894</span>
+<span class="co">##     categorical_accuracy: 0.9187</span>
 <span class="co">##   Evaluation metrics on test data:</span>
-<span class="co">##     loss: 0.7643</span>
-<span class="co">##     accuracy: 0.609</span>
-<span class="co">##     mean_absolute_error: 0.193</span>
-<span class="co">##     categorical_accuracy: 0.609 </span>
+<span class="co">##     loss: 0.7308</span>
+<span class="co">##     accuracy: 0.6767</span>
+<span class="co">##     mean_absolute_error: 0.1835</span>
+<span class="co">##     categorical_accuracy: 0.6767 </span>
 <span class="co">## Project: ToyExample</span></code></pre>
 <p>Since this is a ‘toy’ example, results are not very accurate. For a
 real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution
@@ -1135,16 +1134,12 @@ for signal extraction from single-cell
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="https://github.com/diegommcc" class="external-link">Diego
-Mañanes</a>, <a href="https://www.cnic.es/en/carlos-torroja" class="external-link">Carlos
-Torroja</a>, <a href="https://www.cnic.es/en/fatima-sanchez-cabo" class="external-link">Fatima
-Sanchez-Cabo</a>.</p>
+<p>Developed by <a href="https://github.com/diegommcc" class="external-link">Diego Mañanes</a>, <a href="https://www.cnic.es/en/carlos-torroja" class="external-link">Carlos Torroja</a>, <a href="https://www.cnic.es/en/fatima-sanchez-cabo" class="external-link">Fatima Sanchez-Cabo</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
 </div>
 
       </footer>

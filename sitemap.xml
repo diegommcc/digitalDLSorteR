@@ -40,6 +40,9 @@
     <loc>/reference/ProbMatrixCellTypes-class.html</loc>
   </url>
   <url>
+    <loc>/reference/ZinbParametersModel-class.html</loc>
+  </url>
+  <url>
     <loc>/reference/barErrorPlot.html</loc>
   </url>
   <url>
@@ -115,6 +118,9 @@
     <loc>/reference/loadTrainedModelFromH5.html</loc>
   </url>
   <url>
+    <loc>/reference/method.html</loc>
+  </url>
+  <url>
     <loc>/reference/model.html</loc>
   </url>
   <url>
@@ -182,5 +188,8 @@
   </url>
   <url>
     <loc>/reference/zinb.params.html</loc>
+  </url>
+  <url>
+    <loc>/reference/zinbwave.model.html</loc>
   </url>
 </urlset>

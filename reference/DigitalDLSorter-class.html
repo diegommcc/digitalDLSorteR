@@ -22,7 +22,7 @@ and the package digitalDLSorteRdata."><meta property="og:image" content="/logo.p
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@ during the process:</p><ul><li><p><code>SingleCellExperiment</code>
 class for single-cell RNA-Seq data, using sparse matrix from the <span class="pkg">Matrix</span>
 package (<code>dgCMatrix</code> class) or <code>HDF5Array</code> class in
 the case of using HDF5 files as back-end (see below for more information).</p></li>
-<li><p><code>ZINBParams</code> class with estimated parameters for the
+<li><p><code>ZinbModel</code> class with estimated parameters for the
 simulation of new single-cell profiles.</p></li>
 <li><p><code>SummarizedExperiment</code> class for large bulk RNA-Seq data
 storage.</p></li>
@@ -131,7 +131,7 @@ to save it as RDS or HDF5 files. Please see
 
 
 <dt><code>zinb.params</code></dt>
-<dd><p><code>ZINBParams</code> object with estimated
+<dd><p><code>ZinbModel</code> object with estimated
 parameters for the simulation of new single-cell expression profiles.</p></dd>
 
 
@@ -191,15 +191,11 @@ to the data from which they come.</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by <a href="https://github.com/diegommcc" class="external-link">Diego
-Mañanes</a>, <a href="https://www.cnic.es/en/carlos-torroja" class="external-link">Carlos
-Torroja</a>, <a href="https://www.cnic.es/en/fatima-sanchez-cabo" class="external-link">Fatima
-Sanchez-Cabo</a>.</p>
+  <p></p><p>Developed by <a href="https://github.com/diegommcc" class="external-link">Diego Mañanes</a>, <a href="https://www.cnic.es/en/carlos-torroja" class="external-link">Carlos Torroja</a>, <a href="https://www.cnic.es/en/fatima-sanchez-cabo" class="external-link">Fatima Sanchez-Cabo</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
 </div>
 
       </footer></div>
