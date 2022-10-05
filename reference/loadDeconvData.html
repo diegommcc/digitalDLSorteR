@@ -19,7 +19,7 @@ SummarizedExperiment object."><meta property="og:image" content="/logo.png"><!--
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -82,13 +82,13 @@ tabulated text file (tsv and tsv.gz formats are accepted) or a
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">loadDeconvData</span><span class="op">(</span><span class="va">object</span>, <span class="va">data</span>, name.data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="co"># S4 method for DigitalDLSorter,character</span>
-<span class="fu">loadDeconvData</span><span class="op">(</span><span class="va">object</span>, <span class="va">data</span>, name.data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="co"># S4 method for DigitalDLSorter,SummarizedExperiment</span>
-<span class="fu">loadDeconvData</span><span class="op">(</span><span class="va">object</span>, <span class="va">data</span>, name.data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">loadDeconvData</span><span class="op">(</span><span class="va">object</span>, <span class="va">data</span>, name.data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for DigitalDLSorter,character</span></span>
+<span><span class="fu">loadDeconvData</span><span class="op">(</span><span class="va">object</span>, <span class="va">data</span>, name.data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for DigitalDLSorter,SummarizedExperiment</span></span>
+<span><span class="fu">loadDeconvData</span><span class="op">(</span><span class="va">object</span>, <span class="va">data</span>, name.data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -96,18 +96,28 @@ tabulated text file (tsv and tsv.gz formats are accepted) or a
     <dl><dt>object</dt>
 <dd><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
 <code>trained.model</code> slot.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>File path where the data is stored or a
 <code>SummarizedExperiment</code> object.</p></dd>
+
+
 <dt>name.data</dt>
 <dd><p>Name under which the data is stored in the
 <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object. When <code>data</code> is a file
 path and <code>name.data</code> is not provided, the base name of file will be
 used.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with <code>deconv.data</code>slot with the new bulk-RNA-Seq samples loaded.</p>
+    
+
+<p>A <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with <code>deconv.data</code></p>
+
+
+<p>slot with the new bulk-RNA-Seq samples loaded.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -127,7 +137,7 @@ used.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

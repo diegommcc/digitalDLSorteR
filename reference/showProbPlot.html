@@ -26,7 +26,7 @@ different cell types present in the samples by setting type.plot =
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@ different cell types present in the samples by setting <code>type.plot =
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">showProbPlot</span><span class="op">(</span><span class="va">object</span>, <span class="va">type.data</span>, <span class="va">set</span>, type.plot <span class="op">=</span> <span class="st">"boxplot"</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">showProbPlot</span><span class="op">(</span><span class="va">object</span>, <span class="va">type.data</span>, <span class="va">set</span>, type.plot <span class="op">=</span> <span class="st">"boxplot"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -103,18 +103,27 @@ different cell types present in the samples by setting <code>type.plot =
     <dl><dt>object</dt>
 <dd><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
 <code>prob.cell.types</code> slot with <code>plot</code> slot.</p></dd>
+
+
 <dt>type.data</dt>
 <dd><p>Subset of data to show: <code>train</code> or <code>test</code>.</p></dd>
+
+
 <dt>set</dt>
 <dd><p>Integer determining which of the 6 different subsets to display.</p></dd>
+
+
 <dt>type.plot</dt>
 <dd><p>Character determining which type of visualization to
 display. It can be <code>'boxplot'</code>, <code>'violinplot'</code>, <code>'linesplot'</code> or
 <code>'ncelltypes'</code>. See Description for more information.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A ggplot object.</p>
+    
+
+<p>A ggplot object.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -128,41 +137,41 @@ are generated without any parameter introduced by the user.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># simulating data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># reproducibility</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span></span>
-<span class="r-in">  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">    counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
-<span class="r-in">      <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">100</span>, lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">40</span>, ncol <span class="op">=</span> <span class="fl">30</span>, </span>
-<span class="r-in">      dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in">    <span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">    Cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">    Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">30</span>, </span>
-<span class="r-in">                       replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span></span>
-<span class="r-in">  single.cell.data <span class="op">=</span> <span class="va">sce</span>,</span>
-<span class="r-in">  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
-<span class="r-in">  gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">probMatrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">30</span><span class="op">)</span>,</span>
-<span class="r-in">  to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">15</span>, <span class="fl">50</span>, <span class="fl">70</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="generateBulkCellMatrix.html">generateBulkCellMatrix</a></span><span class="op">(</span></span>
-<span class="r-in">  object <span class="op">=</span> <span class="va">DDLS</span>,</span>
-<span class="r-in">  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
-<span class="r-in">  cell.type.column <span class="op">=</span> <span class="st">"Cell_Type"</span>,</span>
-<span class="r-in">  prob.design <span class="op">=</span> <span class="va">probMatrix</span>,</span>
-<span class="r-in">  num.bulk.samples <span class="op">=</span> <span class="fl">60</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># simulating data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># reproducibility</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">100</span>, lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">40</span>, ncol <span class="op">=</span> <span class="fl">30</span>, </span></span>
+<span class="r-in"><span>      dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    Cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">30</span>, </span></span>
+<span class="r-in"><span>                       replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  single.cell.data <span class="op">=</span> <span class="va">sce</span>,</span></span>
+<span class="r-in"><span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span></span>
+<span class="r-in"><span>  gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">probMatrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">30</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">15</span>, <span class="fl">50</span>, <span class="fl">70</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="generateBulkCellMatrix.html">generateBulkCellMatrix</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  object <span class="op">=</span> <span class="va">DDLS</span>,</span></span>
+<span class="r-in"><span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span></span>
+<span class="r-in"><span>  cell.type.column <span class="op">=</span> <span class="st">"Cell_Type"</span>,</span></span>
+<span class="r-in"><span>  prob.design <span class="op">=</span> <span class="va">probMatrix</span>,</span></span>
+<span class="r-in"><span>  num.bulk.samples <span class="op">=</span> <span class="fl">60</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> === The number of bulk RNA-Seq samples that will be generated is equal to 60</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
@@ -183,16 +192,16 @@ are generated without any parameter introduced by the user.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     - Bulk RNA-Seq samples: 20</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     - Cell types: 4</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> DONE</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
-<span class="r-in">  X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">      <span class="fu">showProbPlot</span><span class="op">(</span></span>
-<span class="r-in">        <span class="va">DDLS</span>,</span>
-<span class="r-in">        type.data <span class="op">=</span> <span class="st">"train"</span>,</span>
-<span class="r-in">        set <span class="op">=</span> <span class="va">x</span>,</span>
-<span class="r-in">        type.plot <span class="op">=</span> <span class="st">"boxplot"</span></span>
-<span class="r-in">      <span class="op">)</span></span>
-<span class="r-in">    <span class="op">}</span></span>
-<span class="r-in">  <span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="fu">showProbPlot</span><span class="op">(</span></span></span>
+<span class="r-in"><span>        <span class="va">DDLS</span>,</span></span>
+<span class="r-in"><span>        type.data <span class="op">=</span> <span class="st">"train"</span>,</span></span>
+<span class="r-in"><span>        set <span class="op">=</span> <span class="va">x</span>,</span></span>
+<span class="r-in"><span>        type.plot <span class="op">=</span> <span class="st">"boxplot"</span></span></span>
+<span class="r-in"><span>      <span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">}</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-plt img"><img src="showProbPlot-1.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -211,7 +220,7 @@ are generated without any parameter introduced by the user.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[6]]</span>
 <span class="r-plt img"><img src="showProbPlot-6.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in">  </span>
+<span class="r-in"><span>  </span></span>
 </code></pre></div>
     </div>
   </div>
@@ -226,7 +235,7 @@ are generated without any parameter introduced by the user.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

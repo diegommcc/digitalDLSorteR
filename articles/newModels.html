@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -196,61 +196,61 @@ distribution. <strong>Note:</strong> these simulated data are only for
 descriptive purposes to show functionalities of the package, it is not
 intended to generate realistic transcriptomic data.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## loading the packages</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diegommcc.github.io/digitalDLSorteR/" class="external-link">digitalDLSorteR</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co">## set seed for reproducibility</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span>
-    <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">50000</span>, lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">500</span>, ncol <span class="op">=</span> <span class="fl">100</span>, 
-    dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-  <span class="op">)</span>,
-  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
-    Cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>,
-    Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span>
-      x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>
-    <span class="op">)</span>
-  <span class="op">)</span>,
-  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
-    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span><span class="op">)</span>
-  <span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">## loading the packages</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diegommcc.github.io/digitalDLSorteR/" class="external-link">digitalDLSorteR</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## set seed for reproducibility</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
+<span>    <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">50000</span>, lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">500</span>, ncol <span class="op">=</span> <span class="fl">100</span>, </span>
+<span>    dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    Cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"RHC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span></span>
+<span>      x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Then, we provide this <code>SingleCellExperiment</code> object to
 <code>loadSCProfiles</code> as follows:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span>
-  single.cell <span class="op">=</span> <span class="va">sce</span>, 
-  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,
-  gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span>,
-  min.cells <span class="op">=</span> <span class="fl">0</span>,
-  min.counts <span class="op">=</span> <span class="fl">0</span>,
-  project <span class="op">=</span> <span class="st">"ToyExample"</span>
-<span class="op">)</span>
-<span class="va">DDLSToy</span></code></pre></div>
-<pre><code><span class="co">## An object of class DigitalDLSorter </span>
-<span class="co">## Real single-cell profiles:</span>
-<span class="co">##   500 features and 100 cells</span>
-<span class="co">##   rownames: Gene316 Gene314 Gene403 ... Gene403 Gene167 Gene76 Gene315 </span>
-<span class="co">##   colnames: RHC37 RHC69 RHC70 ... RHC70 RHC42 RHC1 RHC92 </span>
-<span class="co">## Project: ToyExample</span></code></pre>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span></span>
+<span>  single.cell <span class="op">=</span> <span class="va">sce</span>, </span>
+<span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
+<span>  gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span>,</span>
+<span>  min.cells <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  min.counts <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  project <span class="op">=</span> <span class="st">"ToyExample"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">DDLSToy</span></span></code></pre></div>
+<pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
+<span><span class="co">## Real single-cell profiles:</span></span>
+<span><span class="co">##   500 features and 100 cells</span></span>
+<span><span class="co">##   rownames: Gene316 Gene314 Gene403 ... Gene403 Gene167 Gene76 Gene315 </span></span>
+<span><span class="co">##   colnames: RHC37 RHC69 RHC70 ... RHC70 RHC42 RHC1 RHC92 </span></span>
+<span><span class="co">## Project: ToyExample</span></span></code></pre>
 <p>In this case, we are loading single-cell profiles from a
 <code>SingleCellExperiment</code> object, but it could be done by
 directly providing files as follows:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## this code will not be run</span>
-<span class="va">toyFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"countsMatrix.tsv.gz"</span>, 
-              <span class="st">"cellsMetadata.tsv.gz"</span>,
-              <span class="st">"genesMetadata.tsv.gz"</span><span class="op">)</span>
-
-<span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span>
-  single.cell <span class="op">=</span> <span class="va">toyFiles</span>, 
-  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,
-  gene.ID.column <span class="op">=</span> <span class="st">"external_gene_name"</span>,
-  min.cells <span class="op">=</span> <span class="fl">0</span>, min.counts <span class="op">=</span> <span class="fl">0</span>,
-  project <span class="op">=</span> <span class="st">"ToyExampleBreast"</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">## this code will not be run</span></span>
+<span><span class="va">toyFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"countsMatrix.tsv.gz"</span>, </span>
+<span>              <span class="st">"cellsMetadata.tsv.gz"</span>,</span>
+<span>              <span class="st">"genesMetadata.tsv.gz"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span></span>
+<span>  single.cell <span class="op">=</span> <span class="va">toyFiles</span>, </span>
+<span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
+<span>  gene.ID.column <span class="op">=</span> <span class="st">"external_gene_name"</span>,</span>
+<span>  min.cells <span class="op">=</span> <span class="fl">0</span>, min.counts <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  project <span class="op">=</span> <span class="st">"ToyExampleBreast"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>In documentation, you can see all the parameters that
 <code>loadSCProfiles</code> offers to preprocess the loaded data, such
 as <code>min.counts</code> and <code>min.cells</code>,
@@ -266,13 +266,13 @@ chunk would create an HDF5 file with the scRNA-seq data that allows
 working without loading them into RAM. See the documentation for more
 details.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span>
-  single.cell <span class="op">=</span> <span class="va">toyFiles</span>, cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,
-  gene.ID.column <span class="op">=</span> <span class="st">"external_gene_name"</span>,
-  min.cells <span class="op">=</span> <span class="fl">0</span>, min.counts <span class="op">=</span> <span class="fl">0</span>,
-  file.backend <span class="op">=</span> <span class="st">"singlecell_data.h5"</span>,
-  project <span class="op">=</span> <span class="st">"ToyExampleBreast"</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span></span>
+<span>  single.cell <span class="op">=</span> <span class="va">toyFiles</span>, cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
+<span>  gene.ID.column <span class="op">=</span> <span class="st">"external_gene_name"</span>,</span>
+<span>  min.cells <span class="op">=</span> <span class="fl">0</span>, min.counts <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  file.backend <span class="op">=</span> <span class="st">"singlecell_data.h5"</span>,</span>
+<span>  project <span class="op">=</span> <span class="st">"ToyExampleBreast"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="oversample">Oversampling of single-cell profiles<a class="anchor" aria-label="anchor" href="#oversample"></a>
@@ -309,76 +309,76 @@ a subset of cells to speed up the process. With the following code, a
 total of 40 cells will be taken from the original scRNA-Seq data and
 used to fit a ZINB-WaVE model.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimateZinbwaveParams.html">estimateZinbwaveParams</a></span><span class="op">(</span>
-  object <span class="op">=</span> <span class="va">DDLSToy</span>,
-  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,
-  gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span>,
-  cell.type.column <span class="op">=</span> <span class="st">"Cell_Type"</span>,
-  subset.cells <span class="op">=</span> <span class="fl">40</span>,
-  threads <span class="op">=</span> <span class="fl">1</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## === Setting parallel environment to 1 thread(s)</span></code></pre>
-<pre><code><span class="co">## === Estimating parameters for all cell types in the experiment</span></code></pre>
-<pre><code><span class="co">## === Creating cell model matrix based on Cell_Type columns:</span></code></pre>
-<pre><code><span class="co">##  ~Cell_Type</span></code></pre>
-<pre><code><span class="co">## === Number of cells for each cell type:</span>
-<span class="co">##     - CellType1: 11</span>
-<span class="co">##     - CellType2: 6</span>
-<span class="co">##     - CellType3: 10</span>
-<span class="co">##     - CellType4: 7</span>
-<span class="co">##     - CellType5: 6</span></code></pre>
-<pre><code><span class="co">## === Creating gene model matrix without gene covariates</span></code></pre>
-<pre><code><span class="co">## === Running estimation process (Start time 10:56:59 AM)</span></code></pre>
-<pre><code><span class="co">## === Removing genes without expression in any cell</span></code></pre>
-<pre><code><span class="co">## &gt;&gt;&gt; Fitting ZINB-WaVE model</span></code></pre>
-<pre><code><span class="co">## Create model:</span></code></pre>
-<pre><code><span class="co">## ok</span></code></pre>
-<pre><code><span class="co">## Initialize parameters:</span></code></pre>
-<pre><code><span class="co">## ok</span></code></pre>
-<pre><code><span class="co">## Optimize parameters:</span></code></pre>
-<pre><code><span class="co">## Iteration 1</span></code></pre>
-<pre><code><span class="co">## penalized log-likelihood = -54085.7356583502</span></code></pre>
-<pre><code><span class="co">## After dispersion optimization = -43320.8019735184</span></code></pre>
-<pre><code><span class="co">##    user  system elapsed </span>
-<span class="co">##   6.140   0.008   6.148</span></code></pre>
-<pre><code><span class="co">## After right optimization = -42718.0963333899</span></code></pre>
-<pre><code><span class="co">## After orthogonalization = -42718.0963333899</span></code></pre>
-<pre><code><span class="co">##    user  system elapsed </span>
-<span class="co">##   0.369   0.000   0.369</span></code></pre>
-<pre><code><span class="co">## After left optimization = -42710.2243757023</span></code></pre>
-<pre><code><span class="co">## After orthogonalization = -42710.2243757023</span></code></pre>
-<pre><code><span class="co">## Iteration 2</span></code></pre>
-<pre><code><span class="co">## penalized log-likelihood = -42710.2243757023</span></code></pre>
-<pre><code><span class="co">## After dispersion optimization = -42710.2246200143</span></code></pre>
-<pre><code><span class="co">##    user  system elapsed </span>
-<span class="co">##   4.979   0.004   4.982</span></code></pre>
-<pre><code><span class="co">## After right optimization = -42708.2394778232</span></code></pre>
-<pre><code><span class="co">## After orthogonalization = -42708.2394778232</span></code></pre>
-<pre><code><span class="co">##    user  system elapsed </span>
-<span class="co">##   0.291   0.000   0.290</span></code></pre>
-<pre><code><span class="co">## After left optimization = -42706.8950844827</span></code></pre>
-<pre><code><span class="co">## After orthogonalization = -42706.8950844827</span></code></pre>
-<pre><code><span class="co">## Iteration 3</span></code></pre>
-<pre><code><span class="co">## penalized log-likelihood = -42706.8950844827</span></code></pre>
-<pre><code><span class="co">## ok</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## DONE</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## Invested time: 31.55</span></code></pre>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimateZinbwaveParams.html">estimateZinbwaveParams</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">DDLSToy</span>,</span>
+<span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
+<span>  gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span>,</span>
+<span>  cell.type.column <span class="op">=</span> <span class="st">"Cell_Type"</span>,</span>
+<span>  subset.cells <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>  threads <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## === Setting parallel environment to 1 thread(s)</span></span></code></pre>
+<pre><code><span><span class="co">## === Estimating parameters for all cell types in the experiment</span></span></code></pre>
+<pre><code><span><span class="co">## === Creating cell model matrix based on Cell_Type columns:</span></span></code></pre>
+<pre><code><span><span class="co">##  ~Cell_Type</span></span></code></pre>
+<pre><code><span><span class="co">## === Number of cells for each cell type:</span></span>
+<span><span class="co">##     - CellType1: 11</span></span>
+<span><span class="co">##     - CellType2: 6</span></span>
+<span><span class="co">##     - CellType3: 10</span></span>
+<span><span class="co">##     - CellType4: 7</span></span>
+<span><span class="co">##     - CellType5: 6</span></span></code></pre>
+<pre><code><span><span class="co">## === Creating gene model matrix without gene covariates</span></span></code></pre>
+<pre><code><span><span class="co">## === Running estimation process (Start time 09:00:24 AM)</span></span></code></pre>
+<pre><code><span><span class="co">## === Removing genes without expression in any cell</span></span></code></pre>
+<pre><code><span><span class="co">## &gt;&gt;&gt; Fitting ZINB-WaVE model</span></span></code></pre>
+<pre><code><span><span class="co">## Create model:</span></span></code></pre>
+<pre><code><span><span class="co">## ok</span></span></code></pre>
+<pre><code><span><span class="co">## Initialize parameters:</span></span></code></pre>
+<pre><code><span><span class="co">## ok</span></span></code></pre>
+<pre><code><span><span class="co">## Optimize parameters:</span></span></code></pre>
+<pre><code><span><span class="co">## Iteration 1</span></span></code></pre>
+<pre><code><span><span class="co">## penalized log-likelihood = -54085.7356573761</span></span></code></pre>
+<pre><code><span><span class="co">## After dispersion optimization = -43320.8019331812</span></span></code></pre>
+<pre><code><span><span class="co">##    user  system elapsed </span></span>
+<span><span class="co">##   4.837   0.004   4.842</span></span></code></pre>
+<pre><code><span><span class="co">## After right optimization = -42718.0962983595</span></span></code></pre>
+<pre><code><span><span class="co">## After orthogonalization = -42718.0962983595</span></span></code></pre>
+<pre><code><span><span class="co">##    user  system elapsed </span></span>
+<span><span class="co">##   0.289   0.000   0.290</span></span></code></pre>
+<pre><code><span><span class="co">## After left optimization = -42710.2243407325</span></span></code></pre>
+<pre><code><span><span class="co">## After orthogonalization = -42710.2243407325</span></span></code></pre>
+<pre><code><span><span class="co">## Iteration 2</span></span></code></pre>
+<pre><code><span><span class="co">## penalized log-likelihood = -42710.2243407325</span></span></code></pre>
+<pre><code><span><span class="co">## After dispersion optimization = -42710.2246200072</span></span></code></pre>
+<pre><code><span><span class="co">##    user  system elapsed </span></span>
+<span><span class="co">##     4.1     0.0     4.1</span></span></code></pre>
+<pre><code><span><span class="co">## After right optimization = -42708.2394778133</span></span></code></pre>
+<pre><code><span><span class="co">## After orthogonalization = -42708.2394778133</span></span></code></pre>
+<pre><code><span><span class="co">##    user  system elapsed </span></span>
+<span><span class="co">##   0.690   0.000   0.689</span></span></code></pre>
+<pre><code><span><span class="co">## After left optimization = -42706.8950844944</span></span></code></pre>
+<pre><code><span><span class="co">## After orthogonalization = -42706.8950844944</span></span></code></pre>
+<pre><code><span><span class="co">## Iteration 3</span></span></code></pre>
+<pre><code><span><span class="co">## penalized log-likelihood = -42706.8950844944</span></span></code></pre>
+<pre><code><span><span class="co">## ok</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## DONE</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Invested time: 26.54</span></span></code></pre>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span></code></pre></div>
-<pre><code><span class="co">## An object of class DigitalDLSorter </span>
-<span class="co">## Real single-cell profiles:</span>
-<span class="co">##   500 features and 100 cells</span>
-<span class="co">##   rownames: Gene313 Gene61 Gene260 ... Gene260 Gene40 Gene484 Gene173 </span>
-<span class="co">##   colnames: RHC29 RHC59 RHC62 ... RHC62 RHC34 RHC91 RHC93 </span>
-<span class="co">## ZinbModel object:</span>
-<span class="co">##   40 samples;   500 genes.</span>
-<span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span>
-<span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span>
-<span class="co">##   0 latent factor(s).</span>
-<span class="co">## Project: ToyExample</span></code></pre>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span></span></code></pre></div>
+<pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
+<span><span class="co">## Real single-cell profiles:</span></span>
+<span><span class="co">##   500 features and 100 cells</span></span>
+<span><span class="co">##   rownames: Gene313 Gene61 Gene260 ... Gene260 Gene40 Gene484 Gene173 </span></span>
+<span><span class="co">##   colnames: RHC29 RHC59 RHC62 ... RHC62 RHC34 RHC91 RHC93 </span></span>
+<span><span class="co">## ZinbModel object:</span></span>
+<span><span class="co">##   40 samples;   500 genes.</span></span>
+<span><span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span></span>
+<span><span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span></span>
+<span><span class="co">##   0 latent factor(s).</span></span>
+<span><span class="co">## Project: ToyExample</span></span></code></pre>
 </div>
 <div class="section level4">
 <h4 id="simul-sc">Simulating new single-cell profiles<a class="anchor" aria-label="anchor" href="#simul-sc"></a>
@@ -395,66 +395,66 @@ example, if your data set is composed of 5 cell types and
 <code>n.cells</code> is equal to 10, the number of simulated profiles
 will be 50.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simSCProfiles.html">simSCProfiles</a></span><span class="op">(</span>
-  object <span class="op">=</span> <span class="va">DDLSToy</span>,
-  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,
-  cell.type.column <span class="op">=</span> <span class="st">"Cell_Type"</span>,
-  n.cells <span class="op">=</span> <span class="fl">10</span>,
-  suffix.names <span class="op">=</span> <span class="st">"_Simul"</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## === Getting parameters from model:</span></code></pre>
-<pre><code><span class="co">##     - mu: 40, 500</span></code></pre>
-<pre><code><span class="co">##     - pi: 40, 500</span></code></pre>
-<pre><code><span class="co">##     - Theta: 500</span></code></pre>
-<pre><code><span class="co">## === Selected cell type(s) from ZINB-WaVE model (5 cell type(s)):</span></code></pre>
-<pre><code><span class="co">##     - CellType2</span>
-<span class="co">##     - CellType3</span>
-<span class="co">##     - CellType4</span>
-<span class="co">##     - CellType5</span>
-<span class="co">##     - CellType1</span></code></pre>
-<pre><code><span class="co">## === Simulated matrix dimensions:</span></code></pre>
-<pre><code><span class="co">##     - n (cells): 50</span></code></pre>
-<pre><code><span class="co">##     - J (genes): 500</span></code></pre>
-<pre><code><span class="co">##     - i (# entries): 25000</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## DONE</span></code></pre>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simSCProfiles.html">simSCProfiles</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">DDLSToy</span>,</span>
+<span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
+<span>  cell.type.column <span class="op">=</span> <span class="st">"Cell_Type"</span>,</span>
+<span>  n.cells <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  suffix.names <span class="op">=</span> <span class="st">"_Simul"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## === Getting parameters from model:</span></span></code></pre>
+<pre><code><span><span class="co">##     - mu: 40, 500</span></span></code></pre>
+<pre><code><span><span class="co">##     - pi: 40, 500</span></span></code></pre>
+<pre><code><span><span class="co">##     - Theta: 500</span></span></code></pre>
+<pre><code><span><span class="co">## === Selected cell type(s) from ZINB-WaVE model (5 cell type(s)):</span></span></code></pre>
+<pre><code><span><span class="co">##     - CellType2</span></span>
+<span><span class="co">##     - CellType3</span></span>
+<span><span class="co">##     - CellType4</span></span>
+<span><span class="co">##     - CellType5</span></span>
+<span><span class="co">##     - CellType1</span></span></code></pre>
+<pre><code><span><span class="co">## === Simulated matrix dimensions:</span></span></code></pre>
+<pre><code><span><span class="co">##     - n (cells): 50</span></span></code></pre>
+<pre><code><span><span class="co">##     - J (genes): 500</span></span></code></pre>
+<pre><code><span><span class="co">##     - i (# entries): 25000</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## DONE</span></span></code></pre>
 <p>These simulated single-cell profiles are stored in
 <code>single.cell.simul</code> slot to be used to simulate new bulk
 RNA-Seq profiles with a known cell composition.</p>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span></code></pre></div>
-<pre><code><span class="co">## An object of class DigitalDLSorter </span>
-<span class="co">## Real single-cell profiles:</span>
-<span class="co">##   500 features and 100 cells</span>
-<span class="co">##   rownames: Gene130 Gene245 Gene373 ... Gene373 Gene402 Gene344 Gene240 </span>
-<span class="co">##   colnames: RHC11 RHC55 RHC6 ... RHC6 RHC4 RHC12 RHC33 </span>
-<span class="co">## ZinbModel object:</span>
-<span class="co">##   40 samples;   500 genes.</span>
-<span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span>
-<span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span>
-<span class="co">##   0 latent factor(s).</span>
-<span class="co">## Simulated single-cell profiles:</span>
-<span class="co">##   500 features and 50 cells</span>
-<span class="co">##   rownames: Gene100 Gene8 Gene11 ... Gene11 Gene127 Gene179 Gene137 </span>
-<span class="co">##   colnames: CellType2_Simul10 CellType1_Simul42 CellType3_Simul12 ... CellType3_Simul12 CellType5_Simul34 CellType2_Simul8 CellType2_Simul3 </span>
-<span class="co">## Project: ToyExample</span></code></pre>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span></span></code></pre></div>
+<pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
+<span><span class="co">## Real single-cell profiles:</span></span>
+<span><span class="co">##   500 features and 100 cells</span></span>
+<span><span class="co">##   rownames: Gene130 Gene245 Gene373 ... Gene373 Gene402 Gene344 Gene240 </span></span>
+<span><span class="co">##   colnames: RHC11 RHC55 RHC6 ... RHC6 RHC4 RHC12 RHC33 </span></span>
+<span><span class="co">## ZinbModel object:</span></span>
+<span><span class="co">##   40 samples;   500 genes.</span></span>
+<span><span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span></span>
+<span><span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span></span>
+<span><span class="co">##   0 latent factor(s).</span></span>
+<span><span class="co">## Simulated single-cell profiles:</span></span>
+<span><span class="co">##   500 features and 50 cells</span></span>
+<span><span class="co">##   rownames: Gene100 Gene8 Gene11 ... Gene11 Gene127 Gene179 Gene137 </span></span>
+<span><span class="co">##   colnames: CellType2_Simul10 CellType1_Simul42 CellType3_Simul12 ... CellType3_Simul12 CellType5_Simul34 CellType2_Simul8 CellType2_Simul3 </span></span>
+<span><span class="co">## Project: ToyExample</span></span></code></pre>
 <p>In this step, it is also possible to store the new simulated
 single-cell profiles in a HDF5 file. Indeed, they can be simulated in
 batches, avoiding loading all data into RAM. The code would be as
 follows:</p>
 <div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simSCProfiles.html">simSCProfiles</a></span><span class="op">(</span>
-  object <span class="op">=</span> <span class="va">DDLSToy</span>,
-  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,
-  cell.type.column <span class="op">=</span> <span class="st">"Cell_Type"</span>,
-  n.cells <span class="op">=</span> <span class="fl">10</span>,
-  suffix.names <span class="op">=</span> <span class="st">"_Simul"</span>,
-  file.backend <span class="op">=</span> <span class="st">"simulated_singlecell_data.h5"</span>,
-  block.processing <span class="op">=</span> <span class="cn">TRUE</span>,
-  block.size <span class="op">=</span> <span class="fl">20</span>, <span class="co"># number of single-cell profiles simulated per batch</span>
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simSCProfiles.html">simSCProfiles</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">DDLSToy</span>,</span>
+<span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
+<span>  cell.type.column <span class="op">=</span> <span class="st">"Cell_Type"</span>,</span>
+<span>  n.cells <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  suffix.names <span class="op">=</span> <span class="st">"_Simul"</span>,</span>
+<span>  file.backend <span class="op">=</span> <span class="st">"simulated_singlecell_data.h5"</span>,</span>
+<span>  block.processing <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  block.size <span class="op">=</span> <span class="fl">20</span>, <span class="co"># number of single-cell profiles simulated per batch</span></span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -505,67 +505,67 @@ number of cells that will compose each pseudo-bulk sample, and
 pseudo-bulk samples generated (training + test subsets). The code would
 be as follows:</p>
 <div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## for reproducibility</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-
-<span class="co">## prior knowledge for prob.design argument</span>
-<span class="va">probMatrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
-  Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span>,
-  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,
-  to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fl">50</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">70</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generateBulkCellMatrix.html">generateBulkCellMatrix</a></span><span class="op">(</span>
-  object <span class="op">=</span> <span class="va">DDLSToy</span>,
-  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,
-  cell.type.column <span class="op">=</span> <span class="st">"Cell_Type"</span>,
-  prob.design <span class="op">=</span> <span class="va">probMatrix</span>,
-  num.bulk.samples <span class="op">=</span> <span class="fl">250</span>,
-  n.cells <span class="op">=</span> <span class="fl">100</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## </span>
-<span class="co">## === The number of bulk RNA-Seq samples that will be generated is equal to 250</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## === Training set cells by type:</span></code></pre>
-<pre><code><span class="co">##     - CellType2: 16</span>
-<span class="co">##     - CellType3: 25</span>
-<span class="co">##     - CellType4: 20</span>
-<span class="co">##     - CellType5: 15</span>
-<span class="co">##     - CellType1: 24</span></code></pre>
-<pre><code><span class="co">## === Test set cells by type:</span></code></pre>
-<pre><code><span class="co">##     - CellType2: 7</span>
-<span class="co">##     - CellType3: 10</span>
-<span class="co">##     - CellType4: 6</span>
-<span class="co">##     - CellType5: 14</span>
-<span class="co">##     - CellType1: 13</span></code></pre>
-<pre><code><span class="co">## === Probability matrix for training data:</span></code></pre>
-<pre><code><span class="co">##     - Bulk RNA-Seq samples: 167</span>
-<span class="co">##     - Cell types: 5</span></code></pre>
-<pre><code><span class="co">## === Probability matrix for test data:</span></code></pre>
-<pre><code><span class="co">##     - Bulk RNA-Seq samples: 83</span>
-<span class="co">##     - Cell types: 5</span></code></pre>
-<pre><code><span class="co">## DONE</span></code></pre>
+<code class="sourceCode R"><span><span class="co">## for reproducibility</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## prior knowledge for prob.design argument</span></span>
+<span><span class="va">probMatrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fl">50</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">70</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generateBulkCellMatrix.html">generateBulkCellMatrix</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">DDLSToy</span>,</span>
+<span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
+<span>  cell.type.column <span class="op">=</span> <span class="st">"Cell_Type"</span>,</span>
+<span>  prob.design <span class="op">=</span> <span class="va">probMatrix</span>,</span>
+<span>  num.bulk.samples <span class="op">=</span> <span class="fl">250</span>,</span>
+<span>  n.cells <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## === The number of bulk RNA-Seq samples that will be generated is equal to 250</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## === Training set cells by type:</span></span></code></pre>
+<pre><code><span><span class="co">##     - CellType2: 16</span></span>
+<span><span class="co">##     - CellType3: 25</span></span>
+<span><span class="co">##     - CellType4: 20</span></span>
+<span><span class="co">##     - CellType5: 15</span></span>
+<span><span class="co">##     - CellType1: 24</span></span></code></pre>
+<pre><code><span><span class="co">## === Test set cells by type:</span></span></code></pre>
+<pre><code><span><span class="co">##     - CellType2: 7</span></span>
+<span><span class="co">##     - CellType3: 10</span></span>
+<span><span class="co">##     - CellType4: 6</span></span>
+<span><span class="co">##     - CellType5: 14</span></span>
+<span><span class="co">##     - CellType1: 13</span></span></code></pre>
+<pre><code><span><span class="co">## === Probability matrix for training data:</span></span></code></pre>
+<pre><code><span><span class="co">##     - Bulk RNA-Seq samples: 167</span></span>
+<span><span class="co">##     - Cell types: 5</span></span></code></pre>
+<pre><code><span><span class="co">## === Probability matrix for test data:</span></span></code></pre>
+<pre><code><span><span class="co">##     - Bulk RNA-Seq samples: 83</span></span>
+<span><span class="co">##     - Cell types: 5</span></span></code></pre>
+<pre><code><span><span class="co">## DONE</span></span></code></pre>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span></code></pre></div>
-<pre><code><span class="co">## An object of class DigitalDLSorter </span>
-<span class="co">## Real single-cell profiles:</span>
-<span class="co">##   500 features and 100 cells</span>
-<span class="co">##   rownames: Gene469 Gene244 Gene283 ... Gene283 Gene212 Gene34 Gene265 </span>
-<span class="co">##   colnames: RHC90 RHC77 RHC26 ... RHC26 RHC82 RHC65 RHC60 </span>
-<span class="co">## ZinbModel object:</span>
-<span class="co">##   40 samples;   500 genes.</span>
-<span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span>
-<span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span>
-<span class="co">##   0 latent factor(s).</span>
-<span class="co">## Simulated single-cell profiles:</span>
-<span class="co">##   500 features and 50 cells</span>
-<span class="co">##   rownames: Gene4 Gene337 Gene192 ... Gene192 Gene319 Gene271 Gene422 </span>
-<span class="co">##   colnames: CellType3_Simul15 CellType3_Simul12 CellType4_Simul26 ... CellType4_Simul26 CellType2_Simul4 CellType5_Simul40 CellType1_Simul43 </span>
-<span class="co">## Cell type composition matrices:</span>
-<span class="co">##   Cell type matrix for traindata: 167 bulk samples and 5 cell types </span>
-<span class="co">##   Cell type matrix for testdata: 83 bulk samples and 5 cell types </span>
-<span class="co">## Project: ToyExample</span></code></pre>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span></span></code></pre></div>
+<pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
+<span><span class="co">## Real single-cell profiles:</span></span>
+<span><span class="co">##   500 features and 100 cells</span></span>
+<span><span class="co">##   rownames: Gene469 Gene244 Gene283 ... Gene283 Gene212 Gene34 Gene265 </span></span>
+<span><span class="co">##   colnames: RHC90 RHC77 RHC26 ... RHC26 RHC82 RHC65 RHC60 </span></span>
+<span><span class="co">## ZinbModel object:</span></span>
+<span><span class="co">##   40 samples;   500 genes.</span></span>
+<span><span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span></span>
+<span><span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span></span>
+<span><span class="co">##   0 latent factor(s).</span></span>
+<span><span class="co">## Simulated single-cell profiles:</span></span>
+<span><span class="co">##   500 features and 50 cells</span></span>
+<span><span class="co">##   rownames: Gene4 Gene337 Gene192 ... Gene192 Gene319 Gene271 Gene422 </span></span>
+<span><span class="co">##   colnames: CellType3_Simul15 CellType3_Simul12 CellType4_Simul26 ... CellType4_Simul26 CellType2_Simul4 CellType5_Simul40 CellType1_Simul43 </span></span>
+<span><span class="co">## Cell type composition matrices:</span></span>
+<span><span class="co">##   Cell type matrix for traindata: 167 bulk samples and 5 cell types </span></span>
+<span><span class="co">##   Cell type matrix for testdata: 83 bulk samples and 5 cell types </span></span>
+<span><span class="co">## Project: ToyExample</span></span></code></pre>
 <p>Remember that this is a simulated example. In real circumstances,
 depending on the number of single-cell profiles loaded/simulated at the
 beginning and computational resources, about 20,000-30,000 samples would
@@ -573,49 +573,49 @@ be recommended.</p>
 <p>You can inspect the cell composition matrix created in this step with
 the getter function <code>getProbMatrix</code>:</p>
 <div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##        CellType1 CellType2 CellType3 CellType4 CellType5</span>
-<span class="co">## Bulk_1         8         2        29        41        20</span>
-<span class="co">## Bulk_2         2         0         0        98         0</span>
-<span class="co">## Bulk_3         6         4         8        34        48</span>
-<span class="co">## Bulk_4         1         9        24        34        32</span>
-<span class="co">## Bulk_5        10         8         7        47        28</span>
-<span class="co">## Bulk_6        19        22         0        59         0</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##        CellType1 CellType2 CellType3 CellType4 CellType5</span></span>
+<span><span class="co">## Bulk_1         8         2        29        41        20</span></span>
+<span><span class="co">## Bulk_2         2         0         0        98         0</span></span>
+<span><span class="co">## Bulk_3         6         4         8        34        48</span></span>
+<span><span class="co">## Bulk_4         1         9        24        34        32</span></span>
+<span><span class="co">## Bulk_5        10         8         7        47        28</span></span>
+<span><span class="co">## Bulk_6        19        22         0        59         0</span></span></code></pre>
 <div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##          CellType1 CellType2 CellType3 CellType4 CellType5</span>
-<span class="co">## Bulk_162         0         0         0         0       100</span>
-<span class="co">## Bulk_163         0         0         0         0       100</span>
-<span class="co">## Bulk_164         0         0         0         0       100</span>
-<span class="co">## Bulk_165         0         0         0         0       100</span>
-<span class="co">## Bulk_166         0         0         0         0       100</span>
-<span class="co">## Bulk_167         0         0         0         0       100</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##          CellType1 CellType2 CellType3 CellType4 CellType5</span></span>
+<span><span class="co">## Bulk_162         0         0         0         0       100</span></span>
+<span><span class="co">## Bulk_163         0         0         0         0       100</span></span>
+<span><span class="co">## Bulk_164         0         0         0         0       100</span></span>
+<span><span class="co">## Bulk_165         0         0         0         0       100</span></span>
+<span><span class="co">## Bulk_166         0         0         0         0       100</span></span>
+<span><span class="co">## Bulk_167         0         0         0         0       100</span></span></code></pre>
 <p>Moreover, distributions can be plotted using the
 <code>showProbPlot</code> function:</p>
 <div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span>
-  <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="../reference/showProbPlot.html">showProbPlot</a></span><span class="op">(</span>
-      <span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span>, set <span class="op">=</span> <span class="va">x</span>, type.plot <span class="op">=</span> <span class="st">"boxplot"</span>
-    <span class="op">)</span>
-  <span class="op">}</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [[1]]</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
+<span>  <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/showProbPlot.html">showProbPlot</a></span><span class="op">(</span></span>
+<span>      <span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span>, set <span class="op">=</span> <span class="va">x</span>, type.plot <span class="op">=</span> <span class="st">"boxplot"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [[1]]</span></span></code></pre>
 <p><img src="newModels_files/figure-html/showProbPlot_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
-<pre><code><span class="co">## </span>
-<span class="co">## [[2]]</span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## [[2]]</span></span></code></pre>
 <p><img src="newModels_files/figure-html/showProbPlot_newModels-2.png" width="640" style="display: block; margin: auto;"></p>
-<pre><code><span class="co">## </span>
-<span class="co">## [[3]]</span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## [[3]]</span></span></code></pre>
 <p><img src="newModels_files/figure-html/showProbPlot_newModels-3.png" width="640" style="display: block; margin: auto;"></p>
-<pre><code><span class="co">## </span>
-<span class="co">## [[4]]</span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## [[4]]</span></span></code></pre>
 <p><img src="newModels_files/figure-html/showProbPlot_newModels-4.png" width="640" style="display: block; margin: auto;"></p>
-<pre><code><span class="co">## </span>
-<span class="co">## [[5]]</span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## [[5]]</span></span></code></pre>
 <p><img src="newModels_files/figure-html/showProbPlot_newModels-5.png" width="640" style="display: block; margin: auto;"></p>
-<pre><code><span class="co">## </span>
-<span class="co">## [[6]]</span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## [[6]]</span></span></code></pre>
 <p><img src="newModels_files/figure-html/showProbPlot_newModels-6.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
@@ -654,48 +654,48 @@ based on their cell type and how they were divided into training and
 test subsets. This step is performed by <code>simBulkProfiles</code> as
 follows:</p>
 <div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simBulkProfiles.html">simBulkProfiles</a></span><span class="op">(</span>
-  object <span class="op">=</span> <span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"both"</span>, pseudobulk.function <span class="op">=</span> <span class="st">"MeanCPM"</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## === Setting parallel environment to 1 thread(s)</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## === Generating train bulk samples:</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## === Generating test bulk samples:</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## DONE</span></code></pre>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simBulkProfiles.html">simBulkProfiles</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"both"</span>, pseudobulk.function <span class="op">=</span> <span class="st">"MeanCPM"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## === Setting parallel environment to 1 thread(s)</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## === Generating train bulk samples:</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## === Generating test bulk samples:</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## DONE</span></span></code></pre>
 <p>These samples are stored as a <code>SummarizedExperiment</code>
 object in the <code>bulk.simul</code> slot where they can be inspected
 at any time:</p>
 <div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span></code></pre></div>
-<pre><code><span class="co">## An object of class DigitalDLSorter </span>
-<span class="co">## Real single-cell profiles:</span>
-<span class="co">##   500 features and 100 cells</span>
-<span class="co">##   rownames: Gene243 Gene118 Gene362 ... Gene362 Gene321 Gene26 Gene149 </span>
-<span class="co">##   colnames: RHC63 RHC70 RHC44 ... RHC44 RHC34 RHC49 RHC90 </span>
-<span class="co">## ZinbModel object:</span>
-<span class="co">##   40 samples;   500 genes.</span>
-<span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span>
-<span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span>
-<span class="co">##   0 latent factor(s).</span>
-<span class="co">## Simulated single-cell profiles:</span>
-<span class="co">##   500 features and 50 cells</span>
-<span class="co">##   rownames: Gene259 Gene127 Gene337 ... Gene337 Gene313 Gene462 Gene12 </span>
-<span class="co">##   colnames: CellType5_Simul37 CellType2_Simul6 CellType1_Simul50 ... CellType1_Simul50 CellType4_Simul25 CellType2_Simul8 CellType3_Simul16 </span>
-<span class="co">## Cell type composition matrices:</span>
-<span class="co">##   Cell type matrix for traindata: 167 bulk samples and 5 cell types </span>
-<span class="co">##   Cell type matrix for testdata: 83 bulk samples and 5 cell types </span>
-<span class="co">## Simulated bulk samples:</span>
-<span class="co">##   train bulk samples:</span>
-<span class="co">##     500 features and 167 samples</span>
-<span class="co">##     rownames: Gene359 Gene82 Gene40 ... Gene40 Gene226 Gene184 Gene102 </span>
-<span class="co">##     colnames: Bulk_90 Bulk_107 Bulk_116 ... Bulk_116 Bulk_75 Bulk_89 Bulk_109 </span>
-<span class="co">##   test bulk samples:</span>
-<span class="co">##     500 features and 83 samples</span>
-<span class="co">##     rownames: Gene429 Gene263 Gene242 ... Gene242 Gene317 Gene495 Gene411 </span>
-<span class="co">##     colnames: Bulk_26 Bulk_38 Bulk_63 ... Bulk_63 Bulk_4 Bulk_81 Bulk_48 </span>
-<span class="co">## Project: ToyExample</span></code></pre>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span></span></code></pre></div>
+<pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
+<span><span class="co">## Real single-cell profiles:</span></span>
+<span><span class="co">##   500 features and 100 cells</span></span>
+<span><span class="co">##   rownames: Gene243 Gene118 Gene362 ... Gene362 Gene321 Gene26 Gene149 </span></span>
+<span><span class="co">##   colnames: RHC63 RHC70 RHC44 ... RHC44 RHC34 RHC49 RHC90 </span></span>
+<span><span class="co">## ZinbModel object:</span></span>
+<span><span class="co">##   40 samples;   500 genes.</span></span>
+<span><span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span></span>
+<span><span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span></span>
+<span><span class="co">##   0 latent factor(s).</span></span>
+<span><span class="co">## Simulated single-cell profiles:</span></span>
+<span><span class="co">##   500 features and 50 cells</span></span>
+<span><span class="co">##   rownames: Gene259 Gene127 Gene337 ... Gene337 Gene313 Gene462 Gene12 </span></span>
+<span><span class="co">##   colnames: CellType5_Simul37 CellType2_Simul6 CellType1_Simul50 ... CellType1_Simul50 CellType4_Simul25 CellType2_Simul8 CellType3_Simul16 </span></span>
+<span><span class="co">## Cell type composition matrices:</span></span>
+<span><span class="co">##   Cell type matrix for traindata: 167 bulk samples and 5 cell types </span></span>
+<span><span class="co">##   Cell type matrix for testdata: 83 bulk samples and 5 cell types </span></span>
+<span><span class="co">## Simulated bulk samples:</span></span>
+<span><span class="co">##   train bulk samples:</span></span>
+<span><span class="co">##     500 features and 167 samples</span></span>
+<span><span class="co">##     rownames: Gene359 Gene82 Gene40 ... Gene40 Gene226 Gene184 Gene102 </span></span>
+<span><span class="co">##     colnames: Bulk_90 Bulk_107 Bulk_116 ... Bulk_116 Bulk_75 Bulk_89 Bulk_109 </span></span>
+<span><span class="co">##   test bulk samples:</span></span>
+<span><span class="co">##     500 features and 83 samples</span></span>
+<span><span class="co">##     rownames: Gene429 Gene263 Gene242 ... Gene242 Gene317 Gene495 Gene411 </span></span>
+<span><span class="co">##     colnames: Bulk_26 Bulk_38 Bulk_63 ... Bulk_63 Bulk_4 Bulk_81 Bulk_48 </span></span>
+<span><span class="co">## Project: ToyExample</span></span></code></pre>
 <p>Again, these pseudo-bulk samples can be stored as an HDF5 file. This
 is the most recommended step of <strong>digitalDLSorteR</strong> to use
 this functionality, as it is the most computationally expensive part of
@@ -704,14 +704,14 @@ evaluation of Deep Neural Network (DNN) model. As in
 <code>simSCProfiles</code>, samples can be simulated in batches and a
 desired number of threads can also be set:</p>
 <div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simBulkProfiles.html">simBulkProfiles</a></span><span class="op">(</span>
-  object <span class="op">=</span> <span class="va">DDLSToy</span>, 
-  type.data <span class="op">=</span> <span class="st">"both"</span>, 
-  file.backend <span class="op">=</span> <span class="st">"pseudobulk_samples.h5"</span>,
-  block.processing <span class="op">=</span> <span class="cn">TRUE</span>,
-  block.size <span class="op">=</span> <span class="fl">1000</span>, 
-  threads <span class="op">=</span> <span class="fl">2</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simBulkProfiles.html">simBulkProfiles</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">DDLSToy</span>, </span>
+<span>  type.data <span class="op">=</span> <span class="st">"both"</span>, </span>
+<span>  file.backend <span class="op">=</span> <span class="st">"pseudobulk_samples.h5"</span>,</span>
+<span>  block.processing <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  block.size <span class="op">=</span> <span class="fl">1000</span>, </span>
+<span>  threads <span class="op">=</span> <span class="fl">2</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="new-methods-to-generate-pseudo-bulk-samples">New methods to generate pseudo-bulk samples<a class="anchor" aria-label="anchor" href="#new-methods-to-generate-pseudo-bulk-samples"></a>
 </h4>
@@ -761,49 +761,49 @@ pre-built model in the <code>custom.model</code> parameter. See the
 documentation for more details.</p>
 <p>The code with default parameters is as follows:</p>
 <div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDigitalDLSorterModel.html">trainDigitalDLSorterModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, scaling <span class="op">=</span> <span class="st">"standarize"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## === Training and test from stored data was selected</span></code></pre>
-<pre><code><span class="co">## Model: "DigitalDLSorter"</span>
-<span class="co">## ________________________________________________________________________________</span>
-<span class="co">## Layer (type)                        Output Shape                    Param #     </span>
-<span class="co">## ================================================================================</span>
-<span class="co">## Dense1 (Dense)                      (None, 200)                     100200      </span>
-<span class="co">## ________________________________________________________________________________</span>
-<span class="co">## BatchNormalization1 (BatchNormaliza (None, 200)                     800         </span>
-<span class="co">## ________________________________________________________________________________</span>
-<span class="co">## ActivationReLu1 (Activation)        (None, 200)                     0           </span>
-<span class="co">## ________________________________________________________________________________</span>
-<span class="co">## Dropout1 (Dropout)                  (None, 200)                     0           </span>
-<span class="co">## ________________________________________________________________________________</span>
-<span class="co">## Dense2 (Dense)                      (None, 200)                     40200       </span>
-<span class="co">## ________________________________________________________________________________</span>
-<span class="co">## BatchNormalization2 (BatchNormaliza (None, 200)                     800         </span>
-<span class="co">## ________________________________________________________________________________</span>
-<span class="co">## ActivationReLu2 (Activation)        (None, 200)                     0           </span>
-<span class="co">## ________________________________________________________________________________</span>
-<span class="co">## Dropout2 (Dropout)                  (None, 200)                     0           </span>
-<span class="co">## ________________________________________________________________________________</span>
-<span class="co">## Dense3 (Dense)                      (None, 5)                       1005        </span>
-<span class="co">## ________________________________________________________________________________</span>
-<span class="co">## BatchNormalization3 (BatchNormaliza (None, 5)                       20          </span>
-<span class="co">## ________________________________________________________________________________</span>
-<span class="co">## ActivationSoftmax (Activation)      (None, 5)                       0           </span>
-<span class="co">## ================================================================================</span>
-<span class="co">## Total params: 143,025</span>
-<span class="co">## Trainable params: 142,215</span>
-<span class="co">## Non-trainable params: 810</span>
-<span class="co">## ________________________________________________________________________________</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## === Training DNN with 267 samples:</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## === Evaluating DNN in test data (133 samples)</span></code></pre>
-<pre><code><span class="co">##    - loss: 0.7308</span>
-<span class="co">##    - accuracy: 0.6767</span>
-<span class="co">##    - mean_absolute_error: 0.1835</span>
-<span class="co">##    - categorical_accuracy: 0.6767</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## === Generating prediction results using test data</span></code></pre>
-<pre><code><span class="co">## DONE</span></code></pre>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDigitalDLSorterModel.html">trainDigitalDLSorterModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, scaling <span class="op">=</span> <span class="st">"standarize"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## === Training and test from stored data was selected</span></span></code></pre>
+<pre><code><span><span class="co">## Model: "DigitalDLSorter"</span></span>
+<span><span class="co">## _____________________________________________________________________</span></span>
+<span><span class="co">## Layer (type)                   Output Shape               Param #    </span></span>
+<span><span class="co">## =====================================================================</span></span>
+<span><span class="co">## Dense1 (Dense)                 (None, 200)                100200     </span></span>
+<span><span class="co">## _____________________________________________________________________</span></span>
+<span><span class="co">## BatchNormalization1 (BatchNorm (None, 200)                800        </span></span>
+<span><span class="co">## _____________________________________________________________________</span></span>
+<span><span class="co">## ActivationReLu1 (Activation)   (None, 200)                0          </span></span>
+<span><span class="co">## _____________________________________________________________________</span></span>
+<span><span class="co">## Dropout1 (Dropout)             (None, 200)                0          </span></span>
+<span><span class="co">## _____________________________________________________________________</span></span>
+<span><span class="co">## Dense2 (Dense)                 (None, 200)                40200      </span></span>
+<span><span class="co">## _____________________________________________________________________</span></span>
+<span><span class="co">## BatchNormalization2 (BatchNorm (None, 200)                800        </span></span>
+<span><span class="co">## _____________________________________________________________________</span></span>
+<span><span class="co">## ActivationReLu2 (Activation)   (None, 200)                0          </span></span>
+<span><span class="co">## _____________________________________________________________________</span></span>
+<span><span class="co">## Dropout2 (Dropout)             (None, 200)                0          </span></span>
+<span><span class="co">## _____________________________________________________________________</span></span>
+<span><span class="co">## Dense3 (Dense)                 (None, 5)                  1005       </span></span>
+<span><span class="co">## _____________________________________________________________________</span></span>
+<span><span class="co">## BatchNormalization3 (BatchNorm (None, 5)                  20         </span></span>
+<span><span class="co">## _____________________________________________________________________</span></span>
+<span><span class="co">## ActivationSoftmax (Activation) (None, 5)                  0          </span></span>
+<span><span class="co">## =====================================================================</span></span>
+<span><span class="co">## Total params: 143,025</span></span>
+<span><span class="co">## Trainable params: 142,215</span></span>
+<span><span class="co">## Non-trainable params: 810</span></span>
+<span><span class="co">## _____________________________________________________________________</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## === Training DNN with 267 samples:</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## === Evaluating DNN in test data (133 samples)</span></span></code></pre>
+<pre><code><span><span class="co">##    - loss: 0.8386</span></span>
+<span><span class="co">##    - accuracy: 0.5038</span></span>
+<span><span class="co">##    - mean_absolute_error: 0.2024</span></span>
+<span><span class="co">##    - categorical_accuracy: 0.5038</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## === Generating prediction results using test data</span></span></code></pre>
+<pre><code><span><span class="co">## DONE</span></span></code></pre>
 <p>In the end, <code>DDLSToy</code> will contain a
 <code>DigitalDLSorterDNN</code> object with all the information
 associated with the model in the <code>trained.model</code> slot: a
@@ -811,45 +811,45 @@ associated with the model in the <code>trained.model</code> slot: a
 model, metrics and loss function histories during training, and
 prediction results on test data.</p>
 <div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span></code></pre></div>
-<pre><code><span class="co">## An object of class DigitalDLSorter </span>
-<span class="co">## Real single-cell profiles:</span>
-<span class="co">##   500 features and 100 cells</span>
-<span class="co">##   rownames: Gene431 Gene278 Gene232 ... Gene232 Gene373 Gene237 Gene453 </span>
-<span class="co">##   colnames: RHC22 RHC56 RHC13 ... RHC13 RHC40 RHC83 RHC36 </span>
-<span class="co">## ZinbModel object:</span>
-<span class="co">##   40 samples;   500 genes.</span>
-<span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span>
-<span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span>
-<span class="co">##   0 latent factor(s).</span>
-<span class="co">## Simulated single-cell profiles:</span>
-<span class="co">##   500 features and 50 cells</span>
-<span class="co">##   rownames: Gene93 Gene311 Gene308 ... Gene308 Gene234 Gene365 Gene462 </span>
-<span class="co">##   colnames: CellType5_Simul35 CellType4_Simul30 CellType3_Simul17 ... CellType3_Simul17 CellType4_Simul23 CellType5_Simul33 CellType3_Simul15 </span>
-<span class="co">## Cell type composition matrices:</span>
-<span class="co">##   Cell type matrix for traindata: 167 bulk samples and 5 cell types </span>
-<span class="co">##   Cell type matrix for testdata: 83 bulk samples and 5 cell types </span>
-<span class="co">## Simulated bulk samples:</span>
-<span class="co">##   train bulk samples:</span>
-<span class="co">##     500 features and 167 samples</span>
-<span class="co">##     rownames: Gene394 Gene174 Gene279 ... Gene279 Gene62 Gene261 Gene337 </span>
-<span class="co">##     colnames: Bulk_92 Bulk_157 Bulk_98 ... Bulk_98 Bulk_131 Bulk_3 Bulk_31 </span>
-<span class="co">##   test bulk samples:</span>
-<span class="co">##     500 features and 83 samples</span>
-<span class="co">##     rownames: Gene415 Gene336 Gene208 ... Gene208 Gene200 Gene78 Gene351 </span>
-<span class="co">##     colnames: Bulk_65 Bulk_46 Bulk_76 ... Bulk_76 Bulk_53 Bulk_77 Bulk_67 </span>
-<span class="co">## Trained model: 10 epochs</span>
-<span class="co">##   Training metrics (last epoch):</span>
-<span class="co">##     loss: 0.2501</span>
-<span class="co">##     accuracy: 0.9187</span>
-<span class="co">##     mean_absolute_error: 0.0894</span>
-<span class="co">##     categorical_accuracy: 0.9187</span>
-<span class="co">##   Evaluation metrics on test data:</span>
-<span class="co">##     loss: 0.7308</span>
-<span class="co">##     accuracy: 0.6767</span>
-<span class="co">##     mean_absolute_error: 0.1835</span>
-<span class="co">##     categorical_accuracy: 0.6767 </span>
-<span class="co">## Project: ToyExample</span></code></pre>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span></span></code></pre></div>
+<pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
+<span><span class="co">## Real single-cell profiles:</span></span>
+<span><span class="co">##   500 features and 100 cells</span></span>
+<span><span class="co">##   rownames: Gene431 Gene278 Gene232 ... Gene232 Gene373 Gene237 Gene453 </span></span>
+<span><span class="co">##   colnames: RHC22 RHC56 RHC13 ... RHC13 RHC40 RHC83 RHC36 </span></span>
+<span><span class="co">## ZinbModel object:</span></span>
+<span><span class="co">##   40 samples;   500 genes.</span></span>
+<span><span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span></span>
+<span><span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span></span>
+<span><span class="co">##   0 latent factor(s).</span></span>
+<span><span class="co">## Simulated single-cell profiles:</span></span>
+<span><span class="co">##   500 features and 50 cells</span></span>
+<span><span class="co">##   rownames: Gene93 Gene311 Gene308 ... Gene308 Gene234 Gene365 Gene462 </span></span>
+<span><span class="co">##   colnames: CellType5_Simul35 CellType4_Simul30 CellType3_Simul17 ... CellType3_Simul17 CellType4_Simul23 CellType5_Simul33 CellType3_Simul15 </span></span>
+<span><span class="co">## Cell type composition matrices:</span></span>
+<span><span class="co">##   Cell type matrix for traindata: 167 bulk samples and 5 cell types </span></span>
+<span><span class="co">##   Cell type matrix for testdata: 83 bulk samples and 5 cell types </span></span>
+<span><span class="co">## Simulated bulk samples:</span></span>
+<span><span class="co">##   train bulk samples:</span></span>
+<span><span class="co">##     500 features and 167 samples</span></span>
+<span><span class="co">##     rownames: Gene394 Gene174 Gene279 ... Gene279 Gene62 Gene261 Gene337 </span></span>
+<span><span class="co">##     colnames: Bulk_92 Bulk_157 Bulk_98 ... Bulk_98 Bulk_131 Bulk_3 Bulk_31 </span></span>
+<span><span class="co">##   test bulk samples:</span></span>
+<span><span class="co">##     500 features and 83 samples</span></span>
+<span><span class="co">##     rownames: Gene415 Gene336 Gene208 ... Gene208 Gene200 Gene78 Gene351 </span></span>
+<span><span class="co">##     colnames: Bulk_65 Bulk_46 Bulk_76 ... Bulk_76 Bulk_53 Bulk_77 Bulk_67 </span></span>
+<span><span class="co">## Trained model: 10 epochs</span></span>
+<span><span class="co">##   Training metrics (last epoch):</span></span>
+<span><span class="co">##     loss: 0.251</span></span>
+<span><span class="co">##     accuracy: 0.9219</span></span>
+<span><span class="co">##     mean_absolute_error: 0.089</span></span>
+<span><span class="co">##     categorical_accuracy: 0.9219</span></span>
+<span><span class="co">##   Evaluation metrics on test data:</span></span>
+<span><span class="co">##     loss: 0.8386</span></span>
+<span><span class="co">##     accuracy: 0.5038</span></span>
+<span><span class="co">##     mean_absolute_error: 0.2024</span></span>
+<span><span class="co">##     categorical_accuracy: 0.5038 </span></span>
+<span><span class="co">## Project: ToyExample</span></span></code></pre>
 <p>Since this is a ‘toy’ example, results are not very accurate. For a
 real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution
 of colorectal cancer samples</a> vignette.</p>
@@ -867,7 +867,7 @@ not loaded into RAM or stored in large HDF5 files. To use this
 functionality, it is only necessary to set
 <code>on.the.fly = TRUE</code> as follows:</p>
 <div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDigitalDLSorterModel.html">trainDigitalDLSorterModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, on.the.fly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDigitalDLSorterModel.html">trainDigitalDLSorterModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, on.the.fly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -889,7 +889,7 @@ their average values according to three criteria: each cell type
 (<code>CellType</code>), proportion bins of 0.1 (<code>pBin</code>) and
 number of different cell types (<code>nCellTypes</code>).</p>
 <div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateEvalMetrics.html">calculateEvalMetrics</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateEvalMetrics.html">calculateEvalMetrics</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span><span class="op">)</span></span></code></pre></div>
 <p>Now, these results can be plotted by the following battery of
 functions.</p>
 <div class="section level4">
@@ -905,45 +905,45 @@ number of cell types in samples (<code>nCellTypes</code>). In the
 following example, we will represent the overall errors by cell
 type.</p>
 <div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
-  <span class="va">DDLSToy</span>,
-  error <span class="op">=</span> <span class="st">"AbsErr"</span>,
-  x.by <span class="op">=</span> <span class="st">"CellType"</span>,
-  color.by <span class="op">=</span> <span class="st">"CellType"</span>, 
-  error.labels <span class="op">=</span> <span class="cn">FALSE</span>, 
-  type <span class="op">=</span> <span class="st">"boxplot"</span>,
-  size.point <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span></span>
+<span>  <span class="va">DDLSToy</span>,</span>
+<span>  error <span class="op">=</span> <span class="st">"AbsErr"</span>,</span>
+<span>  x.by <span class="op">=</span> <span class="st">"CellType"</span>,</span>
+<span>  color.by <span class="op">=</span> <span class="st">"CellType"</span>, </span>
+<span>  error.labels <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>  type <span class="op">=</span> <span class="st">"boxplot"</span>,</span>
+<span>  size.point <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="newModels_files/figure-html/distErr1_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>Now, if you want to know if there is a bias towards a specific cell
 type, yo can use <code>facet.by</code> parameter to split plots by cell
 type:</p>
 <div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
-  <span class="va">DDLSToy</span>,
-  error <span class="op">=</span> <span class="st">"AbsErr"</span>,
-  facet.by <span class="op">=</span> <span class="st">"CellType"</span>,
-  color.by <span class="op">=</span> <span class="st">"nCellTypes"</span>, 
-  type <span class="op">=</span> <span class="st">"violinplot"</span>,
-  size.point <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span></span>
+<span>  <span class="va">DDLSToy</span>,</span>
+<span>  error <span class="op">=</span> <span class="st">"AbsErr"</span>,</span>
+<span>  facet.by <span class="op">=</span> <span class="st">"CellType"</span>,</span>
+<span>  color.by <span class="op">=</span> <span class="st">"nCellTypes"</span>, </span>
+<span>  type <span class="op">=</span> <span class="st">"violinplot"</span>,</span>
+<span>  size.point <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="newModels_files/figure-html/distErr2_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>It is also possible to represent errors by number of different cell
 types in samples:</p>
 <div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span>
-  <span class="va">DDLSToy</span>,
-  error <span class="op">=</span> <span class="st">"AbsErr"</span>,
-  color.by <span class="op">=</span> <span class="st">"CellType"</span>, 
-  facet.by <span class="op">=</span> <span class="st">"nCellTypes"</span>,
-  type <span class="op">=</span> <span class="st">"boxplot"</span>,
-  size.point <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span></span>
+<span>  <span class="va">DDLSToy</span>,</span>
+<span>  error <span class="op">=</span> <span class="st">"AbsErr"</span>,</span>
+<span>  color.by <span class="op">=</span> <span class="st">"CellType"</span>, </span>
+<span>  facet.by <span class="op">=</span> <span class="st">"nCellTypes"</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"boxplot"</span>,</span>
+<span>  size.point <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="newModels_files/figure-html/distErr3_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>Finally, with <code>barErrorPlot</code>, the mean error values with
 their corresponding dispersion ranges can be plotted as follows:</p>
 <div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/barErrorPlot.html">barErrorPlot</a></span><span class="op">(</span><span class="va">DDLSToy</span>, error <span class="op">=</span> <span class="st">"MAE"</span>, by <span class="op">=</span> <span class="st">"CellType"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/barErrorPlot.html">barErrorPlot</a></span><span class="op">(</span><span class="va">DDLSToy</span>, error <span class="op">=</span> <span class="st">"MAE"</span>, by <span class="op">=</span> <span class="st">"CellType"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="newModels_files/figure-html/barError_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
@@ -959,37 +959,37 @@ correlation coefficient (<span class="math inline">\(CCC\)</span>) are
 shown as annotations on the plots. The latter is a more realistic
 measure as it decreases as the points move away from the identity.</p>
 <div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
-  <span class="va">DDLSToy</span>,
-  color.by <span class="op">=</span> <span class="st">"CellType"</span>,
-  size.point <span class="op">=</span> <span class="fl">1</span>,
-  corr <span class="op">=</span> <span class="st">"both"</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## `geom_smooth()` using formula 'y ~ x'</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span></span>
+<span>  <span class="va">DDLSToy</span>,</span>
+<span>  color.by <span class="op">=</span> <span class="st">"CellType"</span>,</span>
+<span>  size.point <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  corr <span class="op">=</span> <span class="st">"both"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## `geom_smooth()` using formula 'y ~ x'</span></span></code></pre>
 <p><img src="newModels_files/figure-html/corr1_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>As in the previous case, plots can be split according to different
 variables. Now, let’s split the results by <code>CellType</code> and
 <code>nCellTypes</code> as an example:</p>
 <div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
-  <span class="va">DDLSToy</span>,
-  color.by <span class="op">=</span> <span class="st">"CellType"</span>,
-  facet.by <span class="op">=</span> <span class="st">"CellType"</span>,
-  size.point <span class="op">=</span> <span class="fl">1</span>, 
-  filter.sc <span class="op">=</span> <span class="cn">FALSE</span>,
-  corr <span class="op">=</span> <span class="st">"both"</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## `geom_smooth()` using formula 'y ~ x'</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span></span>
+<span>  <span class="va">DDLSToy</span>,</span>
+<span>  color.by <span class="op">=</span> <span class="st">"CellType"</span>,</span>
+<span>  facet.by <span class="op">=</span> <span class="st">"CellType"</span>,</span>
+<span>  size.point <span class="op">=</span> <span class="fl">1</span>, </span>
+<span>  filter.sc <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  corr <span class="op">=</span> <span class="st">"both"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## `geom_smooth()` using formula 'y ~ x'</span></span></code></pre>
 <p><img src="newModels_files/figure-html/corr2_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span>
-  <span class="va">DDLSToy</span>,
-  color.by <span class="op">=</span> <span class="st">"CellType"</span>,
-  facet.by <span class="op">=</span> <span class="st">"nCellTypes"</span>,
-  size.point <span class="op">=</span> <span class="fl">1</span>,
-  corr <span class="op">=</span> <span class="st">"both"</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## `geom_smooth()` using formula 'y ~ x'</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span></span>
+<span>  <span class="va">DDLSToy</span>,</span>
+<span>  color.by <span class="op">=</span> <span class="st">"CellType"</span>,</span>
+<span>  facet.by <span class="op">=</span> <span class="st">"nCellTypes"</span>,</span>
+<span>  size.point <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  corr <span class="op">=</span> <span class="st">"both"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## `geom_smooth()` using formula 'y ~ x'</span></span></code></pre>
 <p><img src="newModels_files/figure-html/corr3_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
@@ -1007,27 +1007,27 @@ standard deviation of the differences. 95% of the differences are
 expected to fall between these two limits, so the wider the margins, the
 worse the performance. It is also possible to display it in <span class="math inline">\(log_2\)</span> space.</p>
 <div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
-  <span class="va">DDLSToy</span>, 
-  color.by <span class="op">=</span> <span class="st">"CellType"</span>,
-  log.2 <span class="op">=</span> <span class="cn">FALSE</span>,
-  size.point <span class="op">=</span> <span class="fl">1</span>,
-  filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,
-  density <span class="op">=</span> <span class="cn">TRUE</span>,
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span></span>
+<span>  <span class="va">DDLSToy</span>, </span>
+<span>  color.by <span class="op">=</span> <span class="st">"CellType"</span>,</span>
+<span>  log.2 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  size.point <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  density <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="newModels_files/figure-html/bland1_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>In addition, this function has the same behaviour as previous ones,
 as it is possible to split plots:</p>
 <div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span>
-  <span class="va">DDLSToy</span>, 
-  color.by <span class="op">=</span> <span class="st">"nCellTypes"</span>,
-  facet.by <span class="op">=</span> <span class="st">"nCellTypes"</span>,
-  log.2 <span class="op">=</span> <span class="cn">FALSE</span>,
-  size.point <span class="op">=</span> <span class="fl">1</span>,
-  filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,
-  density <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span></span>
+<span>  <span class="va">DDLSToy</span>, </span>
+<span>  color.by <span class="op">=</span> <span class="st">"nCellTypes"</span>,</span>
+<span>  facet.by <span class="op">=</span> <span class="st">"nCellTypes"</span>,</span>
+<span>  log.2 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  size.point <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  density <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="newModels_files/figure-html/bland2_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 </div>
@@ -1039,39 +1039,39 @@ loaded into the <code>DigitalDLSorter</code> object to be deconvoluted.
 Here, we are going to simulate bulk RNA-Seq data from a Poisson
 distribution:</p>
 <div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">countsBulk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span>
-  <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">100</span>, lambda <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">10</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>, 
-  nrow <span class="op">=</span> <span class="fl">40</span>, ncol <span class="op">=</span> <span class="fl">15</span>, 
-  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Bulk"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">countsBulk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
+<span>  <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">100</span>, lambda <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">10</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>  nrow <span class="op">=</span> <span class="fl">40</span>, ncol <span class="op">=</span> <span class="fl">15</span>, </span>
+<span>  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Bulk"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>And load them into the object:</p>
 <div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-<span class="va">seExample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html" class="external-link">SummarizedExperiment</a></span><span class="op">(</span>assay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">countsBulk</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadDeconvData.html">loadDeconvData</a></span><span class="op">(</span>
-  object <span class="op">=</span> <span class="va">DDLSToy</span>,
-  data <span class="op">=</span> <span class="va">seExample</span>, 
-  name.data <span class="op">=</span> <span class="st">"Simulated.example"</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">seExample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html" class="external-link">SummarizedExperiment</a></span><span class="op">(</span>assay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">countsBulk</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadDeconvData.html">loadDeconvData</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">DDLSToy</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">seExample</span>, </span>
+<span>  name.data <span class="op">=</span> <span class="st">"Simulated.example"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Then, with the <code>deconvDigitalDLSorterObj</code> function, these
 new samples can be deconvoluted into the cell types considered by the
 model and predicted proportions can be represented by the
 <code>barPlotCellTypes</code> function. The cell composition matrix is
 stored in the <code>deconv.results</code> slot.</p>
 <div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDigitalDLSorterObj.html">deconvDigitalDLSorterObj</a></span><span class="op">(</span>
-  object <span class="op">=</span> <span class="va">DDLSToy</span>, 
-  name.data <span class="op">=</span> <span class="st">"Simulated.example"</span>,
-  normalize <span class="op">=</span> <span class="cn">TRUE</span>,
-  scaling <span class="op">=</span> <span class="st">"standarize"</span>,
-  verbose <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-<span class="co">## plot results</span>
-<span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span>
-  <span class="va">DDLSToy</span>, name.data <span class="op">=</span> <span class="st">"Simulated.example"</span>, 
-  rm.x.text <span class="op">=</span> <span class="cn">TRUE</span>, color.line <span class="op">=</span> <span class="st">"black"</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDigitalDLSorterObj.html">deconvDigitalDLSorterObj</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">DDLSToy</span>, </span>
+<span>  name.data <span class="op">=</span> <span class="st">"Simulated.example"</span>,</span>
+<span>  normalize <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  scaling <span class="op">=</span> <span class="st">"standarize"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">## plot results</span></span>
+<span><span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span></span>
+<span>  <span class="va">DDLSToy</span>, name.data <span class="op">=</span> <span class="st">"Simulated.example"</span>, </span>
+<span>  rm.x.text <span class="op">=</span> <span class="cn">TRUE</span>, color.line <span class="op">=</span> <span class="st">"black"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="newModels_files/figure-html/resultsBarPlot_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
@@ -1090,8 +1090,8 @@ These two pieces of information are the minimal part needed to perform
 new predictions. When the model is to be used, it is compiled back to a
 <code>keras.engine.sequential.Sequential</code> object.</p>
 <div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## this code will not be run</span>
-<span class="fu"><a href="../reference/saveRDS.html">saveRDS</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, file <span class="op">=</span> <span class="st">"valid/path"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">## this code will not be run</span></span>
+<span><span class="fu"><a href="../reference/saveRDS.html">saveRDS</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, file <span class="op">=</span> <span class="st">"valid/path"</span><span class="op">)</span></span></code></pre></div>
 <p>However, the optimizer state is not saved in this way. To offer the
 possibility to save the complete model, <strong>digitalDLSorteR</strong>
 has the <code>saveTrainedModelAsH5</code> function to save on disk the
@@ -1099,9 +1099,9 @@ DNN model, and <code>loadTrainedModelFromH5</code> to load-back models
 into <code>DigitalDLSorter</code> objects. Note that in this way just
 the keras model is saved as an HDF5 file.</p>
 <div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## this code will not be run</span>
-<span class="fu"><a href="../reference/saveTrainedModelAsH5.html">saveTrainedModelAsH5</a></span><span class="op">(</span><span class="va">DDLSToy</span>, file.path <span class="op">=</span> <span class="st">"valid/path"</span><span class="op">)</span>
-<span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadTrainedModelFromH5.html">loadTrainedModelFromH5</a></span><span class="op">(</span><span class="va">DDLSToy</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">## this code will not be run</span></span>
+<span><span class="fu"><a href="../reference/saveTrainedModelAsH5.html">saveTrainedModelAsH5</a></span><span class="op">(</span><span class="va">DDLSToy</span>, file.path <span class="op">=</span> <span class="st">"valid/path"</span><span class="op">)</span></span>
+<span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadTrainedModelFromH5.html">loadTrainedModelFromH5</a></span><span class="op">(</span><span class="va">DDLSToy</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -1139,7 +1139,7 @@ for signal extraction from single-cell
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer>

@@ -24,7 +24,7 @@ optimizer."><meta property="og:image" content="/logo.png"><!-- mathjax --><scrip
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -91,7 +91,7 @@ optimizer.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">saveTrainedModelAsH5</span><span class="op">(</span><span class="va">object</span>, <span class="va">file.path</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">saveTrainedModelAsH5</span><span class="op">(</span><span class="va">object</span>, <span class="va">file.path</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -99,14 +99,21 @@ optimizer.</p>
     <dl><dt>object</dt>
 <dd><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
 <code>trained.model</code> slot.</p></dd>
+
+
 <dt>file.path</dt>
 <dd><p>Valid file path where to save the model to.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Overwrite file if it already exists.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>No return value, saves a keras DNN trained model as HDF5 file on
+    
+
+<p>No return value, saves a keras DNN trained model as HDF5 file on
 disk.</p>
     </div>
     <div id="see-also">
@@ -127,7 +134,7 @@ disk.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -138,7 +138,7 @@ miniconda (if needed) and create a conda environment called
 interpreter with tensorflow &gt;= 2.2). We recommend using
 <code>installTFpython</code> to install tensorFlow Python library.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/installTFpython.html">installTFpython</a></span><span class="op">(</span>install.conda <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/installTFpython.html">installTFpython</a></span><span class="op">(</span>install.conda <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="common-errors-with-keras">Common errors with <a href="https://cran.r-project.org/package=keras" class="external-link">keras</a><a class="anchor" aria-label="anchor" href="#common-errors-with-keras"></a>
@@ -154,11 +154,11 @@ environment by following these steps:</p>
 <p>First, in case you don’t have miniconda installed, use the following
 R code using <a href="https://cran.r-project.org/package=reticulate" class="external-link">reticulate</a>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/install_miniconda.html" class="external-link">install_miniconda</a></span><span class="op">(</span><span class="op">)</span>
-<span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_create</a></span><span class="op">(</span>
-  envname <span class="op">=</span> <span class="st">"digitaldlsorter-env"</span>, 
-  packages <span class="op">=</span> <span class="st">"python==3.7.11"</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/install_miniconda.html" class="external-link">install_miniconda</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_create</a></span><span class="op">(</span></span>
+<span>  envname <span class="op">=</span> <span class="st">"digitaldlsorter-env"</span>, </span>
+<span>  packages <span class="op">=</span> <span class="st">"python==3.7.11"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Or type in a Terminal:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">--name</span> digitaldlsorter-env python=3.7 tensorflow=2.1</span></code></pre></div>
 <p>Then, instead of using <code><a href="https://rdrr.io/pkg/keras/man/install_keras.html" class="external-link">keras::install_keras()</a></code> function,
@@ -166,18 +166,18 @@ run the following code chunk using the <a href="https://cran.r-project.org/packa
 package. This code will create a Python interpreter with <a href="https://cran.r-project.org/package=tensorflow" class="external-link">tensorflow</a> with
 all its dependencies covered.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">tensorflow</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tensorflow/man/install_tensorflow.html" class="external-link">install_tensorflow</a></span><span class="op">(</span>
-  method <span class="op">=</span> <span class="st">"conda"</span>, 
-  conda <span class="op">=</span> <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_binary</a></span><span class="op">(</span><span class="st">"auto"</span><span class="op">)</span>, 
-  envname <span class="op">=</span> <span class="st">"digitaldlsorter-env"</span>, 
-  version <span class="op">=</span> <span class="st">"2.1.0-cpu"</span>,
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">tensorflow</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tensorflow/man/install_tensorflow.html" class="external-link">install_tensorflow</a></span><span class="op">(</span></span>
+<span>  method <span class="op">=</span> <span class="st">"conda"</span>, </span>
+<span>  conda <span class="op">=</span> <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_binary</a></span><span class="op">(</span><span class="st">"auto"</span><span class="op">)</span>, </span>
+<span>  envname <span class="op">=</span> <span class="st">"digitaldlsorter-env"</span>, </span>
+<span>  version <span class="op">=</span> <span class="st">"2.1.0-cpu"</span>,</span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Finally, although it is automatically done by
 <strong>digitalDLSorteR</strong>, if <a href="https://cran.r-project.org/package=keras" class="external-link">keras</a> still does not
 recognize the functional environment, set this new environment as the
 selected Python environment:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">tensorflow</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">use_condaenv</a></span><span class="op">(</span><span class="st">"digitaldlsorter-env"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">tensorflow</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">use_condaenv</a></span><span class="op">(</span><span class="st">"digitaldlsorter-env"</span><span class="op">)</span></span></code></pre></div>
 <p>If the Python-interpreter problems do not disappear, it is possible
 to set manually the interpreter that will be used with <a href="https://cran.r-project.org/package=reticulate" class="external-link">reticulate</a>. See
 the following guide: <a href="https://rstudio.github.io/reticulate/articles/versions.html" class="external-link uri">https://rstudio.github.io/reticulate/articles/versions.html</a>.
@@ -196,7 +196,7 @@ versions later than 1.9. You can disable this option by the following
 line of code or change your <a href="https://cran.r-project.org/package=tensorflow" class="external-link">tensorflow</a>
 version used as back-end.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">tensorflow</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/tensorflow/man/tf.html" class="external-link">tf</a></span><span class="op">$</span><span class="va">compat</span><span class="op">$</span><span class="va">v1</span><span class="op">$</span><span class="fu">disable_eager_execution</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">tensorflow</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/tensorflow/man/tf.html" class="external-link">tf</a></span><span class="op">$</span><span class="va">compat</span><span class="op">$</span><span class="va">v1</span><span class="op">$</span><span class="fu">disable_eager_execution</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </div>
@@ -218,7 +218,7 @@ version used as back-end.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer>

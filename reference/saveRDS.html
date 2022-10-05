@@ -27,7 +27,7 @@ loadTrainedModelFromH5 function. See documentation for details."><meta property=
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -98,34 +98,34 @@ into a <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> obj
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">saveRDS</span><span class="op">(</span>
-  <span class="va">object</span>,
-  <span class="va">file</span>,
-  ascii <span class="op">=</span> <span class="cn">FALSE</span>,
-  version <span class="op">=</span> <span class="cn">NULL</span>,
-  compress <span class="op">=</span> <span class="cn">TRUE</span>,
-  refhook <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span>
-
-<span class="co"># S4 method for DigitalDLSorterDNN</span>
-<span class="fu">saveRDS</span><span class="op">(</span>
-  <span class="va">object</span>,
-  <span class="va">file</span>,
-  ascii <span class="op">=</span> <span class="cn">FALSE</span>,
-  version <span class="op">=</span> <span class="cn">NULL</span>,
-  compress <span class="op">=</span> <span class="cn">TRUE</span>,
-  refhook <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span>
-
-<span class="co"># S4 method for DigitalDLSorter</span>
-<span class="fu">saveRDS</span><span class="op">(</span>
-  <span class="va">object</span>,
-  <span class="va">file</span>,
-  ascii <span class="op">=</span> <span class="cn">FALSE</span>,
-  version <span class="op">=</span> <span class="cn">NULL</span>,
-  compress <span class="op">=</span> <span class="cn">TRUE</span>,
-  refhook <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">saveRDS</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  <span class="va">file</span>,</span>
+<span>  ascii <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  version <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  compress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  refhook <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for DigitalDLSorterDNN</span></span>
+<span><span class="fu">saveRDS</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  <span class="va">file</span>,</span>
+<span>  ascii <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  version <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  compress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  refhook <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for DigitalDLSorter</span></span>
+<span><span class="fu">saveRDS</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  <span class="va">file</span>,</span>
+<span>  ascii <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  version <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  compress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  refhook <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -133,27 +133,40 @@ into a <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> obj
     <dl><dt>object</dt>
 <dd><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> or
 <code><a href="DigitalDLSorterDNN-class.html">DigitalDLSorterDNN</a></code> object to be saved</p></dd>
+
+
 <dt>file</dt>
 <dd><p>File path where the object will be saved</p></dd>
+
+
 <dt>ascii</dt>
 <dd><p>a logical.  If <code>TRUE</code> or <code>NA</code>, an ASCII
     representation is written; otherwise (default), a binary one is used.
     See the comments in the help for <code><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></code>.</p></dd>
+
+
 <dt>version</dt>
 <dd><p>the workspace format version to use.  <code>NULL</code>
     specifies the current default version (3). The only other supported
     value is 2, the default from <span style="R">R</span> 1.4.0 to <span style="R">R</span> 3.5.0.</p></dd>
+
+
 <dt>compress</dt>
 <dd><p>a logical specifying whether saving to a named file is
     to use <code>"gzip"</code> compression, or one of <code>"gzip"</code>,
     <code>"bzip2"</code> or <code>"xz"</code> to indicate the type of compression to
     be used.  Ignored if <code>file</code> is a connection.</p></dd>
+
+
 <dt>refhook</dt>
 <dd><p>a hook function for handling reference objects.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>No return value, saves a <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object
+    
+
+<p>No return value, saves a <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object
 as an RDS file on disk.</p>
     </div>
     <div id="see-also">
@@ -174,7 +187,7 @@ as an RDS file on disk.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

@@ -24,7 +24,7 @@ but we recommend using this function."><meta property="og:image" content="/logo.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -92,7 +92,7 @@ but we recommend using this function.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">installTFpython</span><span class="op">(</span>conda <span class="op">=</span> <span class="st">"auto"</span>, install.conda <span class="op">=</span> <span class="cn">FALSE</span>, miniconda.path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">installTFpython</span><span class="op">(</span>conda <span class="op">=</span> <span class="st">"auto"</span>, install.conda <span class="op">=</span> <span class="cn">FALSE</span>, miniconda.path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -100,18 +100,25 @@ but we recommend using this function.</p>
     <dl><dt>conda</dt>
 <dd><p>Path to a conda executable. Use <code>"auto"</code> (by default)
 allows <span class="pkg">reticulate</span> to automatically find an appropriate conda binary.</p></dd>
+
+
 <dt>install.conda</dt>
 <dd><p>Boolean indicating if install miniconda automatically
 using <span class="pkg">reticulate</span>. If <code>TRUE</code>, <code>conda</code> argument is ignored.
 <code>FALSE</code> by default.</p></dd>
+
+
 <dt>miniconda.path</dt>
 <dd><p>If <code>install.conda</code> is <code>TRUE</code>, you can set the
 path where miniconda will be installed. If <code>NULL</code>, conda will find
 automatically the proper place.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>No return value, called for side effects: installation of conda
+    
+
+<p>No return value, called for side effects: installation of conda
 environment with a Python interpreter and Tensorflow</p>
     </div>
     <div id="details">
@@ -125,12 +132,12 @@ needed to use <span class="pkg">digitalDLSorteR</span>. It will automatically in
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">notesInstallation</span> <span class="op">&lt;-</span> <span class="fu">installTFpython</span><span class="op">(</span></span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"auto"</span>, conda <span class="op">=</span> <span class="st">"auto"</span>, install.conda <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">notesInstallation</span> <span class="op">&lt;-</span> <span class="fu">installTFpython</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"auto"</span>, conda <span class="op">=</span> <span class="st">"auto"</span>, install.conda <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -145,7 +152,7 @@ needed to use <span class="pkg">digitalDLSorteR</span>. It will automatically in
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>
