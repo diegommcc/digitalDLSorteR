@@ -492,7 +492,6 @@ estimateZinbwaveParams <- function(
       gene.ID.column = gene.ID.column, 
       min.counts = 0, 
       min.cells = 0, 
-      fun.aggregate = "sum",
       verbose = verbose
     )
     list.data[[1]] <- list.data.filf[[1]]

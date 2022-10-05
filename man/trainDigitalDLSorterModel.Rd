@@ -49,7 +49,7 @@ argument.}
 
 \item{activation.fun}{Activation function to use (\code{'relu'} by default).
 See the
-\href{https://keras.rstudio.com/reference/activation_relu.html}{keras
+\href{https://tensorflow.rstudio.com/reference/keras/activation_relu.html}{keras
 documentation} to know available activation functions.}
 
 \item{dropout.rate}{Float between 0 and 1 indicating the fraction of the
@@ -58,13 +58,13 @@ input neurons to drop in layer dropouts (0.25 by default). By default,
 
 \item{loss}{Character indicating loss function selected for model training
 (\code{'kullback_leibler_divergence'} by default). See the
-\href{https://keras.rstudio.com/reference/loss_mean_squared_error.html}{keras
+\href{https://tensorflow.rstudio.com/reference/keras/loss-functions.html}{keras
 documentation} to know available loss functions.}
 
 \item{metrics}{Vector of metrics used to assess model performance during
 training and evaluation (\code{c("accuracy", "mean_absolute_error",
   "categorical_accuracy")} by default). See the
-\href{https://keras.rstudio.com/reference/metric_binary_accuracy.html}{keras
+\href{https://tensorflow.rstudio.com/reference/keras/metric_binary_accuracy.html}{keras
 documentation} to know available performance metrics.}
 
 \item{scaling}{How to scale data before training. It may be:
@@ -128,7 +128,7 @@ pseudo-bulk profiles at the same time as the training/evaluation is performed
 All Deep Learning related steps in the \pkg{digitalDLSorteR} package are
 performed by using the \pkg{keras} package, an API in R for \pkg{keras} in
 Python available on CRAN. We recommend using the installation guide available
-at \url{https://keras.rstudio.com/} in order to set a more customized
+at \url{https://tensorflow.rstudio.com/} in order to set a more customized
 configuration.
 
 \strong{Simulation of bulk RNA-Seq profiles 'on the fly'}

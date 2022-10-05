@@ -12,7 +12,6 @@ loadSCProfiles(
   name.dataset.h5,
   min.counts = 0,
   min.cells = 0,
-  fun.aggregate = "sum",
   file.backend = NULL,
   name.dataset.backend = NULL,
   compression.level = NULL,
@@ -42,12 +41,6 @@ corresponding to the names used for features/genes.}
 
 \item{min.cells}{Minimum of cells with more than \code{min.counts} (0 by
 default).}
-
-\item{fun.aggregate}{In case of duplicated genes, it is possible to set the
-function used to aggregate them. Allowed functions: \code{'sum'},
-\code{'mean'}, \code{'median'}. Note that this functionality only works
-when data are provided from an mtx file (sparse matrices) that allows
-duplicated rownames. Otherwise, R does not allow duplicated rownames.}
 
 \item{file.backend}{Valid file path where to store the loaded data as HDF5
 file. If provided, data is stored in HDF5 files as back-end using

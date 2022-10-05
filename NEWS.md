@@ -28,3 +28,9 @@ generated soon.
 * The `edgeR` dependency has been removed: CPM-related calculations have been 
 implemented (`.cpmCalculate` function). Now, results may be slightly different 
 from those obtained with `edgeR`.
+
+# digitalDLSorteR 0.3.1 (2022-10-04)
+
+* The `Matrix.utils` dependency has been removed: instead of using the 
+`aggregate.Matrix` function, it is used functions implemented in the `base` 
+package.

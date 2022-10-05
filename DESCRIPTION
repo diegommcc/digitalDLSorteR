@@ -1,7 +1,7 @@
 Package: digitalDLSorteR
 Type: Package
 Title: Deconvolution of Bulk RNA-Seq Data Based on Deep Learning
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(
   person(given = "Diego", family = "Mañanes", email = "dmananesc@cnic.es", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7247-6794")),
   person(given = "Carlos", family = "Torroja", email = "ctorroja@cnic.es", role = "aut", comment = c(ORCID = "0000-0001-8914-3400")),
@@ -17,7 +17,6 @@ Depends:
 Imports:
     rlang,
     Matrix,
-    Matrix.utils,
     methods,
     tidyr,
     SingleCellExperiment,

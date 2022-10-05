@@ -202,7 +202,6 @@ NULL
   gene.ID.column,
   min.counts, 
   min.cells,
-  fun.aggregate,
   file.backend,
   block.processing,
   verbose
@@ -300,7 +299,6 @@ NULL
       gene.ID.column = gene.ID.column,
       min.counts = min.counts,
       min.cells = min.cells,
-      fun.aggregate = fun.aggregate,
       verbose = verbose
     )  
   } else {
@@ -310,7 +308,6 @@ NULL
       gene.ID.column = gene.ID.column,
       min.counts = min.counts,
       min.cells = min.cells,
-      fun.aggregate = fun.aggregate,
       verbose = verbose
     )
   }
@@ -323,21 +320,15 @@ NULL
   gene.ID.column,
   min.counts,
   min.cells,
-  fun.aggregate,
   verbose
 ) {
   # duplicated genes in count matrix (and genes.metadata)
   dup.genes <- duplicated(rownames(counts))
   if (any(dup.genes)) {
     if (verbose) {
-      message("=== Aggregating ", sum(dup.genes), " duplicated genes by ", 
-              fun.aggregate) 
+      message("=== Aggregating ", sum(dup.genes), " duplicated genes") 
     }
-    counts <- Matrix.utils::aggregate.Matrix(
-      x = counts, 
-      groupings = factor(rownames(counts)),
-      fun = fun.aggregate
-    )
+    counts <- rowsum(as.matrix(counts), rownames(counts))
   }
   genes.metadata <- genes.metadata[match(rownames(counts), 
                                          genes.metadata[, gene.ID.column]), , 
@@ -382,7 +373,6 @@ NULL
   gene.ID.column,
   min.counts,
   min.cells,
-  fun.aggregate,
   verbose
 ) { 
   if (verbose) {
@@ -396,8 +386,7 @@ NULL
   dup.genes <- duplicated(rownames(counts))
   if (any(dup.genes)) {
     if (verbose) {
-      message("=== Aggregating ", sum(dup.genes), 
-              " duplicated genes by ", fun.aggregate) 
+      message("=== Aggregating ", sum(dup.genes), " duplicated genes") 
     }
     counts.r <- DelayedArray::rowsum(x = counts, group = factor(rownames(counts)))
     genes.metadata <- genes.metadata[match(
@@ -516,7 +505,6 @@ NULL
   name.dataset.h5,
   min.cells, 
   min.counts,
-  fun.aggregate,
   file.backend,
   name.dataset.backend,
   compression.level,
@@ -530,10 +518,7 @@ NULL
              is.null(cell.ID.column) || is.null(gene.ID.column)) {
     stop("'cell.ID.column' and 'gene.ID.column' arguments are needed. Please, look ",
          "?loadSCProfiles")
-  } else if (!fun.aggregate %in% c("sum", "mean", "median")) {
-    stop("'fun.aggregate' must be one of the following options: 'sum', 'mean' ", 
-         "or 'median'")
-  } 
+  }
   if (!is.null(file.backend)) {
     hdf5Params <- .checkHDF5parameters(
       file.backend = file.backend, 
@@ -605,7 +590,6 @@ NULL
     gene.ID.column = gene.ID.column,
     min.counts = min.counts,
     min.cells = min.cells,
-    fun.aggregate = fun.aggregate,
     block.processing = block.processing,
     verbose = verbose
   )
@@ -668,11 +652,6 @@ NULL
 #' @param min.counts Minimum gene counts to filter (0 by default).
 #' @param min.cells Minimum of cells with more than \code{min.counts} (0 by
 #'   default).
-#' @param fun.aggregate In case of duplicated genes, it is possible to set the
-#'   function used to aggregate them. Allowed functions: \code{'sum'},
-#'   \code{'mean'}, \code{'median'}. Note that this functionality only works
-#'   when data are provided from an mtx file (sparse matrices) that allows
-#'   duplicated rownames. Otherwise, R does not allow duplicated rownames.
 #' @param file.backend Valid file path where to store the loaded data as HDF5
 #'   file. If provided, data is stored in HDF5 files as back-end using
 #'   \pkg{DelayedArray} and \pkg{HDF5Array} packages instead of being loaded
@@ -747,7 +726,6 @@ loadSCProfiles <- function(
   name.dataset.h5,
   min.counts = 0,
   min.cells = 0,
-  fun.aggregate = "sum",
   file.backend = NULL,
   name.dataset.backend = NULL,
   compression.level = NULL,
@@ -763,7 +741,6 @@ loadSCProfiles <- function(
     name.dataset.h5 = name.dataset.h5,
     min.cells = min.cells,
     min.counts = min.counts,
-    fun.aggregate = fun.aggregate,
     file.backend = file.backend,
     name.dataset.backend = name.dataset.backend,
     compression.level = compression.level,
