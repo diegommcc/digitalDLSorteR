@@ -328,6 +328,7 @@ NULL
     if (verbose) {
       message("=== Aggregating ", sum(dup.genes), " duplicated genes") 
     }
+    ## this part will be changed
     counts <- rowsum(as.matrix(counts), rownames(counts))
   }
   genes.metadata <- genes.metadata[match(rownames(counts), 
@@ -542,10 +543,12 @@ NULL
   } else if (length(single.cell) == 3 && !missing(name.dataset.h5)) {
     # from file --> hdf5 (needs dataset name)
     list.data <- list(
-      .readCountsFile(counts.file = single.cell[[1]], 
-                      name.h5 = name.dataset.h5, 
-                      file.backend = file.backend,
-                      block.processing = block.processing),
+      .readCountsFile(
+        counts.file = single.cell[[1]], 
+        name.h5 = name.dataset.h5, 
+        file.backend = file.backend,
+        block.processing = block.processing
+      ),
       .readTabFiles(single.cell[[2]]),
       .readTabFiles(single.cell[[3]])
     )
@@ -580,7 +583,12 @@ NULL
       ) 
     }
   } else if (!block.processing) {
-    list.data[[1]] <- Matrix::Matrix(as.matrix(list.data[[1]]), sparse = TRUE)
+    ## just in case the element provided is not a sparse matrix
+    if (is(list.data[[1]], "matrix") | is(list.data[[1]], "data.frame")) {
+      list.data[[1]] <- Matrix::Matrix(as.matrix(list.data[[1]]), sparse = TRUE)  
+    } else if (is(list.data[[1]], "dgTMatrix")) {
+      list.data[[1]] <- as(list.data[[1]], "dgCMatrix") 
+    }
   }
   list.data <- .processData(
     counts = list.data[[1]],

@@ -34,3 +34,8 @@ from those obtained with `edgeR`.
 * The `Matrix.utils` dependency has been removed: instead of using the 
 `aggregate.Matrix` function, it is used functions implemented in the `base` 
 package.
+
+# digitalDLSorteR 0.3.2 (2022-11-10)
+
+* Changed the way dense matrices (`matrix`) and `data.frame` objects are 
+transformed into `dgCMatrix` objects.
