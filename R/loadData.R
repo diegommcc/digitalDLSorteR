@@ -314,6 +314,32 @@ NULL
   return(list(filtered.genes[[1]], cells.metadata, filtered.genes[[2]]))
 }
 
+## solution for large sparse matrices (only works on sparse matrices)
+.logicalFiltSparse <- function(counts, min.counts, min.cells) {
+  counts <- as(counts, "dgTMatrix")
+  dfSumm <- data.frame(
+    i = counts@i,
+    j = counts@j,
+    x = counts@x
+  )
+  dfSumm <- dfSumm[which(dfSumm$x > min.counts), ]
+  ## in case there are no genes which meet the cutoff
+  if (any(dim(dfSumm) == 0)) return(rep(FALSE, nrow(counts)))
+  m <- Matrix::sparseMatrix(
+    i = dfSumm$i + 1,
+    j = dfSumm$j + 1,
+    x = 1L
+  )
+  return(Matrix::rowSums(m) >= min.cells)
+  # summ <- summary(counts)
+  # summ <- summ[which(summ$x > min.counts), ]
+  # m <- Matrix::sparseMatrix(
+  #   i = summ$i,
+  #   j = summ$j,
+  #   x = 1L
+  # )
+}
+
 .filterGenesSparse <- function(
   counts,
   genes.metadata,
@@ -352,7 +378,12 @@ NULL
     stop("'min.counts' and 'min.cells' must be greater than or equal to zero")
   }
   dim.bef <- dim(counts)
-  counts <- counts[Matrix::rowSums(counts > min.counts) >= min.cells, ]
+  if (is(counts, "matrix")) {
+    counts <- counts[Matrix::rowSums(counts > min.counts) >= min.cells, ]
+  } else if (is(counts, "Matrix")) {
+    counts <- counts[.logicalFiltSparse(counts, min.counts, min.cells), ]  
+  }
+  
   if (dim(counts)[1] == 0) {
     stop(paste("Resulting count matrix after filtering using min.genes =",
                min.counts, "and min.cells =", min.cells,
