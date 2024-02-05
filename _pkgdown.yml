@@ -1,10 +1,9 @@
+url: https://diegommcc.github.io/digitalDLSorteR/
 template:
   params:
     bootswatch: cosmo
-
 bslib:
   font_scale: 1.2
-
 authors:
   Diego Mañanes:
     href: https://github.com/diegommcc
@@ -12,40 +11,37 @@ authors:
     href: https://www.cnic.es/en/carlos-torroja
   Fatima Sanchez-Cabo:
     href: https://www.cnic.es/en/fatima-sanchez-cabo
-
 home:
   links:
-  - text: "digitalDLSorteRmodels: pre-trained models for digitalDLSorteR"
+  - text: 'digitalDLSorteRmodels: pre-trained models for digitalDLSorteR'
     href: https://github.com/diegommcc/digitalDLSorteRmodels
-  - text: "digitalDLSorteRdata: example data for digitalDLSorteR"
+  - text: 'digitalDLSorteRdata: example data for digitalDLSorteR'
     href: https://github.com/diegommcc/digitalDLSorteRdata
-
 navbar:
   left:
-   - icon: fa-home fa-lg
-     href: index.html
-   - text: "Vignettes"
-     menu:
-       - text: "Using pre-trained context-specific deconvolution models"
-         href: ./articles/pretrainedModels.html
-       - text: "Building new deconvolution models"
-         href: ./articles/newModels.html
-       - text: "Performance of a real model: deconvolution of colorectal cancer samples"
-         href: ./articles/realModelExample.html
-       - text: "Keras/TensorFlow installation and configuration"
-         href: ./articles/kerasIssues.html
-       - text: "HDF5 files as back-end"
-         href: ./articles/hdf5Backend.html
-   - text: "Functions"
-     href: reference/index.html
+  - icon: fa-home fa-lg
+    href: index.html
+  - text: Vignettes
+    menu:
+    - text: Using pre-trained context-specific deconvolution models
+      href: ./articles/pretrainedModels.html
+    - text: Building new deconvolution models
+      href: ./articles/newModels.html
+    - text: 'Performance of a real model: deconvolution of colorectal cancer samples'
+      href: ./articles/realModelExample.html
+    - text: Keras/TensorFlow installation and configuration
+      href: ./articles/kerasIssues.html
+    - text: HDF5 files as back-end
+      href: ./articles/hdf5Backend.html
+  - text: Functions
+    href: reference/index.html
   right:
-   - icon: fa-github
-     href: https://github.com/diegommcc/digitalDLSorteR
-  
+  - icon: fa-github
+    href: https://github.com/diegommcc/digitalDLSorteR
 repo:
   url:
     home: https://github.com/diegommcc/digitalDLSorteR/
     source: https://github.com/diegommcc/digitalDLSorteR/
     issue: https://github.com/diegommcc/digitalDLSorteR/issues
     user: https://github.com/diegommcc/
-    
+
