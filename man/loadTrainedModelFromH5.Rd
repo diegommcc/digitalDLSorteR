@@ -27,6 +27,6 @@ Load from an HDF5 file a trained Deep Neural Network model into a
 valid trained model (\pkg{keras} object).
 }
 \seealso{
-\code{\link{trainDigitalDLSorterModel}}
-\code{\link{deconvDigitalDLSorterObj}} \code{\link{saveTrainedModelAsH5}}
+\code{\link{trainDDLSModel}}
+\code{\link{deconvDDLSObj}} \code{\link{saveTrainedModelAsH5}}
 }

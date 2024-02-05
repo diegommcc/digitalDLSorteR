@@ -34,6 +34,6 @@ tabulated text file (tsv and tsv.gz formats are accepted) or a
 \code{\linkS4class{SummarizedExperiment}} object.
 }
 \seealso{
-\code{\link{trainDigitalDLSorterModel}}
-\code{\link{deconvDigitalDLSorterObj}}
+\code{\link{trainDDLSModel}}
+\code{\link{deconvDDLSObj}}
 }

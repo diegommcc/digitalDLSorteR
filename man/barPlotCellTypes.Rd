@@ -98,5 +98,5 @@ barPlotCellTypes(DDLS)
 }
 \seealso{
 \code{\link{deconvDigitalDLSorter}}
-\code{\link{deconvDigitalDLSorterObj}}
+\code{\link{deconvDDLSObj}}
 }

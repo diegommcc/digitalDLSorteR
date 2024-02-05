@@ -28,6 +28,6 @@ training.
 Plot training history of a trained DigitalDLSorter Deep Neural Network model.
 }
 \seealso{
-\code{\link{trainDigitalDLSorterModel}}
-\code{\link{deconvDigitalDLSorterObj}}
+\code{\link{trainDDLSModel}}
+\code{\link{deconvDDLSObj}}
 }

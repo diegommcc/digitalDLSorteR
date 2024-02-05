@@ -1,4 +1,9 @@
 #' @importFrom utils read.delim
+#' @importFrom dplyr arrange desc
+#' @importFrom stats setNames
+#' @importFrom utils head tail
+#' @importFrom scran modelGeneVar
+#' @importFrom scuttle computeLibraryFactors logNormCounts
 NULL
 
 .readTabFiles <- function(file) {
@@ -31,7 +36,7 @@ NULL
     file.obj <- readRDS(file = file)
   } else {
     stop("File format is not recognizable. Please, look at allowed data",
-         " in ?loadSCProfiles")
+         " in ?createDDLSobject")
   }
   return(file.obj)
 }
@@ -137,7 +142,7 @@ NULL
     }
   } else {
     stop("File format is not recognizable. Please, look at allowed data",
-         " in ?loadSCProfiles")
+         " in ?createDDLSobject")
   }
   return(counts)
 }
@@ -195,26 +200,42 @@ NULL
 }
 
 .processData <- function(
-  counts, 
-  cells.metadata, 
-  cell.ID.column,
-  genes.metadata, 
-  gene.ID.column,
-  min.counts, 
-  min.cells,
-  file.backend,
-  block.processing,
-  verbose
+    counts, 
+    cells.metadata, 
+    cell.ID.column,
+    cell.type.column,
+    genes.metadata, 
+    gene.ID.column,
+    filt.genes.cluster,
+    min.mean.counts,
+    filt.genes.cells,
+    min.counts, 
+    min.cells,
+    file.backend,
+    block.processing,
+    verbose
 ) {
   # check if IDs given exist in metadata
-  .checkColumn(metadata = cells.metadata,
-               ID.column = cell.ID.column,
-               type.metadata = "cells.metadata",
-               arg = "cell.ID.column")
-  .checkColumn(metadata = genes.metadata,
-               ID.column = gene.ID.column,
-               type.metadata = "genes.metadata",
-               arg = "gene.ID.column")
+  .checkColumn(
+    metadata = cells.metadata,
+    ID.column = cell.ID.column,
+    type.metadata = "cells.metadata",
+    arg = "cell.ID.column"
+  )
+  if (filt.genes.cluster) {
+    .checkColumn(
+      metadata = cells.metadata,
+      ID.column = cell.type.column,
+      type.metadata = "cells.metadata",
+      arg = "sc.cell.type.column"
+    )
+  }
+  .checkColumn(
+    metadata = genes.metadata,
+    ID.column = gene.ID.column,
+    type.metadata = "genes.metadata",
+    arg = "gene.ID.column"
+  )
   # duplicated ID cells --------------------------------------------------------
   if (any(duplicated(cells.metadata[, cell.ID.column]))) {
     warning("There are duplicated IDs in 'cells.metadata' (column ", 
@@ -229,8 +250,8 @@ NULL
     diff <- abs(dim(counts)[2] - length(common.cells))
     disc <- abs(length(cells.metadata[, cell.ID.column]) - length(common.cells))
     if (length(common.cells) < min(dim(counts)[2], dim(cells.metadata)[1])) {
-      stop(paste("There are", diff,
-                 "cells that don't match between count matrix and metadata"))
+      stop(paste("There are ", diff,
+                 " cells that don't match between count matrix and metadata"))
     } else if (diff != 0) { # this check includes the previous one
       warning("There are", diff, "cells that don't match between counts ", 
               "matrix and metadata")
@@ -273,7 +294,7 @@ NULL
       ))
     } else if (disc != 0) {
       if (verbose) {
-        message("=== Intersection between count matrix and genes metadata:")
+        message("    - Intersection between count matrix and genes metadata:")
         message("    ", disc, " genes have been discarded from genes metadata",
                 "\n") 
       }
@@ -291,12 +312,20 @@ NULL
                     "column from genes metadata will be used")) 
     } 
   }
+  ######### it is here where I can modify the behaviour of the function. Previous 
+  ### steps are kind of needed
+  
   # filter genes by min.counts and min.cells -----------------------------------
   if (!block.processing) {
     filtered.genes <- .filterGenesSparse(
       counts = counts,
       genes.metadata = genes.metadata,
       gene.ID.column = gene.ID.column,
+      cells.metadata = cells.metadata,
+      cell.type.column = cell.type.column,
+      filt.genes.cluster = filt.genes.cluster,
+      min.mean.counts = min.mean.counts,
+      filt.genes.cells = filt.genes.cells,
       min.counts = min.counts,
       min.cells = min.cells,
       verbose = verbose
@@ -306,8 +335,13 @@ NULL
       counts = counts,
       genes.metadata = genes.metadata,
       gene.ID.column = gene.ID.column,
+      cells.metadata = cells.metadata,
+      cell.type.column = cell.type.column,
+      filt.genes.cells = filt.genes.cells,
       min.counts = min.counts,
       min.cells = min.cells,
+      filt.genes.cluster = filt.genes.cluster,
+      min.mean.counts = min.mean.counts,
       verbose = verbose
     )
   }
@@ -316,14 +350,14 @@ NULL
 
 ## solution for large sparse matrices (only works on sparse matrices)
 .logicalFiltSparse <- function(counts, min.counts, min.cells) {
-  counts <- as(counts, "dgTMatrix")
+  counts <- as(counts, "dgTMatrix") # TsparseMatrix
   dfSumm <- data.frame(
     i = counts@i,
     j = counts@j,
     x = counts@x
   )
   dfSumm <- dfSumm[which(dfSumm$x > min.counts), ]
-  ## in case there are no genes which meet the cutoff
+  ## in case there are no genes that meet the cutoff
   if (any(dim(dfSumm) == 0)) return(rep(FALSE, nrow(counts)))
   m <- Matrix::sparseMatrix(
     i = dfSumm$i + 1,
@@ -340,19 +374,44 @@ NULL
   # )
 }
 
+.filterGenesByCells <- function(
+    counts, 
+    genes.metadata, 
+    min.counts, 
+    min.cells
+) {
+  if (min.counts == 0 && min.cells == 0) {
+    return(list(counts, genes.metadata))
+  } else if (min.counts < 0 || min.cells < 0) {
+    stop("'min.counts' and 'min.cells' must be greater than or equal to zero")
+  }
+  if (is(counts, "matrix")) {
+    counts <- counts[Matrix::rowSums(counts > min.counts) >= min.cells, ]
+  } else if (is(counts, "Matrix")) {
+    counts <- counts[.logicalFiltSparse(counts, min.counts, min.cells), ]  
+  }
+  
+  return(list(counts, genes.metadata))
+}
+
 .filterGenesSparse <- function(
-  counts,
-  genes.metadata,
-  gene.ID.column,
-  min.counts,
-  min.cells,
-  verbose
+    counts,
+    genes.metadata,
+    gene.ID.column,
+    cells.metadata,
+    cell.type.column,
+    filt.genes.cluster,
+    min.mean.counts,
+    filt.genes.cells,
+    min.counts,
+    min.cells,
+    verbose
 ) {
   # duplicated genes in count matrix (and genes.metadata)
   dup.genes <- duplicated(rownames(counts))
   if (any(dup.genes)) {
     if (verbose) {
-      message("=== Aggregating ", sum(dup.genes), " duplicated genes") 
+      message("      - Aggregating ", sum(dup.genes), " duplicated genes\n") 
     }
     ## this part will be changed
     counts <- rowsum(as.matrix(counts), rownames(counts))
@@ -360,67 +419,77 @@ NULL
   genes.metadata <- genes.metadata[match(rownames(counts), 
                                          genes.metadata[, gene.ID.column]), , 
                                    drop = FALSE]
-  # removing genes without any expression
+  # removing genes with no expression
   row.zero <- Matrix::rowSums(counts) > 0
   if (!all(row.zero)) {
     if (verbose) {
-      message(paste("=== Removing", sum(!row.zero),
-                    "genes without expression in any cell\n")) 
+      message(paste("      - Removing", sum(!row.zero),
+                    "genes without expression in any cell")) 
     }
     counts <- counts[row.zero, ]
     genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
                                        rownames(counts), , drop = FALSE]
   }
-  # filtering genes by expression thresholds
-  if (min.counts == 0 && min.cells == 0) {
-    return(list(counts, genes.metadata))
-  } else if (min.counts < 0 || min.cells < 0) {
-    stop("'min.counts' and 'min.cells' must be greater than or equal to zero")
-  }
   dim.bef <- dim(counts)
-  if (is(counts, "matrix")) {
-    counts <- counts[Matrix::rowSums(counts > min.counts) >= min.cells, ]
-  } else if (is(counts, "Matrix")) {
-    counts <- counts[.logicalFiltSparse(counts, min.counts, min.cells), ]  
+  # filtering genes by expression thresholds: if both criteria are used, 
+  # unexpected results can happen
+  if (filt.genes.cells) {
+    list.data <- .filterGenesByCells(
+      counts = counts, 
+      genes.metadata = genes.metadata, 
+      min.counts = min.counts, 
+      min.cells = min.cells 
+    )
+    counts <- list.data[[1]]
+    genes.metadata <- list.data[[2]]
   }
-  
+  # if (filt.genes.cluster) {
+  #   list.data <- .filterGenesByCluster(
+  #     counts = counts, 
+  #     genes.metadata = genes.metadata, 
+  #     cells.metadata = cells.metadata, 
+  #     cell.type.column = cell.type.column, 
+  #     min.mean.counts = min.mean.counts
+  #   )
+  #   counts <- list.data[[1]]
+  #   genes.metadata <- list.data[[2]]
+  # }
   if (dim(counts)[1] == 0) {
-    stop(paste("Resulting count matrix after filtering using min.genes =",
-               min.counts, "and min.cells =", min.cells,
-               "does not have entries"))
+    stop(paste("Resulting count matrix after filtering does not have entries"))
   }
   if (verbose) {
-    message("=== Filtering features by 'min.counts' and 'min.cells':")
-    message(paste("    - Selected features:",  dim(counts)[1]))
-    message(paste("    - Discarded features:", dim.bef[1] - dim(counts)[1]))  
+    message("      - Filtering features:")
+    message(paste("         - Selected features:",  dim(counts)[1]))
+    message(paste("         - Discarded features:", dim.bef[1] - dim(counts)[1]))  
   }
   genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
                                      rownames(counts), , drop = FALSE]
+  
   return(list(counts, genes.metadata))
 }
 
 .filterGenesHDF5 <- function(
-  counts,
-  genes.metadata,
-  gene.ID.column,
-  min.counts,
-  min.cells,
-  verbose
+    counts,
+    genes.metadata,
+    gene.ID.column,
+    cells.metadata,
+    cell.type.column,
+    filt.genes.cells,
+    min.counts,
+    min.cells,
+    filt.genes.cluster,
+    min.mean.counts,
+    verbose
 ) { 
   if (verbose) {
     message("\n=== Processing data in HDF5 by blocks\n")
   }
-  ##############################################################################
-  ################################# ATTENTION ##################################
-  # duplicated genes means that there are duplicated rownames and this is not 
-  # allowed by R, so I think that it is not necessary to implement. Check if 
-  # hdf5 files allow duplicated rownames
   dup.genes <- duplicated(rownames(counts))
   if (any(dup.genes)) {
     if (verbose) {
-      message("=== Aggregating ", sum(dup.genes), " duplicated genes") 
+      message("    - Aggregating ", sum(dup.genes), " duplicated genes\n") 
     }
-    counts.r <- DelayedArray::rowsum(x = counts, group = factor(rownames(counts)))
+    counts <- DelayedArray::rowsum(x = counts, group = factor(rownames(counts)))
     genes.metadata <- genes.metadata[match(
       x = rownames(counts), table = genes.metadata[, gene.ID.column]
     ), ]
@@ -429,7 +498,7 @@ NULL
   row.zero <- DelayedArray::rowSums(counts) > 0
   if (!all(row.zero)) {
     if (verbose) {
-      message(paste("\n=== Removing", sum(!row.zero),
+      message(paste("    - Removing", sum(!row.zero),
                     "genes without expression in any cell\n"))  
     }
     counts <- counts[row.zero, ]
@@ -440,31 +509,61 @@ NULL
                                          rownames(counts), , drop = FALSE]  
     }
   }
-  # filtered genes
-  if (min.counts == 0 && min.cells == 0) {
-    return(list(counts, genes.metadata))
-  } else if (min.counts < 0 || min.cells < 0) {
-    stop("min.counts and min.cells must be greater than or equal to zero")
+  # filtered genes by cells
+  ori.features <- nrow(counts)
+  if (filt.genes.cells) {
+    if (min.counts < 0 || min.cells < 0) {
+      stop("min.counts and min.cells must be greater than or equal to zero")
+    } else if (min.counts != 0 && min.cells != 0) {
+      remove.genes <- DelayedArray::rowSums(counts > min.counts) >= min.cells
+      counts <- counts[remove.genes, ]
+      if (dim(counts)[1] == 0) {
+        stop(paste("Resulting count matrix after filtering using min.genes =",
+                   min.counts, "and min.cells =", min.cells,
+                   "does not have entries"))
+      }
+      if (is.null(rownames(counts))) {
+        genes.metadata <- genes.metadata[remove.genes, , drop = FALSE]
+      } else {
+        genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
+                                           rownames(counts), , drop = FALSE]  
+      }  
+    }
   }
-  remove.genes <- DelayedArray::rowSums(counts > min.counts) >= min.cells
-  counts <- counts[remove.genes, ]
-  if (dim(counts)[1] == 0) {
-    stop(paste("Resulting count matrix after filtering using min.genes =",
-               min.counts, "and min.cells =", min.cells,
-               "does not have entries"))
-  }
+  # filter genes by cluster
+  # if (filt.genes.cluster) {
+  #   sum.cluster <- DelayedArray::rowsum(
+  #     x = DelayedArray::t(counts), group = factor(cells.metadata[[cell.type.column]])
+  #   )
+  #   n.cluster <- data.frame(table(cells.metadata[[cell.type.column]]))
+  #   mean.cluster <- sum.cluster[n.cluster$Var1,] / n.cluster$Freq
+  #   
+  #   ## using cutoffs
+  #   sel.genes <- unlist(
+  #     apply(
+  #       X = mean.cluster >= min.mean.counts, 
+  #       MARGIN = 2, 
+  #       FUN = function(x) if(any(x)) return(TRUE)
+  #     )
+  #   )  
+  #   if (any(sel.genes)) {
+  #     counts <- counts[names(sel.genes), ]
+  #     genes.metadata <- genes.metadata[names(sel.genes), ]
+  #   }
+  # }
+  final.features <- nrow(counts)
   if (verbose) {
-    message("\n=== Filtering features by min.counts and min.cells:")
-    message(paste("    - Selected features:",  sum(remove.genes)))
-    message(paste("    - Discarded features:", sum(!remove.genes))) 
-  }
-  if (is.null(rownames(counts))) {
-    genes.metadata <- genes.metadata[remove.genes, , drop = FALSE]
-  } else {
-    genes.metadata <- genes.metadata[genes.metadata[, gene.ID.column] %in%
-                                       rownames(counts), , drop = FALSE]  
+    message("\n    - Filtering features:")
+    message(paste("       - Selected features:",  final.features))
+    message(paste("       - Discarded features:", ori.features - final.features)) 
   }
   return(list(counts, genes.metadata))
+}
+
+.randomStr <- function() {
+  a <- do.call(paste0, replicate(5, sample(LETTERS, 1, TRUE), FALSE))
+  return(paste0("/", a, sprintf("%04d", sample(9999, 1, TRUE)), 
+                sample(LETTERS, 1, TRUE)))
 }
 
 .extractDataFromSCE <- function(
@@ -479,7 +578,7 @@ NULL
   cells.metadata <- SingleCellExperiment::colData(SCEobject)
   if (any(dim(cells.metadata) == 0)) {
     stop("No data provided in colData slot. Cells metadata is needed. ",
-         "Please, see ?loadSCProfiles")
+         "Please, see ?createDDLSobject")
   }
   if (!missing(cell.ID.column) && new.data) {
     # check if given IDs exist in cells.metadata. In cells.metadata is not
@@ -508,7 +607,7 @@ NULL
   if (!missing(gene.ID.column) && new.data) {
     if (any(dim(genes.metadata) == 0)) {
       stop("No data provided in rowData slot. Genes metadata is needed. ",
-           "Please, see ?loadSCProfiles")
+           "Please, see ?createDDLSobject")
       # if (class(gene.ID.column) == "numeric") gene.ID.column <- "gene_names"
       # genes.metadata <- S4Vectors::DataFrame(gene.ID.column = rownames(counts))
     }
@@ -530,26 +629,256 @@ NULL
                 sample(LETTERS, 1, TRUE)))
 }
 
-.loadSingleCellData <- function(
-  single.cell, 
-  cell.ID.column, 
+.loadBulkData <-  function(
+  se.object,
+  sample.ID.column,
   gene.ID.column,
-  name.dataset.h5,
-  min.cells, 
-  min.counts,
-  file.backend,
-  name.dataset.backend,
-  compression.level,
-  chunk.dims,
-  block.processing,
-  verbose
+  min.samples = 0, 
+  min.counts = 0,
+  verbose = TRUE
+) {
+  ## check if there are names in the provided list
+  se.object.mod <- .processBulkData(
+    se.object = se.object, 
+    sample.ID.column = sample.ID.column,
+    gene.ID.column = gene.ID.column,
+    min.samples = min.samples, 
+    min.counts = min.counts,
+    verbose = verbose
+  )
+  # genes <- rowData(obj.mod)[[gene.ID.column]]
+  
+  return(se.object.mod)
+}
+
+## set of functions to load ST data
+.processBulkData <- function(
+    se.object, 
+    sample.ID.column, 
+    gene.ID.column,
+    min.samples = 0, 
+    min.counts = 0,
+    verbose = TRUE
+) {
+  if (is.null(se.object)) {
+    stop(paste("Please, provide a 'se.object' argument"))
+  } else if (missing(sample.ID.column) || missing(gene.ID.column) || 
+             is.null(sample.ID.column) || is.null(gene.ID.column)) {
+    stop("'sample.ID.column' and 'gene.ID.column' arguments are needed. Please, see ",
+         "?createDDLSobject or ?loadBulkProfiles")
+  }
+  if (!is(se.object, "SummarizedExperiment")) {
+    stop(
+      "Only SummarizedExperiment objects are supported. See",
+      " ?createDDLSobject or ?loadBulkProfiles for more details"
+    ) 
+  } 
+  # extract data
+  # this function works well with SummarizedExperiment too
+  list.data <- .extractDataFromSE(
+    SEobject = se.object,
+    cell.ID.column = sample.ID.column,
+    gene.ID.column = gene.ID.column,
+    min.counts = min.counts,
+    min.cells = min.samples
+  )
+  ## just in case the element provided is not a sparse matrix
+  if (is(list.data[[1]], "matrix") | is(list.data[[1]], "data.frame")) {
+    list.data[[1]] <- Matrix::Matrix(as.matrix(list.data[[1]]), sparse = TRUE)  
+  } else if (is(list.data[[1]], "dgTMatrix")) {
+    list.data[[1]] <- as(list.data[[1]], "dgCMatrix") 
+  }
+  if (verbose) {
+    message("=== Processing bulk transcriptomics data")
+  }
+  ## filtering genes: setting not used arguments manually
+  list.data <- .processData(
+    counts = list.data[[1]],
+    cells.metadata = list.data[[2]],
+    cell.ID.column = sample.ID.column,
+    cell.type.column = NULL,
+    genes.metadata = list.data[[3]],
+    gene.ID.column = gene.ID.column,
+    filt.genes.cluster = FALSE,
+    min.mean.counts = NULL,
+    filt.genes.cells = TRUE,
+    min.counts = min.counts,
+    min.cells = min.samples,
+    block.processing = FALSE,
+    file.backend = NULL,
+    verbose = verbose
+  )
+  # ## modify original st.object
+  # st.object@assays <- SummarizedExperiment::Assays(list.data[[1]])
+  # st.object@colData <- list.data[[2]]
+  # # TODO: error
+  # rowData(st.object) <- list.data[[3]]
+  # message(class(list.data[[1]]))
+  
+  ## just for a better visualization
+  if (verbose) message("")
+  
+  return(
+    SummarizedExperiment::SummarizedExperiment(
+      assays = list.data[[1]],
+      colData = list.data[[2]],
+      rowData = list.data[[3]]
+    )
+  )
+}
+
+.extractDataFromSE <- function(
+    SEobject,
+    cell.ID.column,
+    gene.ID.column,
+    min.counts = 0,
+    min.cells = 0,
+    new.data = TRUE
+) {
+  # extract cells.metadata
+  cells.metadata <- SummarizedExperiment::colData(SEobject)
+  if (any(dim(cells.metadata) == 0)) {
+    stop("No data provided in colData slot. Cells metadata are needed. ",
+         "Please, see ?createDDLSobject")
+  }
+  if (!missing(cell.ID.column) && new.data) {
+    # check if given IDs exist in cells.metadata. In cells.metadata are not
+    # necessary because the data are provided from an SCE object
+    .checkColumn(
+      metadata = cells.metadata,
+      ID.column = cell.ID.column,
+      type.metadata = "cells.metadata",
+      arg = "cell.ID.column"
+    )
+  }
+  # extract count matrix
+  if (length(SummarizedExperiment::assays(SEobject)) == 0) {
+    stop("No count data in SingleCellExperiment object")
+  } else if (length(SummarizedExperiment::assays(SEobject)) > 1) {
+    warning("There is more than one assay, only the first will be used. ", 
+            "Remember it must be raw data and not log-transformed data")
+  }
+  counts <- SummarizedExperiment::assays(SEobject)[[1]]
+  if (is.null(rownames(counts)) || is.null(colnames(counts))) {
+    stop("Count matrix must have rownames corresponding to features and ",  
+         "colnames corresponding to cells")
+  }
+  # extract genes.metadata
+  genes.metadata <- SummarizedExperiment::rowData(SEobject)
+  if (!missing(gene.ID.column) && new.data) {
+    if (any(dim(genes.metadata) == 0)) {
+      stop("No data provided in rowData slot. Genes metadata are needed. ",
+           "Please, see ?createDDLSobject")
+      # if (class(gene.ID.column) == "numeric") gene.ID.column <- "gene_names"
+      # genes.metadata <- S4Vectors::DataFrame(gene.ID.column = rownames(counts))
+    }
+    # check if given IDs exist in genes.metadata. In cells.metadata are not
+    # necessary because the data are provided from a SCE object
+    .checkColumn(
+      metadata = genes.metadata,
+      ID.column = gene.ID.column,
+      type.metadata = "genes.metadata",
+      arg = "gene.ID.column"
+    )
+  }
+  return(list(counts, cells.metadata, genes.metadata))
+}
+
+.filterGenesByCluster <- function(
+    sce.obj,
+    cell.type.column, 
+    min.mean.counts,
+    n.genes.per.cluster,
+    top.n.genes,
+    log.FC,
+    verbose
+) {
+  
+  if (is.null(names(sce.obj@assays@data))) 
+    names(sce.obj@assays@data) <- "counts"
+  
+  mean.cluster.counts <- .aggregate.Matrix.sparse(
+    x = Matrix::t(sce.obj@assays@data$counts), 
+    groupings = list(sce.obj[[cell.type.column]]), 
+    fun = "mean"
+  )
+  sel.genes <- unlist(
+    apply(
+      X = mean.cluster.counts > min.mean.counts, 
+      MARGIN = 2, 
+      FUN = function(x) if(any(x)) return(TRUE)
+    )
+  )
+  sce.obj.norm <- computeLibraryFactors(sce.obj[names(sel.genes), ])
+  sce.obj.norm <- logNormCounts(sce.obj.norm)
+  ## mean values
+  mean.cluster.log <- .aggregate.Matrix.sparse(
+    x = Matrix::t(sce.obj.norm@assays@data$logcounts), 
+    groupings = list(sce.obj.norm@colData[[cell.type.column]]), 
+    fun = "mean"
+  )
+  means.all <- colMeans(as.matrix(mean.cluster.log))
+  logFCs.cluster <- apply(mean.cluster.log, 1, \(x) x - means.all)
+  list.cluster.FC <- lapply(
+    as.list(as.data.frame(logFCs.cluster)), 
+    \(x) x %>% setNames(rownames(logFCs.cluster))
+  )
+  ranked.logFC.top <- lapply(
+    list.cluster.FC, 
+    \(x) {
+      if (log.FC) {
+        x <- x[x >= 0.5] ## only if logFC > 0.5  
+      }
+      x[order(x, decreasing = T)] %>% head(n.genes.per.cluster) %>% names()
+    }
+  ) %>% unlist() %>% unique()
+  final.genes <- intersect(ranked.logFC.top, names(sel.genes))
+  
+  if (verbose) 
+    message(
+      "\n=== Number of genes after filtering based on logFC: ", length(final.genes)
+    )
+  
+  if (length(final.genes) > top.n.genes) {
+    if (verbose) 
+      message(
+        "\n=== As the number of resulting genes is greater than ",
+        "the top.n.genes parameter. Using only ", 
+        top.n.genes, " according to gene variance"
+      )
+    dec.sc.obj.ln <- modelGeneVar(sce.obj.norm[final.genes, ])
+    final.genes <- as.data.frame(dec.sc.obj.ln) %>% 
+      arrange(desc(abs(.data[["bio"]]))) %>% head(top.n.genes) %>% rownames()
+  }
+  
+  return(final.genes)
+}
+
+
+.loadSCData <- function(
+    single.cell, 
+    cell.ID.column,
+    cell.type.column,
+    gene.ID.column,
+    name.dataset.h5,
+    filt.genes.cluster = TRUE,
+    min.mean.counts = 0,
+    filt.genes.cells = TRUE,
+    min.cells = 0, 
+    min.counts = 0,
+    file.backend = NULL,
+    name.dataset.backend = NULL,
+    compression.level = NULL,
+    chunk.dims = NULL,
+    block.processing = FALSE,
+    verbose = TRUE
 ) {
   if (is.null(single.cell)) {
     stop(paste("Please, provide a 'single.cell' argument"))
   } else if (missing(cell.ID.column) || missing(gene.ID.column) || 
              is.null(cell.ID.column) || is.null(gene.ID.column)) {
-    stop("'cell.ID.column' and 'gene.ID.column' arguments are needed. Please, look ",
-         "?loadSCProfiles")
+    stop("'cell.ID.column' and 'gene.ID.column' arguments are needed. Please, see ",
+         "?createDDLSobject")
   }
   if (!is.null(file.backend)) {
     hdf5Params <- .checkHDF5parameters(
@@ -560,10 +889,13 @@ NULL
     name.dataset.backend <- hdf5Params[[1]]
     compression.level <- hdf5Params[[2]]
   }
+  if (verbose) {
+    message("=== Processing single-cell data")
+  }
   if (is(single.cell, "SingleCellExperiment")) {
     # extract data (no filtering)
-    list.data <- .extractDataFromSCE(
-      SCEobject = single.cell,
+    list.data <- .extractDataFromSE(
+      SEobject = single.cell,
       cell.ID.column = cell.ID.column,
       gene.ID.column = gene.ID.column,
       min.counts = min.counts,
@@ -592,7 +924,7 @@ NULL
     )
   } else {
     stop("Incorrect number of data elements given. Please, look at ", 
-         "allowed data for in ?loadSCProfiles")
+         "allowed data for in ?createDDLSobject")
   }
   # use HDF5 backend and block.processing from both SCE object and files
   if (block.processing && is.null(file.backend)) {
@@ -601,7 +933,7 @@ NULL
     if (!class(list.data[[1]]) %in% c("HDF5Matrix", "HDF5Array", 
                                       "DelayedArray", "DelayedMatrix")) {
       if (verbose) {
-        message("=== Provided data is not stored as HDF5 file and ", 
+        message("=== Provided data are not stored as HDF5 file and ", 
                 "'block.processing' has been set to TRUE, so data will be ", 
                 "written in HDF5 file for block processing")
       }
@@ -625,8 +957,12 @@ NULL
     counts = list.data[[1]],
     cells.metadata = list.data[[2]],
     cell.ID.column = cell.ID.column,
+    cell.type.column = cell.type.column,
     genes.metadata = list.data[[3]],
     gene.ID.column = gene.ID.column,
+    filt.genes.cluster = filt.genes.cluster,
+    min.mean.counts = min.mean.counts,
+    filt.genes.cells = filt.genes.cells,
     min.counts = min.counts,
     min.cells = min.cells,
     block.processing = block.processing,
@@ -652,71 +988,140 @@ NULL
 ################################################################################
 
 #' Create a \code{\linkS4class{DigitalDLSorter}} object from single-cell RNA-seq
-#' data
+#' and bulk RNA-seq data
 #'
-#' Create a \code{\linkS4class{DigitalDLSorter}} object from single-cell RNA-seq
-#' data from files (formats allowed: tsv, tsv.gz, mtx (sparse matrix) and hdf5)
-#' or a \code{\linkS4class{SingleCellExperiment}} object. The data will be
-#' stored in \code{single.cell.real} slot. The data provided should consist of
-#' three pieces of information: \itemize{ \item Single-cell counts: genes as
-#' rows and cells as columns. \item Cells metadata: annotations (columns) for
-#' each cell (rows). \item Genes metadata: annotations (columns) for each gene
-#' (rows). } If the data is provided from files, \code{single.cell.real}
-#' argument must be a vector of three elements ordered so that the first file
-#' corresponds to the count matrix, the second to the cells metadata and the
-#' last to the genes metadata. On the other hand, if the data is provided as a
-#' \code{\linkS4class{SingleCellExperiment}} oject, it must contain single-cell
-#' counts in the \code{assay} slot, cells metadata in the \code{colData} slot
-#' and genes metadata in the \code{rowData}. The data must be provided without
-#' any transformation (e.g. log-transformation) and raw counts are preferred.
+#' This function creates a \code{\linkS4class{DigitalDLSorter}} object from 
+#' single-cell RNA-seq (\code{\linkS4class{SingleCellExperiment}} object) and 
+#' bulk RNA-seq data to be deconvoluted (\code{bulk.data} parameter) 
+#' as a \code{\linkS4class{SummarizedExperiment}} object. 
+#' 
+#' \strong{Filtering genes}
+#' 
+#' In order to reduce the number of dimensions used for subsequent steps, 
+#' \code{createSpatialDDLSobject} implements different strategies aimed at 
+#' removing useless genes for deconvolution: \itemize{ \item Filtering at the 
+#' cell level: genes less expressed than a determined cutoff in N cells are
+#' removed. See \code{sc.min.cells}/\code{bulk.min.samples} and 
+#' \code{sc.min.counts}/\code{bulk.min.counts} parameters. \item Filtering at 
+#' the cluster level (only for scRNA-seq data): if 
+#' \code{sc.filt.genes.cluster == TRUE}, \code{createDDLSobject} sets a 
+#' cutoff of non-zero average counts per 
+#' cluster (\code{sc.min.mean.counts} parameter) and take only the 
+#' \code{sc.n.genes.per.cluster} genes with the highest logFC per cluster. 
+#' LogFCs are calculated using normalized logCPM of each cluster with respect to 
+#' the average in the whole dataset). Finally, if 
+#' the number of remaining genes is greater than \code{top.n.genes}, genes are 
+#' ranked based on variance and the \code{top.n.genes} most variable genes are 
+#' used for downstream analyses.}
+#' 
+#' \strong{Single-cell RNA-seq data}
+#' 
+#' Single-cell RNA-seq data can be provided from files (formats allowed: tsv,
+#' tsv.gz, mtx (sparse matrix) and hdf5) or a
+#' \code{\linkS4class{SingleCellExperiment}} object. The data provided should 
+#' consist of three pieces of information: \itemize{ \item Single-cell counts: 
+#' genes as rows and cells as columns. \item Cells metadata: annotations 
+#' (columns) for each cell (rows). \item Genes metadata: annotations (columns) 
+#' for each gene (rows). } If the data is provided from files, 
+#' \code{single.cell.real} argument must be a vector of three elements ordered 
+#' so that the first file corresponds to the count matrix, the second to the 
+#' cells metadata and the last to the genes metadata. On the other hand, if the 
+#' data is provided as a \code{\linkS4class{SingleCellExperiment}} object, it 
+#' must contain single-cell counts in the \code{assay} slot, cells metadata in 
+#' the \code{colData} slot and genes metadata in the \code{rowData}. The data 
+#' must be provided without any transformation (e.g. log-transformation) and raw
+#' counts are preferred.
+#' 
+#' \strong{Bulk transcriptomics data}
 #'
-#' This data can be used to simulate new single-cell profiles using the
-#' ZINB-WaVE framework with the \code{\link{estimateZinbwaveParams}} function.
-#' In this way, it is possible to increase the signal of cell types that are
-#' underrepresented in the original dataset. If this step is not necessary,
-#' these profiles will be used directly to simulate pseudo-bulk RNA-seq samples
-#' with known cell composition.
+#' It must be a \code{\linkS4class{SummarizedExperiment}} object (or a list of 
+#' them if samples from different experiments are going to be deconvoluted) 
+#' containing the same information as the single-cell RNA-seq data: the count 
+#' matrix, samples metadata (with IDs is enough), and genes metadata. Please, 
+#' make sure the gene identifiers used in the bulk and single-cell 
+#' transcriptomics data are consistent.
 #'
-#' @param single.cell.data If data is provided from files,
-#'   \code{single.cell.real} must be a vector of three elements: single-cell
-#'   counts, cells metadata and genes metadata. If data is provided from a
+#'
+#' @param sc.data Single-cell RNA-seq profiles to be used as reference. If data
+#'   are provided from files, \code{single.cell.real} must be a vector of three
+#'   elements: single-cell counts, cells metadata and genes metadata. On the
+#'   other hand, If data are provided from a
 #'   \code{\linkS4class{SingleCellExperiment}} object, single-cell counts must
 #'   be present in the \code{assay} slot, cells metadata in the \code{colData}
-#'   slot and genes metadata in the \code{rowData} slot.
-#' @param cell.ID.column Name or number of the column in the cells metadata
-#'   corresponding to cell names in expression matrix.
-#' @param gene.ID.column Name or number of the column in the genes metadata
-#'   corresponding to the names used for features/genes.
-#' @param name.dataset.h5 Name of the data set if HDF5 file is provided.
-#' @param min.counts Minimum gene counts to filter (0 by default).
-#' @param min.cells Minimum of cells with more than \code{min.counts} (0 by
-#'   default).
-#' @param file.backend Valid file path where to store the loaded data as HDF5
-#'   file. If provided, data is stored in HDF5 files as back-end using
-#'   \pkg{DelayedArray} and \pkg{HDF5Array} packages instead of being loaded
-#'   into RAM. This is suitable for situations where you have large amounts of
-#'   data that cannot be stored in memory. Note that operations on these data
-#'   will be performed by blocks (i.e subsets of determined size), which may
-#'   result in longer execution times. \code{NULL} by default.
-#' @param name.dataset.backend Name of the dataset of the HDF5 file to be used.
-#'   Note that it cannot exist. If \code{NULL} (by default), a random dataset
-#'   name will be used.
-#' @param compression.level The compression level used if \code{file.backend} is
-#'   provided. It is an integer value between 0 (no compression) and 9 (highest
-#'   and slowest compression). See
+#'   slot, and genes metadata in the \code{rowData} slot.
+#' @param sc.cell.ID.column Name or number of the column in cells metadata
+#'   corresponding to cell names in expression matrix (single-cell RNA-seq
+#'   data).
+#' @param sc.cell.type.column Name or column number corresponding to cell types
+#'   in cells metadata.
+#' @param sc.gene.ID.column Name or number of the column in genes metadata
+#'   corresponding to the names used for features/genes (single-cell RNA-seq
+#'   data).
+#' @param bulk.data Bulk transcriptomics data to be deconvoluted. It has to be
+#'   a \code{\linkS4class{SummarizedExperiment}} object.
+#' @param bulk.sample.ID.column Name or column number corresponding to sample 
+#'   IDs in samples metadata (bulk transcriptomics data).
+#' @param bulk.gene.ID.column Name or number of the column in the genes metadata
+#'   corresponding to the names used for features/genes (bulk transcriptomics
+#'   data).
+#' @param bulk.name.data Name of the bulk RNA-seq dataset (\code{"Bulk.DT"} by
+#'   default).  
+#' @param filter.mt.genes Regular expression matching mitochondrial genes to 
+#'   be ruled out (\code{^mt-} by default). If \code{NULL}, no filtering is 
+#'   performed. 
+#' @param sc.filt.genes.cluster Whether to filter single-cell RNA-seq genes
+#'   according to a minimum threshold of non-zero average counts per cell type
+#'   (\code{sc.min.mean.counts}). \code{TRUE} by default. 
+#' @param sc.min.mean.counts Minimum non-zero average counts per cluster to
+#'   filter genes. 1 by default. 
+#' @param sc.n.genes.per.cluster Top n genes with the highest logFC per cluster
+#'   (300 by default). See Details section for more details. 
+#' @param top.n.genes Maximum number of genes used for downstream steps (2000 
+#'   by default). In case the number of genes after filtering is greater than 
+#'   \code{top.n.genes}, these genes will be set according to 
+#'   variability across the whole single-cell dataset. 
+#' @param sc.log.FC Whether to filter genes with a logFC less than 0.5 when 
+#'   \code{sc.filt.genes.cluster = TRUE}. 
+#' @param sc.min.counts Minimum gene counts to filter (1 by default; single-cell
+#'   RNA-seq data).
+#' @param sc.min.cells Minimum of cells with more than \code{min.counts} (1 by
+#'   default; single-cell RNA-seq data).
+#' @param bulk.min.counts Minimum gene counts to filter (1 by default; bulk
+#'   transcriptomics data).
+#' @param bulk.min.samples Minimum of samples with more than \code{min.counts} 
+#'   (1 by default; bulk transcriptomics data).
+#' @param shared.genes If set to \code{TRUE}, only genes present in both the
+#'   single-cell and spatial transcriptomics data will be retained for further
+#'   processing (\code{TRUE} by default).
+#' @param sc.name.dataset.h5 Name of the data set if HDF5 file is provided for
+#'   single-cell RNA-seq data.
+#' @param sc.file.backend Valid file path where to store the loaded for
+#'   single-cell RNA-seq data as HDF5 file. If provided, data are stored in a
+#'   HDF5 file as back-end using the \pkg{DelayedArray} and \pkg{HDF5Array}
+#'   packages instead of being loaded into RAM. This is suitable for situations
+#'   where you have large amounts of data that cannot be stored in memory. Note
+#'   that operations on these data will be performed by blocks (i.e subsets of
+#'   determined size), which may result in longer execution times. \code{NULL}
+#'   by default.
+#' @param sc.name.dataset.backend Name of the HDF5 file dataset to be used. Note
+#'   that it cannot exist. If \code{NULL} (by default), a random dataset name
+#'   will be generated.
+#' @param sc.compression.level The compression level used if
+#'   \code{sc.file.backend} is provided. It is an integer value between 0 (no
+#'   compression) and 9 (highest and slowest compression). See
 #'   \code{?\link[HDF5Array]{getHDF5DumpCompressionLevel}} from the
 #'   \pkg{HDF5Array} package for more information.
-#' @param chunk.dims Specifies dimensions that HDF5 chunk will have. If
+#' @param sc.chunk.dims Specifies dimensions that HDF5 chunk will have. If
 #'   \code{NULL}, the default value is a vector of two items: the number of
 #'   genes considered by \code{\linkS4class{DigitalDLSorter}} object during the
 #'   simulation, and only one sample in order to increase read times in the
 #'   following steps. A larger number of columns written in each chunk may lead
 #'   to longer read times.
-#' @param block.processing Boolean indicating whether data should be treated as
-#'   blocks (only if data is provided as HDF5 file). \code{FALSE} by default.
-#'   Note that using this functionality is suitable for cases where is not
-#'   possible to load the data into RAM and therefore execution times will be
-#'   longer.
+#' @param sc.block.processing Boolean indicating whether single-cell RNA-seq
+#'   data should be treated as blocks (only if data are provided as HDF5 file).
+#'   \code{FALSE} by default. Note that using this functionality is suitable for
+#'   cases where it is not possible to load data into RAM and therefore
+#'   execution times will be longer.
 #' @param verbose Show informative messages during the execution (\code{TRUE} by
 #'   default).
 #' @param project Name of the project for \code{\linkS4class{DigitalDLSorter}}
@@ -724,7 +1129,9 @@ NULL
 #'
 #' @return A \code{\linkS4class{DigitalDLSorter}} object with the single-cell
 #'   RNA-seq data provided loaded into the \code{single.cell.real} slot as a
-#'   \code{\linkS4class{SingleCellExperiment}} object.
+#'   \code{\linkS4class{SingleCellExperiment}} object. If bulk
+#'   transcriptomics data are provided, they will be stored in the
+#'   \code{deconv.data} slot.
 #'
 #' @export
 #'
@@ -749,47 +1156,155 @@ NULL
 #'     Gene_ID = paste0("Gene", seq(40))
 #'   )
 #' )
-#' DDLS <- loadSCProfiles(
-#'   single.cell.data = sce,
-#'   cell.ID.column = "Cell_ID",
-#'   gene.ID.column = "Gene_ID",
-#'   min.cells = 0,
-#'   min.counts = 0,
+#' DDLS <- createDDLSobject(
+#'   sc.data = sce,
+#'   sc.cell.ID.column = "Cell_ID",
+#'   sc.gene.ID.column = "Gene_ID",
+#'   sc.min.cells = 0,
+#'   sc.min.counts = 0,
+#'   sc.log.FC = FALSE,
+#'   sc.filt.genes.cluster = FALSE,
 #'   project = "Simul_example"
 #' )
 #'   
-loadSCProfiles <- function(
-  single.cell.data,
-  cell.ID.column,
-  gene.ID.column,
-  name.dataset.h5,
-  min.counts = 0,
-  min.cells = 0,
-  file.backend = NULL,
-  name.dataset.backend = NULL,
-  compression.level = NULL,
-  chunk.dims = NULL,
-  block.processing = FALSE,
+createDDLSobject <- function(
+  sc.data,
+  sc.cell.ID.column,
+  sc.gene.ID.column,
+  sc.cell.type.column,
+  bulk.data,
+  bulk.sample.ID.column,
+  bulk.gene.ID.column,
+  bulk.name.data = "Bulk.DT", 
+  filter.mt.genes = "^mt-",
+  sc.filt.genes.cluster = TRUE,
+  sc.min.mean.counts = 1, 
+  sc.n.genes.per.cluster = 300,
+  top.n.genes = 2000,
+  sc.log.FC = TRUE,
+  sc.min.counts = 1,
+  sc.min.cells = 1,
+  bulk.min.counts = 1,
+  bulk.min.samples = 1,
+  shared.genes = TRUE,
+  sc.name.dataset.h5 = NULL,
+  sc.file.backend = NULL,
+  sc.name.dataset.backend = NULL,
+  sc.compression.level = NULL,
+  sc.chunk.dims = NULL,
+  sc.block.processing = FALSE,
   verbose = TRUE,
-  project = "DigitalDLSorterProject"
+  project = "DigitalDLSorter-Project"
 ) {
-  single.cell.real <- .loadSingleCellData(
-    single.cell = single.cell.data,
-    cell.ID.column = cell.ID.column,
-    gene.ID.column = gene.ID.column,
-    name.dataset.h5 = name.dataset.h5,
-    min.cells = min.cells,
-    min.counts = min.counts,
-    file.backend = file.backend,
-    name.dataset.backend = name.dataset.backend,
-    compression.level = compression.level,
-    chunk.dims = chunk.dims,
-    block.processing = block.processing,
+  if (missing(sc.cell.type.column)) sc.cell.type.column <- NULL
+  # in case filtering according to expression in each cluster is used
+  if (sc.filt.genes.cluster & (is.null(sc.cell.type.column) | missing(sc.cell.type.column))) {
+    stop("sc.cell.type.column must be provided")
+  } 
+  ## bulk transcriptomics profiles
+  if (!missing(bulk.data)) {
+    if (missing(bulk.name.data)) {
+      bulk.name.data <- "Bulk.DT"
+    }
+    se.object <- .loadBulkData(
+      se.object = bulk.data,
+      sample.ID.column = bulk.sample.ID.column,
+      gene.ID.column = bulk.gene.ID.column,
+      min.samples = bulk.min.samples,
+      min.counts = bulk.min.counts,
+      verbose = verbose
+    ) 
+  } else {
+    se.object <- NULL
+    if (verbose) message("=== Bulk RNA-seq data not provided")
+  }
+  
+  single.cell.real <- .loadSCData(
+    single.cell = sc.data,
+    cell.ID.column = sc.cell.ID.column,
+    gene.ID.column = sc.gene.ID.column,
+    cell.type.column = sc.cell.type.column,
+    name.dataset.h5 = sc.name.dataset.h5,
+    filt.genes.cluster = FALSE,
+    min.mean.counts = sc.min.mean.counts,
+    filt.genes.cells = TRUE,
+    min.cells = sc.min.cells,
+    min.counts = sc.min.counts,
+    file.backend = sc.file.backend,
+    name.dataset.backend = sc.name.dataset.backend,
+    compression.level = sc.compression.level,
+    chunk.dims = sc.chunk.dims,
+    block.processing = sc.block.processing,
     verbose = verbose
   )
+  
+  ## intersection between SC and bulk (only if bulk has been provided)
+  if (!missing(bulk.data)) {
+    inter.genes <- intersect(
+      rownames(single.cell.real), rownames(se.object)
+    )
+    single.cell.real <- single.cell.real[inter.genes, ]
+    se.object <- se.object[inter.genes, ]  
+  }
+  ## rule out mitochondrial genes
+  if (!is.null(filter.mt.genes)) {
+    mt.genes.sc <- grepl(
+      pattern = filter.mt.genes, 
+      x = rownames(single.cell.real), 
+      ignore.case = TRUE
+    )
+    if (sum(mt.genes.sc) > 0) {
+      if (verbose) 
+        message("\n=== Number of removed mitochondrial genes: ", sum(mt.genes.sc))
+      
+      single.cell.real <- single.cell.real[!mt.genes.sc, ]
+      
+      mt.genes.se <- grepl(
+        pattern = filter.mt.genes, 
+        x = rownames(se.object), 
+        ignore.case = TRUE
+      )
+      se.object <- se.object[!mt.genes.se, ]
+    } else {
+      if (verbose) 
+        message(
+          "\n=== No mitochondrial genes were found by using ", 
+          filter.mt.genes, " as regrex"
+        ) 
+    }
+  }
+  if (sc.filt.genes.cluster) {
+    ## put an argument to test logFCs
+    final.genes <- .filterGenesByCluster(
+      sce.obj = single.cell.real,
+      cell.type.column = sc.cell.type.column, 
+      min.mean.counts = sc.min.mean.counts,
+      n.genes.per.cluster = sc.n.genes.per.cluster,
+      top.n.genes = top.n.genes,
+      log.FC = sc.log.FC,
+      verbose = verbose
+    )  
+    if (!missing(bulk.data)) {
+      se.object <- se.object[final.genes, ]  
+    }
+    single.cell.real <- single.cell.real[final.genes, ]
+  }
+  
+  ## messages
+  if (verbose) 
+    message(
+      "\n=== Final number of dimensions for further analyses: ", 
+      nrow(single.cell.real)
+    )
+  if (missing(bulk.data)) {
+    list.deconv <- NULL
+  } else {
+    list.deconv <- list(se.object) %>% setNames(bulk.name.data)
+  }
   ddls.object <- new(
     Class = "DigitalDLSorter",
     single.cell.real = single.cell.real,
+    deconv.data = list.deconv,
     project = project,
     version = packageVersion(pkg = "digitalDLSorteR")
   )

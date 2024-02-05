@@ -3,10 +3,8 @@ context("Training of deconvolution models (Deep Neural Networks): dnnModel.R")
 skip_if_not(.checkPythonDependencies(alert = "none"))
 
 # to make compatible with any computer --> disable eager execution
-tensorflow::tf$compat$v1$disable_eager_execution()
-
 ################################################################################
-###################### trainDigitalDLSorterModel function ######################
+###################### trainDDLSModel function ######################
 ################################################################################
 
 # simulating data
@@ -24,10 +22,12 @@ sce <- SingleCellExperiment(
     Gene_ID = paste0("Gene", seq(40))
   )
 )
-DDLS <- loadSCProfiles(
-  single.cell.data = sce,
-  cell.ID.column = "Cell_ID",
-  gene.ID.column = "Gene_ID"
+DDLS <- createDDLSobject(
+  sc.data = sce,
+  sc.cell.ID.column = "Cell_ID",
+  sc.gene.ID.column = "Gene_ID",
+  sc.filt.genes.cluster = FALSE, 
+  sc.log.FC = FALSE
 )
 DDLS <- estimateZinbwaveParams(
   object = DDLS,
@@ -50,7 +50,7 @@ test_that(
   {
     # object without prob.cell.types slot
     expect_error(
-      trainDigitalDLSorterModel(object = DDLS, verbose = FALSE), 
+      trainDDLSModel(object = DDLS, verbose = FALSE), 
       regexp = "'prob.cell.types' slot is empty"
     )
     probMatrixValid <- data.frame(
@@ -62,59 +62,41 @@ test_that(
       object = DDLS,
       cell.ID.column = "Cell_ID",
       cell.type.column = "Cell_Type",
+      proportion.method = c(10, 5, 20, 15, 35, 15),
       prob.design = probMatrixValid,
       num.bulk.samples = 100,
       verbose = FALSE
     )
     # combine = 'both' without bulk samples
     expect_error(
-      trainDigitalDLSorterModel(
-        object = DDLS, combine = "both", verbose = FALSE
+      trainDDLSModel(
+        object = DDLS, 
+        type.data.train = "both",
+        type.data.test = "bulk",
+        verbose = FALSE
       ), 
-      regexp = "If 'combine = both' is selected, 'bulk.simul' and at least one single cell slot must be provided"
-    )
-    # combine = 'bulk' without bulk samples
-    expect_error(
-      trainDigitalDLSorterModel(
-        object = DDLS, combine = "bulk", verbose = FALSE
-      ), 
-      regexp = "If 'combine' = bulk is selected, 'bulk.simul' must be provided"
-    )
-    # combine = 'single-cell' without bulk for test data (evaluation of the model)
-    expect_error(
-      trainDigitalDLSorterModel(
-        object = DDLS, combine = "single-cell", verbose = FALSE
-      ), 
-      regexp = "trainDigitalDLSorterModel evaluates DNN model on both types of profiles: bulk and single-cell. Therefore, bulk data for test must be provided"
+      regexp = "If `type.data.train` = 'both' is selected, 'bulk.simul' and at least one single cell slot must be provided"
     )
     # combine = 'single-cell' without bulk for test data --> on.the.fly = TRUE
     expect_message(
-      trainDigitalDLSorterModel(
-        object = DDLS,
-        combine = "single-cell",
-        on.the.fly = TRUE,
-        batch.size = 12,
-        view.metrics.plot = FALSE
+      suppressWarnings(
+        trainDDLSModel(
+          object = DDLS,
+          type.data.train = "single-cell",
+          type.data.test = "single-cell",
+          on.the.fly = TRUE,
+          batch.size = 12,
+          view.metrics.plot = FALSE
+        )
       ), 
       regexp = "Training and test on the fly was selected"
     )
     DDLSBad <- DDLS
     bulk.simul(DDLSBad) <- NULL
     trained.model(DDLSBad) <- NULL
-    # combine = 'bulk' without bulk for test data --> on.the.fly = TRUE
-    expect_message(
-      DDLSBad <- trainDigitalDLSorterModel(
-        object = DDLSBad,
-        combine = "bulk",
-        on.the.fly = TRUE,
-        batch.size = 12,
-        view.metrics.plot = FALSE
-      ), 
-      regexp = "Training and test on the fly was selected"
-    )
     # check function to generate pseudo-bulk samples
     expect_error(
-      trainDigitalDLSorterModel(
+      trainDDLSModel(
         object = DDLS,
         on.the.fly = TRUE,
         pseudobulk.function = "Invalid",
@@ -146,11 +128,11 @@ test_that(
       )
       DDLS <- simBulkProfiles(DDLS, verbose = FALSE)
       # change neural network architecture
-      DDLS <- trainDigitalDLSorterModel(
+      DDLS <- trainDDLSModel(
         object = DDLS,
         num.hidden.layers = 3,
         num.units = c(200, 200, 100),
-        batch.size = 28,
+        batch.size = 20,
         verbose = FALSE
       )
       expect_true(
@@ -160,11 +142,11 @@ test_that(
         )
       )
       trained.model(DDLS) <- NULL
-      DDLS <- trainDigitalDLSorterModel(
+      DDLS <- trainDDLSModel(
         object = DDLS,
         num.hidden.layers = 1,
         num.units = c(100),
-        batch.size = 28,
+        batch.size = 20,
         verbose = FALSE
       )
       expect_false(
@@ -182,22 +164,22 @@ test_that(
       # incorrect architecture
       trained.model(DDLS) <- NULL
       expect_error(
-        trainDigitalDLSorterModel(
+        trainDDLSModel(
           object = DDLS,
           num.hidden.layers = 1,
           num.units = c(200, 200, 100),
-          batch.size = 28,
+          batch.size = 20,
           verbose = FALSE
         ),
         regexp = "The number of hidden layers must be equal"
       )
       # check if activation.fun works
-      DDLS <- trainDigitalDLSorterModel(
+      DDLS <- trainDDLSModel(
         object = DDLS,
         num.hidden.layers = 1,
         num.units = c(100),
         activation.fun = "elu",
-        batch.size = 28,
+        batch.size = 20,
         verbose = FALSE
       )
       expect_true(
@@ -208,12 +190,12 @@ test_that(
       )
       # check if dropout.rate works
       trained.model(DDLS) <- NULL
-      DDLS <- trainDigitalDLSorterModel(
+      DDLS <- trainDDLSModel(
         object = DDLS,
         num.hidden.layers = 2,
         num.units = c(100, 100),
         dropout.rate = 0.45,
-        batch.size = 28,
+        batch.size = 20,
         verbose = FALSE
       )
       expect_true(
@@ -221,14 +203,14 @@ test_that(
       )
       # check if loss and metrics work
       trained.model(DDLS) <- NULL
-      DDLS <- trainDigitalDLSorterModel(
+      DDLS <- trainDDLSModel(
         object = DDLS,
         num.hidden.layers = 2,
         num.units = c(100, 100),
         loss = "mean_squared_error",
         metrics = c("accuracy", "mean_absolute_error",
                     "cosine_similarity"),
-        batch.size = 28,
+        batch.size = 20,
         verbose = FALSE
       )
       expect_true(
@@ -239,9 +221,9 @@ test_that(
       )
       # check scaling parameters
       expect_error(
-        object = trainDigitalDLSorterModel(
+        object = trainDDLSModel(
           object = DDLS,
-          batch.size = 28,
+          batch.size = 20,
           scaling = "invalid",
           verbose = FALSE
         ), 
@@ -249,15 +231,15 @@ test_that(
       )
       # check behaviour
       DDLS@trained.model <- NULL
-      DDLS.standarize <- trainDigitalDLSorterModel(
+      DDLS.standarize <- trainDDLSModel(
         object = DDLS,
-        batch.size = 28,
-        scaling = "standarize",
+        batch.size = 20,
+        scaling = "standardize",
         verbose = FALSE
       )
-      DDLS.rescale <- trainDigitalDLSorterModel(
+      DDLS.rescale <- trainDDLSModel(
         object = DDLS,
-        batch.size = 28,
+        batch.size = 20,
         scaling = "rescale",
         verbose = FALSE
       )
@@ -316,10 +298,10 @@ test_that(
       ) %>% layer_batch_normalization(name = "CustomBatchNormalization3") %>% 
       layer_activation(activation = "softmax", name = "ActivationSoftmax")
     # check is everything works
-    DDLS <- trainDigitalDLSorterModel(
+    DDLS <- trainDDLSModel(
       object = DDLS, 
       custom.model = customModel,
-      batch.size = 28,
+      batch.size = 20,
       verbose = FALSE
     )
     expect_s4_class(
@@ -354,10 +336,10 @@ test_that(
       layer_activation(activation = "softmax", name = "ActivationSoftmax")
     trained.model(DDLS) <- NULL
     expect_error(
-      trainDigitalDLSorterModel(
+      trainDDLSModel(
         object = DDLS, 
         custom.model = customModel,
-        batch.size = 28,
+        batch.size = 20,
         verbose = FALSE
       ), regexp = "The number of neurons of the last layer must be equal"
     )
@@ -383,10 +365,10 @@ test_that(
       layer_activation(activation = "softmax", name = "ActivationSoftmax")
     trained.model(DDLS) <- NULL
     expect_error(
-      trainDigitalDLSorterModel(
+      trainDDLSModel(
         object = DDLS, 
         custom.model = customModel,
-        batch.size = 28,
+        batch.size = 20,
         verbose = FALSE
       ), regexp = "The number of neurons of the first layer must be equal to the number of genes"
     )
@@ -412,10 +394,10 @@ test_that(
       layer_activation(activation = "elu", name = "ActivationElu")
     trained.model(DDLS) <- NULL
     expect_error(
-      trainDigitalDLSorterModel(
+      trainDDLSModel(
         object = DDLS, 
         custom.model = customModel,
-        batch.size = 28,
+        batch.size = 20,
         verbose = FALSE
       ), regexp = "In order to get proportions as output, the activation function of the last hidden layer must be 'softmax'"
     )
@@ -423,12 +405,12 @@ test_that(
 )
 
 ################################################################################
-###################### deconvDigitalDLSorterObj function #######################
+###################### deconvDDLSObj function #######################
 ################################################################################
 
 # deconvolution of new samples with DigitalDLSorter object
 test_that(
-  "deconvDigitalDLSorterObj: deconvolution of new samples", 
+  "deconvDDLSObj: deconvolution of new samples", 
   {
     probMatrixValid <- data.frame(
       Cell_Type = paste0("CellType", seq(4)),
@@ -445,9 +427,9 @@ test_that(
     )
     DDLS <- simBulkProfiles(DDLS, verbose = FALSE)
     # check is everything works
-    DDLS <- trainDigitalDLSorterModel(
+    DDLS <- trainDDLSModel(
       object = DDLS,
-      batch.size = 28,
+      batch.size = 20,
       verbose = FALSE
     )
     # simulating bulk samples
@@ -461,7 +443,7 @@ test_that(
     DDLS <- loadDeconvData(
       DDLS, data = se, name.data = "TCGA"
     )
-    DDLS <- deconvDigitalDLSorterObj(
+    DDLS <- deconvDDLSObj(
       object = DDLS,
       name.data = "TCGA"
     )
@@ -475,7 +457,7 @@ test_that(
     )
     # name.data does not exist
     expect_error(
-      deconvDigitalDLSorterObj(
+      deconvDDLSObj(
         object = DDLS, 
         name.data = "not_exists",
         verbose = FALSE
@@ -484,7 +466,7 @@ test_that(
     # simplify.set: generate a new class from two or more cell types
     deconv.results(DDLS) <- NULL
     expect_error(
-      deconvDigitalDLSorterObj(
+      deconvDDLSObj(
         object = DDLS,
         name.data = "TCGA",
         simplify.set = list(c("Mc", "M")),
@@ -493,7 +475,7 @@ test_that(
       regexp = "Each element in the list must contain the corresponding new class as name"
     )
     deconv.results(DDLS) <- NULL
-    DDLS <- deconvDigitalDLSorterObj(
+    DDLS <- deconvDDLSObj(
       object = DDLS,
       name.data = "TCGA",
       simplify.set = list(CellTypesNew = c("CellType2", "CellType4")),
@@ -510,7 +492,7 @@ test_that(
             "CellTypesNew")
     )
     deconv.results(DDLS) <- NULL
-    DDLS <- deconvDigitalDLSorterObj(
+    DDLS <- deconvDDLSObj(
       object = DDLS,
       name.data = "TCGA",
       simplify.set = list(
@@ -526,7 +508,7 @@ test_that(
     ))
     # simplify.majority: add up proportions to the most abundant cell type
     deconv.results(DDLS) <- NULL
-    DDLS <- deconvDigitalDLSorterObj(
+    DDLS <- deconvDDLSObj(
       object = DDLS,
       name.data = "TCGA",
       simplify.majority = list(c("CellType2", "CellType4"), 
@@ -549,7 +531,7 @@ test_that(
     )
     # check if both types of simplify can be stored
     deconv.results(DDLS) <- NULL
-    DDLS <- deconvDigitalDLSorterObj(
+    DDLS <- deconvDDLSObj(
       object = DDLS,
       name.data = "TCGA",
       simplify.majority = list(c("CellType2", "CellType4"), 
@@ -557,12 +539,12 @@ test_that(
       simplify.set = list(
         CellTypesNew = c("CellType2", "CellType4"), 
         CellTypesNew2 = c("CellType3", "CellType1")
-        ),
+      ),
       verbose = FALSE
     )
     expect_true(
       all(names(deconv.results(DDLS, "TCGA")) %in% 
-          c("raw", "simpli.set", "simpli.majority"))
+            c("raw", "simpli.set", "simpli.majority"))
     )
     barPlotCellTypes(
       data = DDLS, colors = default.colors(), simplify = "simpli.majority"
@@ -572,7 +554,7 @@ test_that(
 
 # check if saving trained models as JSON-like character objects works
 test_that(
-  desc = "deconvDigitalDLSorterObj: deconvolution of new samples (JSON objects from disk)", 
+  desc = "deconvDDLSObj: deconvolution of new samples (JSON objects from disk)", 
   {
     probMatrixValid <- data.frame(
       Cell_Type = paste0("CellType", seq(4)),
@@ -588,9 +570,9 @@ test_that(
       verbose = FALSE
     )
     DDLS <- simBulkProfiles(DDLS, verbose = FALSE)
-    DDLS <- trainDigitalDLSorterModel(
+    DDLS <- trainDDLSModel(
       object = DDLS,
-      batch.size = 28,
+      batch.size = 20,
       verbose = FALSE
     )
     # save DDLS object as RDS object: transform Python object into a JSON-like character object
@@ -611,17 +593,17 @@ test_that(
         dimnames = list(paste0("Gene", seq(40)), paste0("Bulk", seq(15)))
       )
     )
-    DDLS <- loadDeconvData(object = DDLS, data = se, name.data = "TCGA")
-    DDLS <- deconvDigitalDLSorterObj(
-      object = DDLS, name.data = "TCGA", verbose = FALSE
+    DDLS <- loadDeconvData(object = DDLS, data = se, name.data = "TCGA.1")
+    DDLS <- deconvDDLSObj(
+      object = DDLS, name.data = "TCGA.1", verbose = FALSE
     )
-    DDLSNew <- loadDeconvData(object = DDLSNew, data = se, name.data = "TCGA")
-    DDLSNew <- deconvDigitalDLSorterObj(
-      object = DDLSNew, name.data = "TCGA", verbose = FALSE
+    DDLSNew <- loadDeconvData(object = DDLSNew, data = se, name.data = "TCGA.1")
+    DDLSNew <- deconvDDLSObj(
+      object = DDLSNew, name.data = "TCGA.1", verbose = FALSE
     )
     expect_true(
-      all(colnames(deconv.results(DDLSNew, "TCGA")) == 
-            colnames(deconv.results(DDLS, "TCGA")))
+      all(colnames(deconv.results(DDLSNew, "TCGA.1")) == 
+            colnames(deconv.results(DDLS, "TCGA.1")))
     )
     # save DigitalDLSorterDNN object independently of DigitalDLSorter
     fileTMP <- tempfile()
@@ -661,9 +643,9 @@ test_that(
     )
     DDLS <- simBulkProfiles(DDLS, verbose = FALSE)
     # check is everything works
-    DDLS <- trainDigitalDLSorterModel(
+    DDLS <- trainDDLSModel(
       object = DDLS,
-      batch.size = 28,
+      batch.size = 20,
       verbose = FALSE
     )
     deconv.model <- trained.model(DDLS)
@@ -752,9 +734,9 @@ test_that(
     )
     DDLS <- simBulkProfiles(DDLS, verbose = FALSE)
     # check is everything works
-    DDLS <- trainDigitalDLSorterModel(
+    DDLS <- trainDDLSModel(
       object = DDLS,
-      batch.size = 28,
+      batch.size = 20,
       verbose = FALSE
     )
     se <- SummarizedExperiment(
@@ -767,7 +749,7 @@ test_that(
     DDLS <- loadDeconvData(
       DDLS, data = se, name.data = "TCGA"
     )
-    DDLS <- deconvDigitalDLSorterObj(
+    DDLS <- deconvDDLSObj(
       object = DDLS,
       name.data = "TCGA",
       verbose = FALSE
@@ -783,7 +765,7 @@ test_that(
       regexp = "No simplified results available"
     )
     # invalid simplify argument 
-    DDLS <- deconvDigitalDLSorterObj(
+    DDLS <- deconvDDLSObj(
       object = DDLS,
       name.data = "TCGA",
       simplify.set = list(
@@ -849,9 +831,9 @@ test_that(
     )
     DDLS <- simBulkProfiles(DDLS, verbose = FALSE)
     # check is everything works
-    DDLS <- trainDigitalDLSorterModel(
+    DDLS <- trainDDLSModel(
       object = DDLS,
-      batch.size = 28,
+      batch.size = 20,
       verbose = FALSE
     )
     deconv.model <- trained.model(DDLS)

@@ -39,3 +39,11 @@ package.
 
 * Changed the way dense matrices (`matrix`) and `data.frame` objects are 
 transformed into `dgCMatrix` objects.
+
+# digitalDLSorteR 1.0.1 (2024-02-05)
+
+* Some name functions have been changed: createDDLSobject, trainDDLSModel...
+* Loading data (createDDLSobject) has been changed: now, only 2,000 genes are 
+used for deconvolution and bulk RNA-seq must be provided at the beginning of 
+the workflow (see documentation). 
+* Fixed bugs: standardization of features before training. 

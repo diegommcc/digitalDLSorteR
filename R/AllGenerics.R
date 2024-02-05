@@ -1281,7 +1281,7 @@ setMethod(
 #' @rdname barPlotCellTypes
 #'
 #' @seealso \code{\link{deconvDigitalDLSorter}}
-#'   \code{\link{deconvDigitalDLSorterObj}}
+#'   \code{\link{deconvDDLSObj}}
 #'   
 setGeneric(
   name = "barPlotCellTypes", 
@@ -1322,7 +1322,7 @@ setMethod(
     name.data = NULL
   ) {
     if (is.null(deconv.results(data))) {
-      stop("There are no results in DigitalDLSorter object. Please see ?deconvDigitalDLSorterObj")
+      stop("There are no results in DigitalDLSorter object. Please see ?deconvDDLSObj")
     } else if (is.null(name.data)) {
       message("'name.data' not provided. By default, first results are used")
       name.data <- 1
@@ -1350,7 +1350,7 @@ setMethod(
       }
     }
     if (is.null(colnames(res))) {
-      stop("'data' must have colnames (corresponding cell types). Please run deconvDigitalDLSorterObj")
+      stop("'data' must have colnames (corresponding cell types). Please run deconvDDLSObj")
     }
     return(
       .barPlot(
@@ -1424,8 +1424,8 @@ setMethod(
 #'
 #' @export
 #'
-#' @seealso \code{\link{trainDigitalDLSorterModel}}
-#'   \code{\link{deconvDigitalDLSorterObj}}
+#' @seealso \code{\link{trainDDLSModel}}
+#'   \code{\link{deconvDDLSObj}}
 #'   
 setGeneric("loadDeconvData", function(
   object,
@@ -1503,9 +1503,9 @@ setMethod(
     # generate name for data if is not provided
     if (is.null(name.data)) {
       if (is.null(deconv.data(object))) {
-        name.data <- "deconv_1"
+        name.data <- "Bulk_1"
       } else {
-        name.data <- paste0("decon_", length(deconv.data(object)) + 1)
+        name.data <- paste0("Bulk_", length(deconv.data(object)) + 1)
       }
     }
     # create or not a new list

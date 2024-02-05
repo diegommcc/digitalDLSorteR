@@ -32,7 +32,7 @@ related to Deep Neural Network models. This step is performed using
 \pkg{digitalDLSorteR} can be used in two ways: to build new deconvolution
 models from single-cell RNA-Seq data or to deconvolute bulk RNA-Seq samples
 using pre-trained models available at \pkg{digitalDLSorteRdata} package. If
-you want to build new models, see \code{\link{loadSCProfiles}} function. On
+you want to build new models, see \code{\link{createDDLSobject}} function. On
 the other hand, if you want to use pre-trained models, see
 \code{\link{deconvDigitalDLSorter}} function.
 
@@ -53,6 +53,11 @@ to save it as RDS or HDF5 files. Please see
 \code{SingleCellExperiment} object. The count matrix is stored as
 \code{\linkS4class{dgCMatrix}} or \code{HDF5Array} objects.}
 
+\item{\code{deconv.data}}{List of \code{\linkS4class{SummarizedExperiment}} objects
+where it is possible to store new bulk RNA-Seq experiments for
+deconvolution. The name of the entries corresponds to the name of the data
+provided. See \code{\link{trainDDLSModel}} for details.}
+
 \item{\code{zinb.params}}{\code{\linkS4class{ZinbModel}} object with estimated
 parameters for the simulation of new single-cell expression profiles.}
 
@@ -71,11 +76,6 @@ back-end in case of RAM limitations.}
 \item{\code{trained.model}}{\code{\linkS4class{DigitalDLSorterDNN}} object with all
 the information related to the trained model. See
 \code{?\linkS4class{DigitalDLSorterDNN}} for more details.}
-
-\item{\code{deconv.data}}{List of \code{\linkS4class{SummarizedExperiment}} objects
-where it is possible to store new bulk RNA-Seq experiments for
-deconvolution. The name of the entries corresponds to the name of the data
-provided. See \code{\link{deconvDigitalDLSorterObj}} for details.}
 
 \item{\code{deconv.results}}{Slot containing the deconvolution results of applying
 the deconvolution model to the data present in the

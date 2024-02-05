@@ -19,10 +19,12 @@ sce <- SingleCellExperiment(
     Gene_ID = paste0("Gene", seq(40))
   )
 )
-DDLS <- loadSCProfiles(
-  single.cell.data = sce,
-  cell.ID.column = "Cell_ID",
-  gene.ID.column = "Gene_ID"
+DDLS <- createDDLSobject(
+  sc.data = sce,
+  sc.cell.ID.column = "Cell_ID",
+  sc.gene.ID.column = "Gene_ID",
+  sc.filt.genes.cluster = FALSE, 
+  sc.log.FC = FALSE
 )
 DDLS <- estimateZinbwaveParams(
   object = DDLS,
@@ -53,12 +55,12 @@ DDLSComp <- generateBulkCellMatrix(
   verbose = FALSE
 )
 DDLSComp <- simBulkProfiles(DDLSComp, verbose = FALSE)
-DDLSComp <- trainDigitalDLSorterModel(
+DDLSComp <- trainDDLSModel(
   object = DDLSComp,
-  batch.size = 28,
+  batch.size = 20,
   verbose = FALSE
 )
-DDLSComp <- calculateEvalMetrics(DDLSComp)
+DDLSComp <- suppressWarnings(calculateEvalMetrics(DDLSComp))
 
 # calculateEvalMetrics
 test_that(
@@ -224,9 +226,9 @@ test_that(
     )
     # incorrect facet.by parameter
     expect_error(
-      corrExpPredPlot(
+      suppressWarnings(corrExpPredPlot(
         object = DDLSComp, facet.by = "no.variable"
-      ), 
+      )), 
       regexp = "'facet.by' provided is not valid. The available options are: 'nCellTypes', 'CellType' or NULL"
     )
     # incorrect color.by parameter

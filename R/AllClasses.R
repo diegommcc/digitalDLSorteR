@@ -1,13 +1,14 @@
 #' @importFrom methods setClass setOldClass setClassUnion
 #' @importFrom utils packageVersion
+#' @importFrom stats predict
 #' @import SingleCellExperiment SummarizedExperiment
 #' @importClassesFrom Matrix dgCMatrix
-#' @importFrom keras keras_model_sequential layer_dense layer_batch_normalization layer_activation layer_dropout get_output_shape_at compile optimizer_adam fit_generator evaluate_generator predict_generator model_from_json set_weights model_to_json get_weights load_model_hdf5 save_model_hdf5
+#' @importFrom keras keras_model_sequential layer_dense layer_batch_normalization layer_activation layer_dropout get_output_shape_at compile optimizer_adam fit_generator evaluate_generator predict_generator model_from_json set_weights model_to_json get_weights load_model_hdf5 save_model_hdf5 fit evaluate
 NULL
 
 setOldClass(Classes = 'package_version')
-setClass("keras_training_history") # TODO: error with setOldClass, check what is going on
-setOldClass(Classes = "keras.engine.sequential.Sequential")
+setClass("keras_training_history") 
+setClass("keras.engine.sequential.Sequential")
 
 setClassUnion(name = "MatrixOrNULL", members = c("matrix", "NULL"))
 setClassUnion(name = "ListOrNULL", members = c("list", "NULL"))
@@ -81,7 +82,9 @@ setMethod(
   }
 )
 
-setClassUnion(name = "ZinbParametersModelOrNULL", members = c("ZinbParametersModel", "NULL"))
+setClassUnion(
+  name = "ZinbParametersModelOrNULL", members = c("ZinbParametersModel", "NULL")
+)
 
 ################################################################################
 ######################### ProbMatrixCellTypes class ############################
@@ -333,7 +336,7 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #' \pkg{digitalDLSorteR} can be used in two ways: to build new deconvolution
 #' models from single-cell RNA-Seq data or to deconvolute bulk RNA-Seq samples
 #' using pre-trained models available at \pkg{digitalDLSorteRdata} package. If
-#' you want to build new models, see \code{\link{loadSCProfiles}} function. On
+#' you want to build new models, see \code{\link{createDDLSobject}} function. On
 #' the other hand, if you want to use pre-trained models, see
 #' \code{\link{deconvDigitalDLSorter}} function.
 #'
@@ -350,6 +353,10 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #' @slot single.cell.real Real single-cell data stored in a
 #'   \code{SingleCellExperiment} object. The count matrix is stored as
 #'   \code{\linkS4class{dgCMatrix}} or \code{HDF5Array} objects.
+#' @slot deconv.data List of \code{\linkS4class{SummarizedExperiment}} objects
+#'   where it is possible to store new bulk RNA-Seq experiments for
+#'   deconvolution. The name of the entries corresponds to the name of the data
+#'   provided. See \code{\link{trainDDLSModel}} for details.
 #' @slot zinb.params \code{\linkS4class{ZinbModel}} object with estimated
 #'   parameters for the simulation of new single-cell expression profiles.
 #' @slot single.cell.simul Simulated single-cell expression profiles from the
@@ -364,10 +371,6 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #' @slot trained.model \code{\linkS4class{DigitalDLSorterDNN}} object with all
 #'   the information related to the trained model. See
 #'   \code{?\linkS4class{DigitalDLSorterDNN}} for more details.
-#' @slot deconv.data List of \code{\linkS4class{SummarizedExperiment}} objects
-#'   where it is possible to store new bulk RNA-Seq experiments for
-#'   deconvolution. The name of the entries corresponds to the name of the data
-#'   provided. See \code{\link{deconvDigitalDLSorterObj}} for details.
 #' @slot deconv.results Slot containing the deconvolution results of applying
 #'   the deconvolution model to the data present in the
 #'   \code{\link{deconv.data}} slot. It is a list in which the names corresponds
@@ -383,12 +386,12 @@ DigitalDLSorter <- setClass(
   Class = "DigitalDLSorter",
   slots = c(
     single.cell.real = "SingleCellExperimentOrNULL",
+    deconv.data = "ListOrNULL",
     zinb.params = "ZinbParametersModelOrNULL",
     single.cell.simul = "SingleCellExperimentOrNULL",
     prob.cell.types = "ListOrNULL",
     bulk.simul = "ListOrNULL",
     trained.model = "DigitalDLSorterDNNOrNULL",
-    deconv.data = "ListOrNULL",
     deconv.results = "ListOrNULL",
     project = "character",
     version = "package_version"

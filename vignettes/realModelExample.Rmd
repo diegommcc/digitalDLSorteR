@@ -16,7 +16,7 @@ fontsize: 12pt
 
 
 
-In [Building new deconvolution models](newModels.html) was shown the necessary workflow to build new deconvolution models. However, a 'toy' example was used in order to avoid long run times. In this vignette, the performance of a real model is shown in order to serve as a guide on how to assess whether a model has been trained correctly and can be used to deconvolute new bulk RNA-Seq samples.
+In [Building new deconvolution models](newModels.html) was shown the workflow to build new deconvolution models. However, a 'toy' example was used in order to avoid long running times. In this vignette, the performance of a real model is shown in order to serve as a guide on how to assess whether a model has been correctly trained and can be used to deconvolute new bulk RNA-Seq samples.
 
 ## Loading and inspection of the model
 

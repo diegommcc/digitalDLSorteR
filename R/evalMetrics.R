@@ -1,6 +1,5 @@
 #' @importFrom dplyr mutate as_tibble left_join inner_join filter
 #' @importFrom tidyr gather
-#' @importFrom RColorBrewer brewer.pal
 #' @importFrom ggpubr stat_cor
 #' @importFrom stats aggregate as.formula sd var
 #' @importFrom ggplot2 ggplot aes geom_point geom_violin geom_boxplot geom_line geom_abline geom_text geom_hline geom_errorbar geom_bar theme ggtitle element_text xlab ylab scale_color_manual scale_fill_manual scale_x_continuous scale_y_continuous guides guide_legend facet_wrap stat_smooth annotate stat_density_2d element_blank
@@ -9,15 +8,13 @@ NULL
 
 default.colors <- function() {
   colors <- c(
-    RColorBrewer::brewer.pal(12, "Paired"), 
-    "#d45b91", "#374738",
-    RColorBrewer::brewer.pal(12, "Set3"),
-    RColorBrewer::brewer.pal(8, "Pastel2"),
-    "#333333", "#5D5D5D",
-    "#888888", "#B3B3B3"
+    "#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C", "#FB9A99", "#E31A1C", "#FDBF6F", 
+    "#FF7F00", "#CAB2D6", "#6A3D9A", "#e3dc5b", "#B15928", "#d45b91", "#374738",
+    "#60c4b4", "#FFFFB3", "#BEBADA", "#FB8072", "#80B1D3", "#FDB462", "#B3DE69", 
+    "#FCCDE5", "#D9D9D9", "#BC80BD", "#CCEBC5", "#FFED6F",
+    "#B3E2CD", "#FDCDAC", "#CBD5E8", "#F4CAE4", "#E6F5C9", "#FFF2AE", "#F1E2CC", 
+    "#CCCCCC", "#333333", "#5D5D5D", "#888888", "#B3B3B3"
   )
-  colors[11] <- "#e3dc5b"
-  colors[15] <- "#60c4b4"
   return(colors)
 }
 
@@ -76,10 +73,12 @@ default.colors <- function() {
 #'     Gene_ID = paste0("Gene", seq(15))
 #'   )
 #' )
-#' DDLS <- loadSCProfiles(
-#'   single.cell.data = sce,
-#'   cell.ID.column = "Cell_ID",
-#'   gene.ID.column = "Gene_ID"
+#' DDLS <- createDDLSobject(
+#'   sc.data = sce,
+#'   sc.cell.ID.column = "Cell_ID",
+#'   sc.gene.ID.column = "Gene_ID",
+#'   sc.filt.genes.cluster = FALSE, 
+#'   sc.log.FC = FALSE
 #' )
 #' probMatrixValid <- data.frame(
 #'   Cell_Type = paste0("CellType", seq(6)),
@@ -96,7 +95,7 @@ default.colors <- function() {
 #' )
 #' # training of DDLS model
 #' tensorflow::tf$compat$v1$disable_eager_execution()
-#' DDLS <- trainDigitalDLSorterModel(
+#' DDLS <- trainDDLSModel(
 #'   object = DDLS,
 #'   on.the.fly = TRUE,
 #'   batch.size = 15,
@@ -385,10 +384,12 @@ se <- function(x) sqrt(var(x)/length(x))
 #'     Gene_ID = paste0("Gene", seq(15))
 #'   )
 #' )
-#' DDLS <- loadSCProfiles(
-#'   single.cell.data = sce,
-#'   cell.ID.column = "Cell_ID",
-#'   gene.ID.column = "Gene_ID"
+#' DDLS <- createDDLSobject(
+#'   sc.data = sce,
+#'   sc.cell.ID.column = "Cell_ID",
+#'   sc.gene.ID.column = "Gene_ID",
+#'   sc.filt.genes.cluster = FALSE, 
+#'   sc.log.FC = FALSE
 #' )
 #' probMatrixValid <- data.frame(
 #'   Cell_Type = paste0("CellType", seq(6)),
@@ -405,7 +406,7 @@ se <- function(x) sqrt(var(x)/length(x))
 #' )
 #' # training of DDLS model
 #' tensorflow::tf$compat$v1$disable_eager_execution()
-#' DDLS <- trainDigitalDLSorterModel(
+#' DDLS <- trainDDLSModel(
 #'   object = DDLS,
 #'   on.the.fly = TRUE,
 #'   batch.size = 15,
@@ -666,10 +667,12 @@ distErrorPlot <- function(
 #'     Gene_ID = paste0("Gene", seq(15))
 #'   )
 #' )
-#' DDLS <- loadSCProfiles(
-#'   single.cell.data = sce,
-#'   cell.ID.column = "Cell_ID",
-#'   gene.ID.column = "Gene_ID"
+#' DDLS <- createDDLSobject(
+#'   sc.data = sce,
+#'   sc.cell.ID.column = "Cell_ID",
+#'   sc.gene.ID.column = "Gene_ID",
+#'   sc.filt.genes.cluster = FALSE, 
+#'   sc.log.FC = FALSE
 #' )
 #' probMatrixValid <- data.frame(
 #'   Cell_Type = paste0("CellType", seq(6)),
@@ -686,7 +689,7 @@ distErrorPlot <- function(
 #' )
 #' # training of DDLS model
 #' tensorflow::tf$compat$v1$disable_eager_execution()
-#' DDLS <- trainDigitalDLSorterModel(
+#' DDLS <- trainDDLSModel(
 #'   object = DDLS,
 #'   on.the.fly = TRUE,
 #'   batch.size = 15,
@@ -931,10 +934,12 @@ corrExpPredPlot <- function(
 #'     Gene_ID = paste0("Gene", seq(15))
 #'   )
 #' )
-#' DDLS <- loadSCProfiles(
-#'   single.cell.data = sce,
-#'   cell.ID.column = "Cell_ID",
-#'   gene.ID.column = "Gene_ID"
+#' DDLS <- createDDLSobject(
+#'   sc.data = sce,
+#'   sc.cell.ID.column = "Cell_ID",
+#'   sc.gene.ID.column = "Gene_ID",
+#'   sc.filt.genes.cluster = FALSE, 
+#'   sc.log.FC = FALSE
 #' )
 #' probMatrixValid <- data.frame(
 #'   Cell_Type = paste0("CellType", seq(6)),
@@ -951,7 +956,7 @@ corrExpPredPlot <- function(
 #' )
 #' # training of DDLS model
 #' tensorflow::tf$compat$v1$disable_eager_execution()
-#' DDLS <- trainDigitalDLSorterModel(
+#' DDLS <- trainDDLSModel(
 #'   object = DDLS,
 #'   on.the.fly = TRUE,
 #'   batch.size = 15,
@@ -1123,10 +1128,12 @@ blandAltmanLehPlot <- function(
 #'     Gene_ID = paste0("Gene", seq(15))
 #'   )
 #' )
-#' DDLS <- loadSCProfiles(
-#'   single.cell.data = sce,
-#'   cell.ID.column = "Cell_ID",
-#'   gene.ID.column = "Gene_ID"
+#' DDLS <- createDDLSobject(
+#'   sc.data = sce,
+#'   sc.cell.ID.column = "Cell_ID",
+#'   sc.gene.ID.column = "Gene_ID",
+#'   sc.filt.genes.cluster = FALSE, 
+#'   sc.log.FC = FALSE
 #' )
 #' probMatrixValid <- data.frame(
 #'   Cell_Type = paste0("CellType", seq(6)),
@@ -1143,7 +1150,7 @@ blandAltmanLehPlot <- function(
 #' )
 #' # training of DDLS model
 #' tensorflow::tf$compat$v1$disable_eager_execution()
-#' DDLS <- trainDigitalDLSorterModel(
+#' DDLS <- trainDDLSModel(
 #'   object = DDLS,
 #'   on.the.fly = TRUE,
 #'   batch.size = 15,

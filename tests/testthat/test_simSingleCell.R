@@ -23,10 +23,12 @@ sce <- SingleCellExperiment(
     gene_length = sample(seq(50, 1000), size = 40, replace = TRUE)
   )
 )
-DDLS <- loadSCProfiles(
-  single.cell.data = sce,
-  cell.ID.column = "Cell_ID",
-  gene.ID.column = "Gene_ID"
+DDLS <- createDDLSobject(
+  sc.data = sce,
+  sc.cell.ID.column = "Cell_ID",
+  sc.gene.ID.column = "Gene_ID",
+  sc.filt.genes.cluster = FALSE, 
+  sc.log.FC = FALSE
 )
 DDLS <- estimateZinbwaveParams(
   object = DDLS,

@@ -89,10 +89,12 @@ NULL
 #'     Gene_ID = paste0("Gene", seq(15))
 #'   )
 #' )
-#' DDLS <- loadSCProfiles(
-#'   single.cell.data = sce,
-#'   cell.ID.column = "Cell_ID",
-#'   gene.ID.column = "Gene_ID"
+#' DDLS <- createDDLSobject(
+#'   sc.data = sce,
+#'   sc.cell.ID.column = "Cell_ID",
+#'   sc.gene.ID.column = "Gene_ID",
+#'   sc.filt.genes.cluster = FALSE, 
+#'   sc.log.FC = FALSE
 #' )
 #' DDLS <- estimateZinbwaveParams(
 #'   object = DDLS,
@@ -484,7 +486,7 @@ estimateZinbwaveParams <- function(
   if (any(Matrix::rowSums(sub.list.data[[1]]) == 0)) {
     warning("There are some genes with zero expression in selected cells. ", 
             "Consider increasing the minimum expression level when loading ", 
-            "data by loadSCProfiles function with 'min.counts' and ", 
+            "data by createDDLSobject function with 'min.counts' and ", 
             "'min.cells' arguments\n", call. = FALSE, immediate. = TRUE)
     list.data.filf <- .filterGenesSparse(
       counts = sub.list.data[[1]], 
@@ -774,10 +776,12 @@ estimateZinbwaveParams <- function(
 #'     Gene_ID = paste0("Gene", seq(15))
 #'   )
 #' )
-#' DDLS <- loadSCProfiles(
-#'   single.cell.data = sce,
-#'   cell.ID.column = "Cell_ID",
-#'   gene.ID.column = "Gene_ID"
+#' DDLS <- createDDLSobject(
+#'   sc.data = sce,
+#'   sc.cell.ID.column = "Cell_ID",
+#'   sc.gene.ID.column = "Gene_ID",
+#'   sc.filt.genes.cluster = FALSE, 
+#'   sc.log.FC = FALSE
 #' )
 #' DDLS <- estimateZinbwaveParams(
 #'   object = DDLS,
@@ -829,7 +833,7 @@ simSCProfiles <- function(
   if (is.null(single.cell.real(object))) {
     stop("'single.cell.real' slot is empty. To simulate single-cell ", 
          "profiles, DigitalDLSorter object must contain the original ", 
-         "data. See ?loadSCProfiles")
+         "data. See ?createDDLSobject")
   }
   if (!is.null(single.cell.simul(object = object))) {
     warning("'single.cell.simul' slot already has a SingleCellExperiment 

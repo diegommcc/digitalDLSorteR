@@ -28,6 +28,6 @@ This is the alternative to the \code{\link{saveRDS}} and
 optimizer.
 }
 \seealso{
-\code{\link{trainDigitalDLSorterModel}}
+\code{\link{trainDDLSModel}}
 \code{\link{loadTrainedModelFromH5}}
 }

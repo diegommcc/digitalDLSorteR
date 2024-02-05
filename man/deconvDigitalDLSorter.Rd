@@ -7,11 +7,12 @@
 deconvDigitalDLSorter(
   data,
   model = NULL,
-  batch.size = 128,
   normalize = TRUE,
-  scaling = "standarize",
+  scaling = "standardize",
   simplify.set = NULL,
   simplify.majority = NULL,
+  use.generator = FALSE,
+  batch.size = 64,
   verbose = TRUE
 )
 }
@@ -26,14 +27,10 @@ colorectal cancer (\code{colorectal.li}). These pre-trained models are
 stored in the \pkg{digitalDLSorteRdata} package, so it must be installed
 together with \pkg{digitalDLSorteR} to use this function.}
 
-\item{batch.size}{Number of samples loaded into RAM each time during the
-deconvolution process. If not specified, \code{batch.size} will be set to
-128.}
-
 \item{normalize}{Normalize data before deconvolution (\code{TRUE} by default).}
 
 \item{scaling}{How to scale data before training. It may be:
-\code{"standarize"} (values are centered around the mean with a unit
+\code{"standardize"} (values are centered around the mean with a unit
 standard deviation) or \code{"rescale"} (values are shifted and rescaled so
 that they end up ranging between 0 and 1). If \code{normalize = FALSE}, data
 is not scaled.}
@@ -46,6 +43,12 @@ vignettes for details.}
 into the cell type with the highest proportion in each sample. Unlike
 \code{simplify.set}, this argument allows to maintain the complexity of the
 results while compressing the information, as no new labels are created.}
+
+\item{use.generator}{Boolean indicating whether to use generators for
+prediction (\code{FALSE} by default).}
+
+\item{batch.size}{Number of samples per batch. Only when \code{use.generator
+= TRUE}.}
 
 \item{verbose}{Show informative messages during execution.}
 }
@@ -72,7 +75,7 @@ at two different levels of specificity: specific cell types
 This function is intended for users who want to use \pkg{digitalDLSorteR} to
 deconvolute their bulk RNA-Seq samples using pre-trained models. For users who
 want to build their own models from other scRNA-Seq datasets, see the
-\code{\link{loadSCProfiles}} and \code{\link{deconvDigitalDLSorterObj}}
+\code{\link{createDDLSobject}} and \code{\link{deconvDDLSObj}}
 functions.
 }
 \examples{
@@ -94,10 +97,12 @@ sce <- SingleCellExperiment::SingleCellExperiment(
     Gene_ID = paste0("Gene", seq(15))
   )
 )
-DDLS <- loadSCProfiles(
-  single.cell.data = sce,
-  cell.ID.column = "Cell_ID",
-  gene.ID.column = "Gene_ID"
+DDLS <- createDDLSobject(
+  sc.data = sce,
+  sc.cell.ID.column = "Cell_ID",
+  sc.gene.ID.column = "Gene_ID",
+  sc.filt.genes.cluster = FALSE, 
+  sc.log.FC = FALSE
 )
 probMatrixValid <- data.frame(
   Cell_Type = paste0("CellType", seq(6)),
@@ -114,7 +119,7 @@ DDLS <- generateBulkCellMatrix(
 )
 # training of DDLS model
 tensorflow::tf$compat$v1$disable_eager_execution()
-DDLS <- trainDigitalDLSorterModel(
+DDLS <- trainDDLSModel(
   object = DDLS,
   on.the.fly = TRUE,
   batch.size = 15,
@@ -160,5 +165,5 @@ immune cell profiling in primary breast cancer. Nat. Commun. 8 (1), 15081.
 doi: \doi{10.1038/ncomms15081}.
 }
 \seealso{
-\code{\link{deconvDigitalDLSorterObj}}
+\code{\link{deconvDDLSObj}}
 }

@@ -7,7 +7,7 @@
 simBulkProfiles(
   object,
   type.data = "both",
-  pseudobulk.function = "MeanCPM",
+  pseudobulk.function = "AddRawCount",
   file.backend = NULL,
   compression.level = NULL,
   block.processing = FALSE,
@@ -95,7 +95,7 @@ proportions from a matrix of known cell composition. The number of simulated
 pseudo-bulk RNA-Seq samples and the number of cells composing each sample are
 determined by \code{\link{generateBulkCellMatrix}} (see Documentation)
 \strong{Note:} this step can be avoided by using the \code{on.the.fly}
-argument in the \code{\link{trainDigitalDLSorterModel}} function. See
+argument in the \code{\link{trainDDLSModel}} function. See
 Documentation for more information.
 }
 \details{
@@ -119,9 +119,9 @@ simulated and written to HDF5 files in blocks of \code{block.size} size by
 setting \code{block.processing = TRUE}.
 
 It is possible to avoid this step by using the \code{on.the.fly} argument in
-the \code{\link{trainDigitalDLSorterModel}} function. In this way, data is
+the \code{\link{trainDDLSModel}} function. In this way, data is
 generated 'on the fly' during the neural network training. For more details,
-see \code{?\link{trainDigitalDLSorterModel}}.
+see \code{?\link{trainDDLSModel}}.
 }
 \examples{
 set.seed(123) # reproducibility
@@ -142,10 +142,12 @@ sce <- SingleCellExperiment::SingleCellExperiment(
     Gene_ID = paste0("Gene", seq(15))
   )
 )
-DDLS <- loadSCProfiles(
-  single.cell.data = sce,
-  cell.ID.column = "Cell_ID",
-  gene.ID.column = "Gene_ID"
+DDLS <- createDDLSobject(
+  sc.data = sce,
+  sc.cell.ID.column = "Cell_ID",
+  sc.gene.ID.column = "Gene_ID",
+  sc.filt.genes.cluster = FALSE, 
+  sc.log.FC = FALSE
 )
 probMatrixValid <- data.frame(
   Cell_Type = paste0("CellType", seq(2)),
@@ -177,5 +179,5 @@ version 1.18.0.
 \seealso{
 \code{\link{generateBulkCellMatrix}}
 \code{\linkS4class{ProbMatrixCellTypes}}
-\code{\link{trainDigitalDLSorterModel}}
+\code{\link{trainDDLSModel}}
 }

@@ -21,10 +21,12 @@ sce <- SingleCellExperiment(
     Gene_ID = paste0("Gene", seq(40))
   )
 )
-DDLS <- loadSCProfiles(
-  single.cell.data = sce,
-  cell.ID.column = "Cell_ID",
-  gene.ID.column = "Gene_ID"
+DDLS <- createDDLSobject(
+  sc.data = sce,
+  sc.cell.ID.column = "Cell_ID",
+  sc.gene.ID.column = "Gene_ID",
+  sc.filt.genes.cluster = FALSE, 
+  sc.log.FC = FALSE
 )
 DDLS <- estimateZinbwaveParams(
   object = DDLS,
@@ -147,23 +149,6 @@ test_that("Wrong prob.design", {
     ), 
     regexp = "'from' entries must be less than 'to' entries"
   )
-  # prob ranges incorrect
-  probMatrixInvalid <- data.frame(
-    Cell_Type = c(paste0("CellType", seq(4))),
-    from = c(1, 1, 1, 40),
-    to = c(15, 15, 50, 70)
-  )
-  expect_error(
-    generateBulkCellMatrix(
-      object = DDLS,
-      cell.ID.column = "Cell_ID",
-      cell.type.column = "Cell_Type",
-      prob.design = probMatrixInvalid,
-      num.bulk.samples = 200,
-      verbose = TRUE
-    ), 
-    regexp = "The sum between"
-  )
 })
 
 # check proportions arguments
@@ -177,7 +162,7 @@ test_that(
         cell.ID.column = "Cell_ID",
         cell.type.column = "Cell_Type",
         prob.design = probMatrixValid,
-        proportions.test = c(10, 5, 20, 15, 52),
+        proportion.method = c(10, 5, 20, 15, 52),
         num.bulk.samples = 200,
         verbose = TRUE
       ), 
@@ -190,7 +175,7 @@ test_that(
         cell.ID.column = "Cell_ID",
         cell.type.column = "Cell_Type",
         prob.design = probMatrixValid,
-        proportions.test = c(10, 5, 20, 15, 52, 1),
+        proportion.method = c(10, 5, 20, 15, 52, 1),
         num.bulk.samples = 200,
         verbose = TRUE
       ), 
@@ -203,7 +188,7 @@ test_that(
         cell.ID.column = "Cell_ID",
         cell.type.column = "Cell_Type",
         prob.design = probMatrixValid,
-        proportions.test = c(60, 5, 60, 15, -40, 20),
+        proportion.method = c(60, 5, 60, 15, -40, 20),
         num.bulk.samples = 200,
         verbose = TRUE
       ), 
@@ -216,7 +201,7 @@ test_that(
         cell.ID.column = "Cell_ID",
         cell.type.column = "Cell_Type",
         prob.design = probMatrixValid,
-        proportions.train = c(0, 5, 20, 15, 10, 60),
+        proportion.method = c(0, 5, 20, 15, 10, 60),
         num.bulk.samples = 200,
         verbose = TRUE
       ), 
@@ -320,8 +305,7 @@ test_that(
       cell.type.column = "Cell_Type",
       prob.design = probMatrixValid,
       num.bulk.samples = num.bulk.samples,
-      proportions.train = c(10, 20, 1, 9, 50, 10),
-      proportions.test = c(50, 20, 1, 9, 10, 10),
+      proportion.method = c(10, 20, 1, 9, 50, 10),
       n.cells = n.cells,
       verbose = TRUE
     )
@@ -497,7 +481,7 @@ test_that(
         type.data = "both",
         file.backend = tempfile(),
         block.processing = TRUE,
-        block.size = 3,
+        block.size = 1,
         verbose = TRUE
       ), regexp = "Writing block"
     )

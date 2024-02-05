@@ -1,7 +1,7 @@
 Package: digitalDLSorteR
 Type: Package
 Title: Deconvolution of Bulk RNA-Seq Data Based on Deep Learning
-Version: 0.3.2
+Version: 1.0.1
 Authors@R: c(
   person(given = "Diego", family = "Mañanes", email = "dmananesc@cnic.es", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7247-6794")),
   person(given = "Carlos", family = "Torroja", email = "ctorroja@cnic.es", role = "aut", comment = c(ORCID = "0000-0001-8914-3400")),
@@ -16,6 +16,7 @@ Depends:
     R (>= 4.0.0)
 Imports:
     rlang,
+    grr,
     Matrix,
     methods,
     tidyr,
@@ -34,7 +35,8 @@ Imports:
     tensorflow,
     ggplot2,
     ggpubr,
-    RColorBrewer
+    scran,
+    scuttle
 Suggests:
     knitr,
     rmarkdown,
@@ -45,7 +47,7 @@ Suggests:
     HDF5Array,
     testthat
 SystemRequirements: Python (>= 2.7.0), TensorFlow (https://www.tensorflow.org/)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 Collate: 
     'AllClasses.R'
