@@ -4,7 +4,7 @@ model parameters — simSCProfiles • digitalDLSorteR</title><!-- favicons --><
 model parameters — simSCProfiles"><meta property="og:description" content="Simulate single-cell expression profiles by randomly sampling from a negative
 binomial distribution and inserting dropouts by sampling from a binomial
 distribution using the ZINB-WaVE parameters estimated by the
-estimateZinbwaveParams function."><meta property="og:image" content="/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+estimateZinbwaveParams function."><meta property="og:image" content="https://diegommcc.github.io/digitalDLSorteR/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -22,7 +22,7 @@ estimateZinbwaveParams function."><meta property="og:image" content="/logo.png">
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -261,11 +261,22 @@ Frontiers in Genetics 10, 978. doi: <a href="https://doi.org/10.3389/fgene.2019.
 <span class="r-in"><span>    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  single.cell.data <span class="op">=</span> <span class="va">sce</span>,</span></span>
-<span class="r-in"><span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span></span>
-<span class="r-in"><span>  gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span></span></span>
+<span class="r-in"><span><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="createDDLSobject.html">createDDLSobject</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  sc.data <span class="op">=</span> <span class="va">sce</span>,</span></span>
+<span class="r-in"><span>  sc.cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span></span>
+<span class="r-in"><span>  sc.gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span>,</span></span>
+<span class="r-in"><span>  sc.filt.genes.cluster <span class="op">=</span> <span class="cn">FALSE</span>, </span></span>
+<span class="r-in"><span>  sc.log.FC <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> === Bulk RNA-seq data not provided</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> === Processing single-cell data</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       - Filtering features:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>          - Selected features: 15</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>          - Discarded features: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> === No mitochondrial genes were found by using ^mt- as regrex</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> === Final number of dimensions for further analyses: 15</span>
 <span class="r-in"><span><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimateZinbwaveParams.html">estimateZinbwaveParams</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  object <span class="op">=</span> <span class="va">DDLS</span>,</span></span>
 <span class="r-in"><span>  cell.type.column <span class="op">=</span> <span class="st">"Cell_Type"</span>,</span></span>
@@ -309,7 +320,7 @@ Frontiers in Genetics 10, 978. doi: <a href="https://doi.org/10.3389/fgene.2019.
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

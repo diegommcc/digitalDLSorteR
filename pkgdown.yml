@@ -1,11 +1,14 @@
 pandoc: 2.19.2
-pkgdown: 2.0.6.9000
-pkgdown_sha: 956f076f661eb2de9413f64ea24a580cf444466d
+pkgdown: 2.0.7
+pkgdown_sha: ~
 articles:
   hdf5Backend: hdf5Backend.html
   kerasIssues: kerasIssues.html
   newModels: newModels.html
   pretrainedModels: pretrainedModels.html
   realModelExample: realModelExample.html
-last_built: 2022-10-05T08:59Z
+last_built: 2024-02-05T17:29Z
+urls:
+  reference: https://diegommcc.github.io/digitalDLSorteR/reference
+  article: https://diegommcc.github.io/digitalDLSorteR/articles
 

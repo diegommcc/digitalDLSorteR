@@ -1,195 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/404.html</loc>
   </url>
   <url>
-    <loc>/articles/hdf5Backend.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/articles/hdf5Backend.html</loc>
   </url>
   <url>
-    <loc>/articles/index.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/articles/index.html</loc>
   </url>
   <url>
-    <loc>/articles/kerasIssues.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html</loc>
   </url>
   <url>
-    <loc>/articles/newModels.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/articles/newModels.html</loc>
   </url>
   <url>
-    <loc>/articles/pretrainedModels.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/articles/pretrainedModels.html</loc>
   </url>
   <url>
-    <loc>/articles/realModelExample.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/articles/realModelExample.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/authors.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/index.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/DigitalDLSorter-class.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/DigitalDLSorter-class.html</loc>
   </url>
   <url>
-    <loc>/reference/DigitalDLSorterDNN-class.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/DigitalDLSorterDNN-class.html</loc>
   </url>
   <url>
-    <loc>/reference/ProbMatrixCellTypes-class.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/ProbMatrixCellTypes-class.html</loc>
   </url>
   <url>
-    <loc>/reference/ZinbParametersModel-class.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/ZinbParametersModel-class.html</loc>
   </url>
   <url>
-    <loc>/reference/barErrorPlot.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/barErrorPlot.html</loc>
   </url>
   <url>
-    <loc>/reference/barPlotCellTypes.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/barPlotCellTypes.html</loc>
   </url>
   <url>
-    <loc>/reference/blandAltmanLehPlot.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/blandAltmanLehPlot.html</loc>
   </url>
   <url>
-    <loc>/reference/bulk.simul.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/bulk.simul.html</loc>
   </url>
   <url>
-    <loc>/reference/calculateEvalMetrics.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/calculateEvalMetrics.html</loc>
   </url>
   <url>
-    <loc>/reference/cell.names.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/cell.names.html</loc>
   </url>
   <url>
-    <loc>/reference/cell.types.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/cell.types.html</loc>
   </url>
   <url>
-    <loc>/reference/corrExpPredPlot.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/corrExpPredPlot.html</loc>
   </url>
   <url>
-    <loc>/reference/deconv.data.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/createDDLSobject.html</loc>
   </url>
   <url>
-    <loc>/reference/deconv.results.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/deconv.data.html</loc>
   </url>
   <url>
-    <loc>/reference/deconvDigitalDLSorter.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/deconv.results.html</loc>
   </url>
   <url>
-    <loc>/reference/deconvDigitalDLSorterObj.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/deconvDDLSObj.html</loc>
   </url>
   <url>
-    <loc>/reference/digitalDLSorteR.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/deconvDigitalDLSorter.html</loc>
   </url>
   <url>
-    <loc>/reference/distErrorPlot.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/digitalDLSorteR.html</loc>
   </url>
   <url>
-    <loc>/reference/estimateZinbwaveParams.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/distErrorPlot.html</loc>
   </url>
   <url>
-    <loc>/reference/features.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/estimateZinbwaveParams.html</loc>
   </url>
   <url>
-    <loc>/reference/generateBulkCellMatrix.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/features.html</loc>
   </url>
   <url>
-    <loc>/reference/getProbMatrix.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/generateBulkCellMatrix.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/getProbMatrix.html</loc>
   </url>
   <url>
-    <loc>/reference/installTFpython.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/listToDDLS.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/installTFpython.html</loc>
   </url>
   <url>
-    <loc>/reference/listToDDLSDNN.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/listToDDLS.html</loc>
   </url>
   <url>
-    <loc>/reference/loadDeconvData.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/listToDDLSDNN.html</loc>
   </url>
   <url>
-    <loc>/reference/loadSCProfiles.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/loadDeconvData.html</loc>
   </url>
   <url>
-    <loc>/reference/loadTrainedModelFromH5.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/loadTrainedModelFromH5.html</loc>
   </url>
   <url>
-    <loc>/reference/method.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/method.html</loc>
   </url>
   <url>
-    <loc>/reference/model.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/model.html</loc>
   </url>
   <url>
-    <loc>/reference/plotTrainingHistory.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/plotTrainingHistory.html</loc>
   </url>
   <url>
-    <loc>/reference/plots.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/plots.html</loc>
   </url>
   <url>
-    <loc>/reference/preparingToSave.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/preparingToSave.html</loc>
   </url>
   <url>
-    <loc>/reference/prob.cell.types.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/prob.cell.types.html</loc>
   </url>
   <url>
-    <loc>/reference/prob.matrix.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/prob.matrix.html</loc>
   </url>
   <url>
-    <loc>/reference/project.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/project.html</loc>
   </url>
   <url>
-    <loc>/reference/saveRDS.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/saveRDS.html</loc>
   </url>
   <url>
-    <loc>/reference/saveTrainedModelAsH5.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/saveTrainedModelAsH5.html</loc>
   </url>
   <url>
-    <loc>/reference/set.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/set.html</loc>
   </url>
   <url>
-    <loc>/reference/set.list.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/set.list.html</loc>
   </url>
   <url>
-    <loc>/reference/showProbPlot.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/showProbPlot.html</loc>
   </url>
   <url>
-    <loc>/reference/simBulkProfiles.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/simBulkProfiles.html</loc>
   </url>
   <url>
-    <loc>/reference/simSCProfiles.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/simSCProfiles.html</loc>
   </url>
   <url>
-    <loc>/reference/single.cell.real.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/single.cell.real.html</loc>
   </url>
   <url>
-    <loc>/reference/single.cell.simul.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/single.cell.simul.html</loc>
   </url>
   <url>
-    <loc>/reference/test.deconv.metrics.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/test.deconv.metrics.html</loc>
   </url>
   <url>
-    <loc>/reference/test.metrics.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/test.metrics.html</loc>
   </url>
   <url>
-    <loc>/reference/test.pred.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/test.pred.html</loc>
   </url>
   <url>
-    <loc>/reference/trainDigitalDLSorterModel.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/trainDDLSModel.html</loc>
   </url>
   <url>
-    <loc>/reference/trained.model.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/trained.model.html</loc>
   </url>
   <url>
-    <loc>/reference/training.history.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/training.history.html</loc>
   </url>
   <url>
-    <loc>/reference/zinb.params.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/zinb.params.html</loc>
   </url>
   <url>
-    <loc>/reference/zinbwave.model.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/zinbwave.model.html</loc>
   </url>
 </urlset>

@@ -20,7 +20,7 @@
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Building new deconvolution models">
 <meta property="og:description" content="digitalDLSorteR">
-<meta property="og:image" content="/logo.png">
+<meta property="og:image" content="https://diegommcc.github.io/digitalDLSorteR/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -113,10 +113,10 @@
     
 <p><strong>digitalDLSorteR</strong> implements all the necessary tools
 to build new context-specific deconvolution models from previously
-characterized scRNA-Seq data. Taking into account the variability of
-some cell types depending on the context in which they are found, we aim
-to generate different models to each environment. From our view, this
-opens a door to more accurate and specific models instead of using
+identified single-cell RNA-Seq data. Taking into account the variability
+of some cell types depending on the context in which they are found, we
+aim to generate different models to each environment. From our view,
+this opens a door to more accurate and specific models instead of using
 generic transcriptional profiles as a reference (i.e., the use of
 peripheral blood mononuclear cell (PBMC) to estimate the proportions of
 tumor-infiltrating lymphocytes in oncological settings). In this
@@ -134,7 +134,7 @@ ones already offered in <code>digitalDLSorteRmodels</code>. In any case,
 make this process easier and computationally cheaper in terms of RAM
 usage: batch processing of data and the use of the <a href="https://bioconductor.org/packages/release/bioc/html/HDF5Array.html" class="external-link">HDF5Array</a>
 and <a href="https://bioconductor.org/packages/release/bioc/html/DelayedArray.html" class="external-link">DelayedArray</a>
-packages (see the article <a href="https://diegommcc.github.io/digitalDLSorteR/articles/hdf5Backend.html" class="external-link">HDF5
+packages (see the article <a href="https://diegommcc.github.io/digitalDLSorteR/articles/hdf5Backend.html">HDF5
 files as back-end</a> for more information). Furthermore, all steps are
 centralized in the <code>DigitalDLSorter</code> S4-class, the core of
 <strong>digitalDLSorteR</strong>, to provide a good user experience and
@@ -158,22 +158,16 @@ samples</a></li>
 <li><a href="#save">Saving <code>DigitalDLSorter</code> object and
 trained models</a></li>
 </ol>
-<div class="figure" style="text-align: center">
-<img src="workflow_building_models.png" alt="Workflow to build new context-specific deconvolution models" width="1480"><p class="caption">
-Workflow to build new context-specific deconvolution models
-</p>
-</div>
-<div class="section level3">
+<!-- ```{r workflowfull_newModels, fig.cap = "Workflow to build new context-specific deconvolution models", echo = FALSE} --><!-- knitr::include_graphics("workflow_building_models.png") --><!-- ``` --><div class="section level3">
 <h3 id="load">Loading data into a <code>DigitalDLSorter</code> object<a class="anchor" aria-label="anchor" href="#load"></a>
 </h3>
 <p>First, we have to load scRNA-Seq data into a
 <code>DigitalDLSorter</code> object. This S4 class contains all the
 slots needed to store the data generated during the construction of new
-deconvolution models. The information to be provided consists of three
+deconvolution models. The information needed consists of three
 elements:</p>
 <ul>
-<li>Counts matrix: a matrix with genes as rows and cells as
-columns.</li>
+<li>Count matrix: a matrix with genes as rows and cells as columns.</li>
 <li>Cells metadata: a table with annotations (columns) for each cell
 (rows). The expected information in this data frame is a column with the
 ID used for each cell, a column with the corresponding cell types, and
@@ -190,15 +184,22 @@ are accepted. Finally, data will be stored as a
 <code>SingleCellExperiment</code> object in the
 <code>single.cell.real</code> slot of the new
 <code>DigitalDLSorter</code> object.</p>
-<p>To do so, we first simulate a scRNA-Seq data matrix of 500 rows
-(genes) and 100 columns (samples) by randomly sampling from a Poisson
-distribution. <strong>Note:</strong> these simulated data are only for
-descriptive purposes to show functionalities of the package, it is not
-intended to generate realistic transcriptomic data.</p>
+<p>In addition, it is recommended to provide the bulk RNA-seq to be
+deconvoluted at this point so that only genes actually relevant for the
+deconvolution process are considered. The package will filter genes
+according to different criteria so that only those important for the
+task will be used for downstream steps.</p>
+<p>In this tutorial, we will simulate both the scRNA-seq data used as a
+reference and the bulk RNA-seq to be deconvoluted. This is done by
+randomly sampling from a Poisson distribution, but importantly these
+simulated data are only for descriptive purposes to show functionalities
+of the package, they are not intended to generate realistic
+transcriptomic data.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## loading the packages</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diegommcc.github.io/digitalDLSorteR/" class="external-link">digitalDLSorteR</a></span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://diegommcc.github.io/digitalDLSorteR/">"digitalDLSorteR"</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"SingleCellExperiment"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">"SummarizedExperiment"</a></span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## set seed for reproducibility</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
@@ -216,61 +217,61 @@ intended to generate realistic transcriptomic data.</p>
 <span>  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html" class="external-link">SummarizedExperiment</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
+<span>    <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">10000</span>, lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">500</span>, ncol <span class="op">=</span> <span class="fl">20</span>, </span>
+<span>    dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Sample_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    Sample_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Sample_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Then, we provide this <code>SingleCellExperiment</code> object to
-<code>loadSCProfiles</code> as follows:</p>
+<p>Then, we create the <code>DigitalDLSorter</code> object as
+follows:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span></span>
-<span>  single.cell <span class="op">=</span> <span class="va">sce</span>, </span>
-<span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
-<span>  gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span>,</span>
-<span>  min.cells <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  min.counts <span class="op">=</span> <span class="fl">0</span>,</span>
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDDLSobject.html">createDDLSobject</a></span><span class="op">(</span></span>
+<span>  sc.data <span class="op">=</span> <span class="va">sce</span>,</span>
+<span>  sc.cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
+<span>  sc.gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span>,</span>
+<span>  sc.filt.genes.cluster <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>  sc.log.FC <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  bulk.data <span class="op">=</span> <span class="va">se</span>,</span>
+<span>  bulk.sample.ID.column <span class="op">=</span> <span class="st">"Sample_ID"</span>,</span>
+<span>  bulk.gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span>,</span>
 <span>  project <span class="op">=</span> <span class="st">"ToyExample"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">DDLSToy</span></span></code></pre></div>
-<pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
-<span><span class="co">## Real single-cell profiles:</span></span>
-<span><span class="co">##   500 features and 100 cells</span></span>
-<span><span class="co">##   rownames: Gene316 Gene314 Gene403 ... Gene403 Gene167 Gene76 Gene315 </span></span>
-<span><span class="co">##   colnames: RHC37 RHC69 RHC70 ... RHC70 RHC42 RHC1 RHC92 </span></span>
-<span><span class="co">## Project: ToyExample</span></span></code></pre>
-<p>In this case, we are loading single-cell profiles from a
-<code>SingleCellExperiment</code> object, but it could be done by
-directly providing files as follows:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## this code will not be run</span></span>
-<span><span class="va">toyFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"countsMatrix.tsv.gz"</span>, </span>
-<span>              <span class="st">"cellsMetadata.tsv.gz"</span>,</span>
-<span>              <span class="st">"genesMetadata.tsv.gz"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span></span>
-<span>  single.cell <span class="op">=</span> <span class="va">toyFiles</span>, </span>
-<span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
-<span>  gene.ID.column <span class="op">=</span> <span class="st">"external_gene_name"</span>,</span>
-<span>  min.cells <span class="op">=</span> <span class="fl">0</span>, min.counts <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  project <span class="op">=</span> <span class="st">"ToyExampleBreast"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
 <p>In documentation, you can see all the parameters that
-<code>loadSCProfiles</code> offers to preprocess the loaded data, such
-as <code>min.counts</code> and <code>min.cells</code>,
-<code>fun.aggregate</code>, etc. In addition, in case of working with
-very large scRNA-Seq datasets, <strong>digitalDLSorteR</strong> allows
-to use HDF5 files as back-end to handle data that do not fit in RAM
-using the <a href="https://bioconductor.org/packages/release/bioc/html/HDF5Array.html" class="external-link">HDF5Array</a>
+<code>createDDLSobject</code> offers to process the loaded data, such as
+<code>sc.min.counts</code> and <code>sc.min.cells</code>, etc. In this
+case, we are setting <code>sc.log.FC = FALSE</code> due to the fact
+these are simulated data and there is no biological signal in every cell
+type. However, this parameter should be set to <code>TRUE</code> when
+working with actual data.</p>
+<p>In addition, in case of working with very large scRNA-Seq datasets,
+<strong>digitalDLSorteR</strong> allows to use HDF5 files as back-end to
+handle data that do not fit in RAM using the <a href="https://bioconductor.org/packages/release/bioc/html/HDF5Array.html" class="external-link">HDF5Array</a>
 and <a href="https://bioconductor.org/packages/release/bioc/html/DelayedArray.html" class="external-link">DelayedArray</a>
-packages. We only recommend their use in actual cases of huge datasets.
-HDF5 files, despite being very powerful and useful for dealing with RAM
-problems, make processes much slower. As an example, the following code
-chunk would create an HDF5 file with the scRNA-seq data that allows
-working without loading them into RAM. See the documentation for more
-details.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span></span>
-<span>  single.cell <span class="op">=</span> <span class="va">toyFiles</span>, cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
-<span>  gene.ID.column <span class="op">=</span> <span class="st">"external_gene_name"</span>,</span>
-<span>  min.cells <span class="op">=</span> <span class="fl">0</span>, min.counts <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  file.backend <span class="op">=</span> <span class="st">"singlecell_data.h5"</span>,</span>
+packages. We only recommend them when analyzing huge amounts of data
+that don’t fit in RAM. HDF5 files, despite being very powerful and
+useful for dealing with RAM problems, make processes much slower. As an
+example, the following code chunk would create an HDF5 file with the
+scRNA-seq data that allows working without loading them into RAM. See
+the documentation for more details.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDDLSobject.html">createDDLSobject</a></span><span class="op">(</span></span>
+<span>sc.data <span class="op">=</span> <span class="va">sce</span>,</span>
+<span>  sc.cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
+<span>  sc.gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span>,</span>
+<span>  sc.filt.genes.cluster <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>  sc.log.FC <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  sc.gene.ID.column <span class="op">=</span> <span class="st">"external_gene_name"</span>,</span>
+<span>  sc.file.backend <span class="op">=</span> <span class="st">"singlecell_data.h5"</span>,</span>
 <span>  project <span class="op">=</span> <span class="st">"ToyExampleBreast"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -308,7 +309,7 @@ under-represented, the <code>subset.cells</code> parameter allows making
 a subset of cells to speed up the process. With the following code, a
 total of 40 cells will be taken from the original scRNA-Seq data and
 used to fit a ZINB-WaVE model.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimateZinbwaveParams.html">estimateZinbwaveParams</a></span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">DDLSToy</span>,</span>
 <span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
@@ -318,67 +319,8 @@ used to fit a ZINB-WaVE model.</p>
 <span>  threads <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## === Setting parallel environment to 1 thread(s)</span></span></code></pre>
-<pre><code><span><span class="co">## === Estimating parameters for all cell types in the experiment</span></span></code></pre>
-<pre><code><span><span class="co">## === Creating cell model matrix based on Cell_Type columns:</span></span></code></pre>
-<pre><code><span><span class="co">##  ~Cell_Type</span></span></code></pre>
-<pre><code><span><span class="co">## === Number of cells for each cell type:</span></span>
-<span><span class="co">##     - CellType1: 11</span></span>
-<span><span class="co">##     - CellType2: 6</span></span>
-<span><span class="co">##     - CellType3: 10</span></span>
-<span><span class="co">##     - CellType4: 7</span></span>
-<span><span class="co">##     - CellType5: 6</span></span></code></pre>
-<pre><code><span><span class="co">## === Creating gene model matrix without gene covariates</span></span></code></pre>
-<pre><code><span><span class="co">## === Running estimation process (Start time 09:00:24 AM)</span></span></code></pre>
-<pre><code><span><span class="co">## === Removing genes without expression in any cell</span></span></code></pre>
-<pre><code><span><span class="co">## &gt;&gt;&gt; Fitting ZINB-WaVE model</span></span></code></pre>
-<pre><code><span><span class="co">## Create model:</span></span></code></pre>
-<pre><code><span><span class="co">## ok</span></span></code></pre>
-<pre><code><span><span class="co">## Initialize parameters:</span></span></code></pre>
-<pre><code><span><span class="co">## ok</span></span></code></pre>
-<pre><code><span><span class="co">## Optimize parameters:</span></span></code></pre>
-<pre><code><span><span class="co">## Iteration 1</span></span></code></pre>
-<pre><code><span><span class="co">## penalized log-likelihood = -54085.7356573761</span></span></code></pre>
-<pre><code><span><span class="co">## After dispersion optimization = -43320.8019331812</span></span></code></pre>
-<pre><code><span><span class="co">##    user  system elapsed </span></span>
-<span><span class="co">##   4.837   0.004   4.842</span></span></code></pre>
-<pre><code><span><span class="co">## After right optimization = -42718.0962983595</span></span></code></pre>
-<pre><code><span><span class="co">## After orthogonalization = -42718.0962983595</span></span></code></pre>
-<pre><code><span><span class="co">##    user  system elapsed </span></span>
-<span><span class="co">##   0.289   0.000   0.290</span></span></code></pre>
-<pre><code><span><span class="co">## After left optimization = -42710.2243407325</span></span></code></pre>
-<pre><code><span><span class="co">## After orthogonalization = -42710.2243407325</span></span></code></pre>
-<pre><code><span><span class="co">## Iteration 2</span></span></code></pre>
-<pre><code><span><span class="co">## penalized log-likelihood = -42710.2243407325</span></span></code></pre>
-<pre><code><span><span class="co">## After dispersion optimization = -42710.2246200072</span></span></code></pre>
-<pre><code><span><span class="co">##    user  system elapsed </span></span>
-<span><span class="co">##     4.1     0.0     4.1</span></span></code></pre>
-<pre><code><span><span class="co">## After right optimization = -42708.2394778133</span></span></code></pre>
-<pre><code><span><span class="co">## After orthogonalization = -42708.2394778133</span></span></code></pre>
-<pre><code><span><span class="co">##    user  system elapsed </span></span>
-<span><span class="co">##   0.690   0.000   0.689</span></span></code></pre>
-<pre><code><span><span class="co">## After left optimization = -42706.8950844944</span></span></code></pre>
-<pre><code><span><span class="co">## After orthogonalization = -42706.8950844944</span></span></code></pre>
-<pre><code><span><span class="co">## Iteration 3</span></span></code></pre>
-<pre><code><span><span class="co">## penalized log-likelihood = -42706.8950844944</span></span></code></pre>
-<pre><code><span><span class="co">## ok</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## DONE</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Invested time: 26.54</span></span></code></pre>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLSToy</span></span></code></pre></div>
-<pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
-<span><span class="co">## Real single-cell profiles:</span></span>
-<span><span class="co">##   500 features and 100 cells</span></span>
-<span><span class="co">##   rownames: Gene313 Gene61 Gene260 ... Gene260 Gene40 Gene484 Gene173 </span></span>
-<span><span class="co">##   colnames: RHC29 RHC59 RHC62 ... RHC62 RHC34 RHC91 RHC93 </span></span>
-<span><span class="co">## ZinbModel object:</span></span>
-<span><span class="co">##   40 samples;   500 genes.</span></span>
-<span><span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span></span>
-<span><span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span></span>
-<span><span class="co">##   0 latent factor(s).</span></span>
-<span><span class="co">## Project: ToyExample</span></span></code></pre>
 </div>
 <div class="section level4">
 <h4 id="simul-sc">Simulating new single-cell profiles<a class="anchor" aria-label="anchor" href="#simul-sc"></a>
@@ -394,7 +336,7 @@ cell profiles per cell type to be generated (<code>n.cells</code>). For
 example, if your data set is composed of 5 cell types and
 <code>n.cells</code> is equal to 10, the number of simulated profiles
 will be 50.</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simSCProfiles.html">simSCProfiles</a></span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">DDLSToy</span>,</span>
 <span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
@@ -403,47 +345,16 @@ will be 50.</p>
 <span>  suffix.names <span class="op">=</span> <span class="st">"_Simul"</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## === Getting parameters from model:</span></span></code></pre>
-<pre><code><span><span class="co">##     - mu: 40, 500</span></span></code></pre>
-<pre><code><span><span class="co">##     - pi: 40, 500</span></span></code></pre>
-<pre><code><span><span class="co">##     - Theta: 500</span></span></code></pre>
-<pre><code><span><span class="co">## === Selected cell type(s) from ZINB-WaVE model (5 cell type(s)):</span></span></code></pre>
-<pre><code><span><span class="co">##     - CellType2</span></span>
-<span><span class="co">##     - CellType3</span></span>
-<span><span class="co">##     - CellType4</span></span>
-<span><span class="co">##     - CellType5</span></span>
-<span><span class="co">##     - CellType1</span></span></code></pre>
-<pre><code><span><span class="co">## === Simulated matrix dimensions:</span></span></code></pre>
-<pre><code><span><span class="co">##     - n (cells): 50</span></span></code></pre>
-<pre><code><span><span class="co">##     - J (genes): 500</span></span></code></pre>
-<pre><code><span><span class="co">##     - i (# entries): 25000</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## DONE</span></span></code></pre>
 <p>These simulated single-cell profiles are stored in
 <code>single.cell.simul</code> slot to be used to simulate new bulk
 RNA-Seq profiles with a known cell composition.</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLSToy</span></span></code></pre></div>
-<pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
-<span><span class="co">## Real single-cell profiles:</span></span>
-<span><span class="co">##   500 features and 100 cells</span></span>
-<span><span class="co">##   rownames: Gene130 Gene245 Gene373 ... Gene373 Gene402 Gene344 Gene240 </span></span>
-<span><span class="co">##   colnames: RHC11 RHC55 RHC6 ... RHC6 RHC4 RHC12 RHC33 </span></span>
-<span><span class="co">## ZinbModel object:</span></span>
-<span><span class="co">##   40 samples;   500 genes.</span></span>
-<span><span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span></span>
-<span><span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span></span>
-<span><span class="co">##   0 latent factor(s).</span></span>
-<span><span class="co">## Simulated single-cell profiles:</span></span>
-<span><span class="co">##   500 features and 50 cells</span></span>
-<span><span class="co">##   rownames: Gene100 Gene8 Gene11 ... Gene11 Gene127 Gene179 Gene137 </span></span>
-<span><span class="co">##   colnames: CellType2_Simul10 CellType1_Simul42 CellType3_Simul12 ... CellType3_Simul12 CellType5_Simul34 CellType2_Simul8 CellType2_Simul3 </span></span>
-<span><span class="co">## Project: ToyExample</span></span></code></pre>
 <p>In this step, it is also possible to store the new simulated
 single-cell profiles in a HDF5 file. Indeed, they can be simulated in
 batches, avoiding loading all data into RAM. The code would be as
 follows:</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simSCProfiles.html">simSCProfiles</a></span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">DDLSToy</span>,</span>
 <span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span>
@@ -461,7 +372,7 @@ follows:</p>
 <h3 id="cell-prop">Generation of cell composition matrix for pseudo-bulk RNA-Seq
 samples<a class="anchor" aria-label="anchor" href="#cell-prop"></a>
 </h3>
-<p>To simulate pseudo-bulk samples with a known cell composition, it is
+<p>To simulate pseudobulk samples with a known cell composition, it is
 necessary to generate a cell composition matrix that determines the
 proportion of every cell type in every sample. This is carried out using
 the <code>generateBulkCellMatrix</code> function that stores these
@@ -489,22 +400,21 @@ randomly sampled.</li>
 <li>Cell proportions are randomly sampled from a Dirichlet
 distribution.</li>
 <li>Pseudo-bulk RNA-Seq samples composed of the same cell type are
-generated in order to provide ‘pure’ pseudo-bulk samples.</li>
+generated in order to provide ‘pure’ pseudobulk samples.</li>
 </ol>
 <p>Proportion of each type of sample can be set by the
-<code>proportion.train</code> and <code>proportion.test</code>
-arguments. Moreover, <code>prob.zero</code> controls the number of zeros
-(number of cell types that will be zero in each sample) produced by each
-method. This parameter was introduced because otherwise cell
-compositions that are strongly biased towards a certain cell type. To
-account for this, <code>prob.zero</code> generate sparse compositions
-depending on the probability entered for each method. Finally, other
-important parameters are <code>n.cells</code>, which determines the
-number of cells that will compose each pseudo-bulk sample, and
+<code>proportion.method</code> argument. Moreover,
+<code>prob.sparsity</code> controls the number of zeros (number of cell
+types that will be zero in each sample) produced by each method. This
+parameter was introduced in order to increase the level of sparsity in
+the simulated cell composition matrices in order to increase the number
+of situations the model is trained with. Finally, other important
+parameters are <code>n.cells</code>, which determines the number of
+cells that will compose each pseudobulk sample, and
 <code>num.bulk.samples</code>, which defines the total number of
-pseudo-bulk samples generated (training + test subsets). The code would
+pseudobulk samples generated (training + test subsets). The code would
 be as follows:</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## for reproducibility</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span></span>
@@ -524,75 +434,20 @@ be as follows:</p>
 <span>  n.cells <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## === The number of bulk RNA-Seq samples that will be generated is equal to 250</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## === Training set cells by type:</span></span></code></pre>
-<pre><code><span><span class="co">##     - CellType2: 16</span></span>
-<span><span class="co">##     - CellType3: 25</span></span>
-<span><span class="co">##     - CellType4: 20</span></span>
-<span><span class="co">##     - CellType5: 15</span></span>
-<span><span class="co">##     - CellType1: 24</span></span></code></pre>
-<pre><code><span><span class="co">## === Test set cells by type:</span></span></code></pre>
-<pre><code><span><span class="co">##     - CellType2: 7</span></span>
-<span><span class="co">##     - CellType3: 10</span></span>
-<span><span class="co">##     - CellType4: 6</span></span>
-<span><span class="co">##     - CellType5: 14</span></span>
-<span><span class="co">##     - CellType1: 13</span></span></code></pre>
-<pre><code><span><span class="co">## === Probability matrix for training data:</span></span></code></pre>
-<pre><code><span><span class="co">##     - Bulk RNA-Seq samples: 167</span></span>
-<span><span class="co">##     - Cell types: 5</span></span></code></pre>
-<pre><code><span><span class="co">## === Probability matrix for test data:</span></span></code></pre>
-<pre><code><span><span class="co">##     - Bulk RNA-Seq samples: 83</span></span>
-<span><span class="co">##     - Cell types: 5</span></span></code></pre>
-<pre><code><span><span class="co">## DONE</span></span></code></pre>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLSToy</span></span></code></pre></div>
-<pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
-<span><span class="co">## Real single-cell profiles:</span></span>
-<span><span class="co">##   500 features and 100 cells</span></span>
-<span><span class="co">##   rownames: Gene469 Gene244 Gene283 ... Gene283 Gene212 Gene34 Gene265 </span></span>
-<span><span class="co">##   colnames: RHC90 RHC77 RHC26 ... RHC26 RHC82 RHC65 RHC60 </span></span>
-<span><span class="co">## ZinbModel object:</span></span>
-<span><span class="co">##   40 samples;   500 genes.</span></span>
-<span><span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span></span>
-<span><span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span></span>
-<span><span class="co">##   0 latent factor(s).</span></span>
-<span><span class="co">## Simulated single-cell profiles:</span></span>
-<span><span class="co">##   500 features and 50 cells</span></span>
-<span><span class="co">##   rownames: Gene4 Gene337 Gene192 ... Gene192 Gene319 Gene271 Gene422 </span></span>
-<span><span class="co">##   colnames: CellType3_Simul15 CellType3_Simul12 CellType4_Simul26 ... CellType4_Simul26 CellType2_Simul4 CellType5_Simul40 CellType1_Simul43 </span></span>
-<span><span class="co">## Cell type composition matrices:</span></span>
-<span><span class="co">##   Cell type matrix for traindata: 167 bulk samples and 5 cell types </span></span>
-<span><span class="co">##   Cell type matrix for testdata: 83 bulk samples and 5 cell types </span></span>
-<span><span class="co">## Project: ToyExample</span></span></code></pre>
 <p>Remember that this is a simulated example. In real circumstances,
 depending on the number of single-cell profiles loaded/simulated at the
-beginning and computational resources, about 20,000-30,000 samples would
-be recommended.</p>
-<p>You can inspect the cell composition matrix created in this step with
-the getter function <code>getProbMatrix</code>:</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##        CellType1 CellType2 CellType3 CellType4 CellType5</span></span>
-<span><span class="co">## Bulk_1         8         2        29        41        20</span></span>
-<span><span class="co">## Bulk_2         2         0         0        98         0</span></span>
-<span><span class="co">## Bulk_3         6         4         8        34        48</span></span>
-<span><span class="co">## Bulk_4         1         9        24        34        32</span></span>
-<span><span class="co">## Bulk_5        10         8         7        47        28</span></span>
-<span><span class="co">## Bulk_6        19        22         0        59         0</span></span></code></pre>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##          CellType1 CellType2 CellType3 CellType4 CellType5</span></span>
-<span><span class="co">## Bulk_162         0         0         0         0       100</span></span>
-<span><span class="co">## Bulk_163         0         0         0         0       100</span></span>
-<span><span class="co">## Bulk_164         0         0         0         0       100</span></span>
-<span><span class="co">## Bulk_165         0         0         0         0       100</span></span>
-<span><span class="co">## Bulk_166         0         0         0         0       100</span></span>
-<span><span class="co">## Bulk_167         0         0         0         0       100</span></span></code></pre>
+beginning and the computational resources, about 15,000-20,000 samples
+would be recommended. You can inspect the cell composition matrix
+created in this step with the getter function
+<code>getProbMatrix</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="fu"><a href="../reference/getProbMatrix.html">getProbMatrix</a></span><span class="op">(</span><span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Moreover, distributions can be plotted using the
 <code>showProbPlot</code> function:</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
 <span>  <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="../reference/showProbPlot.html">showProbPlot</a></span><span class="op">(</span></span>
@@ -600,29 +455,12 @@ the getter function <code>getProbMatrix</code>:</p>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [[1]]</span></span></code></pre>
-<p><img src="newModels_files/figure-html/showProbPlot_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## [[2]]</span></span></code></pre>
-<p><img src="newModels_files/figure-html/showProbPlot_newModels-2.png" width="640" style="display: block; margin: auto;"></p>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## [[3]]</span></span></code></pre>
-<p><img src="newModels_files/figure-html/showProbPlot_newModels-3.png" width="640" style="display: block; margin: auto;"></p>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## [[4]]</span></span></code></pre>
-<p><img src="newModels_files/figure-html/showProbPlot_newModels-4.png" width="640" style="display: block; margin: auto;"></p>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## [[5]]</span></span></code></pre>
-<p><img src="newModels_files/figure-html/showProbPlot_newModels-5.png" width="640" style="display: block; margin: auto;"></p>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## [[6]]</span></span></code></pre>
-<p><img src="newModels_files/figure-html/showProbPlot_newModels-6.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="simul-bulk">Simulation of pseudo-bulk RNA-Seq samples with known cell
 composition<a class="anchor" aria-label="anchor" href="#simul-bulk"></a>
 </h3>
-<p>Now, simulated cell proportions are used to create pseudo-bulk
+<p>Now, the simulated cell proportions are used to create the pseudobulk
 samples. They are simulated by aggregating single-cell profiles of each
 cell type according to these proportions. The idea is to simulate a real
 bulk RNA-Seq data in which the gene expression levels of each cell are
@@ -653,57 +491,27 @@ the number of cells that will make up the proportion of cell type <span class="m
 based on their cell type and how they were divided into training and
 test subsets. This step is performed by <code>simBulkProfiles</code> as
 follows:</p>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simBulkProfiles.html">simBulkProfiles</a></span><span class="op">(</span></span>
-<span>  object <span class="op">=</span> <span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"both"</span>, pseudobulk.function <span class="op">=</span> <span class="st">"MeanCPM"</span></span>
+<span>  object <span class="op">=</span> <span class="va">DDLSToy</span>, type.data <span class="op">=</span> <span class="st">"both"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## === Setting parallel environment to 1 thread(s)</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## === Generating train bulk samples:</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## === Generating test bulk samples:</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## DONE</span></span></code></pre>
 <p>These samples are stored as a <code>SummarizedExperiment</code>
 object in the <code>bulk.simul</code> slot where they can be inspected
 at any time:</p>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLSToy</span></span></code></pre></div>
-<pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
-<span><span class="co">## Real single-cell profiles:</span></span>
-<span><span class="co">##   500 features and 100 cells</span></span>
-<span><span class="co">##   rownames: Gene243 Gene118 Gene362 ... Gene362 Gene321 Gene26 Gene149 </span></span>
-<span><span class="co">##   colnames: RHC63 RHC70 RHC44 ... RHC44 RHC34 RHC49 RHC90 </span></span>
-<span><span class="co">## ZinbModel object:</span></span>
-<span><span class="co">##   40 samples;   500 genes.</span></span>
-<span><span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span></span>
-<span><span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span></span>
-<span><span class="co">##   0 latent factor(s).</span></span>
-<span><span class="co">## Simulated single-cell profiles:</span></span>
-<span><span class="co">##   500 features and 50 cells</span></span>
-<span><span class="co">##   rownames: Gene259 Gene127 Gene337 ... Gene337 Gene313 Gene462 Gene12 </span></span>
-<span><span class="co">##   colnames: CellType5_Simul37 CellType2_Simul6 CellType1_Simul50 ... CellType1_Simul50 CellType4_Simul25 CellType2_Simul8 CellType3_Simul16 </span></span>
-<span><span class="co">## Cell type composition matrices:</span></span>
-<span><span class="co">##   Cell type matrix for traindata: 167 bulk samples and 5 cell types </span></span>
-<span><span class="co">##   Cell type matrix for testdata: 83 bulk samples and 5 cell types </span></span>
-<span><span class="co">## Simulated bulk samples:</span></span>
-<span><span class="co">##   train bulk samples:</span></span>
-<span><span class="co">##     500 features and 167 samples</span></span>
-<span><span class="co">##     rownames: Gene359 Gene82 Gene40 ... Gene40 Gene226 Gene184 Gene102 </span></span>
-<span><span class="co">##     colnames: Bulk_90 Bulk_107 Bulk_116 ... Bulk_116 Bulk_75 Bulk_89 Bulk_109 </span></span>
-<span><span class="co">##   test bulk samples:</span></span>
-<span><span class="co">##     500 features and 83 samples</span></span>
-<span><span class="co">##     rownames: Gene429 Gene263 Gene242 ... Gene242 Gene317 Gene495 Gene411 </span></span>
-<span><span class="co">##     colnames: Bulk_26 Bulk_38 Bulk_63 ... Bulk_63 Bulk_4 Bulk_81 Bulk_48 </span></span>
-<span><span class="co">## Project: ToyExample</span></span></code></pre>
-<p>Again, these pseudo-bulk samples can be stored as an HDF5 file. This
+<p>The <code>simBulkProfiles</code> offers different ways to simulate
+these pseudobulk samples, but in our experience, the best option is to
+aggregate raw counts and normalize them afterwards
+(<code>pseudobulk.function = "AddRawCount"</code>).</p>
+<p>Again, these pseudobulk samples can be stored as an HDF5 file. This
 is the most recommended step of <strong>digitalDLSorteR</strong> to use
 this functionality, as it is the most computationally expensive part of
 the package and these samples will only be accessed during training and
 evaluation of Deep Neural Network (DNN) model. As in
 <code>simSCProfiles</code>, samples can be simulated in batches and a
 desired number of threads can also be set:</p>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simBulkProfiles.html">simBulkProfiles</a></span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">DDLSToy</span>, </span>
 <span>  type.data <span class="op">=</span> <span class="st">"both"</span>, </span>
@@ -712,43 +520,17 @@ desired number of threads can also be set:</p>
 <span>  block.size <span class="op">=</span> <span class="fl">1000</span>, </span>
 <span>  threads <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="section level4">
-<h4 id="new-methods-to-generate-pseudo-bulk-samples">New methods to generate pseudo-bulk samples<a class="anchor" aria-label="anchor" href="#new-methods-to-generate-pseudo-bulk-samples"></a>
-</h4>
-<p><strong>digitalDLSorteR</strong> (&gt;= 0.2.0) provides three methods
-to geneate pseudo-bulk samples through the
-<code>pseudobulk.function</code> argument:</p>
-<ul>
-<li>
-<code>"MeanCPM"</code>: single-cell profiles (raw counts) are
-transformed into CPMs and cross-cell averages are calculated. Then,
-<span class="math inline">\(log_2(CPM + 1)\)</span> are calculated. In
-this way, every cell contributes the same weight rather than creating
-biases due to sequencing depth or the fact that some cell types express
-more than others.</li>
-<li>
-<code>"AddCPM"</code>: single-cell profiles (raw counts) are
-transformed into CPMs and are added up across cells. Then, <span class="math inline">\(log_2(CPM + 1)\)</span> are calculated. This
-method is practically identical to the previous one.</li>
-<li>
-<code>"AddRawCount"</code>: single-cell profiles (raw counts) are
-added up across cells. Then, <span class="math inline">\(log_2(CPM +
-1)\)</span> are calculated.</li>
-</ul>
-<p>Which method is chosen depends on the technology used to generate the
-starting single-cell RNA-seq data. In future releases, we will make
-available new examples for each situation.</p>
-</div>
 </div>
 <div class="section level3">
 <h3 id="deep-neural-network-training">Deep Neural Network training<a class="anchor" aria-label="anchor" href="#deep-neural-network-training"></a>
 </h3>
-<p>Once pseudo-bulk samples have been generated, DNN model can be
-trained and evaluated. <code>trainDigitalDLSorterModel</code> is the
-function in charge of both steps and uses the <a href="https://cran.r-project.org/package=keras" class="external-link">keras</a> package with
+<p>Once the pseudobulk samples have been generated, a deep neural
+network can be trained and evaluated.
+<code>trainDigitalDLSorterModel</code> is the function in charge of both
+steps and uses the <a href="https://cran.r-project.org/package=keras" class="external-link">keras</a> package with
 <a href="https://cran.r-project.org/package=tensorflow" class="external-link">tensorflow</a>
 as back-end. If you want more information about <a href="https://cran.r-project.org/package=keras" class="external-link">keras</a> or have any
-problems during its installation, please see <a href="https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html" class="external-link">Keras/TensorFlow
+problems during its installation, please see <a href="https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html">Keras/TensorFlow
 installation and configuration</a> for more details. In any case, the
 <code>installTFpython</code> function automates this process, so we
 recommend its use.</p>
@@ -760,96 +542,18 @@ In addition, for a more customized model, it is possible to provide a
 pre-built model in the <code>custom.model</code> parameter. See the
 documentation for more details.</p>
 <p>The code with default parameters is as follows:</p>
-<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDigitalDLSorterModel.html">trainDigitalDLSorterModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, scaling <span class="op">=</span> <span class="st">"standarize"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## === Training and test from stored data was selected</span></span></code></pre>
-<pre><code><span><span class="co">## Model: "DigitalDLSorter"</span></span>
-<span><span class="co">## _____________________________________________________________________</span></span>
-<span><span class="co">## Layer (type)                   Output Shape               Param #    </span></span>
-<span><span class="co">## =====================================================================</span></span>
-<span><span class="co">## Dense1 (Dense)                 (None, 200)                100200     </span></span>
-<span><span class="co">## _____________________________________________________________________</span></span>
-<span><span class="co">## BatchNormalization1 (BatchNorm (None, 200)                800        </span></span>
-<span><span class="co">## _____________________________________________________________________</span></span>
-<span><span class="co">## ActivationReLu1 (Activation)   (None, 200)                0          </span></span>
-<span><span class="co">## _____________________________________________________________________</span></span>
-<span><span class="co">## Dropout1 (Dropout)             (None, 200)                0          </span></span>
-<span><span class="co">## _____________________________________________________________________</span></span>
-<span><span class="co">## Dense2 (Dense)                 (None, 200)                40200      </span></span>
-<span><span class="co">## _____________________________________________________________________</span></span>
-<span><span class="co">## BatchNormalization2 (BatchNorm (None, 200)                800        </span></span>
-<span><span class="co">## _____________________________________________________________________</span></span>
-<span><span class="co">## ActivationReLu2 (Activation)   (None, 200)                0          </span></span>
-<span><span class="co">## _____________________________________________________________________</span></span>
-<span><span class="co">## Dropout2 (Dropout)             (None, 200)                0          </span></span>
-<span><span class="co">## _____________________________________________________________________</span></span>
-<span><span class="co">## Dense3 (Dense)                 (None, 5)                  1005       </span></span>
-<span><span class="co">## _____________________________________________________________________</span></span>
-<span><span class="co">## BatchNormalization3 (BatchNorm (None, 5)                  20         </span></span>
-<span><span class="co">## _____________________________________________________________________</span></span>
-<span><span class="co">## ActivationSoftmax (Activation) (None, 5)                  0          </span></span>
-<span><span class="co">## =====================================================================</span></span>
-<span><span class="co">## Total params: 143,025</span></span>
-<span><span class="co">## Trainable params: 142,215</span></span>
-<span><span class="co">## Non-trainable params: 810</span></span>
-<span><span class="co">## _____________________________________________________________________</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## === Training DNN with 267 samples:</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## === Evaluating DNN in test data (133 samples)</span></span></code></pre>
-<pre><code><span><span class="co">##    - loss: 0.8386</span></span>
-<span><span class="co">##    - accuracy: 0.5038</span></span>
-<span><span class="co">##    - mean_absolute_error: 0.2024</span></span>
-<span><span class="co">##    - categorical_accuracy: 0.5038</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## === Generating prediction results using test data</span></span></code></pre>
-<pre><code><span><span class="co">## DONE</span></span></code></pre>
-<p>In the end, <code>DDLSToy</code> will contain a
-<code>DigitalDLSorterDNN</code> object with all the information
-associated with the model in the <code>trained.model</code> slot: a
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDDLSModel.html">trainDDLSModel</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">DDLSToy</span>, scaling <span class="op">=</span> <span class="st">"standardize"</span>, batch.size <span class="op">=</span> <span class="fl">12</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><code>DDLSToy</code> will contain a <code>DigitalDLSorterDNN</code>
+object with all the information associated with the model in the
+<code>trained.model</code> slot: a
 <code>keras.engine.sequential.Sequential</code> object with the trained
 model, metrics and loss function histories during training, and
 prediction results on test data.</p>
-<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLSToy</span></span></code></pre></div>
-<pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
-<span><span class="co">## Real single-cell profiles:</span></span>
-<span><span class="co">##   500 features and 100 cells</span></span>
-<span><span class="co">##   rownames: Gene431 Gene278 Gene232 ... Gene232 Gene373 Gene237 Gene453 </span></span>
-<span><span class="co">##   colnames: RHC22 RHC56 RHC13 ... RHC13 RHC40 RHC83 RHC36 </span></span>
-<span><span class="co">## ZinbModel object:</span></span>
-<span><span class="co">##   40 samples;   500 genes.</span></span>
-<span><span class="co">##   5 sample-level covariate(s) (mu);   5 sample-level covariate(s) (pi);</span></span>
-<span><span class="co">##   1 gene-level covariate(s) (mu);   1 gene-level covariate(s) (pi);</span></span>
-<span><span class="co">##   0 latent factor(s).</span></span>
-<span><span class="co">## Simulated single-cell profiles:</span></span>
-<span><span class="co">##   500 features and 50 cells</span></span>
-<span><span class="co">##   rownames: Gene93 Gene311 Gene308 ... Gene308 Gene234 Gene365 Gene462 </span></span>
-<span><span class="co">##   colnames: CellType5_Simul35 CellType4_Simul30 CellType3_Simul17 ... CellType3_Simul17 CellType4_Simul23 CellType5_Simul33 CellType3_Simul15 </span></span>
-<span><span class="co">## Cell type composition matrices:</span></span>
-<span><span class="co">##   Cell type matrix for traindata: 167 bulk samples and 5 cell types </span></span>
-<span><span class="co">##   Cell type matrix for testdata: 83 bulk samples and 5 cell types </span></span>
-<span><span class="co">## Simulated bulk samples:</span></span>
-<span><span class="co">##   train bulk samples:</span></span>
-<span><span class="co">##     500 features and 167 samples</span></span>
-<span><span class="co">##     rownames: Gene394 Gene174 Gene279 ... Gene279 Gene62 Gene261 Gene337 </span></span>
-<span><span class="co">##     colnames: Bulk_92 Bulk_157 Bulk_98 ... Bulk_98 Bulk_131 Bulk_3 Bulk_31 </span></span>
-<span><span class="co">##   test bulk samples:</span></span>
-<span><span class="co">##     500 features and 83 samples</span></span>
-<span><span class="co">##     rownames: Gene415 Gene336 Gene208 ... Gene208 Gene200 Gene78 Gene351 </span></span>
-<span><span class="co">##     colnames: Bulk_65 Bulk_46 Bulk_76 ... Bulk_76 Bulk_53 Bulk_77 Bulk_67 </span></span>
-<span><span class="co">## Trained model: 10 epochs</span></span>
-<span><span class="co">##   Training metrics (last epoch):</span></span>
-<span><span class="co">##     loss: 0.251</span></span>
-<span><span class="co">##     accuracy: 0.9219</span></span>
-<span><span class="co">##     mean_absolute_error: 0.089</span></span>
-<span><span class="co">##     categorical_accuracy: 0.9219</span></span>
-<span><span class="co">##   Evaluation metrics on test data:</span></span>
-<span><span class="co">##     loss: 0.8386</span></span>
-<span><span class="co">##     accuracy: 0.5038</span></span>
-<span><span class="co">##     mean_absolute_error: 0.2024</span></span>
-<span><span class="co">##     categorical_accuracy: 0.5038 </span></span>
-<span><span class="co">## Project: ToyExample</span></span></code></pre>
 <p>Since this is a ‘toy’ example, results are not very accurate. For a
 real example of a well trained model, see the <a href="realModelExample.html">Performance of a real model: deconvolution
 of colorectal cancer samples</a> vignette.</p>
@@ -858,26 +562,26 @@ of colorectal cancer samples</a> vignette.</p>
 <code>on.the.fly</code> argument<a class="anchor" aria-label="anchor" href="#on-the-fly-argument"></a>
 </h4>
 <p>The <code>on.the.fly</code> argument of
-<code>trainDigitalDLSorterModel</code> allows generating pseudo-bulk
-samples ‘on the fly’. It means it is possible to skip the simulation of
-pseudo-bulk samples performed by the <code>simBulkProfiles</code>
-function, and create samples at the same time as DNN model is being
-trained. Of course, runtimes during training may increase, but data is
-not loaded into RAM or stored in large HDF5 files. To use this
-functionality, it is only necessary to set
-<code>on.the.fly = TRUE</code> as follows:</p>
-<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDigitalDLSorterModel.html">trainDigitalDLSorterModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, on.the.fly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code>trainDigitalDLSorterModel</code> allows generating pseudobulk
+samples ‘on the fly’. It means that it is possible to skip the
+simulation of pseudobulk samples performed by the
+<code>simBulkProfiles</code> function, and create the samples at the
+same time as the neural network is being trained. Of course, running
+times during training will increase, but data are not loaded into RAM or
+stored in large HDF5 files. To use this functionality, it is only
+necessary to set <code>on.the.fly = TRUE</code> as follows:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDDLSModel.html">trainDDLSModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, on.the.fly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
 <h3 id="eval">Evaluation of trained deconvolution model on test data:
 visualization of results<a class="anchor" aria-label="anchor" href="#eval"></a>
 </h3>
-<p>While metrics from prediction results on test data are informative
-about the performance of the model, a more comprehensive analysis is
-needed. For this task, <strong>digitalDLSorteR</strong> provides a set
-of visualization functions to represent a variety of error metrics in
+<p>While the prediction results on test data are informative about the
+performance of the model, a more comprehensive analysis is needed. For
+this task, <strong>digitalDLSorteR</strong> provides a set of
+visualization functions to represent a variety of error metrics in
 different ways.</p>
 <p>First, <code>calculateEvalMetrics</code> is needed to calculate the
 error metrics to be plotted. By default, absolute error
@@ -888,7 +592,7 @@ every sample of test data. Furthermore, they are all aggregated using
 their average values according to three criteria: each cell type
 (<code>CellType</code>), proportion bins of 0.1 (<code>pBin</code>) and
 number of different cell types (<code>nCellTypes</code>).</p>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateEvalMetrics.html">calculateEvalMetrics</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span><span class="op">)</span></span></code></pre></div>
 <p>Now, these results can be plotted by the following battery of
 functions.</p>
@@ -897,14 +601,14 @@ functions.</p>
 <code>distErrorPlot</code> and <code>barErrorPlot</code>: error
 distributions<a class="anchor" aria-label="anchor" href="#dist-err"></a>
 </h4>
-<p>The <code>distErrorPlot</code> function allows pltting how errors are
-distributed in different ways. Moreover, it allows to split the plots in
-different panels representing how errors are distributed by a given
-variable. Available variables are cell types (<code>CellType</code>) and
-number of cell types in samples (<code>nCellTypes</code>). In the
-following example, we will represent the overall errors by cell
-type.</p>
-<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<p>The <code>distErrorPlot</code> function allows plotting how errors
+are distributed in different ways. Moreover, it allows to split the
+plots in different panels representing how errors are distributed by a
+given variable. Available variables are cell types
+(<code>CellType</code>) and number of cell types in samples
+(<code>nCellTypes</code>). In the following example, we will represent
+the overall errors by cell type.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">DDLSToy</span>,</span>
 <span>  error <span class="op">=</span> <span class="st">"AbsErr"</span>,</span>
@@ -914,11 +618,10 @@ type.</p>
 <span>  type <span class="op">=</span> <span class="st">"boxplot"</span>,</span>
 <span>  size.point <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="newModels_files/figure-html/distErr1_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>Now, if you want to know if there is a bias towards a specific cell
 type, yo can use <code>facet.by</code> parameter to split plots by cell
 type:</p>
-<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">DDLSToy</span>,</span>
 <span>  error <span class="op">=</span> <span class="st">"AbsErr"</span>,</span>
@@ -927,10 +630,9 @@ type:</p>
 <span>  type <span class="op">=</span> <span class="st">"violinplot"</span>,</span>
 <span>  size.point <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="newModels_files/figure-html/distErr2_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>It is also possible to represent errors by number of different cell
 types in samples:</p>
-<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/distErrorPlot.html">distErrorPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">DDLSToy</span>,</span>
 <span>  error <span class="op">=</span> <span class="st">"AbsErr"</span>,</span>
@@ -939,12 +641,10 @@ types in samples:</p>
 <span>  type <span class="op">=</span> <span class="st">"boxplot"</span>,</span>
 <span>  size.point <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="newModels_files/figure-html/distErr3_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>Finally, with <code>barErrorPlot</code>, the mean error values with
 their corresponding dispersion ranges can be plotted as follows:</p>
-<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/barErrorPlot.html">barErrorPlot</a></span><span class="op">(</span><span class="va">DDLSToy</span>, error <span class="op">=</span> <span class="st">"MAE"</span>, by <span class="op">=</span> <span class="st">"CellType"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="newModels_files/figure-html/barError_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="corr-err">
@@ -953,24 +653,22 @@ and expected proportions<a class="anchor" aria-label="anchor" href="#corr-err"><
 </h4>
 <p>Ideally, the model should provide predictions that linearly match the
 actual proportions. Therefore, you can generate correlation plots to
-assess the performance. By default, the Pearson’s coefficient
+assess the model performance. By default, the Pearson’s coefficient
 correlation (<span class="math inline">\(R\)</span>) and the concordance
 correlation coefficient (<span class="math inline">\(CCC\)</span>) are
 shown as annotations on the plots. The latter is a more realistic
 measure as it decreases as the points move away from the identity.</p>
-<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">DDLSToy</span>,</span>
 <span>  color.by <span class="op">=</span> <span class="st">"CellType"</span>,</span>
 <span>  size.point <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  corr <span class="op">=</span> <span class="st">"both"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## `geom_smooth()` using formula 'y ~ x'</span></span></code></pre>
-<p><img src="newModels_files/figure-html/corr1_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>As in the previous case, plots can be split according to different
 variables. Now, let’s split the results by <code>CellType</code> and
 <code>nCellTypes</code> as an example:</p>
-<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">DDLSToy</span>,</span>
 <span>  color.by <span class="op">=</span> <span class="st">"CellType"</span>,</span>
@@ -979,9 +677,7 @@ variables. Now, let’s split the results by <code>CellType</code> and
 <span>  filter.sc <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  corr <span class="op">=</span> <span class="st">"both"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## `geom_smooth()` using formula 'y ~ x'</span></span></code></pre>
-<p><img src="newModels_files/figure-html/corr2_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">DDLSToy</span>,</span>
 <span>  color.by <span class="op">=</span> <span class="st">"CellType"</span>,</span>
@@ -989,8 +685,6 @@ variables. Now, let’s split the results by <code>CellType</code> and
 <span>  size.point <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  corr <span class="op">=</span> <span class="st">"both"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## `geom_smooth()` using formula 'y ~ x'</span></span></code></pre>
-<p><img src="newModels_files/figure-html/corr3_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="bland-err">
@@ -1006,7 +700,7 @@ which are defined as the mean difference plus and minus 1.96 times the
 standard deviation of the differences. 95% of the differences are
 expected to fall between these two limits, so the wider the margins, the
 worse the performance. It is also possible to display it in <span class="math inline">\(log_2\)</span> space.</p>
-<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">DDLSToy</span>, </span>
 <span>  color.by <span class="op">=</span> <span class="st">"CellType"</span>,</span>
@@ -1015,10 +709,9 @@ worse the performance. It is also possible to display it in <span class="math in
 <span>  filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  density <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="newModels_files/figure-html/bland1_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 <p>In addition, this function has the same behaviour as previous ones,
 as it is possible to split plots:</p>
-<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/blandAltmanLehPlot.html">blandAltmanLehPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">DDLSToy</span>, </span>
 <span>  color.by <span class="op">=</span> <span class="st">"nCellTypes"</span>,</span>
@@ -1028,24 +721,20 @@ as it is possible to split plots:</p>
 <span>  filter.sc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  density <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="newModels_files/figure-html/bland2_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="new-bulk">Loading and deconvolution of new bulk RNA-Seq samples<a class="anchor" aria-label="anchor" href="#new-bulk"></a>
 </h3>
-<p>Once the model has been evaluated, new bulk RNA-seq data can be
-loaded into the <code>DigitalDLSorter</code> object to be deconvoluted.
-Here, we are going to simulate bulk RNA-Seq data from a Poisson
-distribution:</p>
-<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">countsBulk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
-<span>  <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">100</span>, lambda <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">10</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>  nrow <span class="op">=</span> <span class="fl">40</span>, ncol <span class="op">=</span> <span class="fl">15</span>, </span>
-<span>  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Bulk"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>And load them into the object:</p>
-<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
+<p>Once the model has been evaluated, we can deconvolute the bulk
+RNA-seq data already loaded at the beginning of the pipeline. We could
+load new data using the <code>loadDeconvData</code> function, but we
+recommend doing it by using the <code>createDDLSobject</code> function,
+since it will take only those genes shared between the two kinds of
+data, so that only features relevant for the deconvolution process will
+be used. Anyhow, to load new data, the call function would be as
+follows:</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">seExample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html" class="external-link">SummarizedExperiment</a></span><span class="op">(</span>assay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">countsBulk</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -1054,25 +743,25 @@ distribution:</p>
 <span>  data <span class="op">=</span> <span class="va">seExample</span>, </span>
 <span>  name.data <span class="op">=</span> <span class="st">"Simulated.example"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Then, with the <code>deconvDigitalDLSorterObj</code> function, these
-new samples can be deconvoluted into the cell types considered by the
-model and predicted proportions can be represented by the
+<p>In our case, we can directly use the
+<code>deconvDigitalDLSorterObj</code> function, which will deconvolute
+the cell proportions of the cell types considered by the model. The
+predicted proportions can be represented by the
 <code>barPlotCellTypes</code> function. The cell composition matrix is
 stored in the <code>deconv.results</code> slot.</p>
-<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDigitalDLSorterObj.html">deconvDigitalDLSorterObj</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDDLSObj.html">deconvDDLSObj</a></span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">DDLSToy</span>, </span>
-<span>  name.data <span class="op">=</span> <span class="st">"Simulated.example"</span>,</span>
+<span>  name.data <span class="op">=</span> <span class="st">"Bulk.DT"</span>,</span>
 <span>  normalize <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  scaling <span class="op">=</span> <span class="st">"standarize"</span>,</span>
+<span>  scaling <span class="op">=</span> <span class="st">"standardize"</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">## plot results</span></span>
 <span><span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span></span>
-<span>  <span class="va">DDLSToy</span>, name.data <span class="op">=</span> <span class="st">"Simulated.example"</span>, </span>
+<span>  <span class="va">DDLSToy</span>, name.data <span class="op">=</span> <span class="st">"Bulk.DT"</span>, </span>
 <span>  rm.x.text <span class="op">=</span> <span class="cn">TRUE</span>, color.line <span class="op">=</span> <span class="st">"black"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="newModels_files/figure-html/resultsBarPlot_newModels-1.png" width="640" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="save">Saving <code>DigitalDLSorter</code> object and trained models<a class="anchor" aria-label="anchor" href="#save"></a>
@@ -1087,18 +776,18 @@ possible, <strong>digitalDLSorteR</strong> implements a
 <code>saveRDS</code> generic function that converts the keras model
 object into a list with network architecture and weights after training.
 These two pieces of information are the minimal part needed to perform
-new predictions. When the model is to be used, it is compiled back to a
-<code>keras.engine.sequential.Sequential</code> object.</p>
-<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
+new predictions. When the model is to be used, the model is compiled
+back to a <code>keras.engine.sequential.Sequential</code> object.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## this code will not be run</span></span>
 <span><span class="fu"><a href="../reference/saveRDS.html">saveRDS</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLSToy</span>, file <span class="op">=</span> <span class="st">"valid/path"</span><span class="op">)</span></span></code></pre></div>
 <p>However, the optimizer state is not saved in this way. To offer the
-possibility to save the complete model, <strong>digitalDLSorteR</strong>
-has the <code>saveTrainedModelAsH5</code> function to save on disk the
-DNN model, and <code>loadTrainedModelFromH5</code> to load-back models
-into <code>DigitalDLSorter</code> objects. Note that in this way just
-the keras model is saved as an HDF5 file.</p>
-<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+possibility to also save the optimizer, <strong>digitalDLSorteR</strong>
+offers the <code>saveTrainedModelAsH5</code> function to save on disk
+the whole neural network, and <code>loadTrainedModelFromH5</code> to
+load-back models into <code>DigitalDLSorter</code> objects. Note that in
+this way just the keras model is saved as an HDF5 file.</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## this code will not be run</span></span>
 <span><span class="fu"><a href="../reference/saveTrainedModelAsH5.html">saveTrainedModelAsH5</a></span><span class="op">(</span><span class="va">DDLSToy</span>, file.path <span class="op">=</span> <span class="st">"valid/path"</span><span class="op">)</span></span>
 <span><span class="va">DDLSToy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadTrainedModelFromH5.html">loadTrainedModelFromH5</a></span><span class="op">(</span><span class="va">DDLSToy</span><span class="op">)</span></span></code></pre></div>
@@ -1139,7 +828,7 @@ for signal extraction from single-cell
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

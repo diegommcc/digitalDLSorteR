@@ -6,8 +6,8 @@ object contains a matrix that determines the proportion of the different cell
 types that will compose the simulated pseudo-bulk samples. In addition, this
 object also contains other information relevant for the process. This
 function does not simulate pseudo-bulk samples, this task is performed by the
-simBulkProfiles or trainDigitalDLSorterModel
-functions (see Documentation)."><meta property="og:image" content="/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+simBulkProfiles or trainDDLSModel
+functions (see Documentation)."><meta property="og:image" content="https://diegommcc.github.io/digitalDLSorteR/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -25,7 +25,7 @@ functions (see Documentation)."><meta property="og:image" content="/logo.png"><!
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -89,7 +89,7 @@ object contains a matrix that determines the proportion of the different cell
 types that will compose the simulated pseudo-bulk samples. In addition, this
 object also contains other information relevant for the process. This
 function does not simulate pseudo-bulk samples, this task is performed by the
-<code><a href="simBulkProfiles.html">simBulkProfiles</a></code> or <code><a href="trainDigitalDLSorterModel.html">trainDigitalDLSorterModel</a></code>
+<code><a href="simBulkProfiles.html">simBulkProfiles</a></code> or <code><a href="trainDDLSModel.html">trainDDLSModel</a></code>
 functions (see Documentation).</p>
     </div>
 
@@ -101,11 +101,11 @@ functions (see Documentation).</p>
 <span>  <span class="va">prob.design</span>,</span>
 <span>  <span class="va">num.bulk.samples</span>,</span>
 <span>  n.cells <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  train.freq.cells <span class="op">=</span> <span class="fl">2</span><span class="op">/</span><span class="fl">3</span>,</span>
-<span>  train.freq.bulk <span class="op">=</span> <span class="fl">2</span><span class="op">/</span><span class="fl">3</span>,</span>
-<span>  proportions.train <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">5</span>, <span class="fl">20</span>, <span class="fl">15</span>, <span class="fl">35</span>, <span class="fl">15</span><span class="op">)</span>,</span>
-<span>  proportions.test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">5</span>, <span class="fl">20</span>, <span class="fl">15</span>, <span class="fl">35</span>, <span class="fl">15</span><span class="op">)</span>,</span>
-<span>  prob.zero <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>  train.freq.cells <span class="op">=</span> <span class="fl">3</span><span class="op">/</span><span class="fl">4</span>,</span>
+<span>  train.freq.bulk <span class="op">=</span> <span class="fl">3</span><span class="op">/</span><span class="fl">4</span>,</span>
+<span>  proportion.method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">5</span>, <span class="fl">20</span>, <span class="fl">15</span>, <span class="fl">35</span>, <span class="fl">15</span><span class="op">)</span>,</span>
+<span>  prob.sparsity <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  min.zero.prop <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  balanced.type.cells <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -168,7 +168,7 @@ pseudo-bulk samples (2/3 by default).</p></dd>
 (<code>num.bulk.samples</code>) used for the training set (2/3 by default).</p></dd>
 
 
-<dt>proportions.train</dt>
+<dt>proportion.method</dt>
 <dd><p>Vector of six integers that determines the
 proportions of bulk samples generated by the different methods (see Details
 and Torroja and Sanchez-Cabo, 2019. for more information). This vector
@@ -177,15 +177,21 @@ majority of random samples will be generated without using predefined
 ranges.</p></dd>
 
 
-<dt>proportions.test</dt>
-<dd><p><code>proportions.train</code> for test samples.</p></dd>
+<dt>prob.sparsity</dt>
+<dd><p>It only affects the proportions generated by the first
+method (Dirichlet distribution). It determines the probability of having
+missing cell types in each simulated spot, as opposed to a mixture of all
+cell types. A higher value for this parameter will result in more sparse
+simulated samples.</p></dd>
 
 
-<dt>prob.zero</dt>
-<dd><p>Probability of producing cell type proportions equal to
-zero. It is a vector of six elements corresponding to the six methods of
-producing cell type proportions (see <code>proportions.train</code> for more
-details).</p></dd>
+<dt>min.zero.prop</dt>
+<dd><p>This parameter controls the minimum number of cell types
+that will be absent in each simulated spot. If <code>NULL</code> (by default),
+this value will be half of the total number of different cell types, but
+increasing it will result in more spots composed of fewer cell types. This
+helps to create more sparse proportions and cover a wider range of
+situations during model training.</p></dd>
 
 
 <dt>balanced.type.cells</dt>
@@ -274,11 +280,22 @@ data. Frontiers in Genetics 10, 978. doi: <a href="https://doi.org/10.3389/fgene
 <span class="r-in"><span>    Gene_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="loadSCProfiles.html">loadSCProfiles</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  single.cell.data <span class="op">=</span> <span class="va">sce</span>,</span></span>
-<span class="r-in"><span>  cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span></span>
-<span class="r-in"><span>  gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span></span></span>
+<span class="r-in"><span><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="createDDLSobject.html">createDDLSobject</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  sc.data <span class="op">=</span> <span class="va">sce</span>,</span></span>
+<span class="r-in"><span>  sc.cell.ID.column <span class="op">=</span> <span class="st">"Cell_ID"</span>,</span></span>
+<span class="r-in"><span>  sc.gene.ID.column <span class="op">=</span> <span class="st">"Gene_ID"</span>,</span></span>
+<span class="r-in"><span>  sc.filt.genes.cluster <span class="op">=</span> <span class="cn">FALSE</span>, </span></span>
+<span class="r-in"><span>  sc.log.FC <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> === Bulk RNA-seq data not provided</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> === Processing single-cell data</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       - Filtering features:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>          - Selected features: 15</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>          - Discarded features: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> === No mitochondrial genes were found by using ^mt- as regrex</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> === Final number of dimensions for further analyses: 15</span>
 <span class="r-in"><span><span class="va">probMatrixValid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  Cell_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CellType"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">30</span><span class="op">)</span>,</span></span>
@@ -302,10 +319,10 @@ data. Frontiers in Genetics 10, 978. doi: <a href="https://doi.org/10.3389/fgene
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     - CellType1: 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     - CellType2: 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> === Probability matrix for training data:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     - Bulk RNA-Seq samples: 7</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     - Bulk RNA-Seq samples: 8</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     - Cell types: 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> === Probability matrix for test data:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     - Bulk RNA-Seq samples: 3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     - Bulk RNA-Seq samples: 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     - Cell types: 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> DONE</span>
 <span class="r-in"><span></span></span>
@@ -323,7 +340,7 @@ data. Frontiers in Genetics 10, 978. doi: <a href="https://doi.org/10.3389/fgene
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
