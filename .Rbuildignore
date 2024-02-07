@@ -15,3 +15,8 @@ cran-comments.md
 __pycache__
 ^vignettes/hdf5Backend\.Rmd$
 ^vignettes/kerasIssues\.Rmd$
+^vignettes/pretrainedModels\.Rmd$
+^vignettes/realModelExample\.Rmd$
+^vignettes/pretrainedModels\.Rmd\.orig$
+^vignettes/realModelExample\.Rmd\.orig$
+^vignettes/.*\.png

@@ -939,9 +939,9 @@ NULL
       }
       list.data[[1]] <- .useH5backend(
         counts = list.data[[1]], 
-        file.backend = HDF5Array::getHDF5DumpFile(for.use = TRUE),
+        file.backend = HDF5Array::getHDF5DumpFile(),
         compression.level = compression.level,
-        group = HDF5Array::getHDF5DumpName(for.use = TRUE),
+        group = HDF5Array::getHDF5DumpName(),
         # verbose = verbose
       ) 
     }
