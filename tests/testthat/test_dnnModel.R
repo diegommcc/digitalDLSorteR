@@ -619,14 +619,14 @@ test_that(
 )
 
 ################################################################################
-######################## deconvDigitalDLSorter function ########################
+######################## deconvDDLSObj function ########################
 ################################################################################
 
 # deconvolution of new samples using pre-trained models --> this functionallity
 # cannot be checked because pre-trained models are allocated in an external 
 # repository (github). In any case, it is going to be checked by random models
 test_that(
-  desc = "deconvDigitalDLSorter: deconvolution of new samples with pre-trained models", 
+  desc = "deconvDDLSObj: deconvolution of new samples with pre-trained models", 
   code = {
     probMatrixValid <- data.frame(
       Cell_Type = paste0("CellType", seq(4)),
@@ -656,7 +656,7 @@ test_that(
     )
     # incorrect model
     expect_error(
-      deconvDigitalDLSorter(
+      deconvDDLSPretrained(
         data = countsBulk,
         model = "no.existent.model",
         verbose = FALSE
@@ -664,7 +664,7 @@ test_that(
       regexp = "'model' is not an object of DigitalDLSorterDNN class"
     )
     # generate results
-    resultsBreastGen <- deconvDigitalDLSorter(
+    resultsBreastGen <- deconvDDLSPretrained(
       data = countsBulk,
       model = deconv.model,
       verbose = FALSE
@@ -673,7 +673,7 @@ test_that(
     # using simplify arguments
     # cannot use both argument at the same time
     expect_error(
-      deconvDigitalDLSorter(
+      deconvDDLSPretrained(
         data = countsBulk,
         model = deconv.model,
         simplify.majority = list(c("CellType2", "CellType4"), 
@@ -686,7 +686,7 @@ test_that(
       ), regexp = "Only one type of simplification can be selected"
     )
     # simplify.set
-    resSimSet <- deconvDigitalDLSorter(
+    resSimSet <- deconvDDLSPretrained(
       data = countsBulk,
       model = deconv.model,
       simplify.set = list(
@@ -698,7 +698,7 @@ test_that(
     expect_true(any(colnames(resSimSet) %in% c("CellTypesNew", "CellTypesNew2")))
     expect_true(ncol(resSimSet) == 2)
     # simplify.majority
-    resSimMaj <- deconvDigitalDLSorter(
+    resSimMaj <- deconvDDLSPretrained(
       data = countsBulk,
       model = deconv.model,
       simplify.majority = list(c("CellType2", "CellType4"), 
@@ -842,7 +842,7 @@ test_that(
       nrow = 40, ncol = 15, 
       dimnames = list(paste0("Gene", seq(40)), paste0("Bulk", seq(15)))
     )
-    resultsGen <- deconvDigitalDLSorter(
+    resultsGen <- deconvDDLSPretrained(
       data = countsBulk,
       model = deconv.model,
       verbose = FALSE

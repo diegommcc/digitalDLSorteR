@@ -13,8 +13,8 @@ plotHeatmapGradsAgg(
 )
 }
 \arguments{
-\item{object}{\code{\linkS4class{SpatialDDLS}} object with a
-\code{\linkS4class{DeconvDLModel}} object containing gradients in the
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object with a
+\code{\linkS4class{DigitalDLSorterDNN}} object containing gradients in the
 \code{interpret.gradients} slot.}
 
 \item{method}{Method to calculate gradients with respect to input features.
@@ -55,33 +55,39 @@ sce <- SingleCellExperiment::SingleCellExperiment(
     Gene_ID = paste0("Gene", seq(15))
   )
 )
-SDDLS <- createSpatialDDLSobject(
+DDLS <- createDDLSobject(
   sc.data = sce,
   sc.cell.ID.column = "Cell_ID",
   sc.gene.ID.column = "Gene_ID",
   sc.filt.genes.cluster = FALSE
 )
-SDDLS <- genMixedCellProp(
-  object = SDDLS,
+prop.design <- colData(sce) \%>\% as.data.frame() \%>\%
+  group_by(Cell_Type) \%>\% summarize(Total = n()) \%>\%
+  mutate(
+    Prop = (Total / sum(Total)) * 100,
+    from = Prop * 0.5,
+    to = ifelse((Prop * 1.5) > 100, 100, Prop * 1.5),
+    Prop = NULL, Total = NULL
+  )
+DDLS <- generateBulkCellMatrix(
+  object = DDLS,
   cell.ID.column = "Cell_ID",
   cell.type.column = "Cell_Type",
-  num.sim.spots = 50,
-  train.freq.cells = 2/3,
-  train.freq.spots = 2/3,
+  num.bulk.samples = 50,
   verbose = TRUE
 )
-SDDLS <- simMixedProfiles(SDDLS)
-SDDLS <- trainDeconvModel(
-  object = SDDLS,
+DDLS <- simBulkProfiles(DDLS)
+DDLS <- trainDDLSModel(
+  object = DDLS,
   batch.size = 12,
   num.epochs = 5
 )
 ## calculating gradients
-SDDLS <- interGradientsDL(SDDLS)
-plotHeatmapGradsAgg(SDDLS, top.n.genes = 2)
+DDLS <- interGradientsDL(DDLS)
+plotHeatmapGradsAgg(DDLS, top.n.genes = 2)
 }
   
 }
 \seealso{
-\code{\link{interGradientsDL}} \code{\link{trainDeconvModel}}
+\code{\link{interGradientsDL}} \code{\link{trainDDLSModel}}
 }

@@ -27,7 +27,7 @@ bibentry(
 bibentry(
   bibtype      = "Article",
   title        = "{{S}aptialDDLS: an {R} package to deconvolute spatial transcriptomics data using neural networks}",
-  author       = c("Diego Mañanes", "Inés Rivero-García", "Carlos Relaño", "Miguel Torres", "David Sancho", "Daniel Jimenez-Carretero", "Carlos Torroja", Fatima Sanchez-Cabo"),
+  author       = c("Diego Mañanes", "Inés Rivero-García", "Carlos Relaño", "Miguel Torres", "David Sancho", "Daniel Jimenez-Carretero", "Carlos Torroja", "Fatima Sanchez-Cabo"),
   journal      = "Bioinformatics",
   year         = "2024",
   volume       = "40",

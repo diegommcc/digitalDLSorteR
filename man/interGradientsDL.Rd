@@ -14,9 +14,9 @@ interGradientsDL(
 )
 }
 \arguments{
-\item{object}{\code{\linkS4class{SpatialDDLS}} object containing a trained
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object containing a trained
 deconvolution model (\code{trained.model} slot) and pure mixed
-transcriptional profiles (\code{mixed.profiles} slot).}
+transcriptional profiles (\code{bulk.simul} slot).}
 
 \item{method}{Method to calculate gradients with respect to inputs. It can be
 \code{'class'} (gradients of predicted classes w.r.t. inputs),
@@ -41,7 +41,7 @@ default).}
 }
 \value{
 Object containing gradients in the \code{interpret.gradients} slot of
-the \code{DeconvDLModel} object (\code{trained.model} slot).
+the \code{DigitalDLSorterDNN} object (\code{trained.model} slot).
 }
 \description{
 This function enables users to gain insights into the interpretability of the
@@ -58,7 +58,7 @@ a single cell type. Consequently, these numbers can be interpreted as the
 extent to which each feature is being used to predict each cell type
 proportion. Gradients are calculated at the sample level for each gene, but
 only mean gradients by cell type are reported. For additional details, see
-Mañanes et al., 2023.
+Mañanes et al., 2024.
 }
 \examples{
 \donttest{
@@ -79,32 +79,38 @@ sce <- SingleCellExperiment::SingleCellExperiment(
     Gene_ID = paste0("Gene", seq(15))
   )
 )
-SDDLS <- createSpatialDDLSobject(
+DDLS <- createDDLSobject(
   sc.data = sce,
   sc.cell.ID.column = "Cell_ID",
   sc.gene.ID.column = "Gene_ID",
   sc.filt.genes.cluster = FALSE
 )
-SDDLS <- genMixedCellProp(
-  object = SDDLS,
+prop.design <- colData(sce) \%>\% as.data.frame() \%>\%
+  group_by(Cell_Type) \%>\% summarize(Total = n()) \%>\%
+  mutate(
+    Prop = (Total / sum(Total)) * 100,
+    from = Prop * 0.5,
+    to = ifelse((Prop * 1.5) > 100, 100, Prop * 1.5),
+    Prop = NULL, Total = NULL
+  )
+DDLS <- generateBulkCellMatrix(
+  object = DDLS,
   cell.ID.column = "Cell_ID",
   cell.type.column = "Cell_Type",
-  num.sim.spots = 50,
-  train.freq.cells = 2/3,
-  train.freq.spots = 2/3,
+  num.bulk.samples = 50,
   verbose = TRUE
 )
-SDDLS <- simMixedProfiles(SDDLS)
-SDDLS <- trainDeconvModel(
-  object = SDDLS,
+DDLS <- simBulkProfiles(DDLS)
+DDLS <- trainDDLSModel(
+  object = DDLS,
   batch.size = 12,
   num.epochs = 5
 )
 ## calculating gradients
-SDDLS <- interGradientsDL(SDDLS)
+DDLS <- interGradientsDL(DDLS)
 }
   
 }
 \seealso{
-\code{\link{deconvSpatialDDLS}} \code{\link{plotTrainingHistory}}
+\code{\link{deconvDDLSObj}} \code{\link{plotTrainingHistory}}
 }

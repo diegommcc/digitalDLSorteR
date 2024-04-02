@@ -100,7 +100,7 @@ barPlotCellTypes(
 
 Let's take 40 random samples just to improve the visualization: 
 
-```{r resultsDeconvTCGA_pretrainedModels, fig.height=5, fig.width=12}
+```{r resultsDeconvTCGA_pretrainedModels_2, fig.height=5, fig.width=12}
 set.seed(123)
 barPlotCellTypes(
   deconvResults[sample(1:nrow(deconvResults), size = 40), ], 

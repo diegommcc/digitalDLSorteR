@@ -162,7 +162,7 @@ barPlotCellTypes(
 
 Now, we can represent the cell proportions of every cell type considered by the model separating healthy and tumoral samples. We are also going to filter out samples considered metastatic or recurrent (check the `TCGA.colon.se` object) because these groups are composed of only 1 sample: 
 
-```{r, fig.height=12, fig.width=18}
+```{r boxplotResults_realModelWorkflow, fig.height=12, fig.width=18}
 data.frame(
   Sample = rownames(resDeconvTCGA),
   TypeSample = colData(TCGA.colon.se)[["Tumor_Type"]]
@@ -180,7 +180,7 @@ data.frame(
 
 In general, the results seem to be in line with what it is known: tumoral samples show a huge immune infiltration, whereas other cell types such as epithelial cells are displaced. We can also specifically inspect the predicted proportions of enterocytes, tumor, epithelial, and stromal cells: 
 
-```{r boxplotsTypes_realModelExample, fig.width=7, fig.height=5}
+```{r boxplotResults_2_realModelWorkflow, fig.width=7, fig.height=5}
 data.frame(
   Sample = rownames(resDeconvTCGA),
   CRC = resDeconvTCGA[, "Epithelial_cancer_cells"],
@@ -222,7 +222,7 @@ sapply(
 
 In addition, **digitalDLSorteR** also implements a function to plot the top gradients per cell type as a heatmap: 
 
-```{r, fig.height=10, fig.width=10}
+```{r heatmapGradients_realModelWorkflow, fig.height=10, fig.width=10}
 hh <- plotHeatmapGradsAgg(DDLS.colon, top.n.genes = 4, method = "class")
 hh$Absolute
 ```

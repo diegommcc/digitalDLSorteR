@@ -7,8 +7,8 @@
 topGradientsCellType(object, method = "class", top.n.genes = 15)
 }
 \arguments{
-\item{object}{\code{\linkS4class{SpatialDDLS}} object with a
-\code{\linkS4class{DeconvDLModel}} object containing gradients in the
+\item{object}{\code{\linkS4class{DigitalDLSorter}} object with a
+\code{\linkS4class{DigitalDLSorterDNN}} object containing gradients in the
 \code{interpret.gradients} slot.}
 
 \item{method}{Method gradients were calculated by. It can be either
@@ -23,8 +23,7 @@ gradients per cell type.
 }
 \description{
 Retrieve feature names with the largest/smallest gradients per cell
-type. These genes can be used to visualize their spatial expression
-in the ST data (\code{plotGeneSpatial} function) or to plot the calculated
+type. These genes can be used to plot the calculated
 gradients as a heatmap (\code{plotGradHeatmap} function).
 }
 \examples{
@@ -46,34 +45,40 @@ sce <- SingleCellExperiment::SingleCellExperiment(
     Gene_ID = paste0("Gene", seq(15))
   )
 )
-SDDLS <- createSpatialDDLSobject(
+DDLS <- createDDLSobject(
   sc.data = sce,
   sc.cell.ID.column = "Cell_ID",
   sc.gene.ID.column = "Gene_ID",
   sc.filt.genes.cluster = FALSE
 )
-SDDLS <- genMixedCellProp(
-  object = SDDLS,
+prop.design <- colData(sce) \%>\% as.data.frame() \%>\%
+  group_by(Cell_Type) \%>\% summarize(Total = n()) \%>\%
+  mutate(
+    Prop = (Total / sum(Total)) * 100,
+    from = Prop * 0.5,
+    to = ifelse((Prop * 1.5) > 100, 100, Prop * 1.5),
+    Prop = NULL, Total = NULL
+  )
+DDLS <- generateBulkCellMatrix(
+  object = DDLS,
   cell.ID.column = "Cell_ID",
   cell.type.column = "Cell_Type",
-  num.sim.spots = 50,
-  train.freq.cells = 2/3,
-  train.freq.spots = 2/3,
+  num.bulk.samples = 50,
   verbose = TRUE
 )
-SDDLS <- simMixedProfiles(SDDLS)
-SDDLS <- trainDeconvModel(
-  object = SDDLS,
+DDLS <- simBulkProfiles(DDLS)
+DDLS <- trainDDLSModel(
+  object = DDLS,
   batch.size = 12,
   num.epochs = 5
 )
 ## calculating gradients
-SDDLS <- interGradientsDL(SDDLS)
-listGradients <- topGradientsCellType(SDDLS)
+DDLS <- interGradientsDL(DDLS)
+listGradients <- topGradientsCellType(DDLS)
 lapply(listGradients, head, n = 5)
 }
   
 }
 \seealso{
-\code{\link{interGradientsDL}} \code{\link{trainDeconvModel}}
+\code{\link{interGradientsDL}} \code{\link{trainDDLSModel}}
 }

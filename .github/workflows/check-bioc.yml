@@ -52,7 +52,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: ubuntu-release, r: 'release', bioc: '3.17', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest", python: '3.8', tf: 'default' }
+          - { os: ubuntu-latest, r: 'release', bioc: '3.19', cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest", python: '3.8', tf: 'default' }
           - { os: windows-release, r: 'release', bioc: '3.17', tf: 'default' }
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -123,6 +123,11 @@ jobs:
           sysreqs=$(Rscript -e 'cat("apt-get update -y && apt-get install -y", paste(gsub("apt-get install -y ", "", remotes::system_requirements("ubuntu", "20.04")), collapse = " "))')
           echo $sysreqs
           sudo -s eval "$sysreqs"
+          
+      - name: Install venv python
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install python3-venv
 
       - name: Install macOS system dependencies
         if: matrix.config.os == 'macOS-latest'
@@ -234,6 +239,12 @@ jobs:
         if: github.ref == 'refs/heads/master' && env.run_covr == 'true' && runner.os == 'Linux'
         run: |
           remotes::install_cran("covr")
+        shell: Rscript {0}
+        
+      - name: Install RColorBrewer
+        if: github.ref == 'refs/heads/main' && env.run_covr == 'true' && runner.os == 'Linux'
+        run: |
+          remotes::install_cran("RColorBrewer")
         shell: Rscript {0}
 
       - name: Install pkgdown

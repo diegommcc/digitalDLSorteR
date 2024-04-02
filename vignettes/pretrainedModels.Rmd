@@ -13,12 +13,7 @@ geometry: margin=3cm
 fontsize: 12pt
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  echo = TRUE, dpi = 75, fig.width = 8, fig.height = 5.5, 
-  base.dir = ".", fig.path = "", fig.align = "center"
-)
-```
+
 
 **digitalDLSorteR** offers the possibility to use pre-trained context-specific deconvolution models included in the **digitalDLSorteRmodels** R package (<https://github.com/diegommcc/digitalDLSorteRmodels>) to deconvolute new bulk RNA-seq samples from the same biological environment. This is the simplest way to use **digitalDLSorteR** and only requires loading into R a raw bulk RNA-seq matrix with genes as rows (annotated as _SYMBOL_) and samples as columns, and selecting the desired model. This is done by the `deconvDDLSPretrained` function, which normalizes the new samples to counts per million (CPMs) by default, so this matrix must be provided as raw counts. Afterwards, estimated cell composition of each sample can be explored as a bar chart using the `barPlotCellTypes` function.
 
@@ -47,8 +42,20 @@ There are two deconvolution models for breast cancer samples that differ in the 
 
 The following code chunk shows an example using the `DDLS.colon.lee` model and data from TCGA loaded from `digitalDLSorteRdata`:
 
-```{r deconvolutingTCGA, message=FALSE}
+
+```r
 devtools::load_all("~/Documents/Rpackages/digitalDLSorteR")
+```
+
+```
+## Warning in env_get_list(ns, names(active_bindings)[!active_bindings]): internal error -3 in R_decompress1
+```
+
+```
+## Error in env_get_list(ns, names(active_bindings)[!active_bindings]): lazy-load database '/home/dmananesc/R/x86_64-pc-linux-gnu-library/4.3/digitalDLSorteR/R/digitalDLSorteR.rdb' is corrupt
+```
+
+```r
 suppressMessages(library(digitalDLSorteR))
 # to load pre-trained models
 if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
@@ -67,40 +74,86 @@ data("TCGA.colon.se")
 
 `DDLS.colon.lee` is a `DigitalDLSorterDNN` object containing the trained model as well as specific information about it, such as cell types considered, number of epochs used during training, etc. 
 
-```{r}
+
+```r
 DDLS.colon.lee
 ```
 
+```
+## Trained model: 60 epochs
+##   Training metrics (last epoch):
+##     loss: 0.113
+##     accuracy: 0.6851
+##     mean_absolute_error: 0.0131
+##     categorical_accuracy: 0.6851
+##   Evaluation metrics on test data:
+##     loss: 0.0979
+##     accuracy: 0.7353
+##     mean_absolute_error: 0.0117
+##     categorical_accuracy: 0.7353
+##   Performance evaluation over each sample: MAE MSE
+```
 
-```{r}
+
+
+```r
 cell.types(DDLS.colon.lee) %>% paste0(collapse = " / ")
+```
+
+```
+## [1] "Anti-inflammatory_MFs / B cells / CD4+ T cells / CD8+ T cells / ECs / ECs_tumor / Enterocytes / Epithelial cells / Epithelial_cancer_cells / MFs_SPP1+ / Mast cells / Myofibroblasts / NK cells / Pericytes / Plasma_cells / Pro-inflammatory_MFs / Regulatory T cells / Smooth muscle cells / Stromal cells / T follicular helper cells / cDC / gamma delta T cells"
 ```
 
 Now, we can use it to deconvolute `TCGA.colon.se` samples as follows:
 
-```{r, warning = FALSE}
+
+```r
 # deconvolution
 deconvResults <- deconvDDLSPretrained(
   data = TCGA.colon.se,
   model = DDLS.colon.lee,
   normalize = TRUE
 )
+```
+
+```
+## Error in deconvDDLSPretrained(data = TCGA.colon.se, model = DDLS.colon.lee, : could not find function "deconvDDLSPretrained"
+```
+
+```r
 rownames(deconvResults) <- paste("Sample", seq(nrow(deconvResults)), sep = "_")
+```
+
+```
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'nrow': object 'deconvResults' not found
+```
+
+```r
 head(deconvResults)
+```
+
+```
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'head': object 'deconvResults' not found
 ```
 
 `deconvDDLSPretrained` returns a data frame with samples as rows ($k$) and cell types considered by the model as columns ($j$). Each entry corresponds to the proportion of cell type $k$ in sample $i$. To visually evaluate these results using a bar chart, you can use the `barplotCellTypes` function as follows:
 
-```{r resultsDeconvTCGA_pretrainedModels, fig.height=5, fig.width=12}
+
+```r
 barPlotCellTypes(
   deconvResults, 
   title = "Results of deconvolution of TCGA colon samples", rm.x.text = T
 )
 ```
 
+```
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'data' in selecting a method for function 'barPlotCellTypes': object 'deconvResults' not found
+```
+
 Let's take 40 random samples just to improve the visualization: 
 
-```{r resultsDeconvTCGA_pretrainedModels, fig.height=5, fig.width=12}
+
+```r
 set.seed(123)
 barPlotCellTypes(
   deconvResults[sample(1:nrow(deconvResults), size = 40), ], 
@@ -108,9 +161,14 @@ barPlotCellTypes(
 )
 ```
 
+```
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'data' in selecting a method for function 'barPlotCellTypes': object 'deconvResults' not found
+```
+
 Finally, `deconvDDLSPretrained` also offers two parameters in case you want to simplify the results by aggregating cell proportions of similar cell types: `simplify.set` and `simplify.majority`. For instance, we can summarize different CD4+ T cell subtypes into a unique label by using the `simplify.set` parameter as follows:
 
-```{r resultsDeconvTCGASimpl_pretrainedModels, warning = FALSE}
+
+```r
 # deconvolution
 deconvResultsSum <- deconvDDLSPretrained(
   data = TCGA.colon.se,
@@ -125,12 +183,30 @@ deconvResultsSum <- deconvDDLSPretrained(
     )
   )
 )
+```
+
+```
+## Error in deconvDDLSPretrained(data = TCGA.colon.se, model = DDLS.colon.lee, : could not find function "deconvDDLSPretrained"
+```
+
+```r
 rownames(deconvResultsSum) <- paste("Sample", seq(nrow(deconvResults)), sep = "_")
+```
+
+```
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'nrow': object 'deconvResults' not found
+```
+
+```r
 set.seed(123)
 barPlotCellTypes(
   deconvResultsSum[sample(1:nrow(deconvResultsSum), size = 40), ], 
   title = "Results of deconvolution of TCGA colon samples", rm.x.text = T
 )
+```
+
+```
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'data' in selecting a method for function 'barPlotCellTypes': object 'deconvResultsSum' not found
 ```
 
 On the other hand, `simplify.majority` does not create new classes but sums the proportions to the most abundant cell type from those provided in each sample. See the documentation for more details.

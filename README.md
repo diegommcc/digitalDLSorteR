@@ -76,10 +76,10 @@ Please, if you use **digitalDLSorteR** in your research, cite [Torroja and Sanch
   <a href='https://doi.org/10.1038/ncomms15081'>doi:10.1038/ncomms15081</a>
   </td></tr>
 
-  <tr><td>Li, H., Courtois, E. T., Sengupta, D., Tan, Y., Chen, K. H., Goh, J. J. L., et al. (2017). Reference component analysis of single-cell transcriptomes elucidates cellular heterogeneity in human colorectal tumors.
+  <tr><td>Lee, HO., Hong, Y., Etlioglu, H.E. et al. (2020). Lineage-dependent gene expression programs influence the immune landscape of colorectal cancer.
   <i>Nat. Genet.</i>
-  <b>49</b> (5), 708-718
-  <a href='https://doi.org/10.1038/ng.3818'>doi:10.1038/ng.3818</a>
+  <b>52</b> 594-603
+  <a href='https://doi.org/10.1038/s41588-020-0636-z'>doi:10.1038/s41588-020-0636-z</a>
   </td></tr>
 
   <tr><td>Torroja, C. and Sánchez-Cabo, F. (2019). digitalDLSorter: A Deep Learning algorithm to quantify immune cell populations based on scRNA-seq data.
@@ -88,7 +88,7 @@ Please, if you use **digitalDLSorteR** in your research, cite [Torroja and Sanch
   <a href='https://doi.org/10.3389/fgene.2019.00978'>doi:10.3389/fgene.2019.00978</a>
   </td></tr>
   
-    <tr><td> Mañanes, D., Rivero-García, I., Relaño, C., Jimenez-Carretero, D., Torres, M., Sancho, D., Torroja, C. and Sánchez-Cabo, F. (2024). SpatialDDLS: An R package to deconvolute spatial transcriptomics data using neural networks.
+  <tr><td> Mañanes, D., Rivero-García, I., Relaño, C., Jimenez-Carretero, D., Torres, M., Sancho, D., Torroja, C. and Sánchez-Cabo, F. (2024). SpatialDDLS: An R package to deconvolute spatial transcriptomics data using neural networks.
   <i>Bioinformatics</i>
    <b>40</b> 2
   <a href='https://doi.org/10.1093/bioinformatics/btae072'>doi:10.1093/bioinformatics/btae072</a>
