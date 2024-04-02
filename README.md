@@ -60,7 +60,7 @@ Once **digitalDLSorteRmodels** is loaded, the pre-trained models are available. 
 ## Final remarks
 
 * Regarding pre-trained models, if you generate new models and want to make them available through the **digitalDLSorteRmodels** R package for other users to use them, contact with us!
-* We provide some pre-trained models that take into account genes that seem to be relevant for these environmental conditions. However, as these genes might be different depending on the bulk RNA-seq to be deconvoluted, we strongly recommend creating new models through the workflow explained [here](). 
+* We provide some pre-trained models that take into account genes that seem to be relevant for these environmental conditions. However, as these genes might be different depending on the bulk RNA-seq to be deconvoluted, we strongly recommend creating new models through the workflow explained [here](https://diegommcc.github.io/digitalDLSorteR/articles/realModelWorkflow.html). 
 * Contributions and suggestions are welcome!
 
 ## Citation 

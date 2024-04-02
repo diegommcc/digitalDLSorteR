@@ -1280,7 +1280,7 @@ setMethod(
 #' 
 #' @rdname barPlotCellTypes
 #'
-#' @seealso \code{\link{deconvDigitalDLSorter}}
+#' @seealso \code{\link{deconvDDLSPretrained}}
 #'   \code{\link{deconvDDLSObj}}
 #'   
 setGeneric(
@@ -1386,7 +1386,7 @@ setMethod(
     theme = NULL
   ) {
     if (is.null(colnames(data))) {
-      stop("'data' must have colnames (corresponding cell types). Please run deconvDigitalDLSorter")
+      stop("'data' must have colnames (corresponding cell types). Please run deconvDDLSPretrained")
     }
     plot <- .barPlot(
       data = data,

@@ -16,7 +16,7 @@ fontsize: 12pt
 
 
 
-In this example, we are going to reproduce the pre-trained model `DDLS.colon.lee` available at the **digitalDLSorteRmodels** R package. It was trained on data from @Lee2020 ([GSE132465](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132465), [GSE132257](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132257) and [GSE144735](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144735)). The dataset consists of ~ 100,000 cells from a total of 31 patients including tumoral and healthy samples. These cells are divided into 22 cell types covering the main ones found in this kind of samples: Anti-inflammatory_MFs (macrophages), B cells, CD4+ T cells, CD8+ T cells, ECs (endothelial cells), ECs_tumor, Enterocytes, Epithelial cells, Epithelial_cancer_cells, MFs_SPP1+, Mast cells, Myofibroblasts, NK cells, Pericytes, Plasma_cells, Pro-inflammatory_MFs, Regulatory T cells, Smooth muscle cells, Stromal cells, T follicular helper cells, cDC (conventional dendritic cells), and gamma delta T cells. The expression matrix only contains 2,000 genes selected by **digitalDLSorteR** when the model was created to save time and RAM. Thus, in this example we will set the parameters related to gene filtering to zero. 
+In this example, we are going to reproduce the pre-trained model `DDLS.colon.lee` available at the **digitalDLSorteRmodels** R package. It was trained on data from @Lee2020 ([GSE132465](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132465), [GSE132257](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132257) and [GSE144735](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144735)), and consist of ~ 100,000 cells from a total of 31 patients including tumoral and healthy samples. These cells are divided into 22 cell types covering the main ones found in this kind of samples: `Anti-inflammatory_MFs` (macrophages), `B cells`, `CD4+ T cells`, `CD8+ T cells`, `ECs` (endothelial cells), `ECs_tumor`, `Enterocytes`, `Epithelial cells`, `Epithelial_cancer_cells`, `MFs_SPP1+`, `Mast cells`, `Myofibroblasts`, `NK cells`, `Pericytes`, `Plasma_cells`, `Pro-inflammatory_MFs`, `Regulatory T cells`, `Smooth muscle cells`, `Stromal cells`, `T follicular helper cells`, `cDC` (conventional dendritic cells), and `gamma delta T cells`. The expression matrix only contains 2,000 genes selected by **digitalDLSorteR** when the model was created to save time and RAM. Thus, in this example we will set the parameters related to gene filtering to zero. 
 
 
 
@@ -31,6 +31,8 @@ if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   remotes::install_github("diegommcc/digitalDLSorteRdata")
 }
 suppressMessages(library("digitalDLSorteRdata"))
+suppressMessages(library("dplyr"))
+suppressMessages(library("ggplot2"))
 ```
 
 ## Loading data
@@ -66,7 +68,59 @@ DDLS.colon <- createDDLSobject(
 ```
 
 ```
-## Error in eval(expr, envir, enclos): lazy-load database '/home/dmananesc/R/x86_64-pc-linux-gnu-library/4.3/digitalDLSorteR/R/digitalDLSorteR.rdb' is corrupt
+## === Processing bulk transcriptomics data
+```
+
+```
+##       - Removing 2568 genes without expression in any cell
+```
+
+```
+## 'as(<dgCMatrix>, "dgTMatrix")' is deprecated.
+## Use 'as(., "TsparseMatrix")' instead.
+## See help("Deprecated") and help("Matrix-deprecated").
+```
+
+```
+##       - Filtering features:
+```
+
+```
+##          - Selected features: 54918
+```
+
+```
+##          - Discarded features: 1599
+```
+
+```
+## 
+```
+
+```
+## === Processing single-cell data
+```
+
+```
+##       - Filtering features:
+```
+
+```
+##          - Selected features: 2000
+```
+
+```
+##          - Discarded features: 0
+```
+
+```
+## 
+## === No mitochondrial genes were found by using ^MT- as regrex
+```
+
+```
+## 
+## === Final number of dimensions for further analyses: 2000
 ```
 
 After loading the data, we have a `DigitalDLSorter` object with 2,000 genes and both the single-cell RNA-seq used as reference and the bulk RNA-seq data to be deconvoluted. 
@@ -77,7 +131,17 @@ DDLS.colon
 ```
 
 ```
-## Error in eval(expr, envir, enclos): object 'DDLS.colon' not found
+## An object of class DigitalDLSorter 
+## Real single-cell profiles:
+##   2000 features and 106364 cells
+##   rownames: BTBD11 MMP11 NBPF10 ... NBPF10 FBN1 PLTP SORCS2 
+##   colnames: SMC09-T_GGCGACTGTATATGGA SMC24-T_CTACACCAGAGTCTGG SMC17-T_ACCTTTACACCTCGTT ... SMC17-T_ACCTTTACACCTCGTT KUL21-T_TCAATCTCAAGTAGTA SMC18-T_GTCACGGTCTAACTTC SMC13T-A1_CAACCAACATTGAGCT 
+## Bulk samples to deconvolute:
+##   Bulk.DT bulk samples:
+##     2000 features and 521 samples
+##     rownames: RP11-452L6.7 RP11-43F13.4 FPR2 ... FPR2 COL6A3 GLIS2 COL12A1 
+##     colnames: X04b2bc19.944b.489f.9063.7a5d4a3dc92e fc0e5b6c.c3c9.4dd3.8517.521e39d245e3 eaa0315c.6737.4fa6.abb0.f54a13815be2 ... eaa0315c.6737.4fa6.abb0.f54a13815be2 a78806b2.44fe.4a2f.8b84.08ad54538342 X5590c0ff.7bb7.4cf0.b46b.cece01505f7f cea2c6b2.09a7.4a28.8d0a.41efa4d2fd44 
+## Project: Colon-Cancer-Project
 ```
 
 ## Generating cell composition matrix
@@ -99,7 +163,7 @@ prop.design <- single.cell.real(DDLS.colon)@colData %>% as.data.frame() %>%
 ```
 
 ```
-## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'as.data.frame': error in evaluating the argument 'object' in selecting a method for function 'single.cell.real': object 'DDLS.colon' not found
+## `summarise()` has grouped output by 'Patient'. You can override using the `.groups` argument.
 ```
 
 Then, we can generate the actual pseudobulk samples that will follow these cell proportions. In this case, we generate 10,000 pseudobulk samples (`num.bulk.samples`), although this number could be increased according to available computational resources. 
@@ -119,15 +183,108 @@ DDLS.colon <- generateBulkCellMatrix(
 ```
 
 ```
-## Warning in generateBulkCellMatrix(object = DDLS.colon, cell.ID.column = "Index", : restarting interrupted promise evaluation
+## 
+## === The number of bulk RNA-Seq samples that will be generated is equal to 10000
 ```
 
 ```
-## Warning in generateBulkCellMatrix(object = DDLS.colon, cell.ID.column = "Index", : internal error -3 in R_decompress1
+## 
+## === Training set cells by type:
 ```
 
 ```
-## Error in generateBulkCellMatrix(object = DDLS.colon, cell.ID.column = "Index", : lazy-load database '/home/dmananesc/R/x86_64-pc-linux-gnu-library/4.3/digitalDLSorteR/R/digitalDLSorteR.rdb' is corrupt
+##     - Anti-inflammatory_MFs: 501
+##     - B cells: 7336
+##     - CD4+ T cells: 10595
+##     - CD8+ T cells: 7570
+##     - cDC: 481
+##     - ECs: 874
+##     - ECs_tumor: 1398
+##     - Enterocytes: 920
+##     - Epithelial cells: 1411
+##     - Epithelial_cancer_cells: 19447
+##     - gamma delta T cells: 1459
+##     - Mast cells: 499
+##     - MFs_SPP1+: 4118
+##     - Myofibroblasts: 1789
+##     - NK cells: 1056
+##     - Pericytes: 677
+##     - Plasma_cells: 6259
+##     - Pro-inflammatory_MFs: 2342
+##     - Regulatory T cells: 4233
+##     - Smooth muscle cells: 614
+##     - Stromal cells: 5555
+##     - T follicular helper cells: 639
+```
+
+```
+## === Test set cells by type:
+```
+
+```
+##     - Anti-inflammatory_MFs: 155
+##     - B cells: 2456
+##     - CD4+ T cells: 3515
+##     - CD8+ T cells: 2583
+##     - cDC: 163
+##     - ECs: 336
+##     - ECs_tumor: 431
+##     - Enterocytes: 347
+##     - Epithelial cells: 439
+##     - Epithelial_cancer_cells: 6400
+##     - gamma delta T cells: 499
+##     - Mast cells: 175
+##     - MFs_SPP1+: 1406
+##     - Myofibroblasts: 592
+##     - NK cells: 325
+##     - Pericytes: 206
+##     - Plasma_cells: 2075
+##     - Pro-inflammatory_MFs: 761
+##     - Regulatory T cells: 1467
+##     - Smooth muscle cells: 191
+##     - Stromal cells: 1829
+##     - T follicular helper cells: 240
+```
+
+```
+## === Probability matrix for training data:
+```
+
+```
+##     - Bulk RNA-Seq samples: 7500
+##     - Cell types: 22
+```
+
+```
+## === Probability matrix for test data:
+```
+
+```
+##     - Bulk RNA-Seq samples: 2500
+##     - Cell types: 22
+```
+
+```
+## DONE
+```
+
+```
+## === Setting parallel environment to 2 thread(s)
+```
+
+```
+## 
+## === Generating train bulk samples:
+```
+
+```
+## 
+## === Generating test bulk samples:
+```
+
+```
+## 
+## DONE
 ```
 
 ## Neural network training
@@ -140,15 +297,8 @@ DDLS.colon <- trainDDLSModel(object = DDLS.colon, verbose = FALSE)
 ```
 
 ```
-## Warning: restarting interrupted promise evaluation
-```
-
-```
-## Warning: internal error -3 in R_decompress1
-```
-
-```
-## Error in eval(expr, envir, enclos): lazy-load database '/home/dmananesc/R/x86_64-pc-linux-gnu-library/4.3/digitalDLSorteR/R/digitalDLSorteR.rdb' is corrupt
+##  1/79 [..............................] - ETA: 9s - loss: 0.1212 - accuracy: 0.7500 - mean_absolute_error: 0.0119 - categorical_accuracy: 0.750066/79 [========================>.....] - ETA: 0s - loss: 0.1222 - accuracy: 0.6993 - mean_absolute_error: 0.0134 - categorical_accuracy: 0.699379/79 [==============================] - 0s 803us/step - loss: 0.1221 - accuracy: 0.7012 - mean_absolute_error: 0.0134 - categorical_accuracy: 0.7012
+## 79/79 [==============================] - 0s 810us/step - loss: 0.1221 - accuracy: 0.7012 - mean_absolute_error: 0.0134 - categorical_accuracy: 0.7012
 ```
 
 ## Evaluation of the model on test data
@@ -158,18 +308,6 @@ Once the model is trained, we can explore how well the model behaves on test sam
 
 ```r
 DDLS.colon <- calculateEvalMetrics(object = DDLS.colon)
-```
-
-```
-## Warning: restarting interrupted promise evaluation
-```
-
-```
-## Warning: internal error -3 in R_decompress1
-```
-
-```
-## Error in eval(expr, envir, enclos): lazy-load database '/home/dmananesc/R/x86_64-pc-linux-gnu-library/4.3/digitalDLSorteR/R/digitalDLSorteR.rdb' is corrupt
 ```
 
 **digitalDLSorteR** implements different functions to visualize the results and explore potential biases on the models. For this tutorial, we will check the correlation between expected and predicted proportions, but for a more detailed explanation about other visualization functions, check the Documentation. 
@@ -186,16 +324,13 @@ corrExpPredPlot(
 ```
 
 ```
-## Warning: restarting interrupted promise evaluation
+## `geom_smooth()` using formula = 'y ~ x'
 ```
 
-```
-## Warning: internal error -3 in R_decompress1
-```
-
-```
-## Error in eval(expr, envir, enclos): lazy-load database '/home/dmananesc/R/x86_64-pc-linux-gnu-library/4.3/digitalDLSorteR/R/digitalDLSorteR.rdb' is corrupt
-```
+<div class="figure" style="text-align: center">
+<img src="corr1_realModelWorkflow-1.png" alt="plot of chunk corr1_realModelWorkflow"  />
+<p class="caption">plot of chunk corr1_realModelWorkflow</p>
+</div>
 
 As it can be seen, the model is accurately predicting the cell proportions of pseudobulk samples from the test data, which means that it is detecting differential signals for each cell type. 
 
@@ -209,15 +344,7 @@ DDLS.colon <- deconvDDLSObj(object = DDLS.colon, verbose = FALSE)
 ```
 
 ```
-## Warning: restarting interrupted promise evaluation
-```
-
-```
-## Warning: internal error -3 in R_decompress1
-```
-
-```
-## Error in eval(expr, envir, enclos): lazy-load database '/home/dmananesc/R/x86_64-pc-linux-gnu-library/4.3/digitalDLSorteR/R/digitalDLSorteR.rdb' is corrupt
+##    No 'name.data' provided. Using the first dataset
 ```
 
 We can plot the results as follows: 
@@ -228,8 +355,13 @@ barPlotCellTypes(DDLS.colon, rm.x.text = TRUE)
 ```
 
 ```
-## Error in h(simpleError(msg, call)): error in evaluating the argument 'data' in selecting a method for function 'barPlotCellTypes': object 'DDLS.colon' not found
+## 'name.data' not provided. By default, first results are used
 ```
+
+<div class="figure" style="text-align: center">
+<img src="barPlotResults_realModelWorkflow-1.png" alt="plot of chunk barPlotResults_realModelWorkflow"  />
+<p class="caption">plot of chunk barPlotResults_realModelWorkflow</p>
+</div>
 
 As the total number of samples is too high, we can see the results of some samples by taking the predicted cell proportions and plotting 20 random samples with `barPlotCellTypes`:
 
@@ -237,22 +369,16 @@ As the total number of samples is too high, we can see the results of some sampl
 ```r
 set.seed(12345)
 resDeconvTCGA <- deconv.results(DDLS.colon, name.data = "Bulk.DT")
-```
-
-```
-## Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'deconv.results': object 'DDLS.colon' not found
-```
-
-```r
 barPlotCellTypes(
   resDeconvTCGA[sample(1:521, size = 20), ], rm.x.text = TRUE,
   title = "Results of deconvolution (20 random samples)"
 )
 ```
 
-```
-## Error in h(simpleError(msg, call)): error in evaluating the argument 'data' in selecting a method for function 'barPlotCellTypes': object 'resDeconvTCGA' not found
-```
+<div class="figure" style="text-align: center">
+<img src="barPlotResults20_realModelWorkflow-1.png" alt="plot of chunk barPlotResults20_realModelWorkflow"  />
+<p class="caption">plot of chunk barPlotResults20_realModelWorkflow</p>
+</div>
 
 Now, we can represent the cell proportions of every cell type considered by the model separating healthy and tumoral samples. We are also going to filter out samples considered metastatic or recurrent (check the `TCGA.colon.se` object) because these groups are composed of only 1 sample: 
 
@@ -274,8 +400,13 @@ data.frame(
 ```
 
 ```
-## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'rownames': object 'resDeconvTCGA' not found
+## Using Sample, TypeSample as id variables
 ```
+
+<div class="figure" style="text-align: center">
+<img src="boxplotResults_realModelWorkflow-1.png" alt="plot of chunk boxplotResults_realModelWorkflow"  />
+<p class="caption">plot of chunk boxplotResults_realModelWorkflow</p>
+</div>
 
 In general, the results seem to be in line with what it is known: tumoral samples show a huge immune infiltration, whereas other cell types such as epithelial cells are displaced. We can also specifically inspect the predicted proportions of enterocytes, tumor, epithelial, and stromal cells: 
 
@@ -301,8 +432,13 @@ data.frame(
 ```
 
 ```
-## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'rownames': object 'resDeconvTCGA' not found
+## Using Sample, TypeSample as id variables
 ```
+
+<div class="figure" style="text-align: center">
+<img src="boxplotResults_2_realModelWorkflow-1.png" alt="plot of chunk boxplotResults_2_realModelWorkflow"  />
+<p class="caption">plot of chunk boxplotResults_2_realModelWorkflow</p>
+</div>
 As it can be seen, **digitalDLSorteR** correctly estimates the absence of tumor cells (`CRC`) in healthy samples. On the other hand, the predicted proportion of enterocytes, epithelial and stromal cells decrease in the tumoral samples, which makes sense considering the infiltration of immune cells and the increased presence of tumoral cells. 
 
 ## Interpreting the neural network model 
@@ -314,10 +450,6 @@ Finally, we have implemented a way to make the predictions made by  **digitalDLS
 DDLS.colon <- interGradientsDL(DDLS.colon)
 ```
 
-```
-## Error in interGradientsDL(DDLS.colon): could not find function "interGradientsDL"
-```
-
 We can explore the top 5 genes with the highest gradient for each cell type to check which genes are being more used by the model: 
 
 
@@ -325,20 +457,24 @@ We can explore the top 5 genes with the highest gradient for each cell type to c
 top.gradients <- topGradientsCellType(
   DDLS.colon, method = "class", top.n.genes = 5
 )
-```
-
-```
-## Error in topGradientsCellType(DDLS.colon, method = "class", top.n.genes = 5): could not find function "topGradientsCellType"
-```
-
-```r
 sapply(
   top.gradients, \(x) x$Positive
 ) %>% as.data.frame()
 ```
 
 ```
-## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'as.data.frame': error in evaluating the argument 'X' in selecting a method for function 'sapply': object 'top.gradients' not found
+##   Anti-inflammatory_MFs B cells CD4+ T cells CD8+ T cells   ECs ECs_tumor Enterocytes Epithelial cells Epithelial_cancer_cells MFs_SPP1+ Mast cells Myofibroblasts NK cells
+## 1                 LYVE1    IGHD        KLRB1         GZMK CD320      INSR     UGT2B17             ZG16                    PID1      CTSD      GATA2          CCL11   FGFBP2
+## 2                 FOLR2    CD19        ANXA1         GZMH   CA4      AQP1       ITM2C             AQP8                   ITLN2     APOC1      HPGDS          IGFL2     CMC1
+## 3                RNASE1   FCRL1          MAL         CCL5 SOCS3     HSPG2      UGT2A3             URAD           RP11-439E19.7      APOE      LTC4S         OTUD7A     GNLY
+## 4                LILRB5    SPIB       GPR183        ITM2C  CD36     SPRY1      PCSK1N            REP15                    ZIC5      CD83       CTSG         NLGN4X    KRT86
+## 5                 SEPP1    PAX5          LTB        VCAM1 FABP5    IGFBP5       PROM2             TFF3              AC006273.5     MMP14      BIRC3          FCRL3    KLRC1
+##   Pericytes Plasma_cells Pro-inflammatory_MFs Regulatory T cells Smooth muscle cells Stromal cells T follicular helper cells      cDC gamma delta T cells
+## 1      CD36    LINC00152              S100A12               BATF               RERGL          LSP1                    CXCL13 HLA-DQA2               KLRC2
+## 2     KCNJ8        IGHA1                 FCN1              RTKN2               CASQ2          PID1                     NR3C1     LSP1                TRDC
+## 3      EBF2         SAT1                TIMP1            TNFRSF4                 DES         ITM2C                       NMB     CST7               TRGC2
+## 4      MAP6       NFKBIA                 VCAN               IL32               MYH11          FBN2                    PTPN13     PID1                 CD7
+## 5    RNF152     IGHV4-61                 SOD2                LTB                FLNA            C7                     IGFL2   INSIG1                CCL5
 ```
 
 In addition, **digitalDLSorteR** also implements a function to plot the top gradients per cell type as a heatmap: 
@@ -346,19 +482,13 @@ In addition, **digitalDLSorteR** also implements a function to plot the top grad
 
 ```r
 hh <- plotHeatmapGradsAgg(DDLS.colon, top.n.genes = 4, method = "class")
-```
-
-```
-## Error in plotHeatmapGradsAgg(DDLS.colon, top.n.genes = 4, method = "class"): could not find function "plotHeatmapGradsAgg"
-```
-
-```r
 hh$Absolute
 ```
 
-```
-## Error in eval(expr, envir, enclos): object 'hh' not found
-```
+<div class="figure" style="text-align: center">
+<img src="heatmapGradients_realModelWorkflow-1.png" alt="plot of chunk heatmapGradients_realModelWorkflow"  />
+<p class="caption">plot of chunk heatmapGradients_realModelWorkflow</p>
+</div>
 
 
 It is important to note that these markers should not be interpreted as cell type markers. Rather, they serve as indications to help interpret the model’s performance. In addition, due to the multivariate nature of this approach, gradients are surrogates at the feature level for predictions made considering all input variables collectively, and thus caution should be exercised in drawing direct conclusions about specific gene-cell type relationships.

@@ -1218,7 +1218,7 @@ deconvDDLSPretrained <- function(
   .checkPythonDependencies(alert = "error")
   
   if (is(data, "SummarizedExperiment")) {
-    data <- assays(TCGA.colon.se)[[1]]
+    data <- assays(data)[[1]]
   }
   if (!is.matrix(data) && !is.data.frame(data)) {
     stop("'data' must be a matrix or data.frame")

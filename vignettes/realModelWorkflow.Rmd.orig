@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this example, we are going to reproduce the pre-trained model `DDLS.colon.lee` available at the **digitalDLSorteRmodels** R package. It was trained on data from @Lee2020 ([GSE132465](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132465), [GSE132257](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132257) and [GSE144735](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144735)). The dataset consists of ~ 100,000 cells from a total of 31 patients including tumoral and healthy samples. These cells are divided into 22 cell types covering the main ones found in this kind of samples: Anti-inflammatory_MFs (macrophages), B cells, CD4+ T cells, CD8+ T cells, ECs (endothelial cells), ECs_tumor, Enterocytes, Epithelial cells, Epithelial_cancer_cells, MFs_SPP1+, Mast cells, Myofibroblasts, NK cells, Pericytes, Plasma_cells, Pro-inflammatory_MFs, Regulatory T cells, Smooth muscle cells, Stromal cells, T follicular helper cells, cDC (conventional dendritic cells), and gamma delta T cells. The expression matrix only contains 2,000 genes selected by **digitalDLSorteR** when the model was created to save time and RAM. Thus, in this example we will set the parameters related to gene filtering to zero. 
+In this example, we are going to reproduce the pre-trained model `DDLS.colon.lee` available at the **digitalDLSorteRmodels** R package. It was trained on data from @Lee2020 ([GSE132465](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132465), [GSE132257](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132257) and [GSE144735](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144735)), and consist of ~ 100,000 cells from a total of 31 patients including tumoral and healthy samples. These cells are divided into 22 cell types covering the main ones found in this kind of samples: `Anti-inflammatory_MFs` (macrophages), `B cells`, `CD4+ T cells`, `CD8+ T cells`, `ECs` (endothelial cells), `ECs_tumor`, `Enterocytes`, `Epithelial cells`, `Epithelial_cancer_cells`, `MFs_SPP1+`, `Mast cells`, `Myofibroblasts`, `NK cells`, `Pericytes`, `Plasma_cells`, `Pro-inflammatory_MFs`, `Regulatory T cells`, `Smooth muscle cells`, `Stromal cells`, `T follicular helper cells`, `cDC` (conventional dendritic cells), and `gamma delta T cells`. The expression matrix only contains 2,000 genes selected by **digitalDLSorteR** when the model was created to save time and RAM. Thus, in this example we will set the parameters related to gene filtering to zero. 
 
 
 ```{r}
@@ -35,6 +35,8 @@ if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   remotes::install_github("diegommcc/digitalDLSorteRdata")
 }
 suppressMessages(library("digitalDLSorteRdata"))
+suppressMessages(library("dplyr"))
+suppressMessages(library("ggplot2"))
 ```
 
 ## Loading data

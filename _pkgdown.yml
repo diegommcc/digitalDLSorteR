@@ -26,9 +26,9 @@ navbar:
   - text: Vignettes
     menu:
     - text: Using pre-trained context-specific deconvolution models
-      href: ./articles/pretrainedModels.html
+      href: ./articles/pretrainedModels-hq.html
     - text: "Building new deconvoluion models: deconvolution of colorectal cancer samples"
-      href: ./articles/realModelWorkflow.html
+      href: ./articles/realModelWorkflow-hq.html
     - text: Keras/TensorFlow installation and configuration
       href: ./articles/kerasIssues.html
     - text: HDF5 files as back-end

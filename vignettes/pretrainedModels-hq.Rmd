@@ -16,7 +16,7 @@ fontsize: 12pt
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = TRUE, dpi = 200, fig.width = 8, fig.height = 5.5, 
-  base.dir = ".", fig.path = "", fig.align = "center"
+  base.dir = ".", fig.path = "./", fig.align = "center"
 )
 ```
 
@@ -60,7 +60,9 @@ suppressMessages(library(digitalDLSorteRmodels))
 if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   remotes::install_github("diegommcc/digitalDLSorteRdata")
 }
-suppressMessages(library(digitalDLSorteRdata))
+suppressMessages(library("digitalDLSorteRdata"))
+suppressMessages(library("dplyr"))
+suppressMessages(library("ggplot2"))
 ```
 
 ## Loading data
@@ -144,7 +146,7 @@ On the other hand, `simplify.majority` does not create new classes but sums the 
 
 ## Contribute with your own models
 
-You can make available our own models to other users. Just drop an email and we will make them available at the **digitalDLSorteRmodels**` R package!
+You can make available our own models to other users. Just drop an email and we will make them available at the **digitalDLSorteRmodels** R package!
 
 ## References
 

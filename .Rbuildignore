@@ -15,4 +15,3 @@ cran-comments.md
 __pycache__
 realModelWorkflow-hq.Rmd
 pretrainedModels-hq.Rmd
-^vignettes/.*\.png

@@ -41,15 +41,16 @@ There are two deconvolution models for breast cancer samples that differ in the 
 
 ### Colorectal cancer model
 
-* `DDLS.colon.lee`: it considers the following 22 cell types: Anti-inflammatory_MFs (macrophages), B cells, CD4+ T cells, CD8+ T cells, ECs (endothelial cells), ECs_tumor, Enterocytes, Epithelial cells, Epithelial_cancer_cells, MFs_SPP1+, Mast cells, Myofibroblasts, NK cells, Pericytes, Plasma_cells, Pro-inflammatory_MFs, Regulatory T cells, Smooth muscle cells, Stromal cells, T follicular helper cells, cDC (conventional dendritic cells), gamma delta T cells.It has been generated using data from Lee, Hong, Etlioglu Cho et al., 2020 ([GSE132465](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132465), [GSE132257](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132257) and [GSE144735](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144735)). The genes selected to train the model were defined by obtaining the intersection between the scRNA-seq dataset and bulk RNA-seq data from the The Cancer Genome Atlas (TCGA) project [@Koboldt2012; @Ciriello2015] and using the **digitalDLSorteR**'s default parameters.
+`DDLS.colon.lee` considers the following 22 cell types: Anti-inflammatory_MFs (macrophages), B cells, CD4+ T cells, CD8+ T cells, ECs (endothelial cells), ECs_tumor, Enterocytes, Epithelial cells, Epithelial_cancer_cells, MFs_SPP1+, Mast cells, Myofibroblasts, NK cells, Pericytes, Plasma_cells, Pro-inflammatory_MFs, Regulatory T cells, Smooth muscle cells, Stromal cells, T follicular helper cells, cDC (conventional dendritic cells), gamma delta T cells.
+
+It has been generated using data from Lee, Hong, Etlioglu Cho et al., 2020 ([GSE132465](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132465), [GSE132257](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132257) and [GSE144735](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144735)). The genes selected to train the model were defined by obtaining the intersection between the scRNA-seq dataset and bulk RNA-seq data from the The Cancer Genome Atlas (TCGA) project [@Koboldt2012; @Ciriello2015] and using the **digitalDLSorteR**'s default parameters.
 
 ## Example using colorectal samples from the TCGA project
 
 The following code chunk shows an example using the `DDLS.colon.lee` model and data from TCGA loaded from `digitalDLSorteRdata`:
 
-```{r deconvolutingTCGA, message=FALSE}
-devtools::load_all("~/Documents/Rpackages/digitalDLSorteR")
-suppressMessages(library(digitalDLSorteR))
+```{r, message=FALSE}
+suppressMessages(library("digitalDLSorteR"))
 # to load pre-trained models
 if (!requireNamespace("digitalDLSorteRmodels", quietly = TRUE)) {
   remotes::install_github("diegommcc/digitalDLSorteRmodels")
@@ -59,7 +60,14 @@ suppressMessages(library(digitalDLSorteRmodels))
 if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
   remotes::install_github("diegommcc/digitalDLSorteRdata")
 }
-suppressMessages(library(digitalDLSorteRdata))
+suppressMessages(library("digitalDLSorteRdata"))
+suppressMessages(library("dplyr"))
+suppressMessages(library("ggplot2"))
+```
+
+## Loading data
+
+```{r deconvolutingTCGA, message=FALSE}
 # loading model from digitalDLSorteRmodel and example data from digitalDLSorteRdata
 data("DDLS.colon.lee")
 data("TCGA.colon.se")
@@ -71,6 +79,7 @@ data("TCGA.colon.se")
 DDLS.colon.lee
 ```
 
+Here you can check the cell types considered by the model: 
 
 ```{r}
 cell.types(DDLS.colon.lee) %>% paste0(collapse = " / ")
@@ -137,7 +146,7 @@ On the other hand, `simplify.majority` does not create new classes but sums the 
 
 ## Contribute with your own models
 
-You can make available our own models to other users. Just drop an email and we will make them available at the **digitalDLSorteRmodels**` R package!
+You can make available our own models to other users. Just drop an email and we will make them available at the **digitalDLSorteRmodels** R package!
 
 ## References
 

@@ -76,18 +76,16 @@ NULL
 #'   sc.gene.ID.column = "Gene_ID",
 #'   sc.filt.genes.cluster = FALSE
 #' )
-#' prop.design <- colData(sce) %>% as.data.frame() %>%
-#'   group_by(Cell_Type) %>% summarize(Total = n()) %>%
-#'   mutate(
-#'     Prop = (Total / sum(Total)) * 100,
-#'     from = Prop * 0.5,
-#'     to = ifelse((Prop * 1.5) > 100, 100, Prop * 1.5),
-#'     Prop = NULL, Total = NULL
-#'   )
+#' prop.design <- data.frame(
+#'   Cell_Type = paste0("CellType", seq(2)),
+#'   from = c(1, 30),
+#'   to = c(15, 70)
+#' )
 #' DDLS <- generateBulkCellMatrix(
 #'   object = DDLS,
 #'   cell.ID.column = "Cell_ID",
 #'   cell.type.column = "Cell_Type",
+#'   prob.design = prop.design, 
 #'   num.bulk.samples = 50,
 #'   verbose = TRUE
 #' )
@@ -318,18 +316,16 @@ interGradientsDL <- function(
 #'   sc.gene.ID.column = "Gene_ID",
 #'   sc.filt.genes.cluster = FALSE
 #' )
-#' prop.design <- colData(sce) %>% as.data.frame() %>%
-#'   group_by(Cell_Type) %>% summarize(Total = n()) %>%
-#'   mutate(
-#'     Prop = (Total / sum(Total)) * 100,
-#'     from = Prop * 0.5,
-#'     to = ifelse((Prop * 1.5) > 100, 100, Prop * 1.5),
-#'     Prop = NULL, Total = NULL
-#'   )
+#' prop.design <- data.frame(
+#'   Cell_Type = paste0("CellType", seq(2)),
+#'   from = c(1, 30),
+#'   to = c(15, 70)
+#' )
 #' DDLS <- generateBulkCellMatrix(
 #'   object = DDLS,
 #'   cell.ID.column = "Cell_ID",
 #'   cell.type.column = "Cell_Type",
+#'   prob.design = prop.design, 
 #'   num.bulk.samples = 50,
 #'   verbose = TRUE
 #' )
@@ -457,18 +453,16 @@ top.gradients <- function(grad, metadata, n) {
 #'   sc.gene.ID.column = "Gene_ID",
 #'   sc.filt.genes.cluster = FALSE
 #' )
-#' prop.design <- colData(sce) %>% as.data.frame() %>%
-#'   group_by(Cell_Type) %>% summarize(Total = n()) %>%
-#'   mutate(
-#'     Prop = (Total / sum(Total)) * 100,
-#'     from = Prop * 0.5,
-#'     to = ifelse((Prop * 1.5) > 100, 100, Prop * 1.5),
-#'     Prop = NULL, Total = NULL
-#'   )
+#' prop.design <- data.frame(
+#'   Cell_Type = paste0("CellType", seq(2)),
+#'   from = c(1, 30),
+#'   to = c(15, 70)
+#' )
 #' DDLS <- generateBulkCellMatrix(
 #'   object = DDLS,
 #'   cell.ID.column = "Cell_ID",
 #'   cell.type.column = "Cell_Type",
+#'   prob.design = prop.design, 
 #'   num.bulk.samples = 50,
 #'   verbose = TRUE
 #' )

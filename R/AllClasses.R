@@ -318,7 +318,7 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #' stores different intermediate data resulting from the creation of new
 #' context-specific deconvolution models from single-cell data. It is only used
 #' in the case of building new deconvolution models. To deconvolute bulk samples
-#' using pre-trained models, see \code{\link{deconvDigitalDLSorter}} function
+#' using pre-trained models, see \code{\link{deconvDDLSPretrained}} function
 #' and the package \pkg{digitalDLSorteRdata}.
 #'
 #' This object uses other classes to store the different types of data produced
@@ -341,7 +341,7 @@ setClassUnion("DigitalDLSorterDNNOrNULL", c("DigitalDLSorterDNN", "NULL"))
 #' using pre-trained models available at \pkg{digitalDLSorteRdata} package. If
 #' you want to build new models, see \code{\link{createDDLSobject}} function. On
 #' the other hand, if you want to use pre-trained models, see
-#' \code{\link{deconvDigitalDLSorter}} function.
+#' \code{\link{deconvDDLSPretrained}} function.
 #'
 #' In order to provide a way to work with large amounts of data on
 #' RAM-constrained machines, we provide the possibility to use HDF5 files as

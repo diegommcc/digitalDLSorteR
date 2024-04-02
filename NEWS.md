@@ -49,3 +49,11 @@ the workflow (see documentation).
 * Fixed bugs: standardization of features before training. 
 * Vignette modified according to the new functions. 
 * HDF5Array update: use.for parameter has been deleted.
+
+# digitalDLSorteR 1.1.0 (2024-02-05)
+
+* Included two parameters to control python and tensorflow versions in the installTFpython function.
+* The installTFpython function now installs python 3.8 by default. 
+* Included interGradientsDL.R file with functions to interpret neural networks using Vanilla Gradient (from SpatialDDLS).
+* Functions renamed: deconvDigitalDLSorter > deconvDDLSObj and deconvDigitalDLSorterObj > deconvDDLSPretrained.
+* Vignettes updated using new deconvolution models/data.
