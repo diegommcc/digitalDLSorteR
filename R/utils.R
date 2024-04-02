@@ -630,6 +630,11 @@ listToDDLS <- function(listTo) {
 #'
 #' @param conda Path to a conda executable. Use \code{"auto"} (by default)
 #'   allows \pkg{reticulate} to automatically find an appropriate conda binary.
+#' @param python.version Python version to be installed in the environment 
+#'   (\code{"3.8"} by default). We recommend keeping this version as it has 
+#'   been tested to be compatible with tensorflow 2.6.
+#' @param tensorflow.version Tensorflow version to be installed in the 
+#'   environment (\code{"2.6"} by default). 
 #' @param install.conda Boolean indicating if install miniconda automatically
 #'   using \pkg{reticulate}. If \code{TRUE}, \code{conda} argument is ignored.
 #'   \code{FALSE} by default.
@@ -650,9 +655,11 @@ listToDDLS <- function(listTo) {
 #' }
 #' 
 installTFpython <- function(
-  conda = "auto",
-  install.conda = FALSE,
-  miniconda.path = NULL
+    conda = "auto",
+    python.version = "3.8",
+    tensorflow.version = "2.6",
+    install.conda = FALSE,
+    miniconda.path = NULL
 ) {
   if ((!.isConda())) {
     if (!install.conda) {
@@ -678,11 +685,21 @@ installTFpython <- function(
     }
   }
   dirConda <- reticulate::conda_binary("auto")
-  message("\n=== Creating digitaldlsorter-env environment")
+  message("\n=== Creating SpatialDDLS-env environment")
+  
+  ## custom versions 
+  if (python.version != "3.8" | tensorflow.version != "2.6") {
+    warning(
+      "Please, be sure the selected Python and TensorFlow versions are ", 
+      "compatible. Otherwise, miniconda will raise an error", 
+      call. = FALSE, immediate. = TRUE
+    )
+  }
+  
   status2 <- tryCatch(
     reticulate::conda_create(
-      envname = "digitaldlsorter-env", 
-      packages = "python==3.7.11"
+      envname = "SpatialDDLS-env", 
+      packages = paste0("python==", python.version)
     ), 
     error = function(e) {
       return(TRUE)
@@ -695,13 +712,13 @@ installTFpython <- function(
       call. = FALSE
     )
   }
-  message("\n=== Installing tensorflow in digitaldlsorter-env environment")
+  message("\n=== Installing tensorflow in SpatialDDLS-env environment")
   status3 <- tryCatch(
     tensorflow::install_tensorflow(
-      version = "2.6-cpu", 
+      version = paste0(tensorflow.version, "-cpu"),
       method = "conda", 
       conda = dirConda, 
-      envname = "digitaldlsorter-env"
+      envname = "SpatialDDLS-env"
     ), 
     error = function(e) {
       return(TRUE)
@@ -715,8 +732,8 @@ installTFpython <- function(
     )
   }
   message("Installation complete!")
-  message(c("Restart R and load digitalDLSorteR. If you find any problem, \
-         see ?tensorflow::use_condaenv and kerasIssues.Rmd vignette"))
+  message(c("Restart R and load SpatialDDLS. If you find any problem, \
+         see ?tensorflow::use_condaenv"))
 }
 
 

@@ -256,10 +256,11 @@ generateBulkCellMatrix <- function(
       )
     }
   )
-  if (any(duplicated(prob.design[, cell.type.column]))) {
+  prob.design <- prob.design %>% as.data.frame()
+  if (any(duplicated(prob.design[[cell.type.column]]))) {
     stop(paste("'prob.design' must not contain duplicated cell types in",
                cell.type.column, "column"))
-  } else if (!all(prob.design[, cell.type.column] %in%
+  } else if (!all(prob.design[[cell.type.column]] %in%
                   unique(cells.metadata[, cell.type.column]))) {
     stop("There are some cell types in 'prob.design' that do not appear in ", 
          "cells metadata. Check that the 'prob.design' matrix is correctly built")

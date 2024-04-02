@@ -71,7 +71,7 @@ be deconvoluted in the \code{deconv.data} slot. See
 \details{
 This function is intended for users who have built a devonvolution model
 using their own single-cell RNA-Seq data. If you want to use a pre-trained
-model to deconvolute your samples, see \code{?\link{deconvDigitalDLSorter}}.
+model to deconvolute your samples, see \code{?\link{deconvDDLSPretrained}}.
 }
 \examples{
 \dontrun{

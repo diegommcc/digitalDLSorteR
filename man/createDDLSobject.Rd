@@ -20,6 +20,7 @@ createDDLSobject(
   sc.n.genes.per.cluster = 300,
   top.n.genes = 2000,
   sc.log.FC = TRUE,
+  sc.log.FC.cutoff = 0.5,
   sc.min.counts = 1,
   sc.min.cells = 1,
   bulk.min.counts = 1,
@@ -89,6 +90,8 @@ variability across the whole single-cell dataset.}
 
 \item{sc.log.FC}{Whether to filter genes with a logFC less than 0.5 when
 \code{sc.filt.genes.cluster = TRUE}.}
+
+\item{sc.log.FC.cutoff}{LogFC cutoff used if \code{sc.log.FC == TRUE}.}
 
 \item{sc.min.counts}{Minimum gene counts to filter (1 by default; single-cell
 RNA-seq data).}

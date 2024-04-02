@@ -55,6 +55,7 @@ Collate:
     'digitalDLSorteR.R'
     'dnnModel.R'
     'evalMetrics.R'
+    'interGradientsDL.R'
     'loadData.R'
     'simBulk.R'
     'simSingleCell.R'

@@ -594,8 +594,8 @@ NULL
   if (length(SummarizedExperiment::assays(SCEobject)) == 0) {
     stop("No count data in SingleCellExperiment object provided")
   } else if (length(SummarizedExperiment::assays(SCEobject)) > 1) {
-    warning("There is more than one assay, only the first will be used. ", 
-            "Remember it must be raw data and not log-transformed data")
+    warning("More than one assay, only the first will be used. ", 
+            "Remember it must be raw data and not log-transformed data\\n")
   }
   counts <- SummarizedExperiment::assay(SCEobject)
   if (is.null(rownames(counts)) || is.null(colnames(counts))) {
@@ -791,6 +791,7 @@ NULL
     n.genes.per.cluster,
     top.n.genes,
     log.FC,
+    log.FC.cutoff,
     verbose
 ) {
   
@@ -827,7 +828,7 @@ NULL
     list.cluster.FC, 
     \(x) {
       if (log.FC) {
-        x <- x[x >= 0.5] ## only if logFC > 0.5  
+        x <- x[x >= log.FC.cutoff] 
       }
       x[order(x, decreasing = T)] %>% head(n.genes.per.cluster) %>% names()
     }
@@ -1082,6 +1083,7 @@ NULL
 #'   variability across the whole single-cell dataset. 
 #' @param sc.log.FC Whether to filter genes with a logFC less than 0.5 when 
 #'   \code{sc.filt.genes.cluster = TRUE}. 
+#' @param sc.log.FC.cutoff LogFC cutoff used if \code{sc.log.FC == TRUE}.
 #' @param sc.min.counts Minimum gene counts to filter (1 by default; single-cell
 #'   RNA-seq data).
 #' @param sc.min.cells Minimum of cells with more than \code{min.counts} (1 by
@@ -1182,6 +1184,7 @@ createDDLSobject <- function(
   sc.n.genes.per.cluster = 300,
   top.n.genes = 2000,
   sc.log.FC = TRUE,
+  sc.log.FC.cutoff = 0.5,
   sc.min.counts = 1,
   sc.min.cells = 1,
   bulk.min.counts = 1,
@@ -1198,9 +1201,18 @@ createDDLSobject <- function(
 ) {
   if (missing(sc.cell.type.column)) sc.cell.type.column <- NULL
   # in case filtering according to expression in each cluster is used
-  if (sc.filt.genes.cluster & (is.null(sc.cell.type.column) | missing(sc.cell.type.column))) {
-    stop("sc.cell.type.column must be provided")
+  if (sc.filt.genes.cluster) {
+    if (is.null(sc.cell.type.column)) {
+      stop("sc.cell.type.column must be provided")
+    } 
+    .checkColumn(
+      metadata = colData(sc.data) %>% as.data.frame(),
+      ID.column = sc.cell.type.column,
+      type.metadata = "cells.metadata",
+      arg = "sc.cell.type.column"
+    )
   } 
+  
   ## bulk transcriptomics profiles
   if (!missing(bulk.data)) {
     if (missing(bulk.name.data)) {
@@ -1217,6 +1229,12 @@ createDDLSobject <- function(
   } else {
     se.object <- NULL
     if (verbose) message("=== Bulk RNA-seq data not provided")
+  }
+  
+  if (sc.log.FC) {
+    if (sc.log.FC.cutoff < 0) {
+      stop("'sc.log.FC.cutoff' cannot be less than 0")
+    }
   }
   
   single.cell.real <- .loadSCData(
@@ -1282,12 +1300,17 @@ createDDLSobject <- function(
       n.genes.per.cluster = sc.n.genes.per.cluster,
       top.n.genes = top.n.genes,
       log.FC = sc.log.FC,
+      log.FC.cutoff = sc.log.FC.cutoff,
       verbose = verbose
     )  
     if (!missing(bulk.data)) {
       se.object <- se.object[final.genes, ]  
     }
     single.cell.real <- single.cell.real[final.genes, ]
+  }
+  
+  if (nrow(single.cell.real) <= 10) { ## this cutoff is arbitrary
+    stop("The number of final dimensions is too low. Consider decreasing the 'sc.log.FC.cutoff' parameter")
   }
   
   ## messages

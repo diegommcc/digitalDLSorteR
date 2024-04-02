@@ -4,11 +4,24 @@
 \alias{installTFpython}
 \title{Install Python dependencies for digitalDLSorteR}
 \usage{
-installTFpython(conda = "auto", install.conda = FALSE, miniconda.path = NULL)
+installTFpython(
+  conda = "auto",
+  python.version = "3.8",
+  tensorflow.version = "2.6",
+  install.conda = FALSE,
+  miniconda.path = NULL
+)
 }
 \arguments{
 \item{conda}{Path to a conda executable. Use \code{"auto"} (by default)
 allows \pkg{reticulate} to automatically find an appropriate conda binary.}
+
+\item{python.version}{Python version to be installed in the environment
+(\code{"3.8"} by default). We recommend keeping this version as it has
+been tested to be compatible with tensorflow 2.6.}
+
+\item{tensorflow.version}{Tensorflow version to be installed in the
+environment (\code{"2.6"} by default).}
 
 \item{install.conda}{Boolean indicating if install miniconda automatically
 using \pkg{reticulate}. If \code{TRUE}, \code{conda} argument is ignored.

@@ -131,7 +131,7 @@ NULL
 #' @export
 #'
 #' @seealso \code{\link{plotTrainingHistory}}
-#'   \code{\link{deconvDigitalDLSorter}} \code{\link{deconvDDLSObj}}
+#'   \code{\link{deconvDDLSPretrained}} \code{\link{deconvDDLSObj}}
 #'
 #' @examples
 #' \dontrun{
@@ -1174,7 +1174,7 @@ trainDDLSModel <- function(
 #' )
 #' # this is only an example. See vignettes to see how to use pre-trained models
 #' # from the digitalDLSorteRmodels data package
-#' results1 <- deconvDigitalDLSorter(
+#' results1 <- deconvDDLSPretrained(
 #'   data = countsBulk,
 #'   model = trained.model(DDLS),
 #'   normalize = TRUE
@@ -1183,14 +1183,14 @@ trainDDLSModel <- function(
 #' simplify <- list(CellGroup1 = c("CellType1", "CellType2", "CellType4"),
 #'                  CellGroup2 = c("CellType3", "CellType5"))
 #' # in this case the names of the list will be the new labels
-#' results2 <- deconvDigitalDLSorter(
+#' results2 <- deconvDDLSPretrained(
 #'   countsBulk,
 #'   model = trained.model(DDLS),
 #'   normalize = TRUE,
 #'   simplify.set = simplify
 #' )
 #' # in this case the cell type with the highest proportion will be the new label
-#' results3 <- deconvDigitalDLSorter(
+#' results3 <- deconvDDLSPretrained(
 #'   countsBulk,
 #'   model = trained.model(DDLS),
 #'   normalize = TRUE,
@@ -1203,7 +1203,7 @@ trainDDLSModel <- function(
 #'  immune cell profiling in primary breast cancer. Nat. Commun. 8 (1), 15081.
 #'  doi: \doi{10.1038/ncomms15081}.
 #'  
-deconvDigitalDLSorter <- function(
+deconvDDLSPretrained <- function(
   data,
   model = NULL,
   normalize = TRUE,
@@ -1216,17 +1216,21 @@ deconvDigitalDLSorter <- function(
 ) {
   # check if python dependencies are covered
   .checkPythonDependencies(alert = "error")
+  
+  if (is(data, "SummarizedExperiment")) {
+    data <- assays(TCGA.colon.se)[[1]]
+  }
   if (!is.matrix(data) && !is.data.frame(data)) {
     stop("'data' must be a matrix or data.frame")
   }
   if (is.null(model)) {
     stop("Model cannot be NULL. Please see available models in ", 
-         "digitalDLSorteRdata package and ?deconvDigitalDLSorter")
+         "digitalDLSorteRdata package and ?deconvDDLSPretrained")
   } else if (is(object = model, class2 = "list")) {
       model <- listToDDLSDNN(model)
   } else if (!is(object = model, class2 = "DigitalDLSorterDNN")) {
       stop("'model' is not an object of DigitalDLSorterDNN class. Please ",
-           "see available models in digitalDLSorteRdata package and ?deconvDigitalDLSorter")
+           "see available models in digitalDLSorteRdata package and ?deconvDDLSPretrained")
   }
   if (!scaling %in% c("standardize", "rescaling")) {
     stop("'scaling' argument must be one of the following options: 'standardize', 'rescaling'")
@@ -1289,7 +1293,7 @@ deconvDigitalDLSorter <- function(
 #'
 #' This function is intended for users who have built a devonvolution model
 #' using their own single-cell RNA-Seq data. If you want to use a pre-trained
-#' model to deconvolute your samples, see \code{?\link{deconvDigitalDLSorter}}.
+#' model to deconvolute your samples, see \code{?\link{deconvDDLSPretrained}}.
 #'
 #' @param object \code{\linkS4class{DigitalDLSorter}} object with
 #'   \code{trained.data} and \code{deconv.data} slots.

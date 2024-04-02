@@ -13,10 +13,6 @@ cran-comments.md
 ^vignettes/knitr_rendering\.R$
 ^.*\.py$
 __pycache__
-^vignettes/hdf5Backend\.Rmd$
-^vignettes/kerasIssues\.Rmd$
-^vignettes/pretrainedModels\.Rmd$
-^vignettes/realModelExample\.Rmd$
-^vignettes/pretrainedModels\.Rmd\.orig$
-^vignettes/realModelExample\.Rmd\.orig$
+realModelWorkflow-hq.Rmd
+pretrainedModels-hq.Rmd
 ^vignettes/.*\.png

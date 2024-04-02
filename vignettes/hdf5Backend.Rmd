@@ -16,17 +16,17 @@ fontsize: 12pt
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
-The Hierarchical Data Format version 5 (HDF5) is an open source file format that supports large, complex, heterogeneous data. This format has different advantages that make it very suitable to store large datasets together with their metadata in a way that allows to access quickly all the information. As **digitalDLSorteR** needs to simulate large amounts of pseudo-bulk samples to reach good trained models and uses as input single-cell RNA-Seq datasets whose size is getting much bigger over time, it implements a set of functionalities that offer the possibility to use HDF5 files as back-end for each step where large data are required:
+The Hierarchical Data Format version 5 (HDF5) is an open source file format that supports large, complex, heterogeneous data. This format has different advantages that make it very suitable to store large datasets together with their metadata in a way that allows to access quickly all the information. As **digitalDLSorteR** needs to simulate large amounts of pseudobulk samples to reach good trained models and uses as input single-cell RNA-seq datasets whose size is getting much bigger over time, it implements a set of functionalities that offer the possibility to use HDF5 files as back-end for each step where large data are required:
 
 * `loadSCProfiles`: when single-cell data are loaded. It allows to keep large datasets that do not fit in RAM.
 * `simSCProfiles`: when new single-cell profiles are simulated. Moreover, this function allows to simulate these profiles by batch without creating large matrices that do not fit in RAM.
 * `simBulkProfiles`: this is the most delicate step where HDF5 files can be very useful. As `simSCProfiles`, this function is able to create the simulated pseudo-bulk profiles without loading all of them into RAM. 
 
-To use this format, **digitalDLSorteR** mainly uses the [HDF5Array](https://bioconductor.org/packages/release/bioc/html/HDF5Array.html) and [DelayedArray](https://bioconductor.org/packages/release/bioc/html/DelayedArray.html) packages, although some functionalities have been implemented using directly [rhdf5](https://www.bioconductor.org/packages/release/bioc/html/rhdf5.html). For more information about these packages, we recommend their corresponding vignettes and this workshop by Peter Hickey: [Effectively using the DelayedArray framework to support the analysis of large datasets](https://petehaitch.github.io/BioC2020_DelayedArray_workshop/articles/Effectively_using_the_DelayedArray_framework_for_users.html).
+To use this format, **digitalDLSorteR** mainly uses the [HDF5Array](https://bioconductor.org/packages/release/bioc/html/HDF5Array.html) and [DelayedArray](https://bioconductor.org/packages/release/bioc/html/DelayedArray.html) packages, although some functionalities have been implemented using directly the [rhdf5](https://www.bioconductor.org/packages/release/bioc/html/rhdf5.html) R package. For more information about these packages, we recommend their corresponding vignettes and this workshop by Peter Hickey: [Effectively using the DelayedArray framework to support the analysis of large datasets](https://petehaitch.github.io/BioC2020_DelayedArray_workshop/articles/Effectively_using_the_DelayedArray_framework_for_users.html).
 
 ## General usage
 
-In [Building new deconvolution models](newModels.html), some examples of its usage are shown. On the whole, the important parameters that must be considered are:
+The important parameters that must be considered are for the functions above are:
 
 * `file.backend`: file path in which HDF5 file will be stored.
 * `name.dataset.backend`: as HDF5 files use a "file directory"-like structure, it is possible to store more than one dataset in a single file. To do so, changing the name of the dataset is needed. If it is not provided, a random dataset name will be used.
@@ -35,8 +35,8 @@ In [Building new deconvolution models](newModels.html), some examples of its usa
 * `block.processing`: when it is available, it indicates if data should be treated as blocks in order to avoid loading all data into RAM. 
 * `block.size`: if available, set the number of samples that will be simulated in each iteration during the process. 
 
-The simplest way to use it is by setting just the `file.backend` parameter as in the examples provided in [Building new deconvolution models](newModels.html). 
+The simplest way to use it is by setting just the `file.backend` parameter and leaving the rest of parameters by default. 
 
 ## Disclaimer
 
-HDF5 files are a very useful tool which allows working with large datasets that would otherwise be impossible. However, it is important to note that runtimes may be longer when using them, as accessing data from RAM is always faster than from disk. Therefore, we recommend using this functionality only in case of very large datasets and limited computational resources. As the [HDF5Array](https://bioconductor.org/packages/release/bioc/html/HDF5Array.html) and [DelayedArray](https://bioconductor.org/packages/release/bioc/html/DelayedArray.html) authors point: **If you can load your data into memory and still compute on it, then you’re always going to have a better time doing it that way**.
+HDF5 files are a very useful tool which allows working with large datasets that would otherwise be impossible. However, it is important to note that running times may be longer when using them, as accessing data from RAM is always faster than from disk. Therefore, we recommend using this functionality only in case of very large datasets and limited computational resources. As the [HDF5Array](https://bioconductor.org/packages/release/bioc/html/HDF5Array.html) and [DelayedArray](https://bioconductor.org/packages/release/bioc/html/DelayedArray.html) authors point: **If you can load your data into memory and still compute on it, then you’re always going to have a better time doing it that way**.

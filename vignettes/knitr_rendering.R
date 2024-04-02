@@ -1,5 +1,5 @@
 library(knitr)
 opts_knit$set(base.dir = 'vignettes', fig.path = 'vignettes')
-knit("vignettes/realModelExample.Rmd.orig", output = "vignettes/realModelExample.Rmd")
+knit("vignettes/realModelWorkflow.Rmd.orig", output = "vignettes/realModelWorkflow.Rmd")
 knit("vignettes/pretrainedModels.Rmd.orig", output = "vignettes/pretrainedModels.Rmd")
 # knit("vignettes/newModels.Rmd.orig", output = "vignettes/newModels.Rmd")

@@ -1,0 +1,233 @@
+---
+title: "Building new deconvoluion models: deconvolution of colorectal cancer samples"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    vignette: >
+      %\VignetteIndexEntry{Performance of a real model: deconvolution of colorectal cancer samples}
+      %\VignetteEngine{knitr::rmarkdown}
+      %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+geometry: margin=3cm
+fontsize: 12pt
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, dpi = 75, fig.width = 8, fig.height = 5.5, 
+  base.dir = ".", fig.path = "", fig.align = "center"
+)
+```
+
+In this example, we are going to reproduce the pre-trained model `DDLS.colon.lee` available at the **digitalDLSorteRmodels** R package. It was trained on data from @Lee2020 ([GSE132465](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132465), [GSE132257](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132257) and [GSE144735](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144735)). The dataset consists of ~ 100,000 cells from a total of 31 patients including tumoral and healthy samples. These cells are divided into 22 cell types covering the main ones found in this kind of samples: Anti-inflammatory_MFs (macrophages), B cells, CD4+ T cells, CD8+ T cells, ECs (endothelial cells), ECs_tumor, Enterocytes, Epithelial cells, Epithelial_cancer_cells, MFs_SPP1+, Mast cells, Myofibroblasts, NK cells, Pericytes, Plasma_cells, Pro-inflammatory_MFs, Regulatory T cells, Smooth muscle cells, Stromal cells, T follicular helper cells, cDC (conventional dendritic cells), and gamma delta T cells. The expression matrix only contains 2,000 genes selected by **digitalDLSorteR** when the model was created to save time and RAM. Thus, in this example we will set the parameters related to gene filtering to zero. 
+
+
+```{r}
+suppressMessages(library("SummarizedExperiment"))
+suppressMessages(library("SingleCellExperiment"))
+suppressMessages(library("digitalDLSorteR"))
+suppressMessages(library("ggplot2"))
+suppressMessages(library("dplyr"))
+
+if (!requireNamespace("digitalDLSorteRdata", quietly = TRUE)) {
+  remotes::install_github("diegommcc/digitalDLSorteRdata")
+}
+suppressMessages(library("digitalDLSorteRdata"))
+```
+
+## Loading data
+
+We are also going to load bulk RNA-seq data on colorectal cancer patients from the The Cancer Genome Atlas (TCGA) program [@Koboldt2012; @Ciriello2015]. When building new deconvolution models, we recommend loading both the single-cell RNA-seq reference and the bulk RNA-seq dataset to be deconvoluted at the beginning so that **digitalDLSorteR** can choose only those genes that are actually relevant for the both of them. 
+
+```{r}
+data("SCE.colon.Lee")
+data("TCGA.colon.se")
+# to make it suitable for digitalDLSorteR
+rowData(TCGA.colon.se) <- DataFrame(SYMBOL = rownames(TCGA.colon.se))
+```
+
+```{r, warning = FALSE}
+DDLS.colon <- createDDLSobject(
+  sc.data = SCE.colon.Lee,
+  sc.cell.ID.column = "Index",
+  sc.gene.ID.column = "SYMBOL",
+  sc.cell.type.column = "Cell_type_6",
+  bulk.data = TCGA.colon.se,
+  bulk.sample.ID.column = "Bulk",
+  bulk.gene.ID.column <- "SYMBOL",
+  filter.mt.genes = "^MT-",
+  sc.filt.genes.cluster = FALSE,
+  sc.log.FC = FALSE,
+  sc.min.counts = 0,
+  sc.min.cells = 0,
+  verbose = TRUE, 
+  project = "Colon-Cancer-Project"  
+)
+```
+
+After loading the data, we have a `DigitalDLSorter` object with 2,000 genes and both the single-cell RNA-seq used as reference and the bulk RNA-seq data to be deconvoluted. 
+
+```{r}
+DDLS.colon
+```
+
+## Generating cell composition matrix
+
+Now, let's generate the cell composition matrix by using the `generateBulkCellMatrix` function. It requires a data frame with prior knowledge about how likely is to find each cell type in a sample. For this example, we have used an approximation based on the frequency of each cell type in each patient/sample from the scRNA-seq dataset: 
+
+```{r}
+prop.design <- single.cell.real(DDLS.colon)@colData %>% as.data.frame() %>% 
+  group_by(Patient, Cell_type_6) %>% summarize(Total = n()) %>% 
+  mutate(Prop = (Total / sum(Total)) * 100) %>% group_by(Cell_type_6) %>% 
+  summarise(Prop_Mean = ceiling(mean(Prop)), Prop_SD = ceiling(sd(Prop))) %>% 
+  mutate(
+    from = Prop_Mean, 
+    to.1 = Prop_Mean * (Prop_SD * 2),
+    to = ifelse(to.1 > 100, 100, to.1),
+    to.1 = NULL, Prop_Mean = NULL, Prop_SD = NULL
+  )
+```
+
+Then, we can generate the actual pseudobulk samples that will follow these cell proportions. In this case, we generate 10,000 pseudobulk samples (`num.bulk.samples`), although this number could be increased according to available computational resources. 
+
+```{r}
+## for reproducibility
+set.seed(123)
+DDLS.colon <- generateBulkCellMatrix(
+  object = DDLS.colon,
+  cell.ID.column = "Index",
+  cell.type.column = "Cell_type_6",
+  prob.design = prop.design,
+  num.bulk.samples = 10000,
+  verbose = TRUE
+) %>% simBulkProfiles(threads = 2)
+```
+
+## Neural network training
+
+After generating the pseudobulk samples, we can train and evaluate the model. The training step is only performed using cells/pseudobulk samples coming from the training subset, since the test subset will be used for the assessment of its performance.  
+
+```{r}
+DDLS.colon <- trainDDLSModel(object = DDLS.colon, verbose = FALSE)
+```
+
+## Evaluation of the model on test data
+
+Once the model is trained, we can explore how well the model behaves on test samples. This step is critical because it allows us to assess if **digitalDLSorteR** is actually understanding the signals coming from each cell type or if on the contrary there are cell types being ignored. 
+
+```{r}
+DDLS.colon <- calculateEvalMetrics(object = DDLS.colon)
+```
+
+**digitalDLSorteR** implements different functions to visualize the results and explore potential biases on the models. For this tutorial, we will check the correlation between expected and predicted proportions, but for a more detailed explanation about other visualization functions, check the Documentation. 
+
+```{r corr1_realModelWorkflow, fig.height=7, fig.width=12}
+corrExpPredPlot(
+  DDLS.colon,
+  color.by = "CellType",
+  facet.by = "CellType",
+  corr = "both", 
+  size.point = 0.5
+)
+```
+
+As it can be seen, the model is accurately predicting the cell proportions of pseudobulk samples from the test data, which means that it is detecting differential signals for each cell type. 
+
+## Deconvolution of TCGA samples
+
+Now, to show its performance on real data, we are going to deconvolute the samples from the TCGA project [@Koboldt2012; @Ciriello2015] loaded at the beginning of the vignette. This dataset consists of 521 samples and includes both tumoral and healthy samples. This step is performed by the `deconvDDLSObj` function, which will use the trained model to obtain a set of predicted proportions for each sample contained in the `deconv.data` slot. 
+
+```{r}
+DDLS.colon <- deconvDDLSObj(object = DDLS.colon, verbose = FALSE)
+```
+
+We can plot the results as follows: 
+
+```{r barPlotResults_realModelWorkflow, fig.height=5, fig.width=10}
+barPlotCellTypes(DDLS.colon, rm.x.text = TRUE)
+```
+
+As the total number of samples is too high, we can see the results of some samples by taking the predicted cell proportions and plotting 20 random samples with `barPlotCellTypes`:
+
+```{r barPlotResults20_realModelWorkflow, fig.height=5, fig.width=10}
+set.seed(12345)
+resDeconvTCGA <- deconv.results(DDLS.colon, name.data = "Bulk.DT")
+barPlotCellTypes(
+  resDeconvTCGA[sample(1:521, size = 20), ], rm.x.text = TRUE,
+  title = "Results of deconvolution (20 random samples)"
+)
+```
+
+Now, we can represent the cell proportions of every cell type considered by the model separating healthy and tumoral samples. We are also going to filter out samples considered metastatic or recurrent (check the `TCGA.colon.se` object) because these groups are composed of only 1 sample: 
+
+```{r, fig.height=12, fig.width=18}
+data.frame(
+  Sample = rownames(resDeconvTCGA),
+  TypeSample = colData(TCGA.colon.se)[["Tumor_Type"]]
+) %>% cbind(resDeconvTCGA) %>% 
+  reshape2::melt() %>% filter(!TypeSample %in% c("Metastatic", "Recurrent")) %>% 
+  ggplot(aes(x = TypeSample, y = value, fill = variable)) + 
+  geom_boxplot() + facet_wrap(~ variable, scales = "free") + 
+  scale_fill_manual(values = digitalDLSorteR:::default.colors()) + 
+  ggtitle("Estimated proportions in TCGA data (all cell types)") + theme_bw() + 
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5),
+      legend.title = element_text(face = "bold")
+    )
+```
+
+In general, the results seem to be in line with what it is known: tumoral samples show a huge immune infiltration, whereas other cell types such as epithelial cells are displaced. We can also specifically inspect the predicted proportions of enterocytes, tumor, epithelial, and stromal cells: 
+
+```{r boxplotsTypes_realModelExample, fig.width=7, fig.height=5}
+data.frame(
+  Sample = rownames(resDeconvTCGA),
+  CRC = resDeconvTCGA[, "Epithelial_cancer_cells"],
+  Epithelial = resDeconvTCGA[, "Epithelial cells"],
+  Stromal = resDeconvTCGA[, "Stromal cells"],
+  Entero = resDeconvTCGA[, "Enterocytes"],
+  TypeSample = TCGA.colon.se@colData$Tumor_Type
+) %>% filter(!TypeSample %in% c("Metastatic", "Recurrent")) %>% 
+  reshape2::melt() %>% 
+  ggplot(aes(x = TypeSample, y = value, fill = TypeSample)) +
+    geom_boxplot() + facet_wrap(~ variable) + ylab("Estimated proportion") + 
+  scale_fill_manual(values = digitalDLSorteR:::default.colors()) + 
+    ggtitle("Estimated proportions in TCGA data") + theme_bw() + 
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5),
+      legend.title = element_text(face = "bold")
+    )
+```
+As it can be seen, **digitalDLSorteR** correctly estimates the absence of tumor cells (`CRC`) in healthy samples. On the other hand, the predicted proportion of enterocytes, epithelial and stromal cells decrease in the tumoral samples, which makes sense considering the infiltration of immune cells and the increased presence of tumoral cells. 
+
+## Interpreting the neural network model 
+
+Finally, we have implemented a way to make the predictions made by  **digitalDLSorteR** more interpretable. This part was developed for our new R package for deconvolution of spatial transcriptomics data [**SpatialDDLS**](https://diegommcc.github.io/SpatialDDLS/index.html), and the methodology is explained in @Mananes2024. 
+
+```{r}
+DDLS.colon <- interGradientsDL(DDLS.colon)
+```
+
+We can explore the top 5 genes with the highest gradient for each cell type to check which genes are being more used by the model: 
+
+```{r}
+top.gradients <- topGradientsCellType(
+  DDLS.colon, method = "class", top.n.genes = 5
+)
+sapply(
+  top.gradients, \(x) x$Positive
+) %>% as.data.frame()
+```
+
+In addition, **digitalDLSorteR** also implements a function to plot the top gradients per cell type as a heatmap: 
+
+```{r, fig.height=10, fig.width=10}
+hh <- plotHeatmapGradsAgg(DDLS.colon, top.n.genes = 4, method = "class")
+hh$Absolute
+```
+
+
+It is important to note that these markers should not be interpreted as cell type markers. Rather, they serve as indications to help interpret the model’s performance. In addition, due to the multivariate nature of this approach, gradients are surrogates at the feature level for predictions made considering all input variables collectively, and thus caution should be exercised in drawing direct conclusions about specific gene-cell type relationships.
+
+## References

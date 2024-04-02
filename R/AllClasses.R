@@ -245,7 +245,8 @@ DigitalDLSorterDNN <- setClass(
     test.pred = "MatrixOrNULL",
     cell.types = "character",
     features = "character",
-    test.deconv.metrics = "ListOrNULL"
+    test.deconv.metrics = "ListOrNULL",
+    interpret.gradients = "ListOrNULL"
   )
 )
 
@@ -260,7 +261,8 @@ setMethod(
     test.pred = NULL,
     cell.types = "-",
     features = "-",
-    test.deconv.metrics = NULL
+    test.deconv.metrics = NULL,
+    interpret.gradients = NULL
   ) {
     .Object@model <- model
     .Object@training.history <- training.history
@@ -269,6 +271,7 @@ setMethod(
     .Object@cell.types <- cell.types
     .Object@features <- features
     .Object@test.deconv.metrics <- test.deconv.metrics
+    .Object@interpret.gradients <- interpret.gradients
     return(.Object)
   }
 )
