@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -61,13 +61,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href=".././articles/pretrainedModels.html">Using pre-trained context-specific deconvolution models</a>
+      <a href=".././articles/pretrainedModels-hq.html">Using pre-trained context-specific deconvolution models</a>
     </li>
     <li>
-      <a href=".././articles/newModels.html">Building new deconvolution models</a>
-    </li>
-    <li>
-      <a href=".././articles/realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a>
+      <a href=".././articles/realModelWorkflow-hq.html">Building new deconvoluion models: deconvolution of colorectal cancer samples</a>
     </li>
     <li>
       <a href=".././articles/kerasIssues.html">Keras/TensorFlow installation and configuration</a>
@@ -113,29 +110,29 @@ models</h1>
     
     
 <p><strong>digitalDLSorteR</strong> offers the possibility to use
-pre-trained context-specific deconvolution models included in
-<strong>digitalDLSorteRmodels</strong> package (<a href="https://github.com/diegommcc/digitalDLSorteRmodels" class="external-link uri">https://github.com/diegommcc/digitalDLSorteRmodels</a>) to
-deconvolute new bulk RNA-Seq samples from the same biological
+pre-trained context-specific deconvolution models included in the
+<strong>digitalDLSorteRmodels</strong> R package (<a href="https://github.com/diegommcc/digitalDLSorteRmodels" class="external-link uri">https://github.com/diegommcc/digitalDLSorteRmodels</a>) to
+deconvolute new bulk RNA-seq samples from the same biological
 environment. This is the simplest way to use
-<strong>digitalDLSorteR</strong> and only requires loading into R (a raw
-bulk RNA-Seq matrix with genes as rows (annotated as <em>SYMBOL</em>)
-and samples as columns) and selecting the desired model. This is done by
-the <code>deconvDigitalDLSorter</code> function which normalizes the new
+<strong>digitalDLSorteR</strong> and only requires loading into R a raw
+bulk RNA-seq matrix with genes as rows (annotated as <em>SYMBOL</em>)
+and samples as columns, and selecting the desired model. This is done by
+the <code>deconvDDLSPretrained</code> function, which normalizes the new
 samples to counts per million (CPMs) by default, so this matrix must be
 provided as raw counts. Afterwards, estimated cell composition of each
 sample can be explored as a bar chart using the
-<code>barPlotCellTypes</code> function (workflow summarized in the
-figure below).</p>
-<p><img src="workflow_pretrained_models.png" title="**Workflow to use pre-trained models**" alt="**Workflow to use pre-trained models**" style="display: block; margin: auto;"></p>
+<code>barPlotCellTypes</code> function.</p>
+<!-- ```{r workflow, fig.cap = "**Workflow to use pre-trained models**", echo = FALSE} -->
+<!-- knitr::include_graphics("workflow_pretrained_models.png") -->
+<!-- ``` -->
 <!-- ![(#fig:workflow) Workflow to use pre-trained models](workflow_pretrained_models.png) -->
 <div class="section level2">
 <h2 id="available-models">Available models<a class="anchor" aria-label="anchor" href="#available-models"></a>
 </h2>
-<p>So far, available models just cover two possible biological
+<p>So far, available models only cover two possible biological
 environments: breast cancer and colorectal cancer. These models are able
 to accurately deconvolute new samples from the same environment as they
-have been trained (with transcriptional profiles from these specific
-contexts).</p>
+have been trained on.</p>
 <div class="section level3">
 <h3 id="breast-cancer-models">Breast cancer models<a class="anchor" aria-label="anchor" href="#breast-cancer-models"></a>
 </h3>
@@ -165,152 +162,199 @@ cells (<code>Stromal</code>) and tumor cells (<code>Tumor</code>).</li>
 <div class="section level3">
 <h3 id="colorectal-cancer-model">Colorectal cancer model<a class="anchor" aria-label="anchor" href="#colorectal-cancer-model"></a>
 </h3>
-<p>This model was created with data from <span class="citation">Li et
-al. (2017)</span> (<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81861" class="external-link">GSE81861</a>).
-It is called <code>colorectal.li</code> and considers 10 cell types:
-cancer cells (<code>CRC</code>), epithelial (<code>Ep</code>), monocytes
-(<code>M</code>), macrophages (<code>Mc</code>), fibroblasts
-(<code>Fb</code>), CD4 T cells (<code>CD4</code>), CD8 T cells
-(<code>CD8Gp</code>), CD8 T cells (<code>CD8Gn</code>), germinal center
-B cells (<code>gB</code>) and mature B cells (<code>pB</code>).</p>
+<p><code>DDLS.colon.lee</code> considers the following 22 cell types:
+Anti-inflammatory_MFs (macrophages), B cells, CD4+ T cells, CD8+ T
+cells, ECs (endothelial cells), ECs_tumor, Enterocytes, Epithelial
+cells, Epithelial_cancer_cells, MFs_SPP1+, Mast cells, Myofibroblasts,
+NK cells, Pericytes, Plasma_cells, Pro-inflammatory_MFs, Regulatory T
+cells, Smooth muscle cells, Stromal cells, T follicular helper cells,
+cDC (conventional dendritic cells), gamma delta T cells.</p>
+<p>It has been generated using data from Lee, Hong, Etlioglu Cho et al.,
+2020 (<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132465" class="external-link">GSE132465</a>,
+<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132257" class="external-link">GSE132257</a>
+and <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144735" class="external-link">GSE144735</a>).
+The genes selected to train the model were defined by obtaining the
+intersection between the scRNA-seq dataset and bulk RNA-seq data from
+the The Cancer Genome Atlas (TCGA) project <span class="citation">(Koboldt et al. 2012; Ciriello et al. 2015)</span> and
+using the <strong>digitalDLSorteR</strong>’s default parameters.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="example-using-breast-cancer-samples-from-tcga-project">Example using breast cancer samples from TCGA project<a class="anchor" aria-label="anchor" href="#example-using-breast-cancer-samples-from-tcga-project"></a>
+<h2 id="example-using-colorectal-samples-from-the-tcga-project">Example using colorectal samples from the TCGA project<a class="anchor" aria-label="anchor" href="#example-using-colorectal-samples-from-the-tcga-project"></a>
 </h2>
-<p>The following code chunk shows an example using
-<code>breast.chung.generic</code> model and a small portion of data from
-The Cancer Genome Atlas (TCGA) project <span class="citation">(Koboldt
-et al. 2012; Ciriello et al. 2015)</span> loaded from
+<p>The following code chunk shows an example using the
+<code>DDLS.colon.lee</code> model and data from TCGA loaded from
 <code>digitalDLSorteRdata</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diegommcc.github.io/digitalDLSorteR/">digitalDLSorteR</a></span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://diegommcc.github.io/digitalDLSorteR/">"digitalDLSorteR"</a></span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># to load pre-trained models</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"digitalDLSorteRmodels"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
-<span>    <span class="st">"digitalDLSorteRmodels"</span>, </span>
-<span>    repos <span class="op">=</span> <span class="st">"https://diegommcc.github.io/digitalDLSorteRmodelsRepo/"</span></span>
-<span>  <span class="op">)</span></span>
+<span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"diegommcc/digitalDLSorteRmodels"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">digitalDLSorteRmodels</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># data for example</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diegommcc/digitalDLSorteRmodels" class="external-link">digitalDLSorteRmodels</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># data for examples</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"digitalDLSorteRdata"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
-<span>    <span class="st">"digitalDLSorteRdata"</span>, </span>
-<span>    repos <span class="op">=</span> <span class="st">"https://diegommcc.github.io/digitalDLSorteRdataRepo/"</span></span>
-<span>  <span class="op">)</span></span>
+<span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"diegommcc/digitalDLSorteRdata"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">digitalDLSorteRdata</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># disable eager execution for compatibility issues</span></span>
-<span><span class="fu">tensorflow</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/tensorflow/man/tf.html" class="external-link">tf</a></span><span class="op">$</span><span class="va">compat</span><span class="op">$</span><span class="va">v1</span><span class="op">$</span><span class="fu">disable_eager_execution</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co"># loading model and example data from digitalDLSorteRdata</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">breast.chung.generic</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.breast.small</span><span class="op">)</span></span></code></pre></div>
-<p><code>breast.chung.generic</code> is a DigitalDLSorterDNN-like list
-(list with the same structure as a <code>DigitalDLSorterDNN</code>
-object) that can be inspected to check which cell types are considered
-by the model, how well it performed on test data, etc. As the
-<strong>digitalDLSorteRmodels</strong> package stores all these objects
-as DigitalDLSorterDNN-like lists in order to remove its dependency on
-<strong>digitalDLSorteR</strong>, you have to transform these lists into
-actual <code>DigitalDLSorterDNN</code> objects if you want to inspect
-the models. This is done with the <code>listToDDLSDNN</code>
-function.</p>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/diegommcc/digitalDLSorteRdata" class="external-link">"digitalDLSorteRdata"</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://dplyr.tidyverse.org" class="external-link">"dplyr"</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="loading-data">Loading data<a class="anchor" aria-label="anchor" href="#loading-data"></a>
+</h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">breast.chung.generic</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/listToDDLSDNN.html">listToDDLSDNN</a></span><span class="op">(</span><span class="va">breast.chung.generic</span><span class="op">)</span></span>
-<span><span class="va">breast.chung.generic</span></span></code></pre></div>
-<pre><code><span><span class="co">## Trained model: 20 epochs</span></span>
+<code class="sourceCode R"><span><span class="co"># loading model from digitalDLSorteRmodel and example data from digitalDLSorteRdata</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"DDLS.colon.lee"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TCGA.colon.se"</span><span class="op">)</span></span></code></pre></div>
+<p><code>DDLS.colon.lee</code> is a <code>DigitalDLSorterDNN</code>
+object containing the trained model as well as specific information
+about it, such as cell types considered, number of epochs used during
+training, etc.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">DDLS.colon.lee</span></span></code></pre></div>
+<pre><code><span><span class="co">## Trained model: 60 epochs</span></span>
 <span><span class="co">##   Training metrics (last epoch):</span></span>
-<span><span class="co">##     loss: 0.0222</span></span>
-<span><span class="co">##     accuracy: 0.9051</span></span>
-<span><span class="co">##     mean_absolute_error: 0.0186</span></span>
-<span><span class="co">##     categorical_accuracy: 0.9051</span></span>
+<span><span class="co">##     loss: 0.113</span></span>
+<span><span class="co">##     accuracy: 0.6851</span></span>
+<span><span class="co">##     mean_absolute_error: 0.0131</span></span>
+<span><span class="co">##     categorical_accuracy: 0.6851</span></span>
 <span><span class="co">##   Evaluation metrics on test data:</span></span>
-<span><span class="co">##     loss: 0.0154</span></span>
-<span><span class="co">##     accuracy: 0.9629</span></span>
-<span><span class="co">##     mean_absolute_error: 0.0112</span></span>
-<span><span class="co">##     categorical_accuracy: 0.9629</span></span></code></pre>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cell.types.html">cell.types</a></span><span class="op">(</span><span class="va">breast.chung.generic</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "Tumor"    "Stromal"  "Monocyte" "TcellCD4" "Bcell"    "DCs"      "TcellCD8"</span></span></code></pre>
-<p>Now, we can use it to deconvolute <code>TCGA.breast.small</code>
-samples as follows:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<span><span class="co">##     loss: 0.0979</span></span>
+<span><span class="co">##     accuracy: 0.7353</span></span>
+<span><span class="co">##     mean_absolute_error: 0.0117</span></span>
+<span><span class="co">##     categorical_accuracy: 0.7353</span></span>
+<span><span class="co">##   Performance evaluation over each sample: MAE MSE</span></span></code></pre>
+<p>Here you can check the cell types considered by the model:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cell.types.html">cell.types</a></span><span class="op">(</span><span class="va">DDLS.colon.lee</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span>collapse <span class="op">=</span> <span class="st">" / "</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "Anti-inflammatory_MFs / B cells / CD4+ T cells / CD8+ T cells / ECs / ECs_tumor / Enterocytes / Epithelial cells / Epithelial_cancer_cells / MFs_SPP1+ / Mast cells / Myofibroblasts / NK cells / Pericytes / Plasma_cells / Pro-inflammatory_MFs / Regulatory T cells / Smooth muscle cells / Stromal cells / T follicular helper cells / cDC / gamma delta T cells"</span></span></code></pre>
+<p>Now, we can use it to deconvolute <code>TCGA.colon.se</code> samples
+as follows:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># deconvolution</span></span>
-<span><span class="va">deconvResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDigitalDLSorter.html">deconvDigitalDLSorter</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">TCGA.breast.small</span>,</span>
-<span>  model <span class="op">=</span> <span class="va">breast.chung.generic</span>,</span>
+<span><span class="va">deconvResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDDLSPretrained.html">deconvDDLSPretrained</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">TCGA.colon.se</span>,</span>
+<span>  model <span class="op">=</span> <span class="va">DDLS.colon.lee</span>,</span>
 <span>  normalize <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## === Filtering 32876 features in data that are not present in trained model</span></span></code></pre>
-<pre><code><span><span class="co">## === Setting 11305 features that are not present in trained model to zero</span></span></code></pre>
+<pre><code><span><span class="co">## === Filtering 57085 features in data that are not present in trained model</span></span></code></pre>
+<pre><code><span><span class="co">## === Setting 0 features that are not present in trained model to zero</span></span></code></pre>
 <pre><code><span><span class="co">## === Normalizing and scaling data</span></span></code></pre>
 <pre><code><span><span class="co">## === Predicting cell types present in the provided samples</span></span></code></pre>
+<pre><code>## 
+ 1/17 [&gt;.............................] - ETA: 0s
+17/17 [==============================] - 0s 827us/step
+## 
+17/17 [==============================] - 0s 852us/step</code></pre>
 <pre><code><span><span class="co">## DONE</span></span></code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##              Tumor     Stromal   Monocyte     TcellCD4        Bcell       DCs   TcellCD8</span></span>
-<span><span class="co">## Sample_1 0.5716878 0.009549672 0.02705323 0.0009312485 2.085090e-05 0.2735238 0.11723338</span></span>
-<span><span class="co">## Sample_2 0.4737065 0.015726041 0.01532314 0.0008934758 1.881223e-05 0.3624099 0.13192214</span></span>
-<span><span class="co">## Sample_3 0.5632827 0.011810658 0.02118549 0.0009122477 2.213673e-05 0.3083327 0.09445395</span></span>
-<span><span class="co">## Sample_4 0.4798905 0.013469697 0.01989893 0.0007664507 4.999202e-05 0.3453780 0.14054649</span></span>
-<span><span class="co">## Sample_5 0.6283218 0.015287977 0.07622542 0.0022742257 3.257442e-06 0.1749347 0.10295264</span></span>
-<span><span class="co">## Sample_6 0.4960882 0.015261916 0.02924263 0.0010657815 1.409765e-05 0.3112173 0.14710997</span></span></code></pre>
-<p><code>deconvDigitalDLSorter</code> returns a data frame with the
-samples as rows (<span class="math inline">\(k\)</span>) and the cell
-types considered by the model as columns (<span class="math inline">\(j\)</span>). Each entry corresponds to the
+<pre><code><span><span class="co">##          Anti-inflammatory_MFs     B cells CD4+ T cells CD8+ T cells         ECs  ECs_tumor Enterocytes Epithelial cells Epithelial_cancer_cells   MFs_SPP1+  Mast cells</span></span>
+<span><span class="co">## Sample_1            0.03555675 0.012629803 0.2033741772  0.009651524 0.005541965 0.01741250 0.009307317       0.07155292             0.059090368 0.005882895 0.037573148</span></span>
+<span><span class="co">## Sample_2            0.04712307 0.066985376 0.0743350908  0.037740953 0.034868974 0.04209921 0.042306840       0.03910230             0.027248619 0.064652219 0.043691441</span></span>
+<span><span class="co">## Sample_3            0.04327271 0.040529914 0.0704342276  0.065242805 0.005649931 0.05630094 0.049890675       0.05444700             0.044213723 0.028884981 0.046738196</span></span>
+<span><span class="co">## Sample_4            0.06370533 0.087266184 0.0009350295  0.025520578 0.063553512 0.06356230 0.042612039       0.01939960             0.062976740 0.021837091 0.006687692</span></span>
+<span><span class="co">## Sample_5            0.02191241 0.074413352 0.2854489684  0.011043770 0.006262523 0.06074690 0.048464730       0.01496455             0.030808715 0.039284099 0.021862382</span></span>
+<span><span class="co">## Sample_6            0.05057831 0.009333173 0.0532203354  0.045282334 0.007942557 0.05870201 0.012052140       0.15696421             0.005358713 0.020576822 0.106369726</span></span>
+<span><span class="co">##          Myofibroblasts   NK cells  Pericytes Plasma_cells Pro-inflammatory_MFs Regulatory T cells Smooth muscle cells Stromal cells T follicular helper cells         cDC</span></span>
+<span><span class="co">## Sample_1     0.01825435 0.20807563 0.04628117   0.03875881          0.004553904       0.0008091913         0.004929543    0.02901828               0.100938752 0.034195002</span></span>
+<span><span class="co">## Sample_2     0.06812529 0.07469994 0.02922466   0.01664688          0.024583304       0.0906273201         0.037988264    0.03085840               0.059172753 0.030084079</span></span>
+<span><span class="co">## Sample_3     0.05523872 0.05755380 0.02136340   0.04671246          0.007121264       0.0678701103         0.036586598    0.08270273               0.036124315 0.065181993</span></span>
+<span><span class="co">## Sample_4     0.02784961 0.06164910 0.04961384   0.03491505          0.019962545       0.0492653102         0.022256006    0.09293170               0.059893306 0.057660546</span></span>
+<span><span class="co">## Sample_5     0.02031603 0.04073286 0.02935413   0.02051810          0.061510812       0.1044049710         0.024523731    0.04414546               0.004997779 0.006953675</span></span>
+<span><span class="co">## Sample_6     0.02457041 0.03025284 0.01038808   0.04958449          0.001022621       0.1324384362         0.072353281    0.02527887               0.017107340 0.067269459</span></span>
+<span><span class="co">##          gamma delta T cells</span></span>
+<span><span class="co">## Sample_1          0.04661207</span></span>
+<span><span class="co">## Sample_2          0.01783506</span></span>
+<span><span class="co">## Sample_3          0.01793949</span></span>
+<span><span class="co">## Sample_4          0.06594691</span></span>
+<span><span class="co">## Sample_5          0.02733001</span></span>
+<span><span class="co">## Sample_6          0.04335385</span></span></code></pre>
+<p><code>deconvDDLSPretrained</code> returns a data frame with samples
+as rows (<span class="math inline">\(k\)</span>) and cell types
+considered by the model as columns (<span class="math inline">\(j\)</span>). Each entry corresponds to the
 proportion of cell type <span class="math inline">\(k\)</span> in sample
 <span class="math inline">\(i\)</span>. To visually evaluate these
 results using a bar chart, you can use the <code>barplotCellTypes</code>
 function as follows:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span></span>
 <span>  <span class="va">deconvResults</span>, </span>
-<span>  color.line <span class="op">=</span> <span class="st">"black"</span>,</span>
-<span>  title <span class="op">=</span> <span class="st">"Results of deconvolution of TCGA breast samples"</span></span>
+<span>  title <span class="op">=</span> <span class="st">"Results of deconvolution of TCGA colon samples"</span>, rm.x.text <span class="op">=</span> <span class="cn">T</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="resultsDeconvTCGA_pretrainedModels-1.png" title="plot of chunk resultsDeconvTCGA_pretrainedModels" alt="plot of chunk resultsDeconvTCGA_pretrainedModels" style="display: block; margin: auto;"></p>
-<p>Finally, <code>deconvDigitalDLSorterObj</code> also offers two
-parameters in case you want to simplify the results by aggregating cell
-proportions of similar cell types: <code>simplify.set</code> and
-<code>simplify.majority</code>. For instance, we can summarize dendritic
-cells (DCs) and monocytes in the new class mononuclear phagocyte system
-(MPS) using <code>simplify.set</code> as follows:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="figure" style="text-align: center">
+<img src="resultsDeconvTCGA_pretrainedModels-1.png" alt="plot of chunk resultsDeconvTCGA_pretrainedModels"><p class="caption">
+plot of chunk resultsDeconvTCGA_pretrainedModels
+</p>
+</div>
+<p>Let’s take 40 random samples just to improve the visualization:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span></span>
+<span>  <span class="va">deconvResults</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">40</span><span class="op">)</span>, <span class="op">]</span>, </span>
+<span>  title <span class="op">=</span> <span class="st">"Results of deconvolution of TCGA colon samples"</span>, rm.x.text <span class="op">=</span> <span class="cn">T</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<img src="resultsDeconvTCGA_pretrainedModels_2-1.png" alt="plot of chunk resultsDeconvTCGA_pretrainedModels_2"><p class="caption">
+plot of chunk resultsDeconvTCGA_pretrainedModels_2
+</p>
+</div>
+<p>Finally, <code>deconvDDLSPretrained</code> also offers two parameters
+in case you want to simplify the results by aggregating cell proportions
+of similar cell types: <code>simplify.set</code> and
+<code>simplify.majority</code>. For instance, we can summarize different
+CD4+ T cell subtypes into a unique label by using the
+<code>simplify.set</code> parameter as follows:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># deconvolution</span></span>
-<span><span class="va">deconvResultsSum</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDigitalDLSorter.html">deconvDigitalDLSorter</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">TCGA.breast.small</span>,</span>
-<span>  model <span class="op">=</span> <span class="va">breast.chung.generic</span>,</span>
+<span><span class="va">deconvResultsSum</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDDLSPretrained.html">deconvDDLSPretrained</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">TCGA.colon.se</span>,</span>
+<span>  model <span class="op">=</span> <span class="va">DDLS.colon.lee</span>,</span>
 <span>  normalize <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  simplify.set <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>MPS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DCs"</span>, <span class="st">"Monocyte"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  simplify.set <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    `CD4+ T cells` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"CD4+ T cells"</span>, </span>
+<span>      <span class="st">"T follicular helper cells"</span>, </span>
+<span>      <span class="st">"gamma delta T cells"</span>, </span>
+<span>      <span class="st">"Regulatory T cells"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## === Filtering 32876 features in data that are not present in trained model</span></span></code></pre>
-<pre><code><span><span class="co">## === Setting 11305 features that are not present in trained model to zero</span></span></code></pre>
+<pre><code><span><span class="co">## === Filtering 57085 features in data that are not present in trained model</span></span></code></pre>
+<pre><code><span><span class="co">## === Setting 0 features that are not present in trained model to zero</span></span></code></pre>
 <pre><code><span><span class="co">## === Normalizing and scaling data</span></span></code></pre>
 <pre><code><span><span class="co">## === Predicting cell types present in the provided samples</span></span></code></pre>
+<pre><code>## 
+ 1/17 [&gt;.............................] - ETA: 0s
+17/17 [==============================] - 0s 703us/step
+## 
+17/17 [==============================] - 0s 727us/step</code></pre>
 <pre><code><span><span class="co">## DONE</span></span></code></pre>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">deconvResultsSum</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span></span>
-<span>  <span class="va">deconvResultsSum</span>, </span>
-<span>  rm.x.text <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  color.line <span class="op">=</span> <span class="st">"black"</span>,</span>
-<span>  title <span class="op">=</span> <span class="st">"Results of deconvolution of TCGA breast samples (simplified)"</span></span>
+<span>  <span class="va">deconvResultsSum</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">deconvResultsSum</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">40</span><span class="op">)</span>, <span class="op">]</span>, </span>
+<span>  title <span class="op">=</span> <span class="st">"Results of deconvolution of TCGA colon samples"</span>, rm.x.text <span class="op">=</span> <span class="cn">T</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="resultsDeconvTCGASimpl_pretrainedModels-1.png" title="plot of chunk resultsDeconvTCGASimpl_pretrainedModels" alt="plot of chunk resultsDeconvTCGASimpl_pretrainedModels" style="display: block; margin: auto;"></p>
+<div class="figure" style="text-align: center">
+<img src="resultsDeconvTCGASimpl_pretrainedModels-1.png" alt="plot of chunk resultsDeconvTCGASimpl_pretrainedModels"><p class="caption">
+plot of chunk resultsDeconvTCGASimpl_pretrainedModels
+</p>
+</div>
 <p>On the other hand, <code>simplify.majority</code> does not create new
 classes but sums the proportions to the most abundant cell type from
-those provided in each sample. See the documentation and examples for
-more details.</p>
+those provided in each sample. See the documentation for more
+details.</p>
 </div>
 <div class="section level2">
-<h2 id="contribute-your-own-models">Contribute your own models<a class="anchor" aria-label="anchor" href="#contribute-your-own-models"></a>
+<h2 id="contribute-with-your-own-models">Contribute with your own models<a class="anchor" aria-label="anchor" href="#contribute-with-your-own-models"></a>
 </h2>
-<p>New models are planned to be published soon, but you can contribute
-your own models by making them available to other users. Please do not
-hesitate to contact us! We will check the models and include them in the
-<strong>digitalDLSorteRmodels</strong> package.</p>
+<p>You can make available our own models to other users. Just drop an
+email and we will make them available at the
+<strong>digitalDLSorteRmodels</strong> R package!</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -319,7 +363,7 @@ hesitate to contact us! We will check the models and include them in the
 <!-- ```{r sessionInfo, echo=FALSE} -->
 <!-- sessionInfo() -->
 <!-- ``` -->
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-Chung2017" class="csl-entry">
 Chung, W., H. H. Eum, H. O. Lee, K. M. Lee, H. B. Lee, K. T. Kim, H. S.
 Ryu, et al. 2017. <span>“<span class="nocase"><span>S</span>ingle-cell
@@ -337,12 +381,6 @@ invasive lobular breast cancer</span>.”</span> <em>Cell</em> 163 (2):
 Koboldt, D. C., R. S. Fulton, M. D. McLellan, H. Schmidt, J.
 Kalicki-Veizer, J. F. McMichael, L. L. Fulton, et al. 2012. <span>“<span class="nocase"><span>C</span>omprehensive molecular portraits of human
 breast tumours</span>.”</span> <em>Nature</em> 490 (7418): 61–70.
-</div>
-<div id="ref-Li2017" class="csl-entry">
-Li, H., E. T. Courtois, D. Sengupta, Y. Tan, K. H. Chen, J. J. L. Goh,
-S. L. Kong, et al. 2017. <span>“<span class="nocase"><span>R</span>eference component analysis of single-cell
-transcriptomes elucidates cellular heterogeneity in human colorectal
-tumors</span>.”</span> <em>Nat Genet</em> 49 (5): 708–18.
 </div>
 </div>
 </div>

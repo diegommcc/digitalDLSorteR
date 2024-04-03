@@ -3,7 +3,7 @@
 stores different intermediate data resulting from the creation of new
 context-specific deconvolution models from single-cell data. It is only used
 in the case of building new deconvolution models. To deconvolute bulk samples
-using pre-trained models, see deconvDigitalDLSorter function
+using pre-trained models, see deconvDDLSPretrained function
 and the package digitalDLSorteRdata."><meta property="og:image" content="https://diegommcc.github.io/digitalDLSorteR/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -22,7 +22,7 @@ and the package digitalDLSorteRdata."><meta property="og:image" content="https:/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -40,13 +40,10 @@ and the package digitalDLSorteRdata."><meta property="og:image" content="https:/
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href=".././articles/pretrainedModels.html">Using pre-trained context-specific deconvolution models</a>
+      <a href=".././articles/pretrainedModels-hq.html">Using pre-trained context-specific deconvolution models</a>
     </li>
     <li>
-      <a href=".././articles/newModels.html">Building new deconvolution models</a>
-    </li>
-    <li>
-      <a href=".././articles/realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a>
+      <a href=".././articles/realModelWorkflow-hq.html">Building new deconvoluion models: deconvolution of colorectal cancer samples</a>
     </li>
     <li>
       <a href=".././articles/kerasIssues.html">Keras/TensorFlow installation and configuration</a>
@@ -83,7 +80,7 @@ and the package digitalDLSorteRdata."><meta property="og:image" content="https:/
 stores different intermediate data resulting from the creation of new
 context-specific deconvolution models from single-cell data. It is only used
 in the case of building new deconvolution models. To deconvolute bulk samples
-using pre-trained models, see <code><a href="deconvDigitalDLSorter.html">deconvDigitalDLSorter</a></code> function
+using pre-trained models, see <code><a href="deconvDDLSPretrained.html">deconvDDLSPretrained</a></code> function
 and the package <span class="pkg">digitalDLSorteRdata</span>.</p>
     </div>
 
@@ -110,7 +107,7 @@ models from single-cell RNA-Seq data or to deconvolute bulk RNA-Seq samples
 using pre-trained models available at <span class="pkg">digitalDLSorteRdata</span> package. If
 you want to build new models, see <code><a href="createDDLSobject.html">createDDLSobject</a></code> function. On
 the other hand, if you want to use pre-trained models, see
-<code><a href="deconvDigitalDLSorter.html">deconvDigitalDLSorter</a></code> function.</p>
+<code><a href="deconvDDLSPretrained.html">deconvDDLSPretrained</a></code> function.</p>
 <p>In order to provide a way to work with large amounts of data on
 RAM-constrained machines, we provide the possibility to use HDF5 files as
 back-end to store count matrices of both real/simulated single-cell and bulk

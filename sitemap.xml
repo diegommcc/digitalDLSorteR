@@ -13,13 +13,16 @@
     <loc>https://diegommcc.github.io/digitalDLSorteR/articles/kerasIssues.html</loc>
   </url>
   <url>
-    <loc>https://diegommcc.github.io/digitalDLSorteR/articles/newModels.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/articles/pretrainedModels-hq.html</loc>
   </url>
   <url>
     <loc>https://diegommcc.github.io/digitalDLSorteR/articles/pretrainedModels.html</loc>
   </url>
   <url>
-    <loc>https://diegommcc.github.io/digitalDLSorteR/articles/realModelExample.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/articles/realModelWorkflow-hq.html</loc>
+  </url>
+  <url>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/articles/realModelWorkflow.html</loc>
   </url>
   <url>
     <loc>https://diegommcc.github.io/digitalDLSorteR/authors.html</loc>
@@ -79,7 +82,7 @@
     <loc>https://diegommcc.github.io/digitalDLSorteR/reference/deconvDDLSObj.html</loc>
   </url>
   <url>
-    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/deconvDigitalDLSorter.html</loc>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/deconvDDLSPretrained.html</loc>
   </url>
   <url>
     <loc>https://diegommcc.github.io/digitalDLSorteR/reference/digitalDLSorteR.html</loc>
@@ -106,6 +109,9 @@
     <loc>https://diegommcc.github.io/digitalDLSorteR/reference/installTFpython.html</loc>
   </url>
   <url>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/interGradientsDL.html</loc>
+  </url>
+  <url>
     <loc>https://diegommcc.github.io/digitalDLSorteR/reference/listToDDLS.html</loc>
   </url>
   <url>
@@ -122,6 +128,9 @@
   </url>
   <url>
     <loc>https://diegommcc.github.io/digitalDLSorteR/reference/model.html</loc>
+  </url>
+  <url>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/plotHeatmapGradsAgg.html</loc>
   </url>
   <url>
     <loc>https://diegommcc.github.io/digitalDLSorteR/reference/plotTrainingHistory.html</loc>
@@ -176,6 +185,9 @@
   </url>
   <url>
     <loc>https://diegommcc.github.io/digitalDLSorteR/reference/test.pred.html</loc>
+  </url>
+  <url>
+    <loc>https://diegommcc.github.io/digitalDLSorteR/reference/topGradientsCellType.html</loc>
   </url>
   <url>
     <loc>https://diegommcc.github.io/digitalDLSorteR/reference/trainDDLSModel.html</loc>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -35,13 +35,10 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href=".././articles/pretrainedModels.html">Using pre-trained context-specific deconvolution models</a>
+      <a href=".././articles/pretrainedModels-hq.html">Using pre-trained context-specific deconvolution models</a>
     </li>
     <li>
-      <a href=".././articles/newModels.html">Building new deconvolution models</a>
-    </li>
-    <li>
-      <a href=".././articles/realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a>
+      <a href=".././articles/realModelWorkflow-hq.html">Building new deconvoluion models: deconvolution of colorectal cancer samples</a>
     </li>
     <li>
       <a href=".././articles/kerasIssues.html">Keras/TensorFlow installation and configuration</a>
@@ -101,12 +98,20 @@
 <ul><li>Changed the way dense matrices (<code>matrix</code>) and <code>data.frame</code> objects are transformed into <code>dgCMatrix</code> objects.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.0.1" id="digitaldlsorter-101-2024-02-05">digitalDLSorteR 1.0.1 (2024-02-05)<a class="anchor" aria-label="anchor" href="#digitaldlsorter-101-2024-02-05"></a></h2>
+<h2 class="page-header" data-toc-text="1.0.1" id="digitaldlsorter-101-2024-02-05">digitalDLSorteR 1.0.1 (2024-02-05)<small>2024-02-07</small><a class="anchor" aria-label="anchor" href="#digitaldlsorter-101-2024-02-05"></a></h2>
 <ul><li>Some name functions have been changed: createDDLSobject and trainDDLSModel.</li>
 <li>Loading data (createDDLSobject) has been changed: now, only 2,000 genes are used for deconvolution and bulk RNA-seq must be provided at the beginning of the workflow (see documentation).</li>
 <li>Fixed bugs: standardization of features before training.</li>
 <li>Vignette modified according to the new functions.</li>
 <li>HDF5Array update: use.for parameter has been deleted.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.1.0" id="digitaldlsorter-110-2024-02-05">digitalDLSorteR 1.1.0 (2024-02-05)<a class="anchor" aria-label="anchor" href="#digitaldlsorter-110-2024-02-05"></a></h2>
+<ul><li>Included two parameters to control python and tensorflow versions in the installTFpython function.</li>
+<li>The installTFpython function now installs python 3.8 by default.</li>
+<li>Included interGradientsDL.R file with functions to interpret neural networks using Vanilla Gradient (from SpatialDDLS).</li>
+<li>Functions renamed: deconvDigitalDLSorter &gt; deconvDDLSObj and deconvDigitalDLSorterObj &gt; deconvDDLSPretrained.</li>
+<li>Vignettes updated using new deconvolution models/data.</li>
 </ul></div>
   </div>
 

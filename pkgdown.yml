@@ -1,13 +1,14 @@
-pandoc: 2.19.2
+pandoc: 3.1.11
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   hdf5Backend: hdf5Backend.html
   kerasIssues: kerasIssues.html
-  newModels: newModels.html
+  pretrainedModels-hq: pretrainedModels-hq.html
   pretrainedModels: pretrainedModels.html
-  realModelExample: realModelExample.html
-last_built: 2024-02-07T09:31Z
+  realModelWorkflow-hq: realModelWorkflow-hq.html
+  realModelWorkflow: realModelWorkflow.html
+last_built: 2024-04-03T13:06Z
 urls:
   reference: https://diegommcc.github.io/digitalDLSorteR/reference
   article: https://diegommcc.github.io/digitalDLSorteR/articles

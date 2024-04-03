@@ -22,7 +22,7 @@ as a SummarizedExperiment object."><meta property="og:image" content="https://di
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -40,13 +40,10 @@ as a SummarizedExperiment object."><meta property="og:image" content="https://di
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href=".././articles/pretrainedModels.html">Using pre-trained context-specific deconvolution models</a>
+      <a href=".././articles/pretrainedModels-hq.html">Using pre-trained context-specific deconvolution models</a>
     </li>
     <li>
-      <a href=".././articles/newModels.html">Building new deconvolution models</a>
-    </li>
-    <li>
-      <a href=".././articles/realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a>
+      <a href=".././articles/realModelWorkflow-hq.html">Building new deconvoluion models: deconvolution of colorectal cancer samples</a>
     </li>
     <li>
       <a href=".././articles/kerasIssues.html">Keras/TensorFlow installation and configuration</a>
@@ -102,6 +99,7 @@ as a <code>SummarizedExperiment</code> object.</p>
 <span>  sc.n.genes.per.cluster <span class="op">=</span> <span class="fl">300</span>,</span>
 <span>  top.n.genes <span class="op">=</span> <span class="fl">2000</span>,</span>
 <span>  sc.log.FC <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  sc.log.FC.cutoff <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  sc.min.counts <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  sc.min.cells <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  bulk.min.counts <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -200,6 +198,10 @@ variability across the whole single-cell dataset.</p></dd>
 <dt>sc.log.FC</dt>
 <dd><p>Whether to filter genes with a logFC less than 0.5 when
 <code>sc.filt.genes.cluster = TRUE</code>.</p></dd>
+
+
+<dt>sc.log.FC.cutoff</dt>
+<dd><p>LogFC cutoff used if <code>sc.log.FC == TRUE</code>.</p></dd>
 
 
 <dt>sc.min.counts</dt>

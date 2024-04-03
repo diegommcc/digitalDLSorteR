@@ -24,7 +24,7 @@ but we recommend using this function."><meta property="og:image" content="https:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -42,13 +42,10 @@ but we recommend using this function."><meta property="og:image" content="https:
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href=".././articles/pretrainedModels.html">Using pre-trained context-specific deconvolution models</a>
+      <a href=".././articles/pretrainedModels-hq.html">Using pre-trained context-specific deconvolution models</a>
     </li>
     <li>
-      <a href=".././articles/newModels.html">Building new deconvolution models</a>
-    </li>
-    <li>
-      <a href=".././articles/realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a>
+      <a href=".././articles/realModelWorkflow-hq.html">Building new deconvoluion models: deconvolution of colorectal cancer samples</a>
     </li>
     <li>
       <a href=".././articles/kerasIssues.html">Keras/TensorFlow installation and configuration</a>
@@ -92,7 +89,13 @@ but we recommend using this function.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">installTFpython</span><span class="op">(</span>conda <span class="op">=</span> <span class="st">"auto"</span>, install.conda <span class="op">=</span> <span class="cn">FALSE</span>, miniconda.path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">installTFpython</span><span class="op">(</span></span>
+<span>  conda <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  python.version <span class="op">=</span> <span class="st">"3.8"</span>,</span>
+<span>  tensorflow.version <span class="op">=</span> <span class="st">"2.6"</span>,</span>
+<span>  install.conda <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  miniconda.path <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -100,6 +103,17 @@ but we recommend using this function.</p>
     <dl><dt>conda</dt>
 <dd><p>Path to a conda executable. Use <code>"auto"</code> (by default)
 allows <span class="pkg">reticulate</span> to automatically find an appropriate conda binary.</p></dd>
+
+
+<dt>python.version</dt>
+<dd><p>Python version to be installed in the environment
+(<code>"3.8"</code> by default). We recommend keeping this version as it has
+been tested to be compatible with tensorflow 2.6.</p></dd>
+
+
+<dt>tensorflow.version</dt>
+<dd><p>Tensorflow version to be installed in the
+environment (<code>"2.6"</code> by default).</p></dd>
 
 
 <dt>install.conda</dt>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -35,13 +35,10 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href=".././articles/pretrainedModels.html">Using pre-trained context-specific deconvolution models</a>
+      <a href=".././articles/pretrainedModels-hq.html">Using pre-trained context-specific deconvolution models</a>
     </li>
     <li>
-      <a href=".././articles/newModels.html">Building new deconvolution models</a>
-    </li>
-    <li>
-      <a href=".././articles/realModelExample.html">Performance of a real model: deconvolution of colorectal cancer samples</a>
+      <a href=".././articles/realModelWorkflow-hq.html">Building new deconvoluion models: deconvolution of colorectal cancer samples</a>
     </li>
     <li>
       <a href=".././articles/kerasIssues.html">Keras/TensorFlow installation and configuration</a>
@@ -148,14 +145,14 @@ and bulk RNA-seq data</p></td>
         </td>
         <td><p>Deconvolute bulk gene expression samples (bulk RNA-Seq)</p></td>
       </tr><tr><td>
-          <p><code><a href="deconvDigitalDLSorter.html">deconvDigitalDLSorter()</a></code> </p>
+          <p><code><a href="deconvDDLSPretrained.html">deconvDDLSPretrained()</a></code> </p>
         </td>
         <td><p>Deconvolute bulk RNA-Seq samples using a pre-trained DigitalDLSorter model</p></td>
       </tr><tr><td>
           <p><code><a href="digitalDLSorteR.html">digitalDLSorteR</a></code> </p>
         </td>
         <td><p>digitalDLSorteR: an R package to deconvolute bulk RNA-Seq samples using
-single-cell RNA-Seq data and Deep Learning</p></td>
+single-cell RNA-seq data and neural networks</p></td>
       </tr><tr><td>
           <p><code><a href="distErrorPlot.html">distErrorPlot()</a></code> </p>
         </td>
@@ -182,6 +179,11 @@ RNA-Seq expression profiles</p></td>
           <p><code><a href="installTFpython.html">installTFpython()</a></code> </p>
         </td>
         <td><p>Install Python dependencies for digitalDLSorteR</p></td>
+      </tr><tr><td>
+          <p><code><a href="interGradientsDL.html">interGradientsDL()</a></code> </p>
+        </td>
+        <td><p>Calculate gradients of predicted cell types/loss function with respect to
+input features for interpreting trained deconvolution models</p></td>
       </tr><tr><td>
           <p><code><a href="listToDDLS.html">listToDDLS()</a></code> </p>
         </td>
@@ -210,6 +212,11 @@ object</p></td>
         </td>
         <td><p>Get and set <code>model</code> slot in a
 <code>DigitalDLSorterDNN</code> object</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotHeatmapGradsAgg.html">plotHeatmapGradsAgg()</a></code> </p>
+        </td>
+        <td><p>Plot a heatmap of gradients of classes / loss function wtih respect to the
+input</p></td>
       </tr><tr><td>
           <p><code><a href="plotTrainingHistory.html">plotTrainingHistory()</a></code> </p>
         </td>
@@ -297,6 +304,10 @@ model parameters</p></td>
         </td>
         <td><p>Get and set <code>test.pred</code> slot in a
 <code>DigitalDLSorterDNN</code> object</p></td>
+      </tr><tr><td>
+          <p><code><a href="topGradientsCellType.html">topGradientsCellType()</a></code> </p>
+        </td>
+        <td><p>Get top genes with largest/smallest gradients per cell type</p></td>
       </tr><tr><td>
           <p><code><a href="trainDDLSModel.html">trainDDLSModel()</a></code> </p>
         </td>
