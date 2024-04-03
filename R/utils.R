@@ -685,7 +685,7 @@ installTFpython <- function(
     }
   }
   dirConda <- reticulate::conda_binary("auto")
-  message("\n=== Creating SpatialDDLS-env environment")
+  message("\n=== Creating digitaldlsorter-env environment")
   
   ## custom versions 
   if (python.version != "3.8" | tensorflow.version != "2.6") {
@@ -698,7 +698,7 @@ installTFpython <- function(
   
   status2 <- tryCatch(
     reticulate::conda_create(
-      envname = "SpatialDDLS-env", 
+      envname = "digitaldlsorter-env", 
       packages = paste0("python==", python.version)
     ), 
     error = function(e) {
@@ -712,13 +712,13 @@ installTFpython <- function(
       call. = FALSE
     )
   }
-  message("\n=== Installing tensorflow in SpatialDDLS-env environment")
+  message("\n=== Installing tensorflow in digitaldlsorter-env environment")
   status3 <- tryCatch(
     tensorflow::install_tensorflow(
       version = paste0(tensorflow.version, "-cpu"),
       method = "conda", 
       conda = dirConda, 
-      envname = "SpatialDDLS-env"
+      envname = "digitaldlsorter-env"
     ), 
     error = function(e) {
       return(TRUE)
@@ -732,7 +732,7 @@ installTFpython <- function(
     )
   }
   message("Installation complete!")
-  message(c("Restart R and load SpatialDDLS. If you find any problem, \
+  message(c("Restart R and load digitalDLSorteR If you find any problem, \
          see ?tensorflow::use_condaenv"))
 }
 
