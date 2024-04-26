@@ -41,7 +41,7 @@ suppressMessages(library("ggplot2"))
 
 ## Loading data
 
-We are also going to load bulk RNA-seq data on colorectal cancer patients from the The Cancer Genome Atlas (TCGA) program [@Koboldt2012; @Ciriello2015]. When building new deconvolution models, we recommend loading both the single-cell RNA-seq reference and the bulk RNA-seq dataset to be deconvoluted at the beginning so that **digitalDLSorteR** can choose only those genes that are actually relevant for the both of them. 
+We are also going to load bulk RNA-seq data on colorectal cancer patients from the The Cancer Genome Atlas (TCGA) program [@Koboldt2012; @Ciriello2015]. When building new deconvolution models, we recommend loading both the single-cell RNA-seq reference and the bulk RNA-seq dataset to be deconvoluted at the beginning so that **digitalDLSorteR** can choose only genes actually relevant for the deconvolution process. 
 
 ```{r}
 data("SCE.colon.Lee")
@@ -49,6 +49,8 @@ data("TCGA.colon.se")
 # to make it suitable for digitalDLSorteR
 rowData(TCGA.colon.se) <- DataFrame(SYMBOL = rownames(TCGA.colon.se))
 ```
+
+**Note:** Please, note that here `sc.filt.genes.cluster = FALSE` and `sc.log.FC = FALSE` because we are providing with data already preprocessed. However, we recommend keeping `sc.filt.genes.cluster = TRUE` and `sc.log.FC = TRUE` in regular situations, as **digitalDLSorteR** will filter genes according to their logFC. 
 
 ```{r, warning = FALSE}
 DDLS.colon <- createDDLSobject(

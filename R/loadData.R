@@ -784,6 +784,26 @@ NULL
   return(list(counts, cells.metadata, genes.metadata))
 }
 
+.filterGenesByVar <- function(
+  sce.obj, 
+  top.n.genes,
+  verbose = TRUE
+) {
+  if (verbose) 
+    message(
+      "\n=== As the number of resulting genes is greater than ",
+      "the top.n.genes parameter. Using only ", 
+      top.n.genes, " according to gene variance"
+    )
+  sce.obj <- computeLibraryFactors(sce.obj)
+  sce.obj <- logNormCounts(sce.obj)
+  dec.sc.obj.ln <- modelGeneVar(sce.obj)
+  final.genes <- as.data.frame(dec.sc.obj.ln) %>% 
+    arrange(desc(abs(.data[["bio"]]))) %>% head(top.n.genes) %>% rownames()
+
+  return(final.genes)
+}
+
 .filterGenesByCluster <- function(
     sce.obj,
     cell.type.column, 
@@ -839,18 +859,6 @@ NULL
     message(
       "\n=== Number of genes after filtering based on logFC: ", length(final.genes)
     )
-  
-  if (length(final.genes) > top.n.genes) {
-    if (verbose) 
-      message(
-        "\n=== As the number of resulting genes is greater than ",
-        "the top.n.genes parameter. Using only ", 
-        top.n.genes, " according to gene variance"
-      )
-    dec.sc.obj.ln <- modelGeneVar(sce.obj.norm[final.genes, ])
-    final.genes <- as.data.frame(dec.sc.obj.ln) %>% 
-      arrange(desc(abs(.data[["bio"]]))) %>% head(top.n.genes) %>% rownames()
-  }
   
   return(final.genes)
 }
@@ -1292,7 +1300,6 @@ createDDLSobject <- function(
     }
   }
   if (sc.filt.genes.cluster) {
-    ## put an argument to test logFCs
     final.genes <- .filterGenesByCluster(
       sce.obj = single.cell.real,
       cell.type.column = sc.cell.type.column, 
@@ -1303,6 +1310,18 @@ createDDLSobject <- function(
       log.FC.cutoff = sc.log.FC.cutoff,
       verbose = verbose
     )  
+    if (!missing(bulk.data)) {
+      se.object <- se.object[final.genes, ]  
+    }
+    single.cell.real <- single.cell.real[final.genes, ]
+  }
+  
+  ## in case the number of final dimenions is too high, this is out of 
+  # sc.filt.genes.cluster to filter genes although it is set to FALSE
+  if (nrow(single.cell.real) > top.n.genes) {
+    final.genes <- .filterGenesByVar(
+      sce.obj = single.cell.real, top.n.genes = top.n.genes, verbose = verbose
+    )
     if (!missing(bulk.data)) {
       se.object <- se.object[final.genes, ]  
     }

@@ -46,8 +46,8 @@ The algorithm consists of training Deep Neural Network (DNN) models with simulat
 
 The package has two main ways of use:
 
-1. Using pre-trained models included in the **digitalLDSorteRmodels** (<https://github.com/diegommcc/digitalDLSorteRmodels>) R package to deconvolute new bulk RNA-seq samples from the same environment. So far, the available models allow to deconvolute samples from human breast cancer ([GSE75688](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688) data from [Chung et al., 2017](https://www.nature.com/articles/ncomms15081) used as reference), and colorectal cancer ([GSE132465](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132465), [GSE132257](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132257) and [GSE144735](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144735) data from [Lee, Hong, Etlioglu Cho et al., 2020](https://www.nature.com/articles/s41588-020-0636-z) used as reference). For more details about this workflow, please see the [Using pre-trained context-specific deconvolution models](https://diegommcc.github.io/digitalDLSorteR/articles/pretrainedModels.html) article. **Disclaimer**: these models intend to be a quick option to deconvolute samples from the same biological environment, but we strongly recommend generating new models with data manually curated by the users.
-2. Building new deconvolution models from pre-characterized scRNA-seq datasets. This is the main way to use **digitalDLSorteR**. For more information on the workflow, see the article [Building new deconvolution models](https://diegommcc.github.io/digitalDLSorteR/articles/newModels.html).
+1. Using pre-trained models included in the **digitalLDSorteRmodels** (<https://github.com/diegommcc/digitalDLSorteRmodels>) R package to deconvolute new bulk RNA-seq samples from the same environment. So far, the available models allow to deconvolute samples from human breast cancer ([GSE75688](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75688) data from [Chung et al., 2017](https://www.nature.com/articles/ncomms15081) used as reference), and colorectal cancer ([GSE132465](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132465), [GSE132257](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132257) and [GSE144735](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144735) data from [Lee, Hong, Etlioglu Cho et al., 2020](https://www.nature.com/articles/s41588-020-0636-z) used as reference). For more details about this workflow, please see the [Using pre-trained context-specific deconvolution models](https://diegommcc.github.io/digitalDLSorteR/articles/pretrainedModels-hq.html) article. **Disclaimer**: these models intend to be a quick option to deconvolute samples from the same biological environment, but we strongly recommend generating new models with data manually curated by the users.
+2. Building new deconvolution models from pre-characterized scRNA-seq datasets. This is the main way to use **digitalDLSorteR**. For more information on the workflow, see the article [Building new deconvolution models](https://diegommcc.github.io/digitalDLSorteR/articles/realModelWorkflow-hq.html).
 
 To use pre-trained context specific deconvolution models, **digitalDLSorteR** relies on the **digitalDLSorteRmodels** data R package. Therefore, it should be installed along with **digitalDLSorteR** from GitHub as follows:
 
@@ -55,12 +55,12 @@ To use pre-trained context specific deconvolution models, **digitalDLSorteR** re
 remotes::install_github("diegommcc/digitalDLSorteRmodels")
 ```
 
-Once **digitalDLSorteRmodels** is loaded, the pre-trained models are available. See the article [Using pre-trained context-specific deconvolution models](https://diegommcc.github.io/digitalDLSorteR/articles/pretrainedModels.html) for an example.
+Once **digitalDLSorteRmodels** is loaded, the pre-trained models are available. See the article [Using pre-trained context-specific deconvolution models](https://diegommcc.github.io/digitalDLSorteR/articles/pretrainedModels-hq.html) for an example.
 
 ## Final remarks
 
 * Regarding pre-trained models, if you generate new models and want to make them available through the **digitalDLSorteRmodels** R package for other users to use them, contact with us!
-* We provide some pre-trained models that take into account genes that seem to be relevant for these environmental conditions. However, as these genes might be different depending on the bulk RNA-seq to be deconvoluted, we strongly recommend creating new models through the workflow explained [here](https://diegommcc.github.io/digitalDLSorteR/articles/realModelWorkflow.html). 
+* We provide some pre-trained models that take into account genes that seem to be relevant for these environmental conditions. However, as these genes might be different depending on the bulk RNA-seq to be deconvoluted, we strongly recommend creating new models through the workflow explained [here](https://diegommcc.github.io/digitalDLSorteR/articles/realModelWorkflow-hq.html). 
 * Contributions and suggestions are welcome!
 
 ## Citation 

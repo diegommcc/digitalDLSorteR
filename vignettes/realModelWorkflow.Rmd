@@ -48,6 +48,9 @@ rowData(TCGA.colon.se) <- DataFrame(SYMBOL = rownames(TCGA.colon.se))
 ```
 
 
+**Note:** Please, note that here `sc.filt.genes.cluster = FALSE` and `sc.log.FC = FALSE` because we are providing with data already preprocessed. However, we recommend keeping `sc.filt.genes.cluster = TRUE` and `sc.log.FC = TRUE` in regular situations, as **digitalDLSorteR** will filter genes according to their logFC. 
+
+
 ```r
 DDLS.colon <- createDDLSobject(
   sc.data = SCE.colon.Lee,
@@ -297,8 +300,12 @@ DDLS.colon <- trainDDLSModel(object = DDLS.colon, verbose = FALSE)
 ```
 
 ```
-##  1/79 [..............................] - ETA: 9s - loss: 0.1212 - accuracy: 0.7500 - mean_absolute_error: 0.0119 - categorical_accuracy: 0.750066/79 [========================>.....] - ETA: 0s - loss: 0.1222 - accuracy: 0.6993 - mean_absolute_error: 0.0134 - categorical_accuracy: 0.699379/79 [==============================] - 0s 803us/step - loss: 0.1221 - accuracy: 0.7012 - mean_absolute_error: 0.0134 - categorical_accuracy: 0.7012
-## 79/79 [==============================] - 0s 810us/step - loss: 0.1221 - accuracy: 0.7012 - mean_absolute_error: 0.0134 - categorical_accuracy: 0.7012
+## 
+ 1/79 [..............................] - ETA: 9s - loss: 0.1212 - accuracy: 0.7500 - mean_absolute_error: 0.0119 - categorical_accuracy: 0.7500
+66/79 [========================>.....] - ETA: 0s - loss: 0.1222 - accuracy: 0.6993 - mean_absolute_error: 0.0134 - categorical_accuracy: 0.6993
+79/79 [==============================] - 0s 803us/step - loss: 0.1221 - accuracy: 0.7012 - mean_absolute_error: 0.0134 - categorical_accuracy: 0.7012
+## 
+79/79 [==============================] - 0s 810us/step - loss: 0.1221 - accuracy: 0.7012 - mean_absolute_error: 0.0134 - categorical_accuracy: 0.7012
 ```
 
 ## Evaluation of the model on test data
