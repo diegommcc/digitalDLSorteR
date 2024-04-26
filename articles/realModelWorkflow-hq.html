@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -154,13 +154,21 @@ patients from the The Cancer Genome Atlas (TCGA) program <span class="citation">
 When building new deconvolution models, we recommend loading both the
 single-cell RNA-seq reference and the bulk RNA-seq dataset to be
 deconvoluted at the beginning so that <strong>digitalDLSorteR</strong>
-can choose only those genes that are actually relevant for the both of
-them.</p>
+can choose only genes actually relevant for the deconvolution
+process.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"SCE.colon.Lee"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TCGA.colon.se"</span><span class="op">)</span></span>
 <span><span class="co"># to make it suitable for digitalDLSorteR</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">TCGA.colon.se</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">DataFrame</span><span class="op">(</span>SYMBOL <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">TCGA.colon.se</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Note:</strong> Please, note that here
+<code>sc.filt.genes.cluster = FALSE</code> and
+<code>sc.log.FC = FALSE</code> because we are providing with data
+already preprocessed. However, we recommend keeping
+<code>sc.filt.genes.cluster = TRUE</code> and
+<code>sc.log.FC = TRUE</code> in regular situations, as
+<strong>digitalDLSorteR</strong> will filter genes according to their
+logFC.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLS.colon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDDLSobject.html">createDDLSobject</a></span><span class="op">(</span></span>
 <span>  sc.data <span class="op">=</span> <span class="va">SCE.colon.Lee</span>,</span>
@@ -203,13 +211,13 @@ the bulk RNA-seq data to be deconvoluted.</p>
 <pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
 <span><span class="co">## Real single-cell profiles:</span></span>
 <span><span class="co">##   2000 features and 106364 cells</span></span>
-<span><span class="co">##   rownames: FCGR1B PRSS1 RPS5 ... RPS5 PCDHB15 RP11-452L6.7 DIRAS3 </span></span>
-<span><span class="co">##   colnames: SMC171-T-SGI_TCATTACGTGAGGGAG KUL30-T_GATGAAAGTTATCGGT KUL19-B_ATTCTACAGGATGGAA ... KUL19-B_ATTCTACAGGATGGAA KUL19-T_CGTGTCTTCAACACAC KUL28-N_GAACATCCATTGCGGC KUL30-N_TGCCCTAGTAGCAAAT </span></span>
+<span><span class="co">##   rownames: ADAMTS15 LY6G5B FBXO17 ... FBXO17 HLA-DPA1 ACKR3 CORIN </span></span>
+<span><span class="co">##   colnames: SMC01-T_GGACAAGAGCTGGAAC SMC03-T_GCAAACTCAGCGATCC SMC05-N_TACTCATCAGATGAGC ... SMC05-N_TACTCATCAGATGAGC SMC06-T_TCTCTAAAGATCACGG SMC171-N-SING_GTATCTTAGTGGTAGC SMC13T-A1-F_CATTCGCGTCATGCAT </span></span>
 <span><span class="co">## Bulk samples to deconvolute:</span></span>
 <span><span class="co">##   Bulk.DT bulk samples:</span></span>
 <span><span class="co">##     2000 features and 521 samples</span></span>
-<span><span class="co">##     rownames: TMEM52 TIMP3 DDAH1 ... DDAH1 ZNF469 GDPD2 RP11-273G15.2 </span></span>
-<span><span class="co">##     colnames: X799ad455.0b7a.49d0.a1a6.af65149cbcab X1b5ad3fa.0f03.4a80.916e.031f34bb8002 X04b2bc19.944b.489f.9063.7a5d4a3dc92e ... X04b2bc19.944b.489f.9063.7a5d4a3dc92e e6a8afea.f7c3.41e7.9bf5.cf4d7553c376 X1a820946.e521.47dd.a603.3d050a1a1399 bc47f01c.1994.4ff8.a356.94d9679b66ee </span></span>
+<span><span class="co">##     rownames: LINC00582 ACE2 MAL ... MAL MAGEA11 FZD10 COMP </span></span>
+<span><span class="co">##     colnames: e79dd77e.6b51.4b49.ae8c.379c55ddae21 X9df77d76.ce4c.452d.9ce3.c0e1dc2360b8 X24c0b854.79c3.436a.87a7.4d0bbfac626a ... X24c0b854.79c3.436a.87a7.4d0bbfac626a dc4bba2d.8d49.4dcc.aa3c.17688fe73479 X8d445b92.e331.421c.9de0.d55a2fee908d X789c1767.4073.4ffa.b193.54b20b96d55e </span></span>
 <span><span class="co">## Project: Colon-Cancer-Project</span></span></code></pre>
 </div>
 <div class="section level2">
@@ -322,7 +330,7 @@ samples coming from the training subset, since the test subset will be
 used for the assessment of its performance.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLS.colon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDDLSModel.html">trainDDLSModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLS.colon</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  1/79 [..............................] - ETA: 10s - loss: 0.1159 - accuracy: 0.7188 - mean_absolute_error: 0.0118 - categorical_accuracy: 0.718850/79 [=================&gt;............] - ETA: 0s - loss: 0.1231 - accuracy: 0.7038 - mean_absolute_error: 0.0135 - categorical_accuracy: 0.7038 79/79 [==============================] - 0s 997us/step - loss: 0.1221 - accuracy: 0.7108 - mean_absolute_error: 0.0133 - categorical_accuracy: 0.7108</span></span></code></pre>
+<pre><code><span><span class="co">##  1/79 [..............................] - ETA: 9s - loss: 0.1178 - accuracy: 0.7812 - mean_absolute_error: 0.0116 - categorical_accuracy: 0.781255/79 [===================&gt;..........] - ETA: 0s - loss: 0.1234 - accuracy: 0.6938 - mean_absolute_error: 0.0135 - categorical_accuracy: 0.693879/79 [==============================] - 0s 935us/step - loss: 0.1232 - accuracy: 0.6960 - mean_absolute_error: 0.0135 - categorical_accuracy: 0.6960</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="evaluation-of-the-model-on-test-data">Evaluation of the model on test data<a class="anchor" aria-label="anchor" href="#evaluation-of-the-model-on-test-data"></a>
@@ -456,35 +464,35 @@ cell type to check which genes are being more used by the model:</p>
 <span>  <span class="va">top.gradients</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">Positive</span></span>
 <span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   Anti-inflammatory_MFs B cells CD4+ T cells CD8+ T cells   ECs ECs_tumor</span></span>
-<span><span class="co">## 1                 LYVE1    IGHD        KLRB1         GZMK FABP5      INSR</span></span>
-<span><span class="co">## 2                  PLTP   FCRL1        ANXA1         GZMH  CD36      AQP1</span></span>
-<span><span class="co">## 3                RNASE1    CD19          MAL        VCAM1 CD320     SPRY1</span></span>
-<span><span class="co">## 4                  DAB2    PAX5       GPR183         CCL5   CA4    FKBP1A</span></span>
-<span><span class="co">## 5                LILRB5    SPIB          LTB        ITM2C HLA-E    IGFBP5</span></span>
-<span><span class="co">##     Enterocytes Epithelial cells Epithelial_cancer_cells      MFs_SPP1+</span></span>
-<span><span class="co">## 1       UGT2B17             ZG16                 TSC22D1           CTSD</span></span>
-<span><span class="co">## 2        PCSK1N             AQP8                    CTSH           CAPG</span></span>
-<span><span class="co">## 3        UGT2A3             URAD                    FBN2          APOC1</span></span>
-<span><span class="co">## 4 CTD-2331H12.7            REP15                 S100A11         TMEM26</span></span>
-<span><span class="co">## 5         ITM2C             TFF3                    NPC2 RP11-1008C21.1</span></span>
+<span><span class="co">## 1                 LYVE1    IGHD        KLRB1         GZMK CD320     HSPG2</span></span>
+<span><span class="co">## 2                  PLTP   FCRL1        ANXA1         GZMH FABP5      INSR</span></span>
+<span><span class="co">## 3                 FOLR2    SPIB       GPR183         CCL5 SOCS3      AQP1</span></span>
+<span><span class="co">## 4                LILRB5    CD19          MAL        ITM2C  CD36    FKBP1A</span></span>
+<span><span class="co">## 5                RNASE1    CD83      SLC4A10         GZMB   CLU     SPRY1</span></span>
+<span><span class="co">##   Enterocytes Epithelial cells Epithelial_cancer_cells      MFs_SPP1+</span></span>
+<span><span class="co">## 1     UGT2B17             ZG16                    PID1           CTSD</span></span>
+<span><span class="co">## 2        SPIB             AQP8                    CTSH           CD83</span></span>
+<span><span class="co">## 3      PCSK1N             URAD                  INSIG1          APOC1</span></span>
+<span><span class="co">## 4       ITM2C             TFF3                    FBN2 RP11-1008C21.1</span></span>
+<span><span class="co">## 5      UGT2A3            REP15                  IFITM3          MMP14</span></span>
 <span><span class="co">##   Mast cells Myofibroblasts NK cells Pericytes Plasma_cells</span></span>
-<span><span class="co">## 1      ANXA1        FAM155A   FGFBP2      CD36         SRGN</span></span>
-<span><span class="co">## 2       LMNA         LGALS1     CMC1      CYBA         RGS1</span></span>
-<span><span class="co">## 3      LTC4S        TSC22D1     GNLY      EBF2    LINC00152</span></span>
-<span><span class="co">## 4       CTSG         NLGN4X    KRT86    RNF152        IGHA1</span></span>
-<span><span class="co">## 5      GATA2         CTHRC1    KLRC1      CD63         LCN8</span></span>
+<span><span class="co">## 1       CTSG         LGALS1   FGFBP2      CD36    LINC00152</span></span>
+<span><span class="co">## 2      GATA2          IGFL2     CMC1 LINC00152         SRGN</span></span>
+<span><span class="co">## 3      TPSB2  RP11-400N13.3     GNLY    RNF152     IGHV4-61</span></span>
+<span><span class="co">## 4      MS4A2          MMP14    KRT86     FCGRT        IGHA1</span></span>
+<span><span class="co">## 5       LMNA        FAM155A    KLRC1      LHFP         RGS1</span></span>
 <span><span class="co">##   Pro-inflammatory_MFs Regulatory T cells Smooth muscle cells Stromal cells</span></span>
-<span><span class="co">## 1              S100A12               BATF               RERGL          LSP1</span></span>
-<span><span class="co">## 2                 FCN1              RTKN2             TSC22D1        PIEZO2</span></span>
-<span><span class="co">## 3             SERPINB2            TNFRSF4                 DES          PID1</span></span>
-<span><span class="co">## 4                TIMP1               IL32               CASQ2            C7</span></span>
-<span><span class="co">## 5                 VCAN                LTB                FBN2      ADAMDEC1</span></span>
+<span><span class="co">## 1              S100A12               BATF               RERGL            C7</span></span>
+<span><span class="co">## 2                 FCN1              RTKN2               CASQ2          LSP1</span></span>
+<span><span class="co">## 3             SERPINB2            TNFRSF4             TSC22D1        S100A4</span></span>
+<span><span class="co">## 4                TIMP1               IL32                FLNA  RP3-525N10.2</span></span>
+<span><span class="co">## 5                 VCAN                LTB                 DES CTD-2331H12.7</span></span>
 <span><span class="co">##   T follicular helper cells      cDC gamma delta T cells</span></span>
-<span><span class="co">## 1                    CXCL13 HLA-DQA2               KLRC2</span></span>
-<span><span class="co">## 2                     NR3C1     CST7                TRDC</span></span>
-<span><span class="co">## 3                       NMB   INSIG1               TRGC2</span></span>
-<span><span class="co">## 4                    PTPN13     LSP1                GZMA</span></span>
-<span><span class="co">## 5                      SRGN     CD1C                 CD7</span></span></code></pre>
+<span><span class="co">## 1                    CXCL13   INSIG1               KLRC2</span></span>
+<span><span class="co">## 2                     NR3C1 HLA-DQA2                TRDC</span></span>
+<span><span class="co">## 3                       NMB     CD1C               TRGC2</span></span>
+<span><span class="co">## 4                    PTPN13    CCL17                 CD7</span></span>
+<span><span class="co">## 5                      SRGN     PPA1               NR3C1</span></span></code></pre>
 <p>In addition, <strong>digitalDLSorteR</strong> also implements a
 function to plot the top gradients per cell type as a heatmap:</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
@@ -547,7 +555,7 @@ networks</span>.”</span> <em>Bioinformatics</em> 40 (2).
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>
