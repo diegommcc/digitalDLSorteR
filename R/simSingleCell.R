@@ -751,7 +751,7 @@ estimateZinbwaveParams <- function(
 #'
 #' @return A \code{\linkS4class{DigitalDLSorter}} object with
 #'   \code{single.cell.simul} slot containing a
-#'   \code{\linkS4class{SingleCellExperiment}} object with the simulated
+#'   \code{SingleCellExperiment} object with the simulated
 #'   single-cell expression profiles.
 #'
 #' @export

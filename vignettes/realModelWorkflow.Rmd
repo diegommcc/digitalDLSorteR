@@ -48,9 +48,6 @@ rowData(TCGA.colon.se) <- DataFrame(SYMBOL = rownames(TCGA.colon.se))
 ```
 
 
-**Note:** Please, note that here `sc.filt.genes.cluster = FALSE` and `sc.log.FC = FALSE` because we are providing with data already preprocessed. However, we recommend keeping `sc.filt.genes.cluster = TRUE` and `sc.log.FC = TRUE` in regular situations, as **digitalDLSorteR** will filter genes according to their logFC. 
-
-
 ```r
 DDLS.colon <- createDDLSobject(
   sc.data = SCE.colon.Lee,
@@ -137,13 +134,13 @@ DDLS.colon
 ## An object of class DigitalDLSorter 
 ## Real single-cell profiles:
 ##   2000 features and 106364 cells
-##   rownames: BTBD11 MMP11 NBPF10 ... NBPF10 FBN1 PLTP SORCS2 
-##   colnames: SMC09-T_GGCGACTGTATATGGA SMC24-T_CTACACCAGAGTCTGG SMC17-T_ACCTTTACACCTCGTT ... SMC17-T_ACCTTTACACCTCGTT KUL21-T_TCAATCTCAAGTAGTA SMC18-T_GTCACGGTCTAACTTC SMC13T-A1_CAACCAACATTGAGCT 
+##   rownames: EREG GJA4 CCL17 ... CCL17 CLNK NCKAP5 XKRX 
+##   colnames: SMC16-T_CAAGATCCACGAAACG SMC01-T_CACACCTAGCGCTCCA KUL01-N_ATTATCCTCCAGGGCT ... KUL01-N_ATTATCCTCCAGGGCT SMC16-T_AATCGGTTCATTGCCC SMC15-T_CGGAGTCGTAATCACC SMC04-T_TTCTCAAAGTATGACA 
 ## Bulk samples to deconvolute:
 ##   Bulk.DT bulk samples:
 ##     2000 features and 521 samples
-##     rownames: RP11-452L6.7 RP11-43F13.4 FPR2 ... FPR2 COL6A3 GLIS2 COL12A1 
-##     colnames: X04b2bc19.944b.489f.9063.7a5d4a3dc92e fc0e5b6c.c3c9.4dd3.8517.521e39d245e3 eaa0315c.6737.4fa6.abb0.f54a13815be2 ... eaa0315c.6737.4fa6.abb0.f54a13815be2 a78806b2.44fe.4a2f.8b84.08ad54538342 X5590c0ff.7bb7.4cf0.b46b.cece01505f7f cea2c6b2.09a7.4a28.8d0a.41efa4d2fd44 
+##     rownames: RP11-275I4.2 DLGAP5 DUOXA2 ... DUOXA2 MFAP3L ARPC2 CD1C 
+##     colnames: X1f6efd19.db75.41ee.9a2e.4b1b9b0aa0d5 X45dc023f.b5c7.4ac4.9f26.f4f6dd0b536f X5dcfcd50.6c7b.416d.ad35.12652a931f33 ... X5dcfcd50.6c7b.416d.ad35.12652a931f33 ecc165ac.9f0a.4d7e.90fb.c0fe12909723 ee2e846b.3bc4.43ec.9c2a.eb1f3e909da8 X3b8d04cd.d658.46ba.adca.079fee531e17 
 ## Project: Colon-Cancer-Project
 ```
 
@@ -186,108 +183,7 @@ DDLS.colon <- generateBulkCellMatrix(
 ```
 
 ```
-## 
-## === The number of bulk RNA-Seq samples that will be generated is equal to 10000
-```
-
-```
-## 
-## === Training set cells by type:
-```
-
-```
-##     - Anti-inflammatory_MFs: 501
-##     - B cells: 7336
-##     - CD4+ T cells: 10595
-##     - CD8+ T cells: 7570
-##     - cDC: 481
-##     - ECs: 874
-##     - ECs_tumor: 1398
-##     - Enterocytes: 920
-##     - Epithelial cells: 1411
-##     - Epithelial_cancer_cells: 19447
-##     - gamma delta T cells: 1459
-##     - Mast cells: 499
-##     - MFs_SPP1+: 4118
-##     - Myofibroblasts: 1789
-##     - NK cells: 1056
-##     - Pericytes: 677
-##     - Plasma_cells: 6259
-##     - Pro-inflammatory_MFs: 2342
-##     - Regulatory T cells: 4233
-##     - Smooth muscle cells: 614
-##     - Stromal cells: 5555
-##     - T follicular helper cells: 639
-```
-
-```
-## === Test set cells by type:
-```
-
-```
-##     - Anti-inflammatory_MFs: 155
-##     - B cells: 2456
-##     - CD4+ T cells: 3515
-##     - CD8+ T cells: 2583
-##     - cDC: 163
-##     - ECs: 336
-##     - ECs_tumor: 431
-##     - Enterocytes: 347
-##     - Epithelial cells: 439
-##     - Epithelial_cancer_cells: 6400
-##     - gamma delta T cells: 499
-##     - Mast cells: 175
-##     - MFs_SPP1+: 1406
-##     - Myofibroblasts: 592
-##     - NK cells: 325
-##     - Pericytes: 206
-##     - Plasma_cells: 2075
-##     - Pro-inflammatory_MFs: 761
-##     - Regulatory T cells: 1467
-##     - Smooth muscle cells: 191
-##     - Stromal cells: 1829
-##     - T follicular helper cells: 240
-```
-
-```
-## === Probability matrix for training data:
-```
-
-```
-##     - Bulk RNA-Seq samples: 7500
-##     - Cell types: 22
-```
-
-```
-## === Probability matrix for test data:
-```
-
-```
-##     - Bulk RNA-Seq samples: 2500
-##     - Cell types: 22
-```
-
-```
-## DONE
-```
-
-```
-## === Setting parallel environment to 2 thread(s)
-```
-
-```
-## 
-## === Generating train bulk samples:
-```
-
-```
-## 
-## === Generating test bulk samples:
-```
-
-```
-## 
-## DONE
+## Error in generateBulkCellMatrix(object = DDLS.colon, cell.ID.column = "Index", : There are some cell types in 'prob.design' that do not appear in cells metadata. Check that the 'prob.design' matrix is correctly built
 ```
 
 ## Neural network training
@@ -300,12 +196,7 @@ DDLS.colon <- trainDDLSModel(object = DDLS.colon, verbose = FALSE)
 ```
 
 ```
-## 
- 1/79 [..............................] - ETA: 9s - loss: 0.1212 - accuracy: 0.7500 - mean_absolute_error: 0.0119 - categorical_accuracy: 0.7500
-66/79 [========================>.....] - ETA: 0s - loss: 0.1222 - accuracy: 0.6993 - mean_absolute_error: 0.0134 - categorical_accuracy: 0.6993
-79/79 [==============================] - 0s 803us/step - loss: 0.1221 - accuracy: 0.7012 - mean_absolute_error: 0.0134 - categorical_accuracy: 0.7012
-## 
-79/79 [==============================] - 0s 810us/step - loss: 0.1221 - accuracy: 0.7012 - mean_absolute_error: 0.0134 - categorical_accuracy: 0.7012
+## Error in trainDDLSModel(object = DDLS.colon, verbose = FALSE): 'prob.cell.types' slot is empty
 ```
 
 ## Evaluation of the model on test data
@@ -315,6 +206,10 @@ Once the model is trained, we can explore how well the model behaves on test sam
 
 ```r
 DDLS.colon <- calculateEvalMetrics(object = DDLS.colon)
+```
+
+```
+## Error in calculateEvalMetrics(object = DDLS.colon): The provided object does not have a trained model for evaluation
 ```
 
 **digitalDLSorteR** implements different functions to visualize the results and explore potential biases on the models. For this tutorial, we will check the correlation between expected and predicted proportions, but for a more detailed explanation about other visualization functions, check the Documentation. 
@@ -331,13 +226,8 @@ corrExpPredPlot(
 ```
 
 ```
-## `geom_smooth()` using formula = 'y ~ x'
+## Error in corrExpPredPlot(DDLS.colon, color.by = "CellType", facet.by = "CellType", : The provided object does not have evaluation metrics. Use 'calculateEvalMetrics' function
 ```
-
-<div class="figure" style="text-align: center">
-<img src="corr1_realModelWorkflow-1.png" alt="plot of chunk corr1_realModelWorkflow"  />
-<p class="caption">plot of chunk corr1_realModelWorkflow</p>
-</div>
 
 As it can be seen, the model is accurately predicting the cell proportions of pseudobulk samples from the test data, which means that it is detecting differential signals for each cell type. 
 
@@ -351,7 +241,7 @@ DDLS.colon <- deconvDDLSObj(object = DDLS.colon, verbose = FALSE)
 ```
 
 ```
-##    No 'name.data' provided. Using the first dataset
+## Error in deconvDDLSObj(object = DDLS.colon, verbose = FALSE): There is not trained model in DigitalDLSorter object
 ```
 
 We can plot the results as follows: 
@@ -362,13 +252,8 @@ barPlotCellTypes(DDLS.colon, rm.x.text = TRUE)
 ```
 
 ```
-## 'name.data' not provided. By default, first results are used
+## Error in .local(data, colors, simplify, color.line, x.label, rm.x.text, : There are no results in DigitalDLSorter object. Please see ?deconvDDLSObj
 ```
-
-<div class="figure" style="text-align: center">
-<img src="barPlotResults_realModelWorkflow-1.png" alt="plot of chunk barPlotResults_realModelWorkflow"  />
-<p class="caption">plot of chunk barPlotResults_realModelWorkflow</p>
-</div>
 
 As the total number of samples is too high, we can see the results of some samples by taking the predicted cell proportions and plotting 20 random samples with `barPlotCellTypes`:
 
@@ -376,16 +261,22 @@ As the total number of samples is too high, we can see the results of some sampl
 ```r
 set.seed(12345)
 resDeconvTCGA <- deconv.results(DDLS.colon, name.data = "Bulk.DT")
+```
+
+```
+## Error in deconv.results(DDLS.colon, name.data = "Bulk.DT"): 'name.data' provided does not exists in deconv.results slot
+```
+
+```r
 barPlotCellTypes(
   resDeconvTCGA[sample(1:521, size = 20), ], rm.x.text = TRUE,
   title = "Results of deconvolution (20 random samples)"
 )
 ```
 
-<div class="figure" style="text-align: center">
-<img src="barPlotResults20_realModelWorkflow-1.png" alt="plot of chunk barPlotResults20_realModelWorkflow"  />
-<p class="caption">plot of chunk barPlotResults20_realModelWorkflow</p>
-</div>
+```
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'data' in selecting a method for function 'barPlotCellTypes': object 'resDeconvTCGA' not found
+```
 
 Now, we can represent the cell proportions of every cell type considered by the model separating healthy and tumoral samples. We are also going to filter out samples considered metastatic or recurrent (check the `TCGA.colon.se` object) because these groups are composed of only 1 sample: 
 
@@ -407,13 +298,8 @@ data.frame(
 ```
 
 ```
-## Using Sample, TypeSample as id variables
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'rownames': object 'resDeconvTCGA' not found
 ```
-
-<div class="figure" style="text-align: center">
-<img src="boxplotResults_realModelWorkflow-1.png" alt="plot of chunk boxplotResults_realModelWorkflow"  />
-<p class="caption">plot of chunk boxplotResults_realModelWorkflow</p>
-</div>
 
 In general, the results seem to be in line with what it is known: tumoral samples show a huge immune infiltration, whereas other cell types such as epithelial cells are displaced. We can also specifically inspect the predicted proportions of enterocytes, tumor, epithelial, and stromal cells: 
 
@@ -439,13 +325,8 @@ data.frame(
 ```
 
 ```
-## Using Sample, TypeSample as id variables
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'rownames': object 'resDeconvTCGA' not found
 ```
-
-<div class="figure" style="text-align: center">
-<img src="boxplotResults_2_realModelWorkflow-1.png" alt="plot of chunk boxplotResults_2_realModelWorkflow"  />
-<p class="caption">plot of chunk boxplotResults_2_realModelWorkflow</p>
-</div>
 As it can be seen, **digitalDLSorteR** correctly estimates the absence of tumor cells (`CRC`) in healthy samples. On the other hand, the predicted proportion of enterocytes, epithelial and stromal cells decrease in the tumoral samples, which makes sense considering the infiltration of immune cells and the increased presence of tumoral cells. 
 
 ## Interpreting the neural network model 
@@ -457,6 +338,10 @@ Finally, we have implemented a way to make the predictions made by  **digitalDLS
 DDLS.colon <- interGradientsDL(DDLS.colon)
 ```
 
+```
+## Error in interGradientsDL(DDLS.colon): could not find function "interGradientsDL"
+```
+
 We can explore the top 5 genes with the highest gradient for each cell type to check which genes are being more used by the model: 
 
 
@@ -464,24 +349,20 @@ We can explore the top 5 genes with the highest gradient for each cell type to c
 top.gradients <- topGradientsCellType(
   DDLS.colon, method = "class", top.n.genes = 5
 )
+```
+
+```
+## Error in topGradientsCellType(DDLS.colon, method = "class", top.n.genes = 5): could not find function "topGradientsCellType"
+```
+
+```r
 sapply(
   top.gradients, \(x) x$Positive
 ) %>% as.data.frame()
 ```
 
 ```
-##   Anti-inflammatory_MFs B cells CD4+ T cells CD8+ T cells   ECs ECs_tumor Enterocytes Epithelial cells Epithelial_cancer_cells MFs_SPP1+ Mast cells Myofibroblasts NK cells
-## 1                 LYVE1    IGHD        KLRB1         GZMK CD320      INSR     UGT2B17             ZG16                    PID1      CTSD      GATA2          CCL11   FGFBP2
-## 2                 FOLR2    CD19        ANXA1         GZMH   CA4      AQP1       ITM2C             AQP8                   ITLN2     APOC1      HPGDS          IGFL2     CMC1
-## 3                RNASE1   FCRL1          MAL         CCL5 SOCS3     HSPG2      UGT2A3             URAD           RP11-439E19.7      APOE      LTC4S         OTUD7A     GNLY
-## 4                LILRB5    SPIB       GPR183        ITM2C  CD36     SPRY1      PCSK1N            REP15                    ZIC5      CD83       CTSG         NLGN4X    KRT86
-## 5                 SEPP1    PAX5          LTB        VCAM1 FABP5    IGFBP5       PROM2             TFF3              AC006273.5     MMP14      BIRC3          FCRL3    KLRC1
-##   Pericytes Plasma_cells Pro-inflammatory_MFs Regulatory T cells Smooth muscle cells Stromal cells T follicular helper cells      cDC gamma delta T cells
-## 1      CD36    LINC00152              S100A12               BATF               RERGL          LSP1                    CXCL13 HLA-DQA2               KLRC2
-## 2     KCNJ8        IGHA1                 FCN1              RTKN2               CASQ2          PID1                     NR3C1     LSP1                TRDC
-## 3      EBF2         SAT1                TIMP1            TNFRSF4                 DES         ITM2C                       NMB     CST7               TRGC2
-## 4      MAP6       NFKBIA                 VCAN               IL32               MYH11          FBN2                    PTPN13     PID1                 CD7
-## 5    RNF152     IGHV4-61                 SOD2                LTB                FLNA            C7                     IGFL2   INSIG1                CCL5
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'as.data.frame': error in evaluating the argument 'X' in selecting a method for function 'sapply': object 'top.gradients' not found
 ```
 
 In addition, **digitalDLSorteR** also implements a function to plot the top gradients per cell type as a heatmap: 
@@ -489,13 +370,19 @@ In addition, **digitalDLSorteR** also implements a function to plot the top grad
 
 ```r
 hh <- plotHeatmapGradsAgg(DDLS.colon, top.n.genes = 4, method = "class")
+```
+
+```
+## Error in plotHeatmapGradsAgg(DDLS.colon, top.n.genes = 4, method = "class"): could not find function "plotHeatmapGradsAgg"
+```
+
+```r
 hh$Absolute
 ```
 
-<div class="figure" style="text-align: center">
-<img src="heatmapGradients_realModelWorkflow-1.png" alt="plot of chunk heatmapGradients_realModelWorkflow"  />
-<p class="caption">plot of chunk heatmapGradients_realModelWorkflow</p>
-</div>
+```
+## Error in eval(expr, envir, enclos): object 'hh' not found
+```
 
 
 It is important to note that these markers should not be interpreted as cell type markers. Rather, they serve as indications to help interpret the model’s performance. In addition, due to the multivariate nature of this approach, gradients are surrogates at the feature level for predictions made considering all input variables collectively, and thus caution should be exercised in drawing direct conclusions about specific gene-cell type relationships.

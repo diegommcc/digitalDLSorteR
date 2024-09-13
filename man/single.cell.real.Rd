@@ -16,7 +16,7 @@ single.cell.real(object) <- value
 \arguments{
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object.}
 
-\item{value}{\code{\linkS4class{SingleCellExperiment}} object with real
+\item{value}{\code{SingleCellExperiment} object with real
 single-cell profiles.}
 }
 \description{

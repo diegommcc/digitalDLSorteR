@@ -17,7 +17,7 @@ zinb.params(object) <- value
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object.}
 
 \item{value}{\code{\linkS4class{ZinbParametersModel}} object with a valid
-\code{\linkS4class{ZinbModel}} object.}
+\code{ZinbModel} object.}
 }
 \description{
 Get and set \code{zinb.params} slot in a

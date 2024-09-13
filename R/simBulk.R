@@ -1077,7 +1077,7 @@ setCount <- function(
 #' @return A \code{\linkS4class{DigitalDLSorter}} object with \code{bulk.simul}
 #'   slot containing a list with one or two entries (depending on selected
 #'   \code{type.data} argument): \code{'train'} and \code{'test'}. Each entry
-#'   contains a \code{\link[SummarizedExperiment]{SummarizedExperiment}} object
+#'   contains a \code{SummarizedExperiment} object
 #'   with simulated bulk samples in the \code{assay} slot, sample names in the
 #'   \code{colData} slot and feature names in the \code{rowData} slot.
 #'

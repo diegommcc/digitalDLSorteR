@@ -17,7 +17,7 @@ loadDeconvData(object, data, name.data = NULL)
 \code{trained.model} slot.}
 
 \item{data}{File path where the data is stored or a
-\code{\linkS4class{SummarizedExperiment}} object.}
+\code{SummarizedExperiment} object.}
 
 \item{name.data}{Name under which the data is stored in the
 \code{\linkS4class{DigitalDLSorter}} object. When \code{data} is a file
@@ -31,7 +31,7 @@ slot with the new bulk-RNA-Seq samples loaded.
 \description{
 Load data to be deconvoluted. Data can be provided from a file path of a
 tabulated text file (tsv and tsv.gz formats are accepted) or a
-\code{\linkS4class{SummarizedExperiment}} object.
+\code{SummarizedExperiment} object.
 }
 \seealso{
 \code{\link{trainDDLSModel}}

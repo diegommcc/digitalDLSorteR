@@ -41,7 +41,7 @@ createDDLSobject(
 are provided from files, \code{single.cell.real} must be a vector of three
 elements: single-cell counts, cells metadata and genes metadata. On the
 other hand, If data are provided from a
-\code{\linkS4class{SingleCellExperiment}} object, single-cell counts must
+\code{SingleCellExperiment} object, single-cell counts must
 be present in the \code{assay} slot, cells metadata in the \code{colData}
 slot, and genes metadata in the \code{rowData} slot.}
 
@@ -57,7 +57,7 @@ data).}
 in cells metadata.}
 
 \item{bulk.data}{Bulk transcriptomics data to be deconvoluted. It has to be
-a \code{\linkS4class{SummarizedExperiment}} object.}
+a \code{SummarizedExperiment} object.}
 
 \item{bulk.sample.ID.column}{Name or column number corresponding to sample
 IDs in samples metadata (bulk transcriptomics data).}
@@ -153,15 +153,15 @@ object.}
 \value{
 A \code{\linkS4class{DigitalDLSorter}} object with the single-cell
 RNA-seq data provided loaded into the \code{single.cell.real} slot as a
-\code{\linkS4class{SingleCellExperiment}} object. If bulk
+\code{SingleCellExperiment} object. If bulk
 transcriptomics data are provided, they will be stored in the
 \code{deconv.data} slot.
 }
 \description{
 This function creates a \code{\linkS4class{DigitalDLSorter}} object from
-single-cell RNA-seq (\code{\linkS4class{SingleCellExperiment}} object) and
+single-cell RNA-seq (\code{SingleCellExperiment} object) and
 bulk RNA-seq data to be deconvoluted (\code{bulk.data} parameter)
-as a \code{\linkS4class{SummarizedExperiment}} object.
+as a \code{SummarizedExperiment} object.
 }
 \details{
 \strong{Filtering genes}
@@ -187,7 +187,7 @@ used for downstream analyses.}
 
 Single-cell RNA-seq data can be provided from files (formats allowed: tsv,
 tsv.gz, mtx (sparse matrix) and hdf5) or a
-\code{\linkS4class{SingleCellExperiment}} object. The data provided should
+\code{SingleCellExperiment} object. The data provided should
 consist of three pieces of information: \itemize{ \item Single-cell counts:
 genes as rows and cells as columns. \item Cells metadata: annotations
 (columns) for each cell (rows). \item Genes metadata: annotations (columns)
@@ -195,7 +195,7 @@ for each gene (rows). } If the data is provided from files,
 \code{single.cell.real} argument must be a vector of three elements ordered
 so that the first file corresponds to the count matrix, the second to the
 cells metadata and the last to the genes metadata. On the other hand, if the
-data is provided as a \code{\linkS4class{SingleCellExperiment}} object, it
+data is provided as a \code{SingleCellExperiment} object, it
 must contain single-cell counts in the \code{assay} slot, cells metadata in
 the \code{colData} slot and genes metadata in the \code{rowData}. The data
 must be provided without any transformation (e.g. log-transformation) and raw
@@ -203,7 +203,7 @@ counts are preferred.
 
 \strong{Bulk transcriptomics data}
 
-It must be a \code{\linkS4class{SummarizedExperiment}} object (or a list of
+It must be a \code{SummarizedExperiment} object (or a list of
 them if samples from different experiments are going to be deconvoluted)
 containing the same information as the single-cell RNA-seq data: the count
 matrix, samples metadata (with IDs is enough), and genes metadata. Please,

@@ -20,7 +20,7 @@ bulk.simul(object, type.data = "both") <- value
 \code{'both'} (the last by default).}
 
 \item{value}{List with two elements, train and test, each one being
-a \code{\linkS4class{SummarizedExperiment}} object with simulated bulk
+a \code{SummarizedExperiment} object with simulated bulk
 RNA-Seq samples.}
 }
 \description{

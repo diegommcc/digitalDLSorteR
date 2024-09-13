@@ -16,7 +16,7 @@ zinbwave.model(object) <- value
 \arguments{
 \item{object}{\code{\linkS4class{ZinbParametersModel}} object.}
 
-\item{value}{\code{\linkS4class{ZinbModel}} object with the estimated
+\item{value}{\code{ZinbModel} object with the estimated
 parameters.}
 }
 \description{

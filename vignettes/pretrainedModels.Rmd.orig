@@ -15,7 +15,7 @@ fontsize: 12pt
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  echo = TRUE, dpi = 75, fig.width = 8, fig.height = 5.5, 
+  echo = TRUE, dpi = 20, fig.width = 8, fig.height = 5.5, 
   base.dir = ".", fig.path = "", fig.align = "center"
 )
 ```

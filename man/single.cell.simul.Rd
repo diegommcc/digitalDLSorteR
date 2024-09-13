@@ -16,7 +16,7 @@ single.cell.simul(object) <- value
 \arguments{
 \item{object}{\code{\linkS4class{DigitalDLSorter}} object.}
 
-\item{value}{\code{\linkS4class{SingleCellExperiment}} object with simulated
+\item{value}{\code{SingleCellExperiment} object with simulated
 single-cell profiles.}
 }
 \description{

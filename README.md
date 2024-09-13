@@ -9,7 +9,7 @@
 
 <br>
 
-The **digitalDLSorteR** R package provides a set of tools to deconvolute cell type proportions of bulk RNA-seq data through the development of context-specific deconvolution models based on single-cell RNA-seq (scRNA-seq) data. These models are able to accurately estimate cell type proportions of bulk RNA-seq samples from specific biological environments. For more details about the algorithm and the functionalities implemented in this package, see [Torroja and Sanchez-Cabo, 2019](https://www.frontiersin.org/articles/10.3389/fgene.2019.00978/full), [Mañanes et al., 2024](https://academic.oup.com/bioinformatics/article/40/2/btae072/7609037), and <https://diegommcc.github.io/digitalDLSorteR/>.
+The **digitalDLSorteR** R package provides a set of tools to deconvolute cell type proportions of bulk RNA-seq data through the development of context-specific deconvolution models based on single-cell RNA-seq (scRNA-seq) data. These models are able to accurately estimate cell type proportions of bulk RNA-seq samples from specific biological environments. For more details about the algorithm and the functionalities implemented in this package, see [Torroja and Sanchez-Cabo, 2019](https://www.frontiersin.org/articles/10.3389/fgene.2019.00978/full), [Mañanes et al., 2024](https://doi.org/10.1093/bioinformatics/btae072), and <https://diegommcc.github.io/digitalDLSorteR/>.
 
 
 <img src="man/figures/summary.png"/>
@@ -65,7 +65,7 @@ Once **digitalDLSorteRmodels** is loaded, the pre-trained models are available. 
 
 ## Citation 
 
-Please, if you use **digitalDLSorteR** in your research, cite [Torroja and Sanchez-Cabo, 2019](https://www.frontiersin.org/articles/10.3389/fgene.2019.00978/full) (first description of the algorithm) and [Mañanes et al., 2024](https://academic.oup.com/bioinformatics/article/40/2/btae072/7609037) (version for spatial transcriptomics data whose development has served to improve **digitalDLSorteR** as well). 
+Please, if you use **digitalDLSorteR** in your research, cite [Torroja and Sanchez-Cabo, 2019](https://www.frontiersin.org/articles/10.3389/fgene.2019.00978/full) (first description of the algorithm) and [Mañanes et al., 2024](https://doi.org/10.1093/bioinformatics/btae072) (version for spatial transcriptomics data whose development has served to improve **digitalDLSorteR** as well). 
 
 ## References
 

@@ -116,57 +116,23 @@ deconvResults <- deconvDDLSPretrained(
 ```
 
 ```
-## === Filtering 57085 features in data that are not present in trained model
-```
-
-```
-## === Setting 0 features that are not present in trained model to zero
-```
-
-```
-## === Normalizing and scaling data
-```
-
-```
-## === Predicting cell types present in the provided samples
-```
-
-```
-##  1/17 [>.............................] - ETA: 0s17/17 [==============================] - 0s 827us/step
-## 17/17 [==============================] - 0s 852us/step
-```
-
-```
-## DONE
+## Error in deconvDDLSPretrained(data = TCGA.colon.se, model = DDLS.colon.lee, : could not find function "deconvDDLSPretrained"
 ```
 
 ```r
 rownames(deconvResults) <- paste("Sample", seq(nrow(deconvResults)), sep = "_")
+```
+
+```
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'nrow': object 'deconvResults' not found
+```
+
+```r
 head(deconvResults)
 ```
 
 ```
-##          Anti-inflammatory_MFs     B cells CD4+ T cells CD8+ T cells         ECs  ECs_tumor Enterocytes Epithelial cells Epithelial_cancer_cells   MFs_SPP1+  Mast cells
-## Sample_1            0.03555675 0.012629803 0.2033741772  0.009651524 0.005541965 0.01741250 0.009307317       0.07155292             0.059090368 0.005882895 0.037573148
-## Sample_2            0.04712307 0.066985376 0.0743350908  0.037740953 0.034868974 0.04209921 0.042306840       0.03910230             0.027248619 0.064652219 0.043691441
-## Sample_3            0.04327271 0.040529914 0.0704342276  0.065242805 0.005649931 0.05630094 0.049890675       0.05444700             0.044213723 0.028884981 0.046738196
-## Sample_4            0.06370533 0.087266184 0.0009350295  0.025520578 0.063553512 0.06356230 0.042612039       0.01939960             0.062976740 0.021837091 0.006687692
-## Sample_5            0.02191241 0.074413352 0.2854489684  0.011043770 0.006262523 0.06074690 0.048464730       0.01496455             0.030808715 0.039284099 0.021862382
-## Sample_6            0.05057831 0.009333173 0.0532203354  0.045282334 0.007942557 0.05870201 0.012052140       0.15696421             0.005358713 0.020576822 0.106369726
-##          Myofibroblasts   NK cells  Pericytes Plasma_cells Pro-inflammatory_MFs Regulatory T cells Smooth muscle cells Stromal cells T follicular helper cells         cDC
-## Sample_1     0.01825435 0.20807563 0.04628117   0.03875881          0.004553904       0.0008091913         0.004929543    0.02901828               0.100938752 0.034195002
-## Sample_2     0.06812529 0.07469994 0.02922466   0.01664688          0.024583304       0.0906273201         0.037988264    0.03085840               0.059172753 0.030084079
-## Sample_3     0.05523872 0.05755380 0.02136340   0.04671246          0.007121264       0.0678701103         0.036586598    0.08270273               0.036124315 0.065181993
-## Sample_4     0.02784961 0.06164910 0.04961384   0.03491505          0.019962545       0.0492653102         0.022256006    0.09293170               0.059893306 0.057660546
-## Sample_5     0.02031603 0.04073286 0.02935413   0.02051810          0.061510812       0.1044049710         0.024523731    0.04414546               0.004997779 0.006953675
-## Sample_6     0.02457041 0.03025284 0.01038808   0.04958449          0.001022621       0.1324384362         0.072353281    0.02527887               0.017107340 0.067269459
-##          gamma delta T cells
-## Sample_1          0.04661207
-## Sample_2          0.01783506
-## Sample_3          0.01793949
-## Sample_4          0.06594691
-## Sample_5          0.02733001
-## Sample_6          0.04335385
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'head': object 'deconvResults' not found
 ```
 
 `deconvDDLSPretrained` returns a data frame with samples as rows ($k$) and cell types considered by the model as columns ($j$). Each entry corresponds to the proportion of cell type $k$ in sample $i$. To visually evaluate these results using a bar chart, you can use the `barplotCellTypes` function as follows:
@@ -179,10 +145,9 @@ barPlotCellTypes(
 )
 ```
 
-<div class="figure" style="text-align: center">
-<img src="resultsDeconvTCGA_pretrainedModels-1.png" alt="plot of chunk resultsDeconvTCGA_pretrainedModels"  />
-<p class="caption">plot of chunk resultsDeconvTCGA_pretrainedModels</p>
-</div>
+```
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'data' in selecting a method for function 'barPlotCellTypes': object 'deconvResults' not found
+```
 
 Let's take 40 random samples just to improve the visualization: 
 
@@ -195,10 +160,9 @@ barPlotCellTypes(
 )
 ```
 
-<div class="figure" style="text-align: center">
-<img src="resultsDeconvTCGA_pretrainedModels_2-1.png" alt="plot of chunk resultsDeconvTCGA_pretrainedModels_2"  />
-<p class="caption">plot of chunk resultsDeconvTCGA_pretrainedModels_2</p>
-</div>
+```
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'data' in selecting a method for function 'barPlotCellTypes': object 'deconvResults' not found
+```
 
 Finally, `deconvDDLSPretrained` also offers two parameters in case you want to simplify the results by aggregating cell proportions of similar cell types: `simplify.set` and `simplify.majority`. For instance, we can summarize different CD4+ T cell subtypes into a unique label by using the `simplify.set` parameter as follows:
 
@@ -221,32 +185,18 @@ deconvResultsSum <- deconvDDLSPretrained(
 ```
 
 ```
-## === Filtering 57085 features in data that are not present in trained model
-```
-
-```
-## === Setting 0 features that are not present in trained model to zero
-```
-
-```
-## === Normalizing and scaling data
-```
-
-```
-## === Predicting cell types present in the provided samples
-```
-
-```
-##  1/17 [>.............................] - ETA: 0s17/17 [==============================] - 0s 703us/step
-## 17/17 [==============================] - 0s 727us/step
-```
-
-```
-## DONE
+## Error in deconvDDLSPretrained(data = TCGA.colon.se, model = DDLS.colon.lee, : could not find function "deconvDDLSPretrained"
 ```
 
 ```r
 rownames(deconvResultsSum) <- paste("Sample", seq(nrow(deconvResults)), sep = "_")
+```
+
+```
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'nrow': object 'deconvResults' not found
+```
+
+```r
 set.seed(123)
 barPlotCellTypes(
   deconvResultsSum[sample(1:nrow(deconvResultsSum), size = 40), ], 
@@ -254,10 +204,9 @@ barPlotCellTypes(
 )
 ```
 
-<div class="figure" style="text-align: center">
-<img src="resultsDeconvTCGASimpl_pretrainedModels-1.png" alt="plot of chunk resultsDeconvTCGASimpl_pretrainedModels"  />
-<p class="caption">plot of chunk resultsDeconvTCGASimpl_pretrainedModels</p>
-</div>
+```
+## Error in h(simpleError(msg, call)): error in evaluating the argument 'data' in selecting a method for function 'barPlotCellTypes': object 'deconvResultsSum' not found
+```
 
 On the other hand, `simplify.majority` does not create new classes but sums the proportions to the most abundant cell type from those provided in each sample. See the documentation for more details.
 

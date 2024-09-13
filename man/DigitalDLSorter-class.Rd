@@ -15,13 +15,14 @@ and the package \pkg{digitalDLSorteRdata}.
 }
 \details{
 This object uses other classes to store the different types of data produced
-during the process: \itemize{ \item \code{\linkS4class{SingleCellExperiment}}
-class for single-cell RNA-Seq data, using sparse matrix from the \pkg{Matrix}
-package (\code{\linkS4class{dgCMatrix}} class) or \code{HDF5Array} class in
+during the process: \itemize{ \item
+\code{SingleCellExperiment} class for single-cell
+RNA-Seq data, using sparse matrix from the \pkg{Matrix}
+package (\code{dgCMatrix} class) or \code{HDF5Array} class in
 the case of using HDF5 files as back-end (see below for more information).
-\item \code{\linkS4class{ZinbModel}} class with estimated parameters for the
+\item \code{ZinbModel} class with estimated parameters for the
 simulation of new single-cell profiles. \item
-\code{\linkS4class{SummarizedExperiment}} class for large bulk RNA-Seq data
+\code{SummarizedExperiment} class for large bulk RNA-Seq data
 storage. \item \code{\linkS4class{ProbMatrixCellTypes}} class for the
 compositional cell matrices constructed during the process. See
 \code{?\linkS4class{ProbMatrixCellTypes}} for details. \item
@@ -51,14 +52,14 @@ to save it as RDS or HDF5 files. Please see
 \describe{
 \item{\code{single.cell.real}}{Real single-cell data stored in a
 \code{SingleCellExperiment} object. The count matrix is stored as
-\code{\linkS4class{dgCMatrix}} or \code{HDF5Array} objects.}
+\code{dgCMatrix} or \code{HDF5Array} objects.}
 
-\item{\code{deconv.data}}{List of \code{\linkS4class{SummarizedExperiment}} objects
+\item{\code{deconv.data}}{List of \code{SummarizedExperiment} objects
 where it is possible to store new bulk RNA-Seq experiments for
 deconvolution. The name of the entries corresponds to the name of the data
 provided. See \code{\link{trainDDLSModel}} for details.}
 
-\item{\code{zinb.params}}{\code{\linkS4class{ZinbModel}} object with estimated
+\item{\code{zinb.params}}{\code{ZinbModel} object with estimated
 parameters for the simulation of new single-cell expression profiles.}
 
 \item{\code{single.cell.simul}}{Simulated single-cell expression profiles from the
@@ -69,7 +70,7 @@ cell composition matrices built for the simulation of pseudo-bulk RNA-Seq
 profiles with known cell composition.}
 
 \item{\code{bulk.simul}}{A list of simulated train and test bulk RNA-Seq samples.
-Each entry is a \code{\linkS4class{SummarizedExperiment}} object. The count
+Each entry is a \code{SummarizedExperiment} object. The count
 matrices can be stored as \code{HDF5Array} files using HDF5 files as
 back-end in case of RAM limitations.}
 

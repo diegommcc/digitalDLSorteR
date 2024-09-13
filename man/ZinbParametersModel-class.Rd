@@ -7,17 +7,17 @@
 \title{The Class ZinbParametersModel}
 \description{
 The ZinbParametersModel class is a wrapper class of the
-\code{\linkS4class{ZinbModel}} class from zinbwave package.
+\code{ZinbModel} class from zinbwave package.
 }
 \details{
-This is a wrapper class of the \code{\linkS4class{ZinbModel}} class. It
+This is a wrapper class of the \code{ZinbModel} class. It
 consists of only one slot (\code{zinbwave.mode}) that contains the
-\code{\linkS4class{ZinbModel}} object.
+\code{ZinbModel} object.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{zinbwave.model}}{A valid \code{\linkS4class{ZinbModel}} object.}
+\item{\code{zinbwave.model}}{A valid \code{ZinbModel} object.}
 }}
 
 \references{

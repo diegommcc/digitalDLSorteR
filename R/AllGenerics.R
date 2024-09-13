@@ -630,7 +630,7 @@ setMethod(
 #' @rdname single.cell.real
 #' @aliases single.cell.real<-,DigitalDLSorter-method
 #' 
-#' @param value \code{\linkS4class{SingleCellExperiment}} object with real
+#' @param value \code{SingleCellExperiment} object with real
 #'   single-cell profiles.
 #'   
 #' @export single.cell.real<-
@@ -676,7 +676,7 @@ setMethod(
 #' @aliases zinb.params<-,DigitalDLSorter-method
 #'
 #' @param value \code{\linkS4class{ZinbParametersModel}} object with a valid
-#'   \code{\linkS4class{ZinbModel}} object.
+#'   \code{ZinbModel} object.
 #'
 #' @export zinb.params<-
 #'   
@@ -721,7 +721,7 @@ setMethod(
 #' @rdname single.cell.simul
 #' @aliases single.cell.simul<-,DigitalDLSorter-method
 #'
-#' @param value \code{\linkS4class{SingleCellExperiment}} object with simulated
+#' @param value \code{SingleCellExperiment} object with simulated
 #'   single-cell profiles.
 #'
 #' @export single.cell.simul<-
@@ -833,7 +833,7 @@ setMethod(
 #' @aliases bulk.simul<-,DigitalDLSorter-method
 #' 
 #' @param value List with two elements, train and test, each one being
-#'   a \code{\linkS4class{SummarizedExperiment}} object with simulated bulk
+#'   a \code{SummarizedExperiment} object with simulated bulk
 #'   RNA-Seq samples.
 #'
 #' @export bulk.simul<-
@@ -1103,7 +1103,7 @@ setMethod(
 #' @rdname zinbwave.model
 #' @aliases zinbwave.model<-,ZinbParametersModel-method
 #'
-#' @param value \code{\linkS4class{ZinbModel}} object with the estimated
+#' @param value \code{ZinbModel} object with the estimated
 #'   parameters.
 #'
 #' @export zinbwave.model<-
@@ -1408,12 +1408,12 @@ setMethod(
 #'
 #' Load data to be deconvoluted. Data can be provided from a file path of a
 #' tabulated text file (tsv and tsv.gz formats are accepted) or a
-#' \code{\linkS4class{SummarizedExperiment}} object.
+#' \code{SummarizedExperiment} object.
 #'
 #' @param object \code{\linkS4class{DigitalDLSorter}} object with
 #'   \code{trained.model} slot.
 #' @param data File path where the data is stored or a
-#'   \code{\linkS4class{SummarizedExperiment}} object.
+#'   \code{SummarizedExperiment} object.
 #' @param name.data Name under which the data is stored in the
 #'   \code{\linkS4class{DigitalDLSorter}} object. When \code{data} is a file
 #'   path and \code{name.data} is not provided, the base name of file will be
