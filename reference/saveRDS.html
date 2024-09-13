@@ -13,7 +13,7 @@ loadTrainedModelFromH5 function. See documentation for details."><meta property=
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -35,13 +35,13 @@ loadTrainedModelFromH5 function. See documentation for details."><meta property=
       <ul class="nav navbar-nav"><li>
   <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
-     
+
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
@@ -63,14 +63,14 @@ loadTrainedModelFromH5 function. See documentation for details."><meta property=
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -104,7 +104,7 @@ into a <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> obj
 <span>  refhook <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for DigitalDLSorterDNN</span></span>
+<span><span class="co"># S4 method for class 'DigitalDLSorterDNN'</span></span>
 <span><span class="fu">saveRDS</span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
 <span>  <span class="va">file</span>,</span>
@@ -114,7 +114,7 @@ into a <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> obj
 <span>  refhook <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for DigitalDLSorter</span></span>
+<span><span class="co"># S4 method for class 'DigitalDLSorter'</span></span>
 <span><span class="fu">saveRDS</span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
 <span>  <span class="va">file</span>,</span>
@@ -127,43 +127,43 @@ into a <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> obj
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>object</dt>
+
+
+<dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> or
 <code><a href="DigitalDLSorterDNN-class.html">DigitalDLSorterDNN</a></code> object to be saved</p></dd>
 
 
-<dt>file</dt>
+<dt id="arg-file">file<a class="anchor" aria-label="anchor" href="#arg-file"></a></dt>
 <dd><p>File path where the object will be saved</p></dd>
 
 
-<dt>ascii</dt>
+<dt id="arg-ascii">ascii<a class="anchor" aria-label="anchor" href="#arg-ascii"></a></dt>
 <dd><p>a logical.  If <code>TRUE</code> or <code>NA</code>, an ASCII
     representation is written; otherwise (default), a binary one is used.
     See the comments in the help for <code><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></code>.</p></dd>
 
 
-<dt>version</dt>
+<dt id="arg-version">version<a class="anchor" aria-label="anchor" href="#arg-version"></a></dt>
 <dd><p>the workspace format version to use.  <code>NULL</code>
     specifies the current default version (3). The only other supported
     value is 2, the default from <span style="R">R</span> 1.4.0 to <span style="R">R</span> 3.5.0.</p></dd>
 
 
-<dt>compress</dt>
+<dt id="arg-compress">compress<a class="anchor" aria-label="anchor" href="#arg-compress"></a></dt>
 <dd><p>a logical specifying whether saving to a named file is
     to use <code>"gzip"</code> compression, or one of <code>"gzip"</code>,
     <code>"bzip2"</code> or <code>"xz"</code> to indicate the type of compression to
     be used.  Ignored if <code>file</code> is a connection.</p></dd>
 
 
-<dt>refhook</dt>
+<dt id="arg-refhook">refhook<a class="anchor" aria-label="anchor" href="#arg-refhook"></a></dt>
 <dd><p>a hook function for handling reference objects.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>No return value, saves a <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object
+    <p>No return value, saves a <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object
 as an RDS file on disk.</p>
     </div>
     <div id="see-also">
@@ -184,15 +184,15 @@ as an RDS file on disk.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 

@@ -19,15 +19,13 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Using pre-trained context-specific deconvolution models">
-<meta property="og:description" content="digitalDLSorteR">
-<meta property="og:image" content="https://diegommcc.github.io/digitalDLSorteR/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -50,13 +48,13 @@
 <li>
   <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
-     
+
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -82,7 +80,7 @@
 <li>
   <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -93,7 +91,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -242,7 +240,7 @@ as follows:</p>
 <pre><code><span><span class="co">## === Setting 0 features that are not present in trained model to zero</span></span></code></pre>
 <pre><code><span><span class="co">## === Normalizing and scaling data</span></span></code></pre>
 <pre><code><span><span class="co">## === Predicting cell types present in the provided samples</span></span></code></pre>
-<pre><code><span><span class="co">##  1/17 [&gt;.............................] - ETA: 1s17/17 [==============================] - 0s 795us/step</span></span></code></pre>
+<pre><code><span><span class="co">##  1/17 [&gt;.............................] - ETA: 1s17/17 [==============================] - 0s 790us/step</span></span></code></pre>
 <pre><code><span><span class="co">## DONE</span></span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
@@ -290,12 +288,16 @@ as follows:</p>
 <span><span class="co">## Sample_5               0.004997781 0.006953675          0.02732999</span></span>
 <span><span class="co">## Sample_6               0.017107351 0.067269459          0.04335385</span></span></code></pre>
 <p><code>deconvDDLSPretrained</code> returns a data frame with samples
-as rows (<span class="math inline">\(k\)</span>) and cell types
-considered by the model as columns (<span class="math inline">\(j\)</span>). Each entry corresponds to the
-proportion of cell type <span class="math inline">\(k\)</span> in sample
-<span class="math inline">\(i\)</span>. To visually evaluate these
-results using a bar chart, you can use the <code>barplotCellTypes</code>
-function as follows:</p>
+as rows
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>)
+and cell types considered by the model as columns
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>).
+Each entry corresponds to the proportion of cell type
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+in sample
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>.
+To visually evaluate these results using a bar chart, you can use the
+<code>barplotCellTypes</code> function as follows:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span></span>
 <span>  <span class="va">deconvResults</span>, </span>
@@ -335,7 +337,7 @@ CD4+ T cell subtypes into a unique label by using the
 <pre><code><span><span class="co">## === Setting 0 features that are not present in trained model to zero</span></span></code></pre>
 <pre><code><span><span class="co">## === Normalizing and scaling data</span></span></code></pre>
 <pre><code><span><span class="co">## === Predicting cell types present in the provided samples</span></span></code></pre>
-<pre><code><span><span class="co">##  1/17 [&gt;.............................] - ETA: 0s17/17 [==============================] - 0s 844us/step</span></span></code></pre>
+<pre><code><span><span class="co">##  1/17 [&gt;.............................] - ETA: 0s17/17 [==============================] - 0s 776us/step</span></span></code></pre>
 <pre><code><span><span class="co">## DONE</span></span></code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">deconvResultsSum</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">deconvResults</span><span class="op">)</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
@@ -395,9 +397,7 @@ influence the immune landscape of colorectal cancer</span>.”</span>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -410,16 +410,16 @@ influence the immune landscape of colorectal cancer</span>.”</span>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>

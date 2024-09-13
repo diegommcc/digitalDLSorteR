@@ -15,7 +15,7 @@ the DigitalDLSorter object)."><meta property="og:image" content="https://diegomm
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -37,13 +37,13 @@ the DigitalDLSorter object)."><meta property="og:image" content="https://diegomm
       <ul class="nav navbar-nav"><li>
   <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
-     
+
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
@@ -65,14 +65,14 @@ the DigitalDLSorter object)."><meta property="og:image" content="https://diegomm
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -104,22 +104,22 @@ the <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>object</dt>
+
+
+<dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with a trained
 model in the <code>trained.model</code> slot and the actual cell proportions of
 pseudo-bulk samples in <code>prob.cell.matrix</code> slot.</p></dd>
 
 
-<dt>metrics</dt>
+<dt id="arg-metrics">metrics<a class="anchor" aria-label="anchor" href="#arg-metrics"></a></dt>
 <dd><p>Metrics used to evaluate the model performance. Mean absolute
 error (<code>"MAE"</code>) and mean squared error (<code>"MSE"</code>) by default.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with the
+    <p>A <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with the
 <code>trained.model</code> slot containing a
 <code><a href="DigitalDLSorterDNN-class.html">DigitalDLSorterDNN</a></code> object with the
 <code>test.deconv.metrics</code> slot. The last contains the metrics calculated.</p>
@@ -132,7 +132,7 @@ error (<code>"MAE"</code>) and mean squared error (<code>"MSE"</code>) by defaul
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
@@ -182,7 +182,7 @@ error (<code>"MAE"</code>) and mean squared error (<code>"MSE"</code>) by defaul
 <span class="r-in"><span><span class="va">DDLS</span> <span class="op">&lt;-</span> <span class="fu">calculateEvalMetrics</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  object <span class="op">=</span> <span class="va">DDLS</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -198,15 +198,15 @@ error (<code>"MAE"</code>) and mean squared error (<code>"MSE"</code>) by defaul
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 

@@ -6,7 +6,7 @@ as a SummarizedExperiment object."><meta property="og:image" content="https://di
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -28,13 +28,13 @@ as a SummarizedExperiment object."><meta property="og:image" content="https://di
       <ul class="nav navbar-nav"><li>
   <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
-     
+
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
@@ -56,14 +56,14 @@ as a SummarizedExperiment object."><meta property="og:image" content="https://di
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -115,7 +115,9 @@ as a <code>SummarizedExperiment</code> object.</p>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>sc.data</dt>
+
+
+<dl><dt id="arg-sc-data">sc.data<a class="anchor" aria-label="anchor" href="#arg-sc-data"></a></dt>
 <dd><p>Single-cell RNA-seq profiles to be used as reference. If data
 are provided from files, <code>single.cell.real</code> must be a vector of three
 elements: single-cell counts, cells metadata and genes metadata. On the
@@ -125,114 +127,114 @@ be present in the <code>assay</code> slot, cells metadata in the <code>colData</
 slot, and genes metadata in the <code>rowData</code> slot.</p></dd>
 
 
-<dt>sc.cell.ID.column</dt>
+<dt id="arg-sc-cell-id-column">sc.cell.ID.column<a class="anchor" aria-label="anchor" href="#arg-sc-cell-id-column"></a></dt>
 <dd><p>Name or number of the column in cells metadata
 corresponding to cell names in expression matrix (single-cell RNA-seq
 data).</p></dd>
 
 
-<dt>sc.gene.ID.column</dt>
+<dt id="arg-sc-gene-id-column">sc.gene.ID.column<a class="anchor" aria-label="anchor" href="#arg-sc-gene-id-column"></a></dt>
 <dd><p>Name or number of the column in genes metadata
 corresponding to the names used for features/genes (single-cell RNA-seq
 data).</p></dd>
 
 
-<dt>sc.cell.type.column</dt>
+<dt id="arg-sc-cell-type-column">sc.cell.type.column<a class="anchor" aria-label="anchor" href="#arg-sc-cell-type-column"></a></dt>
 <dd><p>Name or column number corresponding to cell types
 in cells metadata.</p></dd>
 
 
-<dt>bulk.data</dt>
+<dt id="arg-bulk-data">bulk.data<a class="anchor" aria-label="anchor" href="#arg-bulk-data"></a></dt>
 <dd><p>Bulk transcriptomics data to be deconvoluted. It has to be
 a <code>SummarizedExperiment</code> object.</p></dd>
 
 
-<dt>bulk.sample.ID.column</dt>
+<dt id="arg-bulk-sample-id-column">bulk.sample.ID.column<a class="anchor" aria-label="anchor" href="#arg-bulk-sample-id-column"></a></dt>
 <dd><p>Name or column number corresponding to sample
 IDs in samples metadata (bulk transcriptomics data).</p></dd>
 
 
-<dt>bulk.gene.ID.column</dt>
+<dt id="arg-bulk-gene-id-column">bulk.gene.ID.column<a class="anchor" aria-label="anchor" href="#arg-bulk-gene-id-column"></a></dt>
 <dd><p>Name or number of the column in the genes metadata
 corresponding to the names used for features/genes (bulk transcriptomics
 data).</p></dd>
 
 
-<dt>bulk.name.data</dt>
+<dt id="arg-bulk-name-data">bulk.name.data<a class="anchor" aria-label="anchor" href="#arg-bulk-name-data"></a></dt>
 <dd><p>Name of the bulk RNA-seq dataset (<code>"Bulk.DT"</code> by
 default).</p></dd>
 
 
-<dt>filter.mt.genes</dt>
+<dt id="arg-filter-mt-genes">filter.mt.genes<a class="anchor" aria-label="anchor" href="#arg-filter-mt-genes"></a></dt>
 <dd><p>Regular expression matching mitochondrial genes to
 be ruled out (<code>^mt-</code> by default). If <code>NULL</code>, no filtering is
 performed.</p></dd>
 
 
-<dt>sc.filt.genes.cluster</dt>
+<dt id="arg-sc-filt-genes-cluster">sc.filt.genes.cluster<a class="anchor" aria-label="anchor" href="#arg-sc-filt-genes-cluster"></a></dt>
 <dd><p>Whether to filter single-cell RNA-seq genes
 according to a minimum threshold of non-zero average counts per cell type
 (<code>sc.min.mean.counts</code>). <code>TRUE</code> by default.</p></dd>
 
 
-<dt>sc.min.mean.counts</dt>
+<dt id="arg-sc-min-mean-counts">sc.min.mean.counts<a class="anchor" aria-label="anchor" href="#arg-sc-min-mean-counts"></a></dt>
 <dd><p>Minimum non-zero average counts per cluster to
 filter genes. 1 by default.</p></dd>
 
 
-<dt>sc.n.genes.per.cluster</dt>
+<dt id="arg-sc-n-genes-per-cluster">sc.n.genes.per.cluster<a class="anchor" aria-label="anchor" href="#arg-sc-n-genes-per-cluster"></a></dt>
 <dd><p>Top n genes with the highest logFC per cluster
 (300 by default). See Details section for more details.</p></dd>
 
 
-<dt>top.n.genes</dt>
+<dt id="arg-top-n-genes">top.n.genes<a class="anchor" aria-label="anchor" href="#arg-top-n-genes"></a></dt>
 <dd><p>Maximum number of genes used for downstream steps (2000
 by default). In case the number of genes after filtering is greater than
 <code>top.n.genes</code>, these genes will be set according to
 variability across the whole single-cell dataset.</p></dd>
 
 
-<dt>sc.log.FC</dt>
+<dt id="arg-sc-log-fc">sc.log.FC<a class="anchor" aria-label="anchor" href="#arg-sc-log-fc"></a></dt>
 <dd><p>Whether to filter genes with a logFC less than 0.5 when
 <code>sc.filt.genes.cluster = TRUE</code>.</p></dd>
 
 
-<dt>sc.log.FC.cutoff</dt>
+<dt id="arg-sc-log-fc-cutoff">sc.log.FC.cutoff<a class="anchor" aria-label="anchor" href="#arg-sc-log-fc-cutoff"></a></dt>
 <dd><p>LogFC cutoff used if <code>sc.log.FC == TRUE</code>.</p></dd>
 
 
-<dt>sc.min.counts</dt>
+<dt id="arg-sc-min-counts">sc.min.counts<a class="anchor" aria-label="anchor" href="#arg-sc-min-counts"></a></dt>
 <dd><p>Minimum gene counts to filter (1 by default; single-cell
 RNA-seq data).</p></dd>
 
 
-<dt>sc.min.cells</dt>
+<dt id="arg-sc-min-cells">sc.min.cells<a class="anchor" aria-label="anchor" href="#arg-sc-min-cells"></a></dt>
 <dd><p>Minimum of cells with more than <code>min.counts</code> (1 by
 default; single-cell RNA-seq data).</p></dd>
 
 
-<dt>bulk.min.counts</dt>
+<dt id="arg-bulk-min-counts">bulk.min.counts<a class="anchor" aria-label="anchor" href="#arg-bulk-min-counts"></a></dt>
 <dd><p>Minimum gene counts to filter (1 by default; bulk
 transcriptomics data).</p></dd>
 
 
-<dt>bulk.min.samples</dt>
+<dt id="arg-bulk-min-samples">bulk.min.samples<a class="anchor" aria-label="anchor" href="#arg-bulk-min-samples"></a></dt>
 <dd><p>Minimum of samples with more than <code>min.counts</code>
 (1 by default; bulk transcriptomics data).</p></dd>
 
 
-<dt>shared.genes</dt>
+<dt id="arg-shared-genes">shared.genes<a class="anchor" aria-label="anchor" href="#arg-shared-genes"></a></dt>
 <dd><p>If set to <code>TRUE</code>, only genes present in both the
 single-cell and spatial transcriptomics data will be retained for further
 processing (<code>TRUE</code> by default).</p></dd>
 
 
-<dt>sc.name.dataset.h5</dt>
+<dt id="arg-sc-name-dataset-h-">sc.name.dataset.h5<a class="anchor" aria-label="anchor" href="#arg-sc-name-dataset-h-"></a></dt>
 <dd><p>Name of the data set if HDF5 file is provided for
 single-cell RNA-seq data.</p></dd>
 
 
-<dt>sc.file.backend</dt>
+<dt id="arg-sc-file-backend">sc.file.backend<a class="anchor" aria-label="anchor" href="#arg-sc-file-backend"></a></dt>
 <dd><p>Valid file path where to store the loaded for
 single-cell RNA-seq data as HDF5 file. If provided, data are stored in a
 HDF5 file as back-end using the <span class="pkg">DelayedArray</span> and <span class="pkg">HDF5Array</span>
@@ -243,13 +245,13 @@ determined size), which may result in longer execution times. <code>NULL</code>
 by default.</p></dd>
 
 
-<dt>sc.name.dataset.backend</dt>
+<dt id="arg-sc-name-dataset-backend">sc.name.dataset.backend<a class="anchor" aria-label="anchor" href="#arg-sc-name-dataset-backend"></a></dt>
 <dd><p>Name of the HDF5 file dataset to be used. Note
 that it cannot exist. If <code>NULL</code> (by default), a random dataset name
 will be generated.</p></dd>
 
 
-<dt>sc.compression.level</dt>
+<dt id="arg-sc-compression-level">sc.compression.level<a class="anchor" aria-label="anchor" href="#arg-sc-compression-level"></a></dt>
 <dd><p>The compression level used if
 <code>sc.file.backend</code> is provided. It is an integer value between 0 (no
 compression) and 9 (highest and slowest compression). See
@@ -257,7 +259,7 @@ compression) and 9 (highest and slowest compression). See
 <span class="pkg">HDF5Array</span> package for more information.</p></dd>
 
 
-<dt>sc.chunk.dims</dt>
+<dt id="arg-sc-chunk-dims">sc.chunk.dims<a class="anchor" aria-label="anchor" href="#arg-sc-chunk-dims"></a></dt>
 <dd><p>Specifies dimensions that HDF5 chunk will have. If
 <code>NULL</code>, the default value is a vector of two items: the number of
 genes considered by <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object during the
@@ -266,7 +268,7 @@ following steps. A larger number of columns written in each chunk may lead
 to longer read times.</p></dd>
 
 
-<dt>sc.block.processing</dt>
+<dt id="arg-sc-block-processing">sc.block.processing<a class="anchor" aria-label="anchor" href="#arg-sc-block-processing"></a></dt>
 <dd><p>Boolean indicating whether single-cell RNA-seq
 data should be treated as blocks (only if data are provided as HDF5 file).
 <code>FALSE</code> by default. Note that using this functionality is suitable for
@@ -274,21 +276,19 @@ cases where it is not possible to load data into RAM and therefore
 execution times will be longer.</p></dd>
 
 
-<dt>verbose</dt>
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>Show informative messages during the execution (<code>TRUE</code> by
 default).</p></dd>
 
 
-<dt>project</dt>
+<dt id="arg-project">project<a class="anchor" aria-label="anchor" href="#arg-project"></a></dt>
 <dd><p>Name of the project for <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code>
 object.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with the single-cell
+    <p>A <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with the single-cell
 RNA-seq data provided loaded into the <code>single.cell.real</code> slot as a
 <code>SingleCellExperiment</code> object. If bulk
 transcriptomics data are provided, they will be stored in the
@@ -400,15 +400,15 @@ transcriptomics data are consistent.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 

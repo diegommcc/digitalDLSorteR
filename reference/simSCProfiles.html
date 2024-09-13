@@ -6,7 +6,7 @@ estimateZinbwaveParams function."><meta property="og:image" content="https://die
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -28,13 +28,13 @@ estimateZinbwaveParams function."><meta property="og:image" content="https://die
       <ul class="nav navbar-nav"><li>
   <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
-     
+
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
@@ -56,14 +56,14 @@ estimateZinbwaveParams function."><meta property="og:image" content="https://die
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/diegommcc/digitalDLSorteR" class="external-link">
     <span class="fa fa-github"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -100,40 +100,42 @@ distribution using the ZINB-WaVE parameters estimated by the
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>object</dt>
+
+
+<dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p><code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
 <code>single.cell.real</code> and <code>zinb.params</code> slots.</p></dd>
 
 
-<dt>cell.ID.column</dt>
+<dt id="arg-cell-id-column">cell.ID.column<a class="anchor" aria-label="anchor" href="#arg-cell-id-column"></a></dt>
 <dd><p>Name or column number corresponding to the cell names
 of expression matrix in cells metadata.</p></dd>
 
 
-<dt>cell.type.column</dt>
+<dt id="arg-cell-type-column">cell.type.column<a class="anchor" aria-label="anchor" href="#arg-cell-type-column"></a></dt>
 <dd><p>Name or column number corresponding to the cell type
 of each cell in cells metadata.</p></dd>
 
 
-<dt>n.cells</dt>
+<dt id="arg-n-cells">n.cells<a class="anchor" aria-label="anchor" href="#arg-n-cells"></a></dt>
 <dd><p>Number of simulated cells generated per cell type (i.e. if you
 have 10 different cell types in your dataset, if <code>n.cells = 100</code>, then
 1000 cell profiles will be simulated).</p></dd>
 
 
-<dt>suffix.names</dt>
+<dt id="arg-suffix-names">suffix.names<a class="anchor" aria-label="anchor" href="#arg-suffix-names"></a></dt>
 <dd><p>Suffix used on simulated cells. This suffix must be
 unique in the simulated cells, so make sure that this suffix does not
 appear in the real cell names.</p></dd>
 
 
-<dt>cell.types</dt>
+<dt id="arg-cell-types">cell.types<a class="anchor" aria-label="anchor" href="#arg-cell-types"></a></dt>
 <dd><p>Vector indicating the cell types to simulate. If
 <code>NULL</code> (by default), <code>n.cells</code> single-cell profiles for all cell
 types will be simulated.</p></dd>
 
 
-<dt>file.backend</dt>
+<dt id="arg-file-backend">file.backend<a class="anchor" aria-label="anchor" href="#arg-file-backend"></a></dt>
 <dd><p>Valid file path to store the simulated single-cell
 expression profiles as an HDF5 file (<code>NULL</code> by default). If provided,
 the data is stored in HDF5 files used as back-end by using the
@@ -144,13 +146,13 @@ operations on this data will be performed in blocks (i.e subsets of
 determined size) which may result in longer execution times.</p></dd>
 
 
-<dt>name.dataset.backend</dt>
+<dt id="arg-name-dataset-backend">name.dataset.backend<a class="anchor" aria-label="anchor" href="#arg-name-dataset-backend"></a></dt>
 <dd><p>Name of the dataset in HDF5 file to be used. Note
 that it cannot exist. If <code>NULL</code> (by default), a random dataset name
 will be used.</p></dd>
 
 
-<dt>compression.level</dt>
+<dt id="arg-compression-level">compression.level<a class="anchor" aria-label="anchor" href="#arg-compression-level"></a></dt>
 <dd><p>The compression level used if <code>file.backend</code> is
 provided. It is an integer value between 0 (no compression) and 9 (highest
 and slowest compression). See
@@ -158,14 +160,14 @@ and slowest compression). See
 <span class="pkg">HDF5Array</span> package for more information.</p></dd>
 
 
-<dt>block.processing</dt>
+<dt id="arg-block-processing">block.processing<a class="anchor" aria-label="anchor" href="#arg-block-processing"></a></dt>
 <dd><p>Boolean indicating whether the data should be
 simulated in blocks (only if <code>file.backend</code> is used, <code>FALSE</code> by
 default). This functionality is suitable for cases where is not possible to
 load all data into memory and it leads to larger execution times.</p></dd>
 
 
-<dt>block.size</dt>
+<dt id="arg-block-size">block.size<a class="anchor" aria-label="anchor" href="#arg-block-size"></a></dt>
 <dd><p>Only if <code>block.processing = TRUE</code>. Number of
 single-cell expression profiles that will be simulated in each iteration
 during the process. Larger numbers result in higher memory usage but
@@ -174,7 +176,7 @@ shorter execution times. Set according to available computational resources
 simulated cells.</p></dd>
 
 
-<dt>chunk.dims</dt>
+<dt id="arg-chunk-dims">chunk.dims<a class="anchor" aria-label="anchor" href="#arg-chunk-dims"></a></dt>
 <dd><p>Specifies the dimensions that HDF5 chunk will have. If
 <code>NULL</code>, the default value is a vector of two items: the number of
 genes considered by the ZINB-WaVE model during the simulation and a single
@@ -184,16 +186,14 @@ subsequent steps. Note that it cannot be greater than the dimensions of the
 simulated matrix.</p></dd>
 
 
-<dt>verbose</dt>
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>Show informative messages during the execution (<code>TRUE</code> by
 default).</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
+    <p>A <code><a href="DigitalDLSorter-class.html">DigitalDLSorter</a></code> object with
 <code>single.cell.simul</code> slot containing a
 <code>SingleCellExperiment</code> object with the simulated
 single-cell expression profiles.</p>
@@ -314,15 +314,15 @@ Frontiers in Genetics 10, 978. doi: <a href="https://doi.org/10.3389/fgene.2019.
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 
