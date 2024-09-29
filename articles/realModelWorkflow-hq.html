@@ -328,7 +328,7 @@ samples coming from the training subset, since the test subset will be
 used for the assessment of its performance.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLS.colon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDDLSModel.html">trainDDLSModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLS.colon</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  1/79 [..............................] - ETA: 9s - loss: 0.1152 - accuracy: 0.7500 - mean_absolute_error: 0.0117 - categorical_accuracy: 0.750055/79 [===================&gt;..........] - ETA: 0s - loss: 0.1209 - accuracy: 0.6983 - mean_absolute_error: 0.0132 - categorical_accuracy: 0.698379/79 [==============================] - 0s 924us/step - loss: 0.1212 - accuracy: 0.7064 - mean_absolute_error: 0.0133 - categorical_accuracy: 0.7064</span></span></code></pre>
+<pre><code><span><span class="co">##  1/79 [..............................] - ETA: 11s - loss: 0.1197 - accuracy: 0.7188 - mean_absolute_error: 0.0119 - categorical_accuracy: 0.718856/79 [====================&gt;.........] - ETA: 0s - loss: 0.1272 - accuracy: 0.6903 - mean_absolute_error: 0.0137 - categorical_accuracy: 0.6903 79/79 [==============================] - 0s 920us/step - loss: 0.1267 - accuracy: 0.6940 - mean_absolute_error: 0.0136 - categorical_accuracy: 0.6940</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="evaluation-of-the-model-on-test-data">Evaluation of the model on test data<a class="anchor" aria-label="anchor" href="#evaluation-of-the-model-on-test-data"></a>
@@ -463,34 +463,34 @@ cell type to check which genes are being more used by the model:</p>
 <span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   Anti-inflammatory_MFs B cells CD4+ T cells CD8+ T cells   ECs ECs_tumor</span></span>
 <span><span class="co">## 1                 LYVE1    IGHD        KLRB1         GZMK CD320     HSPG2</span></span>
-<span><span class="co">## 2                 FOLR2   FCRL1        ANXA1         GZMH SOCS3      INSR</span></span>
-<span><span class="co">## 3                 SEPP1    CD19          MAL        ITM2C FABP5      AQP1</span></span>
-<span><span class="co">## 4                LILRB5    SPIB          LTB        VCAM1  CD36       VIM</span></span>
-<span><span class="co">## 5                  PLTP    PAX5      SLC4A10         CCL5   CA4    FKBP1A</span></span>
+<span><span class="co">## 2                 FOLR2   FCRL1        ANXA1         GZMH  CD36      INSR</span></span>
+<span><span class="co">## 3                  PLTP    CD19          MAL        ITM2C SOCS3    FKBP1A</span></span>
+<span><span class="co">## 4                LILRB5    SPIB          LTB        VCAM1  PLAT       VIM</span></span>
+<span><span class="co">## 5                RNASE1    PAX5       GPR183         CCL5 FABP5       GRN</span></span>
 <span><span class="co">##   Enterocytes Epithelial cells Epithelial_cancer_cells      MFs_SPP1+</span></span>
-<span><span class="co">## 1     UGT2B17             ZG16                    CTSH           CTSD</span></span>
-<span><span class="co">## 2        SPIB             AQP8                    GAST          APOC1</span></span>
-<span><span class="co">## 3       MYOM1             URAD                  SH2D1B RP11-1008C21.1</span></span>
-<span><span class="co">## 4        CD63             TFF3                   HSPB1           CAPG</span></span>
-<span><span class="co">## 5      UGT2A3            REP15                   CCAT1      LINC00346</span></span>
+<span><span class="co">## 1     UGT2B17             ZG16                   HSPB1           CTSD</span></span>
+<span><span class="co">## 2       ITM2C             AQP8                  GRIN2B          APOC1</span></span>
+<span><span class="co">## 3      PCSK1N             URAD           RP11-439E19.7           APOE</span></span>
+<span><span class="co">## 4      UGT2A3             TFF3                  LRRC15          GPNMB</span></span>
+<span><span class="co">## 5       MYOM1            REP15                    PPA1 RP11-1008C21.1</span></span>
 <span><span class="co">##   Mast cells Myofibroblasts NK cells Pericytes Plasma_cells</span></span>
-<span><span class="co">## 1       CMA1          ITM2C   FGFBP2      CD36        IGHA1</span></span>
-<span><span class="co">## 2      ANXA1    RP11-54O7.3     CMC1 LINC00152    LINC00152</span></span>
-<span><span class="co">## 3      GATA2          IGFL2     GNLY     KCNJ8         SRGN</span></span>
-<span><span class="co">## 4       CTSG         LGALS1    KRT86      EBF2        IGLC6</span></span>
-<span><span class="co">## 5      LTC4S  RP11-346C20.3    KLRC1      CD63         CTSH</span></span>
+<span><span class="co">## 1      GATA2          ITM2C   FGFBP2      CD36    LINC00152</span></span>
+<span><span class="co">## 2       CTSG         LGALS1     CMC1      CYBA        IGHA1</span></span>
+<span><span class="co">## 3       CMA1         LRRC15     GNLY    LGALS1         MZB1</span></span>
+<span><span class="co">## 4      HPGDS            VIM    KRT86      EBF2          VIM</span></span>
+<span><span class="co">## 5      VWA5A          IGFL2    KLRC1     ITM2C         RGS1</span></span>
 <span><span class="co">##   Pro-inflammatory_MFs Regulatory T cells Smooth muscle cells Stromal cells</span></span>
-<span><span class="co">## 1                 FCN1               BATF               RERGL            C7</span></span>
-<span><span class="co">## 2              S100A12              RTKN2               CASQ2      ADAMDEC1</span></span>
-<span><span class="co">## 3             SERPINB2            TNFRSF4               SUSD5         GLP2R</span></span>
-<span><span class="co">## 4                TIMP1               IL32                 VIM          LSP1</span></span>
-<span><span class="co">## 5                 VCAN                LTB                 DES          ROR1</span></span>
+<span><span class="co">## 1              S100A12               BATF               RERGL            C7</span></span>
+<span><span class="co">## 2                 FCN1              RTKN2               CASQ2          PID1</span></span>
+<span><span class="co">## 3                TIMP1            TNFRSF4               MYH11      ADAMDEC1</span></span>
+<span><span class="co">## 4             SERPINB2               IL32                MT1X         ADH1B</span></span>
+<span><span class="co">## 5                IL1RN                LTB                 DES        PIEZO2</span></span>
 <span><span class="co">##   T follicular helper cells      cDC gamma delta T cells</span></span>
-<span><span class="co">## 1                    CXCL13     CST3               KLRC2</span></span>
-<span><span class="co">## 2                     NR3C1 HLA-DQA2               TRGC2</span></span>
-<span><span class="co">## 3                       NMB   INSIG1                TRDC</span></span>
-<span><span class="co">## 4                    PTPN13      VIM                CCL5</span></span>
-<span><span class="co">## 5                      SRGN     CTSH                GZMA</span></span></code></pre>
+<span><span class="co">## 1                    CXCL13 HLA-DQA2               KLRC2</span></span>
+<span><span class="co">## 2                     NR3C1   GPR183               TRGC2</span></span>
+<span><span class="co">## 3                       NMB     PPA1                TRDC</span></span>
+<span><span class="co">## 4                    PTPN13   INSIG1                CCL5</span></span>
+<span><span class="co">## 5                      CPA5      VIM                GZMA</span></span></code></pre>
 <p>In addition, <strong>digitalDLSorteR</strong> also implements a
 function to plot the top gradients per cell type as a heatmap:</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
@@ -551,7 +551,7 @@ networks</span>.”</span> <em>Bioinformatics</em> 40 (2).
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
