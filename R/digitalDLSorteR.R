@@ -29,7 +29,5 @@ NULL
 #' See vignettes and \url{https://diegommcc.github.io/digitalDLSorteR/} for more 
 #' details.
 #'
-#' @docType package
 #' @name digitalDLSorteR
-NULL
-#> NULL
+"_PACKAGE"

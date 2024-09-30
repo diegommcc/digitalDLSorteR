@@ -2,6 +2,7 @@
 % Please edit documentation in R/digitalDLSorteR.R
 \docType{package}
 \name{digitalDLSorteR}
+\alias{digitalDLSorteR-package}
 \alias{digitalDLSorteR}
 \title{digitalDLSorteR: an R package to deconvolute bulk RNA-Seq samples using
 single-cell RNA-seq data and neural networks}
@@ -31,4 +32,23 @@ using pre-trained models available on the digitalDLSorteRmodels R package, or
 building new deconvolution models from already identified scRNA-seq data.
 See vignettes and \url{https://diegommcc.github.io/digitalDLSorteR/} for more
 details.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://diegommcc.github.io/digitalDLSorteR/}
+  \item \url{https://github.com/diegommcc/digitalDLSorteR}
+  \item Report bugs at \url{https://github.com/diegommcc/digitalDLSorteR/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Diego Mañanes \email{dmananesc@cnic.es} (\href{https://orcid.org/0000-0001-7247-6794}{ORCID})
+
+Authors:
+\itemize{
+  \item Carlos Torroja \email{ctorroja@cnic.es} (\href{https://orcid.org/0000-0001-8914-3400}{ORCID})
+  \item Fatima Sanchez-Cabo \email{fscabo@cnic.es} (\href{https://orcid.org/0000-0003-1881-1664}{ORCID})
+}
+
 }
