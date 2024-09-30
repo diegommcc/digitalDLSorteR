@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">digitalDLSorteR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
       </span>
     </div>
 
@@ -178,9 +178,6 @@ them.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## === Processing bulk transcriptomics data</span></span></code></pre>
 <pre><code><span><span class="co">##       - Removing 2568 genes without expression in any cell</span></span></code></pre>
-<pre><code><span><span class="co">## 'as(&lt;dgCMatrix&gt;, "dgTMatrix")' is deprecated.</span></span>
-<span><span class="co">## Use 'as(., "TsparseMatrix")' instead.</span></span>
-<span><span class="co">## See help("Deprecated") and help("Matrix-deprecated").</span></span></code></pre>
 <pre><code><span><span class="co">##       - Filtering features:</span></span></code></pre>
 <pre><code><span><span class="co">##          - Selected features: 54918</span></span></code></pre>
 <pre><code><span><span class="co">##          - Discarded features: 1599</span></span></code></pre>
@@ -196,18 +193,18 @@ them.</p>
 <p>After loading the data, we have a <code>DigitalDLSorter</code> object
 with 2,000 genes and both the single-cell RNA-seq used as reference and
 the bulk RNA-seq data to be deconvoluted.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLS.colon</span></span></code></pre></div>
 <pre><code><span><span class="co">## An object of class DigitalDLSorter </span></span>
 <span><span class="co">## Real single-cell profiles:</span></span>
 <span><span class="co">##   2000 features and 106364 cells</span></span>
-<span><span class="co">##   rownames: EREG GJA4 CCL17 ... CCL17 CLNK NCKAP5 XKRX </span></span>
-<span><span class="co">##   colnames: SMC16-T_CAAGATCCACGAAACG SMC01-T_CACACCTAGCGCTCCA KUL01-N_ATTATCCTCCAGGGCT ... KUL01-N_ATTATCCTCCAGGGCT SMC16-T_AATCGGTTCATTGCCC SMC15-T_CGGAGTCGTAATCACC SMC04-T_TTCTCAAAGTATGACA </span></span>
+<span><span class="co">##   rownames: RP1-276N6.2 RILPL1 SERPINA5 ... SERPINA5 LGMN CXCL11 PLA2G5 </span></span>
+<span><span class="co">##   colnames: SMC07-T_AGCATACGTGTGCCTG SMC22-T_CACACAATCCACGAAT SMC24-T_CACATTTAGCAGGCTA ... SMC24-T_CACATTTAGCAGGCTA SMC16-T_GTAGGCCTCGCCTGTT SMC03-N_CCATGTCAGAATTGTG SMC08-T_ACAGCCGAGTTGTCGT </span></span>
 <span><span class="co">## Bulk samples to deconvolute:</span></span>
 <span><span class="co">##   Bulk.DT bulk samples:</span></span>
 <span><span class="co">##     2000 features and 521 samples</span></span>
-<span><span class="co">##     rownames: RP11-275I4.2 DLGAP5 DUOXA2 ... DUOXA2 MFAP3L ARPC2 CD1C </span></span>
-<span><span class="co">##     colnames: X1f6efd19.db75.41ee.9a2e.4b1b9b0aa0d5 X45dc023f.b5c7.4ac4.9f26.f4f6dd0b536f X5dcfcd50.6c7b.416d.ad35.12652a931f33 ... X5dcfcd50.6c7b.416d.ad35.12652a931f33 ecc165ac.9f0a.4d7e.90fb.c0fe12909723 ee2e846b.3bc4.43ec.9c2a.eb1f3e909da8 X3b8d04cd.d658.46ba.adca.079fee531e17 </span></span>
+<span><span class="co">##     rownames: NACAD NRXN1 FAM81A ... FAM81A COL3A1 RGS5 AURKC </span></span>
+<span><span class="co">##     colnames: dc38ba64.6240.4bab.9ad5.2adb67e1b79e eb843ddf.f91d.4f04.b34c.549b1f53ee92 cf7ced35.7e29.4bdc.92e7.b56c315c54eb ... cf7ced35.7e29.4bdc.92e7.b56c315c54eb X3b8d04cd.d658.46ba.adca.079fee531e17 X574a3ef3.ea84.45f4.b20d.8b3d2b172793 X789c1767.4073.4ffa.b193.54b20b96d55e </span></span>
 <span><span class="co">## Project: Colon-Cancer-Project</span></span></code></pre>
 </div>
 <div class="section level2">
@@ -219,7 +216,7 @@ with prior knowledge about how likely is to find each cell type in a
 sample. For this example, we have used an approximation based on the
 frequency of each cell type in each patient/sample from the scRNA-seq
 dataset:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prop.design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/single.cell.real.html">single.cell.real</a></span><span class="op">(</span><span class="va">DDLS.colon</span><span class="op">)</span><span class="op">@</span><span class="va">colData</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Patient</span>, <span class="va">Cell_type_6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>Total <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Prop <span class="op">=</span> <span class="op">(</span><span class="va">Total</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">Total</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Cell_type_6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -235,7 +232,7 @@ dataset:</p>
 these cell proportions. In this case, we generate 10,000 pseudobulk
 samples (<code>num.bulk.samples</code>), although this number could be
 increased according to available computational resources.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## for reproducibility</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span><span class="va">DDLS.colon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generateBulkCellMatrix.html">generateBulkCellMatrix</a></span><span class="op">(</span></span>
@@ -246,7 +243,69 @@ increased according to available computational resources.</p>
 <span>  num.bulk.samples <span class="op">=</span> <span class="fl">10000</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/simBulkProfiles.html">simBulkProfiles</a></span><span class="op">(</span>threads <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in generateBulkCellMatrix(object = DDLS.colon, cell.ID.column = "Index", : There are some cell types in 'prob.design' that do not appear in cells metadata. Check that the 'prob.design' matrix is correctly built</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## === The number of bulk RNA-Seq samples that will be generated is equal to 10000</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## === Training set cells by type:</span></span></code></pre>
+<pre><code><span><span class="co">##     - Anti-inflammatory_MFs: 501</span></span>
+<span><span class="co">##     - B cells: 7336</span></span>
+<span><span class="co">##     - CD4+ T cells: 10595</span></span>
+<span><span class="co">##     - CD8+ T cells: 7570</span></span>
+<span><span class="co">##     - cDC: 481</span></span>
+<span><span class="co">##     - ECs: 874</span></span>
+<span><span class="co">##     - ECs_tumor: 1398</span></span>
+<span><span class="co">##     - Enterocytes: 920</span></span>
+<span><span class="co">##     - Epithelial cells: 1411</span></span>
+<span><span class="co">##     - Epithelial_cancer_cells: 19447</span></span>
+<span><span class="co">##     - gamma delta T cells: 1459</span></span>
+<span><span class="co">##     - Mast cells: 499</span></span>
+<span><span class="co">##     - MFs_SPP1+: 4118</span></span>
+<span><span class="co">##     - Myofibroblasts: 1789</span></span>
+<span><span class="co">##     - NK cells: 1056</span></span>
+<span><span class="co">##     - Pericytes: 677</span></span>
+<span><span class="co">##     - Plasma_cells: 6259</span></span>
+<span><span class="co">##     - Pro-inflammatory_MFs: 2342</span></span>
+<span><span class="co">##     - Regulatory T cells: 4233</span></span>
+<span><span class="co">##     - Smooth muscle cells: 614</span></span>
+<span><span class="co">##     - Stromal cells: 5555</span></span>
+<span><span class="co">##     - T follicular helper cells: 639</span></span></code></pre>
+<pre><code><span><span class="co">## === Test set cells by type:</span></span></code></pre>
+<pre><code><span><span class="co">##     - Anti-inflammatory_MFs: 155</span></span>
+<span><span class="co">##     - B cells: 2456</span></span>
+<span><span class="co">##     - CD4+ T cells: 3515</span></span>
+<span><span class="co">##     - CD8+ T cells: 2583</span></span>
+<span><span class="co">##     - cDC: 163</span></span>
+<span><span class="co">##     - ECs: 336</span></span>
+<span><span class="co">##     - ECs_tumor: 431</span></span>
+<span><span class="co">##     - Enterocytes: 347</span></span>
+<span><span class="co">##     - Epithelial cells: 439</span></span>
+<span><span class="co">##     - Epithelial_cancer_cells: 6400</span></span>
+<span><span class="co">##     - gamma delta T cells: 499</span></span>
+<span><span class="co">##     - Mast cells: 175</span></span>
+<span><span class="co">##     - MFs_SPP1+: 1406</span></span>
+<span><span class="co">##     - Myofibroblasts: 592</span></span>
+<span><span class="co">##     - NK cells: 325</span></span>
+<span><span class="co">##     - Pericytes: 206</span></span>
+<span><span class="co">##     - Plasma_cells: 2075</span></span>
+<span><span class="co">##     - Pro-inflammatory_MFs: 761</span></span>
+<span><span class="co">##     - Regulatory T cells: 1467</span></span>
+<span><span class="co">##     - Smooth muscle cells: 191</span></span>
+<span><span class="co">##     - Stromal cells: 1829</span></span>
+<span><span class="co">##     - T follicular helper cells: 240</span></span></code></pre>
+<pre><code><span><span class="co">## === Probability matrix for training data:</span></span></code></pre>
+<pre><code><span><span class="co">##     - Bulk RNA-Seq samples: 7500</span></span>
+<span><span class="co">##     - Cell types: 22</span></span></code></pre>
+<pre><code><span><span class="co">## === Probability matrix for test data:</span></span></code></pre>
+<pre><code><span><span class="co">##     - Bulk RNA-Seq samples: 2500</span></span>
+<span><span class="co">##     - Cell types: 22</span></span></code></pre>
+<pre><code><span><span class="co">## DONE</span></span></code></pre>
+<pre><code><span><span class="co">## === Setting parallel environment to 2 thread(s)</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## === Generating train bulk samples:</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## === Generating test bulk samples:</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## DONE</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="neural-network-training">Neural network training<a class="anchor" aria-label="anchor" href="#neural-network-training"></a>
@@ -255,9 +314,13 @@ increased according to available computational resources.</p>
 the model. The training step is only performed using cells/pseudobulk
 samples coming from the training subset, since the test subset will be
 used for the assessment of its performance.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLS.colon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trainDDLSModel.html">trainDDLSModel</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLS.colon</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in trainDDLSModel(object = DDLS.colon, verbose = FALSE): 'prob.cell.types' slot is empty</span></span></code></pre>
+<pre><code>## 
+ 1/79 [..............................] - ETA: 3s - loss: 0.1169 - accuracy: 0.7500 - mean_absolute_error: 0.0116 - categorical_accuracy: 0.7500
+79/79 [==============================] - 0s 500us/step - loss: 0.1221 - accuracy: 0.7056 - mean_absolute_error: 0.0133 - categorical_accuracy: 0.7056
+## 
+79/79 [==============================] - 0s 503us/step - loss: 0.1221 - accuracy: 0.7056 - mean_absolute_error: 0.0133 - categorical_accuracy: 0.7056</code></pre>
 </div>
 <div class="section level2">
 <h2 id="evaluation-of-the-model-on-test-data">Evaluation of the model on test data<a class="anchor" aria-label="anchor" href="#evaluation-of-the-model-on-test-data"></a>
@@ -267,15 +330,14 @@ on test samples. This step is critical because it allows us to assess if
 <strong>digitalDLSorteR</strong> is actually understanding the signals
 coming from each cell type or if on the contrary there are cell types
 being ignored.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLS.colon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateEvalMetrics.html">calculateEvalMetrics</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLS.colon</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in calculateEvalMetrics(object = DDLS.colon): The provided object does not have a trained model for evaluation</span></span></code></pre>
 <p><strong>digitalDLSorteR</strong> implements different functions to
 visualize the results and explore potential biases on the models. For
 this tutorial, we will check the correlation between expected and
 predicted proportions, but for a more detailed explanation about other
 visualization functions, check the Documentation.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/corrExpPredPlot.html">corrExpPredPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">DDLS.colon</span>,</span>
 <span>  color.by <span class="op">=</span> <span class="st">"CellType"</span>,</span>
@@ -283,7 +345,12 @@ visualization functions, check the Documentation.</p>
 <span>  corr <span class="op">=</span> <span class="st">"both"</span>, </span>
 <span>  size.point <span class="op">=</span> <span class="fl">0.5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in corrExpPredPlot(DDLS.colon, color.by = "CellType", facet.by = "CellType", : The provided object does not have evaluation metrics. Use 'calculateEvalMetrics' function</span></span></code></pre>
+<pre><code><span><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre>
+<div class="figure" style="text-align: center">
+<img src="corr1_realModelWorkflow-1.png" alt="plot of chunk corr1_realModelWorkflow"><p class="caption">
+plot of chunk corr1_realModelWorkflow
+</p>
+</div>
 <p>As it can be seen, the model is accurately predicting the cell
 proportions of pseudobulk samples from the test data, which means that
 it is detecting differential signals for each cell type.</p>
@@ -298,32 +365,39 @@ samples and includes both tumoral and healthy samples. This step is
 performed by the <code>deconvDDLSObj</code> function, which will use the
 trained model to obtain a set of predicted proportions for each sample
 contained in the <code>deconv.data</code> slot.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLS.colon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconvDDLSObj.html">deconvDDLSObj</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DDLS.colon</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in deconvDDLSObj(object = DDLS.colon, verbose = FALSE): There is not trained model in DigitalDLSorter object</span></span></code></pre>
+<pre><code><span><span class="co">##    No 'name.data' provided. Using the first dataset</span></span></code></pre>
 <p>We can plot the results as follows:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span><span class="va">DDLS.colon</span>, rm.x.text <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in .local(data, colors, simplify, color.line, x.label, rm.x.text, : There are no results in DigitalDLSorter object. Please see ?deconvDDLSObj</span></span></code></pre>
+<pre><code><span><span class="co">## 'name.data' not provided. By default, first results are used</span></span></code></pre>
+<div class="figure" style="text-align: center">
+<img src="barPlotResults_realModelWorkflow-1.png" alt="plot of chunk barPlotResults_realModelWorkflow"><p class="caption">
+plot of chunk barPlotResults_realModelWorkflow
+</p>
+</div>
 <p>As the total number of samples is too high, we can see the results of
 some samples by taking the predicted cell proportions and plotting 20
 random samples with <code>barPlotCellTypes</code>:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span></span>
-<span><span class="va">resDeconvTCGA</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconv.results.html">deconv.results</a></span><span class="op">(</span><span class="va">DDLS.colon</span>, name.data <span class="op">=</span> <span class="st">"Bulk.DT"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in deconv.results(DDLS.colon, name.data = "Bulk.DT"): 'name.data' provided does not exists in deconv.results slot</span></span></code></pre>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span></span>
+<span><span class="va">resDeconvTCGA</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/deconv.results.html">deconv.results</a></span><span class="op">(</span><span class="va">DDLS.colon</span>, name.data <span class="op">=</span> <span class="st">"Bulk.DT"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/barPlotCellTypes.html">barPlotCellTypes</a></span><span class="op">(</span></span>
 <span>  <span class="va">resDeconvTCGA</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">521</span>, size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>, <span class="op">]</span>, rm.x.text <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  title <span class="op">=</span> <span class="st">"Results of deconvolution (20 random samples)"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in h(simpleError(msg, call)): error in evaluating the argument 'data' in selecting a method for function 'barPlotCellTypes': object 'resDeconvTCGA' not found</span></span></code></pre>
+<div class="figure" style="text-align: center">
+<img src="barPlotResults20_realModelWorkflow-1.png" alt="plot of chunk barPlotResults20_realModelWorkflow"><p class="caption">
+plot of chunk barPlotResults20_realModelWorkflow
+</p>
+</div>
 <p>Now, we can represent the cell proportions of every cell type
 considered by the model separating healthy and tumoral samples. We are
 also going to filter out samples considered metastatic or recurrent
 (check the <code>TCGA.colon.se</code> object) because these groups are
 composed of only 1 sample:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">resDeconvTCGA</span><span class="op">)</span>,</span>
 <span>  TypeSample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">TCGA.colon.se</span><span class="op">)</span><span class="op">[[</span><span class="st">"Tumor_Type"</span><span class="op">]</span><span class="op">]</span></span>
@@ -337,13 +411,18 @@ composed of only 1 sample:</p>
 <span>      plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
 <span>      legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'rownames': object 'resDeconvTCGA' not found</span></span></code></pre>
+<pre><code><span><span class="co">## Using Sample, TypeSample as id variables</span></span></code></pre>
+<div class="figure" style="text-align: center">
+<img src="boxplotResults_realModelWorkflow-1.png" alt="plot of chunk boxplotResults_realModelWorkflow"><p class="caption">
+plot of chunk boxplotResults_realModelWorkflow
+</p>
+</div>
 <p>In general, the results seem to be in line with what it is known:
 tumoral samples show a huge immune infiltration, whereas other cell
 types such as epithelial cells are displaced. We can also specifically
 inspect the predicted proportions of enterocytes, tumor, epithelial, and
 stromal cells:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">resDeconvTCGA</span><span class="op">)</span>,</span>
 <span>  CRC <span class="op">=</span> <span class="va">resDeconvTCGA</span><span class="op">[</span>, <span class="st">"Epithelial_cancer_cells"</span><span class="op">]</span>,</span>
@@ -361,7 +440,12 @@ stromal cells:</p>
 <span>      plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
 <span>      legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'rownames': object 'resDeconvTCGA' not found</span></span></code></pre>
+<pre><code><span><span class="co">## Using Sample, TypeSample as id variables</span></span></code></pre>
+<div class="figure" style="text-align: center">
+<img src="boxplotResults_2_realModelWorkflow-1.png" alt="plot of chunk boxplotResults_2_realModelWorkflow"><p class="caption">
+plot of chunk boxplotResults_2_realModelWorkflow
+</p>
+</div>
 <p>As it can be seen, <strong>digitalDLSorteR</strong> correctly
 estimates the absence of tumor cells (<code>CRC</code>) in healthy
 samples. On the other hand, the predicted proportion of enterocytes,
@@ -378,29 +462,51 @@ developed for our new R package for deconvolution of spatial
 transcriptomics data <a href="https://diegommcc.github.io/SpatialDDLS/index.html" class="external-link"><strong>SpatialDDLS</strong></a>,
 and the methodology is explained in <span class="citation">Mañanes et
 al. (2024)</span>.</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DDLS.colon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interGradientsDL.html">interGradientsDL</a></span><span class="op">(</span><span class="va">DDLS.colon</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in interGradientsDL(DDLS.colon): could not find function "interGradientsDL"</span></span></code></pre>
 <p>We can explore the top 5 genes with the highest gradient for each
 cell type to check which genes are being more used by the model:</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">top.gradients</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/topGradientsCellType.html">topGradientsCellType</a></span><span class="op">(</span></span>
 <span>  <span class="va">DDLS.colon</span>, method <span class="op">=</span> <span class="st">"class"</span>, top.n.genes <span class="op">=</span> <span class="fl">5</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in topGradientsCellType(DDLS.colon, method = "class", top.n.genes = 5): could not find function "topGradientsCellType"</span></span></code></pre>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span></span>
 <span>  <span class="va">top.gradients</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">Positive</span></span>
 <span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'as.data.frame': error in evaluating the argument 'X' in selecting a method for function 'sapply': object 'top.gradients' not found</span></span></code></pre>
+<pre><code><span><span class="co">##   Anti-inflammatory_MFs B cells CD4+ T cells CD8+ T cells     ECs ECs_tumor Enterocytes</span></span>
+<span><span class="co">## 1                 LYVE1    IGHD        KLRB1         GZMK   FABP5      INSR     UGT2B17</span></span>
+<span><span class="co">## 2                  PLTP    CD19        ANXA1         GZMH   SOCS3      AQP1       ITM2C</span></span>
+<span><span class="co">## 3                 FOLR2   FCRL1       GPR183        ITM2C    CD36     HSPG2      UGT2A3</span></span>
+<span><span class="co">## 4                  PDK4    PAX5          MAL        VCAM1   CD320    IGFBP5      PCSK1N</span></span>
+<span><span class="co">## 5                RNASE1    CD83          LTB         NKG7 SLC14A1    FKBP1A       MYOM1</span></span>
+<span><span class="co">##   Epithelial cells Epithelial_cancer_cells      MFs_SPP1+ Mast cells Myofibroblasts NK cells</span></span>
+<span><span class="co">## 1             ZG16                    AREG           CTSD      ANXA1         LGALS1   FGFBP2</span></span>
+<span><span class="co">## 2             AQP8                    PLTP          APOC1      GATA2  RP11-400N13.3     CMC1</span></span>
+<span><span class="co">## 3             URAD                     EN2 RP11-1008C21.1       CTSG          ITM2C     GNLY</span></span>
+<span><span class="co">## 4             TFF3                    CTSH          GPNMB        VIM          IGFL2    KRT86</span></span>
+<span><span class="co">## 5            REP15                   GSTP1           APOE       LMNA    RP11-54O7.3    KLRC1</span></span>
+<span><span class="co">##   Pericytes Plasma_cells Pro-inflammatory_MFs Regulatory T cells Smooth muscle cells Stromal cells</span></span>
+<span><span class="co">## 1      CD36    LINC00152                 FCN1               BATF               RERGL         EPHA7</span></span>
+<span><span class="co">## 2 LINC00152         RGS1              S100A12              RTKN2               CASQ2         FCGRT</span></span>
+<span><span class="co">## 3      MAP6        IGHA1                TIMP1            TNFRSF4                 DES            C7</span></span>
+<span><span class="co">## 4    RNF152     IGHV4-61                IL1RN               IL32                SNCG        SEMA3E</span></span>
+<span><span class="co">## 5     CNTN4         SRGN             SERPINB2                LTB               RBM24         ZFP36</span></span>
+<span><span class="co">##   T follicular helper cells      cDC gamma delta T cells</span></span>
+<span><span class="co">## 1                    CXCL13 HLA-DQA2               KLRC2</span></span>
+<span><span class="co">## 2                     NR3C1   INSIG1               TRGC2</span></span>
+<span><span class="co">## 3                       NMB     CST7                TRDC</span></span>
+<span><span class="co">## 4                    PTPN13     CD1C                CCL5</span></span>
+<span><span class="co">## 5                      SRGN     ENHO                GZMA</span></span></code></pre>
 <p>In addition, <strong>digitalDLSorteR</strong> also implements a
 function to plot the top gradients per cell type as a heatmap:</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">hh</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmapGradsAgg.html">plotHeatmapGradsAgg</a></span><span class="op">(</span><span class="va">DDLS.colon</span>, top.n.genes <span class="op">=</span> <span class="fl">4</span>, method <span class="op">=</span> <span class="st">"class"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in plotHeatmapGradsAgg(DDLS.colon, top.n.genes = 4, method = "class"): could not find function "plotHeatmapGradsAgg"</span></span></code></pre>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">hh</span><span class="op">$</span><span class="va">Absolute</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in eval(expr, envir, enclos): object 'hh' not found</span></span></code></pre>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hh</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmapGradsAgg.html">plotHeatmapGradsAgg</a></span><span class="op">(</span><span class="va">DDLS.colon</span>, top.n.genes <span class="op">=</span> <span class="fl">4</span>, method <span class="op">=</span> <span class="st">"class"</span><span class="op">)</span></span>
+<span><span class="va">hh</span><span class="op">$</span><span class="va">Absolute</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<img src="heatmapGradients_realModelWorkflow-1.png" alt="plot of chunk heatmapGradients_realModelWorkflow"><p class="caption">
+plot of chunk heatmapGradients_realModelWorkflow
+</p>
+</div>
 <p>It is important to note that these markers should not be interpreted
 as cell type markers. Rather, they serve as indications to help
 interpret the model’s performance. In addition, due to the multivariate
