@@ -9,7 +9,7 @@ skip_if_not(.checkPythonDependencies(alert = "none"))
 
 # simulating data
 set.seed(123)
-sce <- SingleCellExperiment(
+sce <- SingleCellExperiment::SingleCellExperiment(
   matrix(
     stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 
     dimnames = list(paste0("Gene", seq(40)), paste0("RHC", seq(30)))
@@ -433,7 +433,7 @@ test_that(
       verbose = FALSE
     )
     # simulating bulk samples
-    se <- SummarizedExperiment(
+    se <- SummarizedExperiment::SummarizedExperiment(
       matrix(
         stats::rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
         nrow = 40, ncol = 15, 
@@ -586,7 +586,7 @@ test_that(
       trained.model(DDLS)@model, class = "keras.engine.sequential.Sequential"
     )
     # recompile and use it to deconvolve new samples
-    se <- SummarizedExperiment(
+    se <- SummarizedExperiment::SummarizedExperiment(
       matrix(
         stats::rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
         nrow = 40, ncol = 15, 
@@ -739,7 +739,7 @@ test_that(
       batch.size = 20,
       verbose = FALSE
     )
-    se <- SummarizedExperiment(
+    se <- SummarizedExperiment::SummarizedExperiment(
       matrix(
         stats::rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
         nrow = 40, ncol = 15, 

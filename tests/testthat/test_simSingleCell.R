@@ -6,7 +6,7 @@ context("Simulation of single-cell RNA-Seq profiles: simSingleCell.R")
 
 # simulating data
 set.seed(123)
-sce <- SingleCellExperiment(
+sce <- SingleCellExperiment::SingleCellExperiment(
   assays = list(
     counts = matrix(
       stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 
@@ -79,7 +79,7 @@ test_that(
     )
     # variable with less than two levels
     sce <- single.cell.real(DDLSMod) 
-    colData(sce)$Patient <- 1
+    SummarizedExperiment::colData(sce)$Patient <- 1
     single.cell.real(DDLSMod) <- sce
     expect_error(
       estimateZinbwaveParams(
@@ -96,7 +96,7 @@ test_that(
       regexp = "Patient must have 2 or more unique elements"
     )
     sce <- single.cell.real(DDLS) 
-    rowData(sce)$gene_length <- 1
+    SummarizedExperiment::rowData(sce)$gene_length <- 1
     single.cell.real(DDLSMod) <- sce
     expect_error(
       estimateZinbwaveParams(
@@ -115,7 +115,7 @@ test_that(
     # an object with less than two cell types
     DDLSMod <- DDLS
     sce <- single.cell.real(DDLS) 
-    colData(sce)$Cell_Type <- 1
+    SummarizedExperiment::colData(sce)$Cell_Type <- 1
     single.cell.real(DDLSMod) <- sce
     zinb.params(DDLSMod) <- NULL
     expect_error(
@@ -286,9 +286,9 @@ test_that(
     expect_true(
       all(grepl(pattern = "_Suffix", colnames(single.cell.simul(DDLS))))
     )
-    expect_true(any(colnames(colData(single.cell.simul(DDLS))) == "suffix"))
+    expect_true(any(colnames(SummarizedExperiment::colData(single.cell.simul(DDLS))) == "suffix"))
     # warning if suffix column in cells metadata is going to be overwritten
-    colData(single.cell.real(DDLS))$suffix <- 1
+    SummarizedExperiment::colData(single.cell.real(DDLS))$suffix <- 1
     single.cell.simul(DDLS) <- NULL
     expect_warning(
       simSCProfiles(
@@ -302,7 +302,7 @@ test_that(
     )
     # correct number of cells
     single.cell.simul(DDLS) <- NULL
-    colData(single.cell.real(DDLS))$suffix <- NULL
+    SummarizedExperiment::colData(single.cell.real(DDLS))$suffix <- NULL
     DDLS <- simSCProfiles(
       object = DDLS,
       cell.ID.column = "Cell_ID",
@@ -325,7 +325,7 @@ test_that(
     expect_equal(dim(single.cell.simul(DDLS))[2], 14 * 2)
     expect_true(
       all(
-        unique(colData(single.cell.simul(DDLS))[["Cell_Type"]]) %in% 
+        unique(SummarizedExperiment::colData(single.cell.simul(DDLS))[["Cell_Type"]]) %in% 
           c("CellType1", "CellType3")
       )
     )
@@ -356,7 +356,7 @@ test_that(
     )
     expect_equal(dim(single.cell.simul(DDLS))[2], 10 * 4)
     expect_true(file.exists(file))
-    expect_s4_class(object = counts(single.cell.simul(DDLS)), class = "HDF5Array")
+    expect_s4_class(object = SingleCellExperiment::counts(single.cell.simul(DDLS)), class = "HDF5Array")
     # check if name.dataset.backend changes the name of dataset used
     single.cell.simul(DDLS) <- NULL
     DDLS <- simSCProfiles(

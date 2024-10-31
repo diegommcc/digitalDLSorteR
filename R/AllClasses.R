@@ -1,7 +1,8 @@
 #' @importFrom methods setClass setOldClass setClassUnion
 #' @importFrom utils packageVersion
 #' @importFrom stats predict
-#' @import SingleCellExperiment SummarizedExperiment
+#' @importClassesFrom SingleCellExperiment SingleCellExperiment
+#' @importClassesFrom SummarizedExperiment SummarizedExperiment
 #' @importClassesFrom Matrix dgCMatrix
 #' @importFrom keras keras_model_sequential layer_dense layer_batch_normalization layer_activation layer_dropout get_output_shape_at compile optimizer_adam fit_generator evaluate_generator predict_generator model_from_json set_weights model_to_json get_weights load_model_hdf5 save_model_hdf5 fit evaluate
 NULL

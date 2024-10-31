@@ -5,7 +5,7 @@ context("Loading scRNA-seq data into DigitalDLSorter object: loadData.R")
 ################################################################################
 # simulating data
 set.seed(123)
-sce <- SingleCellExperiment(
+sce <- SingleCellExperiment::SingleCellExperiment(
   assays = list(
     counts = matrix(
       stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 
@@ -169,7 +169,7 @@ test_that(
     # 1 - no rownames neither rowData: genes
     countsNoGenes <- assay(sce)
     rownames(countsNoGenes) <- NULL
-    sceLiNoGenes <- SingleCellExperiment(
+    sceLiNoGenes <- SingleCellExperiment::SingleCellExperiment(
       assay = list(counts = countsNoGenes),
       colData = colData(sce)
     )
@@ -188,7 +188,7 @@ test_that(
     # 2 - no colnames neither colData: cells
     countsNoCells <- assay(sce)
     colnames(countsNoCells) <- NULL
-    sceLiNoCells <- SingleCellExperiment(
+    sceLiNoCells <- SingleCellExperiment::SingleCellExperiment(
       assay = list(counts = countsNoCells),
       rowData = rowData(sce)
     )
@@ -205,7 +205,7 @@ test_that(
       regexp = "No data provided in colData slot"
     )
     # 3 - no rowData: genes
-    sceLiRNoRowData <- SingleCellExperiment(
+    sceLiRNoRowData <- SingleCellExperiment::SingleCellExperiment(
       assay = list(counts =  assay(sce)),
       colData = colData(sce)
     )
@@ -226,7 +226,7 @@ test_that(
     rownames(dfCellsMetadata) <- NULL
     sceC <- sce
     colnames(sceC) <- NULL
-    sceLiNoColNames <- SingleCellExperiment(
+    sceLiNoColNames <- SingleCellExperiment::SingleCellExperiment(
       assay = list(counts = assay(sceC)),
       colData = dfCellsMetadata,
       rowData = rowData(sceC)
@@ -243,7 +243,7 @@ test_that(
       ), regexp = "Count matrix must have"
     )
     # 5 - No matrix counts
-    sceLiNoCounts <- SingleCellExperiment(
+    sceLiNoCounts <- SingleCellExperiment::SingleCellExperiment(
       colData = colData(sce),
       rowData = rowData(sce)
     )
@@ -260,7 +260,7 @@ test_that(
       regexp = "No count data in SingleCellExperiment object"
     )
     # 6 - More than one assay in SingleCellExperiment: warning, no error
-    sceLiMoreThanOne <- SingleCellExperiment(
+    sceLiMoreThanOne <- SingleCellExperiment::SingleCellExperiment(
       assay = list(counts = assay(sce), log = log2(assay(sce)  + 1)),
       colData = colData(sce),
       rowData = rowData(sce)

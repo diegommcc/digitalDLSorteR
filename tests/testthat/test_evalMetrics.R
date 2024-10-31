@@ -4,7 +4,7 @@ skip_if_not(.checkPythonDependencies(alert = "none"))
 
 # simulating data
 set.seed(123)
-sce <- SingleCellExperiment(
+sce <- SingleCellExperiment::SingleCellExperiment(
   assays = list(
     counts = matrix(
       stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 

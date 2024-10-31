@@ -57,3 +57,13 @@ the workflow (see documentation).
 * Included interGradientsDL.R file with functions to interpret neural networks using Vanilla Gradient (from SpatialDDLS).
 * Functions renamed: deconvDigitalDLSorter > deconvDDLSObj and deconvDigitalDLSorterObj > deconvDDLSPretrained.
 * Vignettes updated using new deconvolution models/data.
+
+
+# digitalDLSorteR 1.1.1 (2024-10-31)
+
+Problems to be solved: 
+
+* saveRDS thingy
+* Documentation: remove all linkS4classes 
+* 
+

@@ -1,5 +1,6 @@
 #' @importFrom dplyr %>%
 #' @importFrom tools file_path_sans_ext
+#' @importFrom SummarizedExperiment colData rowData assay assays
 NULL
 
 ################################################################################

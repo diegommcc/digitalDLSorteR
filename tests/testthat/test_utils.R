@@ -2,7 +2,7 @@ context("Utils (helper functions): utils.R")
 
 # simulating data
 set.seed(123)
-sce <- SingleCellExperiment(
+sce <- SingleCellExperiment::SingleCellExperiment(
   assays = list(
     counts = matrix(
       stats::rpois(100, lambda = 5), nrow = 40, ncol = 30, 
@@ -244,7 +244,7 @@ test_that(
   desc = "loadDeconvData", 
   code = {
     # load data from a SummarizedExperiment object
-    se <- SummarizedExperiment(
+    se <- SummarizedExperiment::SummarizedExperiment(
       matrix(
         stats::rpois(100, lambda = sample(seq(4, 10), size = 100, replace = TRUE)), 
         nrow = 40, ncol = 15, 
